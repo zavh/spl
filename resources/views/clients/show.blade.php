@@ -10,9 +10,9 @@
     <a href="/clients/{{$assignment->id}}/edit" class="btn btn-primary">Edit</a>
     <a href="/clients" class="btn btn-primary">Go Back</a>
 
-    {!!Form::open(['action'=>['ClientsController@destroy',$assignment->id],'method'=>'POST','class'=>'pull-right'])!!}
+    {{-- {!!Form::open(['action'=>['ClientsController@destroy',$assignment->id],'method'=>'POST','class'=>'pull-right'])!!}
         {{Form::hidden('_method','DELETE')}}
         {{Form::submit('Delete',['class'=>'btn btn-danger'])}}
-    {!!Form::close()!!}
+    {!!Form::close()!!} --}}
     
 @endsection
