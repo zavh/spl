@@ -17,7 +17,7 @@ class CreateUsersTable extends Migration
             $table->increments('id')->unsigned();
             $table->string('email')->unique();
             $table->string('name')->unique();
-            $table->unsignedTinyInteger('role_id')->unsigned();
+            $table->integer('role_id')->unsigned();
             $table->string('fname')->nullable();
             $table->string('sname')->nullable();
             $table->timestamp('email_verified_at')->nullable();
@@ -25,7 +25,7 @@ class CreateUsersTable extends Migration
             $table->rememberToken();
             $table->timestamps();
 
-            $table->foreign('role_id')->references('id')->on('roles');
+            //$table->foreign('role_id')->references('id')->on('roles');
         });
 
         Schema::table('users', function (Blueprint $table){
