@@ -22,8 +22,8 @@ class CreateProjectsTable extends Migration
             $table->dateTime('assigned');
             $table->dateTime('deadline');
             $table->text('description');
-            $table->tinyInteger('status');
-            $table->tinyInteger('state');           
+            $table->tinyInteger('status')->nullable();
+            $table->tinyInteger('state')->nullable();           
             $table->timestamps();
         });
     }
