@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Project;
+use App\Client;
+use App\User;
+
 use DB;
 
 class ProjectsController extends Controller
@@ -27,7 +30,9 @@ class ProjectsController extends Controller
     public function create()
     {
         //
-        return view('projects.create');
+        $clients = Client::all();
+        $users = User::all();
+        return view('projects.create',['clients'=>$clients,'users'=>$users]);
     }
 
     /**
