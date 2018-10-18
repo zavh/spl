@@ -26,19 +26,19 @@
                     <div class="row">
                         <div class="col-lg-4 text-center">
                             <a href='/users'>
-                            <img class="rounded-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" width="140" height="140">
+                            <img class="rounded-circle" src="{{ asset('img/icon.user.png') }}" alt="Generic placeholder image" width="140" height="140">
                             </a>
                             <h2>Manage Users</h2>                            
                         </div><!-- /.col-lg-4 -->
                         <div class="col-lg-4 text-center">
                             <a href='/roles'>
-                                <img class="rounded-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" width="140" height="140">
+                                <img class="rounded-circle" src="{{ asset('img/icon.role.png') }}" alt="Generic placeholder image" width="140" height="140">
                             </a>
                             <h2>Manage User Roles</h2>
                         </div><!-- /.col-lg-4 -->
                         <div class="col-lg-4 text-center">
                             <a href='/projects'>
-                                <img class="rounded-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" width="140" height="140">
+                                <img class="rounded-circle" src="{{ asset('img/icon.project.png') }}" alt="Generic placeholder image" width="140" height="140" style='background:#eee'>
                             </a>
                             <h2>Projects</h2>
                         </div><!-- /.col-lg-4 -->

@@ -9,7 +9,7 @@
                     <div class="col-md-6 col-sm-6">        
                         <div class="card text-center">                            
                             {{-- <h2>Client list</h2> --}}
-                            <h3><a href="/clients/{{$client->id}}">{{$client->name}}</a></h3>
+                            <h3><a href="/clients/{{$client->id}}/edit">{{$client->name}}</a></h3>
                             <small><p>of organization: {{$client->organization}}</p>
                             <p>with address {{$client->address}}</p>
                             <p>created at {{$client->created_at}}</p></small>
