@@ -37,8 +37,10 @@
                             <h2>Manage User Roles</h2>
                         </div><!-- /.col-lg-4 -->
                         <div class="col-lg-4 text-center">
-                            <img class="rounded-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" width="140" height="140">
-                            <h2>Heading</h2>
+                            <a href='/projects'>
+                                <img class="rounded-circle" src="data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==" alt="Generic placeholder image" width="140" height="140">
+                            </a>
+                            <h2>Projects</h2>
                         </div><!-- /.col-lg-4 -->
                     </div>
                 </div>
