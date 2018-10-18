@@ -20,6 +20,11 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
-
+Route::get('/clients', 'ClientsController@index')->name('clients');
+Route::get('/projects', 'ProjectsController@index')->name('projects');
+Route::get('/tasks', 'TasksController@index')->name('tasks');
+Route::resource('clients','ClientsController');
+Route::resource('projects','ProjectsController');
+Route::resource('tasks','TasksController');
 Route::resource('users', 'UsersController');
 Route::resource('roles', 'RolesController');
