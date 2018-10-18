@@ -43,7 +43,7 @@ class UsersController extends Controller
      */
     public function store(Request $request)
     {
-        $userCreate = User::create([
+        $userCreate = Client::create([
             'name' => $request['name'],
             'email' => $request['email'],
             'role_id' => $request['role'],

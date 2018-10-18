@@ -28,7 +28,6 @@
                                 <input id="address" type="text" class="form-control{{ $errors->has('address') ? ' is-invalid' : '' }}" name="address" value="{{ old('organization') }}" required>
                             </div>
                         </div>
-                        <input name="_method" type="hidden" value="PUT">
                         <div class="col-md-6 offset-md-4">
                             <button type="submit" class="btn btn-primary">
                                 {{ __('Create Client') }}
