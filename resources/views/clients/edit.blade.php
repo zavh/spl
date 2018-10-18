@@ -1,21 +1,47 @@
 @extends('layouts.app')
-
 @section('content')
-    <h1>Edit Client</h1>
-    {!! Form::open(['action' => ['ClientsController@update', $assignment->id], 'method'=>'POST']) !!}
-        <div class="form-group">
-            {{Form::label('name', 'Name')}}
-            {{Form::text('name',$assignment->name,['class'=>'form-control', 'placeholder' => 'Name'])}}
+ <main class="py-4">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">Edit Client</div>
+
+                    <div class="card-body">
+                    <form method="POST" action="{{route('clients.update', [$assignment->id])}}">
+                        @csrf           
+                        <div class="form-group row">
+                            <label for="name" class="col-sm-4 col-form-label text-md-right">{{ __('Name') }}</label>
+                            <div class="col-md-6">
+                                <input id="name" type="text" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" name="name" value="{{ $assignment->name }}" required autofocus>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="organization" class="col-sm-4 col-form-label text-md-right">{{ __('Organization') }}</label>
+                            <div class="col-md-6">
+                                <input id="name" type="text" class="form-control{{ $errors->has('organization') ? ' is-invalid' : '' }}" name="organization" value="{{ $assignment->organization }}" required>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="address" class="col-sm-4 col-form-label text-md-right">{{ __('Address') }}</label>
+                            <div class="col-md-6">
+                                <input id="address" type="text" class="form-control{{ $errors->has('address') ? ' is-invalid' : '' }}" name="address" value="{{ $assignment->address }}" required>
+                            </div>
+                        </div>
+                        <input name="_method" type="hidden" value="PUT">
+                        <div class="col-md-6 offset-md-4">
+                            <button type="submit" class="btn btn-primary">
+                                {{ __('Update Client') }}
+                            </button>
+                        </div>
+                    </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <a href='/clients'>Client Management</a>
+            </div>
         </div>
-        <div class="form-group">
-            {{Form::label('organization','Organization')}}
-            {{Form::textarea('organization',$assignment->organization,['class'=>'form-control', 'placeholder' => 'Organization'])}}
-        </div>
-        <div class="form-group">
-            {{Form::label('address','Address')}}
-            {{Form::text('address',$assignment->address,['class'=>'form-control', 'placeholder' => 'Address'])}}
-        </div>
-        {{Form::hidden('_method','PUT')}}
-        {{Form::submit('Submit',['class'=>'btn btn-primary']) }}
-    {!! Form::close() !!}
+    </div>
+ </main>
 @endsection
