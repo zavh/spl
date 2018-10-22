@@ -14,33 +14,30 @@
                         </div>
                     @endif
                     @isset(Auth::user()->role_id)
-                        <div class="alert alert-primary">
-                            User Role has been set
-                        </div>
+                        
                     @else 
-                        <div class="alert alert-danger">
-                                No role set for the user!
-                        </div>
+
                     @endisset
                     
                     <div class="row">
                         <div class="col-lg-4 text-center">
-                            <a href='/users'>
-                            <img class="rounded-circle" src="{{ asset('img/icon.user.png') }}" alt="Generic placeholder image" width="140" height="140">
+                            <a href='/projects'>
+                                    <img class="rounded-circle" src="{{ asset('img/icon.project.png') }}" alt="Generic placeholder image" width="140" height="140" style='background:#eee'>
                             </a>
-                            <h2>Manage Users</h2>                            
+
+                            <h2>Projects</h2>                         
                         </div><!-- /.col-lg-4 -->
                         <div class="col-lg-4 text-center">
-                            <a href='/roles'>
+                            <a href='/tasks'>
                                 <img class="rounded-circle" src="{{ asset('img/icon.role.png') }}" alt="Generic placeholder image" width="140" height="140">
                             </a>
-                            <h2>Manage User Roles</h2>
+                            <h2>Tasks</h2>
                         </div><!-- /.col-lg-4 -->
                         <div class="col-lg-4 text-center">
-                            <a href='/projects'>
-                                <img class="rounded-circle" src="{{ asset('img/icon.project.png') }}" alt="Generic placeholder image" width="140" height="140" style='background:#eee'>
+                            <a href='/clients'>
+                                <img class="rounded-circle" src="{{ asset('img/icon.user.png') }}" alt="Generic placeholder image" width="140" height="140" style='background:#eee'>
                             </a>
-                            <h2>Projects</h2>
+                            <h2>Clients</h2>
                         </div><!-- /.col-lg-4 -->
                     </div>
                 </div>

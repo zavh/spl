@@ -17,12 +17,17 @@ Route::get('/', function () {
     return redirect()->route('login'); 
 });
 
+Route::get('/changepass', function () {
+    return view('users/changepass');
+})->middleware('auth');
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/clients', 'ClientsController@index')->name('clients');
-Route::get('/projects', 'ProjectsController@index')->name('projects');
-Route::get('/tasks', 'TasksController@index')->name('tasks');
+Route::post('/users/credentials', 'UsersController@changepass')->name('changepass');
+//Route::get('/clients', 'ClientsController@index')->name('clients');
+//Route::get('/projects', 'ProjectsController@index')->name('projects');
+//Route::get('/tasks', 'TasksController@index')->name('tasks');
 Route::resource('clients','ClientsController');
 Route::resource('projects','ProjectsController');
 Route::resource('tasks','TasksController');

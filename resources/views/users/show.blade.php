@@ -1,6 +1,7 @@
     <form method='post' action="{{route('users.update', [$user->id])}}" style='width:100%'>
         {{csrf_field()}}
         <input type="hidden" name="_method" value="put">
+        <input type="hidden" name="command" value="profile_update">
         <table class="table table-hover table-sm">
             <tbody>
                 <tr class="bg-dark text-white text-center">
@@ -10,7 +11,7 @@
                                 Details of Username : <strong>"{{$user->name}}"</strong>
                             </div>
                             <div class="col col-lg-1" style='font-size:10px;vertical-align:middle'>
-                                Edit
+                                <a href="{{route('users.edit', [$user->id])}}">Edit</a>
                             </div>
                             <div class="col col-lg-1" style='font-size:10px'>
                                 Close
