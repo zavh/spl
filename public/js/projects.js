@@ -26,7 +26,7 @@ function ajaxFunction(instruction, execute_id, divid){
 	    } 
 
 		if(instruction == "viewclient"){
-			
+			document.getElementById("cp-supplimentary").style.display='';
 			ajaxRequest.open("GET", "/clients/"+ execute_id, true);
 			ajaxRequest.send();
         }
@@ -41,8 +41,5 @@ function getClient(el){
     var index = el.selectedIndex;
     var options = el.options;
     var id = options[index].value;
-    
-    document.getElementById("cp-supplimentary").style.display='';
     ajaxFunction("viewclient", id, "cp-supplimentary");
-    
 }
