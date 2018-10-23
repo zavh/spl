@@ -40,9 +40,6 @@
                     <ul class="navbar-nav ml-auto">
                         <!-- Authentication Links -->
                         @guest
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                            </li>
                         @else
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
@@ -55,7 +52,17 @@
                                                      document.getElementById('logout-form').submit();">
                                         {{ __('Logout') }}
                                     </a>
-
+                                    @if(Auth::user()->role_id == 1)
+                                        <a class="dropdown-item" href="{{ url('/users') }}">
+                                            {{ __('User Management') }}
+                                        </a>
+                                        <a class="dropdown-item" href="{{ url('/roles') }}">
+                                            {{ __('Role Management') }}
+                                        </a>
+                                    @endif                                    
+                                    <a class="dropdown-item" href="/changepass">
+                                        {{ __('Change Password') }}
+                                    </a>
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                                         @csrf
                                     </form>
@@ -71,7 +78,6 @@
             @yield('content')
         </main>
         <div style='border-width:3px;position:fixed;padding:7px;bottom:0;right:0;max-width:450px;z-index:999'>
-            @include('partial.errors')
             @include('partial.success')
         </div>
     </div>
