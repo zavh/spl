@@ -9,7 +9,7 @@
 </nav>
 <div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-7">
             <div class="card shadow-lg">
                 <div class="card-header text-white bg-primary">
                     {{ __('Create new project') }}
@@ -99,7 +99,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4" style='display:none' id='cp-supplimentary'></div>
+        <div class="col-md-5" style='display:none' id='cp-supplimentary'></div>
     </div>
 </div>
 @endsection
