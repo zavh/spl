@@ -18,12 +18,12 @@ class CreateProjectsTable extends Migration
             $table->string('project_name');
             $table->integer('client_id');
             $table->integer('user_id');
-            $table->integer('manager_id');
-            $table->dateTime('assigned');
+            $table->integer('manager_id')->nullable();
+            $table->dateTime('assigned')->nullable();
             $table->dateTime('deadline');
             $table->text('description');
             $table->tinyInteger('status');
-            $table->tinyInteger('state');           
+            $table->tinyInteger('state')->nullable();
             $table->timestamps();
         });
     }

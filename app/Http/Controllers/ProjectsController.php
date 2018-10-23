@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Project;
+use App\Client;
 use DB;
 
 class ProjectsController extends Controller
@@ -15,7 +16,9 @@ class ProjectsController extends Controller
      */
     public function index()
     {
+        
         $projects = Project::all();
+        //return view('projects.index', ['projects'=>$projects, 'roles'=>$roles]);
         return view('projects.index')->with('projects',$projects);
     }
 
@@ -26,8 +29,8 @@ class ProjectsController extends Controller
      */
     public function create()
     {
-        //
-        return view('projects.create');
+        $clients = DB::table('clients')->get();
+        return view('projects.create', ['clients'=>$clients]);
     }
 
     /**
@@ -41,9 +44,6 @@ class ProjectsController extends Controller
         $this->validate($request, [
             'project_name' => 'required',
             'client_id' => 'required',
-            'user_id' => 'required',
-            'manager_id' => 'required',
-            'assigned' => 'required',
             'deadline' => 'required',
             'description' => 'required'
         ]);
