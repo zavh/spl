@@ -5,11 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Project;
 use App\Client;
-<<<<<<< HEAD
-=======
-use App\User;
-
->>>>>>> 8cc324f9e7482648ce736a1dd246b6635502d2dd
 use DB;
 
 class ProjectsController extends Controller
@@ -34,15 +29,8 @@ class ProjectsController extends Controller
      */
     public function create()
     {
-<<<<<<< HEAD
         $clients = DB::table('clients')->get();
         return view('projects.create', ['clients'=>$clients]);
-=======
-        //
-        $clients = Client::all();
-        $users = User::all();
-        return view('projects.create',['clients'=>$clients,'users'=>$users]);
->>>>>>> 8cc324f9e7482648ce736a1dd246b6635502d2dd
     }
 
     /**
