@@ -45,13 +45,21 @@ class TasksController extends Controller
 
         $messages = [
             'task_name.required' => 'Please enter the task name',
-            'task_name.min' => 'Minimum 2 characters'
-            //'new-password.required' => 'Please enter password',
-            //'new-password.min' => 'New Password needs to be at least 8 characters long',
-            //'password_confirmation.same' => 'Password Confirmation and New Password must match'
+            'task_name.min' => 'Task name must be minimum 2 characters',
+            'task_name.max' => 'Task name cannot be more than 191 characters',
+            'task_name.unique' => 'This task name has already been taken',
+            'task_description.required' => 'Please enter the task description',
+            'task_description.max' => 'Task name cannot be more than 3000 characters',
+            'user_id.required' => 'please select an user',
+            'task_date_assigned.required' => 'please pick a assignment date',
+            'task_date_assigned.date' => 'The date assigned must be a valid date',
+            'task_date_assigned.before_or_equal' => 'the date assigned cannot be after the deadline',            
+            'task_deadline.required' => 'please pick a deadline',
+            'task_deadline.date' => 'The deadline must be a valid date',
+            'task_deadline.after_or_equal' => 'the deadline cannot be after the date assigned'
         ];
 
-        $sabit = Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'task_name' => 'required|min:2|max:191|unique:tasks,task_name',
             'task_description' => 'required|max:3000',
             'user_id' => 'required',
@@ -59,8 +67,8 @@ class TasksController extends Controller
             'task_deadline' => 'required|date|after_or_equal:task_date_assigned'
         ],$messages);
 
-        if($sabit->fails()){
-            return back()->withErrors($sabit)->withInput();
+        if($validator->fails()){
+            return back()->withErrors($validator)->withInput();
         }
         
         $task = new Task;
