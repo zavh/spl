@@ -15,9 +15,9 @@
     <a href="/tasks/{{$assignment->id}}/edit" class="btn btn-primary">Edit</a>
     <a href="/tasks" class="btn btn-primary">Go Back</a>
 
-    {!!Form::open(['action'=>['TasksController@destroy',$assignment->id],'method'=>'POST','class'=>'pull-right'])!!}
+    {{-- {!!Form::open(['action'=>['TasksController@destroy',$assignment->id],'method'=>'POST','class'=>'pull-right'])!!}
         {{Form::hidden('_method','DELETE')}}
         {{Form::submit('Delete',['class'=>'btn btn-danger'])}}
-    {!!Form::close()!!}
+    {!!Form::close()!!} --}}
     
 @endsection
