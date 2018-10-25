@@ -41,9 +41,9 @@ class ClientsController extends Controller
     {
         //
         $this->validate($request, [
-            'name' => 'required',
-            'organization' => 'required',
-            'address' => 'required'
+            'name' => 'required|max:191',
+            'organization' => 'required|max:191',
+            'address' => 'required|max:191'
         ]);
 
         $client = new Client;

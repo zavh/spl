@@ -43,3 +43,32 @@ function getClient(el){
     var id = options[index].value;
     ajaxFunction("viewclient", id, "cp-supplimentary");
 }
+
+function showEnqInputs(el){
+	var pumps = ["surface", "submerse"];
+    var index = el.selectedIndex;
+    var option = el.options;
+	var ptype = option[index].value;
+	var i, j;
+
+    var rows = document.getElementsByClassName(ptype+"-row");
+    for(i=0;i<rows.length;i++){
+        rows[i].style.display = '';
+    }
+    var els = document.getElementsByClassName(ptype+"-row-el");
+    for(i=0;i<els.length;i++){
+        els[i].disabled = false;
+	}
+	for(i=0;i<pumps.length;i++){
+		if(pumps[i] != ptype){
+			rows = document.getElementsByClassName(pumps[i]+"-row");
+			for(j=0;j<rows.length;j++){
+				rows[j].style.display = 'none';
+			}
+			els = document.getElementsByClassName(pumps[i]+"-row-el");
+			for(j=0;j<els.length;j++){
+				els[j].disabled = true;
+			}
+		}
+	}
+}

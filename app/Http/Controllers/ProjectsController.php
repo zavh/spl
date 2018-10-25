@@ -45,22 +45,21 @@ class ProjectsController extends Controller
             'project_name' => 'required',
             'client_id' => 'required',
             'deadline' => 'required',
-            'description' => 'required'
         ]);
-
+dd($request);
         // Create Project
-        $project = new Project;
-        $project->project_name = $request->input('project_name');
-        $project->client_id = $request->input('client_id');
-        $project->user_id = $request->input('user_id');
-        $project->manager_id = $request->input('manager_id');
-        $project->assigned = $request->input('assigned');
-        $project->deadline = $request->input('deadline');
-        $project->description = $request->input('description');
+        // $project = new Project;
+        // $project->project_name = $request->input('project_name');
+        // $project->client_id = $request->input('client_id');
+        // $project->user_id = $request->input('user_id');
+        // $project->manager_id = $request->input('manager_id');
+        // $project->assigned = $request->input('assigned');
+        // $project->deadline = $request->input('deadline');
+        // $project->description = $request->input('description');
 
-        $project->save();
+        // $project->save();
 
-        return redirect('/projects')->with('success', 'Project Created');
+        // return redirect('/projects')->with('success', 'Project Created');
     }
 
     /**

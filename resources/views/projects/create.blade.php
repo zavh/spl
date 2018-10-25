@@ -16,31 +16,37 @@
                 </div>
 
                 <div class="card-body">
-                    <form method="POST" action="{{ route('projects.store') }}">
+                    <form method="POST" action="{{ route('projects.store') }}" style='font-size:10px'>
                         @csrf
+                        <!-- Client Input Starts -->
                         <div class="form-group row">
-                            <label for="client_id" class="col-md-4 col-form-label text-md-right">{{ __('Client') }}</label>
-                            <div class="col-md-6">
-                                <select name="client_id" id="client_id" class="form-control{{ $errors->has('client_id') ? ' is-invalid' : '' }}" required autofocus onchange="getClient(this)">
-                                <option disabled selected>Select One</div>
-                                @foreach($clients as $client)
-                                    <option value="{{$client->id}}">{{$client->name}}</option>
-                                @endforeach
-                                </select>
-                                @if ($errors->has('client_id'))
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('client_id') }}</strong>
+                            <div class="input-group input-group-sm col-md-12">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="inputGroup-sizing-sm">
+                                        Client &nbsp;
+                                            <a href="javascript:void(0)"
+                                                class='btn btn-outline-primary btn-sm' 
+                                                style='border-radius:50%;width:15px;height:15px;padding:2px'
+                                                onclick="ajaxFunction('showCreateClient', '', 'cp-supplimentary')">
+                                                <div style='position:absolute;top:-3px;left:2.3px'>+</div>
+                                            </a>
                                     </span>
-                                @endif
-                            </div>
-                            <div class="col-md-2">
-                            <a href="javascript:void(0)" class="btn btn-sm btn-block btn-outline-primary" style='width:30px;height:30px;border-radius:50%;' onclick="ajaxFunction('showCreateClient', '', 'cp-supplimentary')">+</a>
+                                </div>
+                                <select name="client_id" id="client_id" class="form-control" required autofocus onchange="getClient(this)">
+                                    <option disabled selected>Select One</div>
+                                        @foreach($clients as $client)
+                                            <option value="{{$client->id}}">{{$client->organization}}</option>
+                                        @endforeach
+                                </select>
                             </div>
                         </div>
-
+                        <!-- Client Input Ends -->
+                        <!-- Project Name Input Starts -->
                         <div class="form-group row">
-                            <label for="project_name" class="col-md-4 col-form-label text-md-right">{{ __('Project Name') }}</label>
-                            <div class="col-md-6">
+                            <div class="input-group input-group-sm col-md-12"  style='margin-top:-10px'>
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Project Name</span>
+                                </div>
                                 <input id="project_name" type="text" class="form-control{{ $errors->has('project_name') ? ' is-invalid' : '' }}" name="project_name" value="{{ old('project_name') }}" required>
 
                                 @if ($errors->has('project_name'))
@@ -50,28 +56,16 @@
                                 @endif
                             </div>
                         </div>
-
+                        <!-- Project Name Input Ends -->
+                        <!-- Deadline Input Starts -->
                         <div class="form-group row">
-                            <label for="description" class="col-md-4 col-form-label text-md-right">{{ __('Project Description') }}</label>
-
-                            <div class="col-md-6">
-                                <textarea id="description" type="email" class="form-control{{ $errors->has('description') ? ' is-invalid' : '' }}" name="description" value="{{ old('description') }}" required >
-                                </textarea>
-
-                                @if ($errors->has('description'))
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('description') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="form-group row">
-                            <label for="deadline" class="col-md-4 col-form-label text-md-right">{{ __('Deadline') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="deadline" type="date" class="form-control{{ $errors->has('deadline') ? ' is-invalid' : '' }}" name="deadline" required>
-
+                            <div class="input-group input-group-sm col-md-12"  style='margin-top:-10px'>
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Deadline</span>
+                                </div>
+                                <input id="deadline" type="date" class="form-control{{ $errors->has('deadline') ? ' is-invalid' : '' }}" name="deadline" value="{{ old('deadline') }}" 
+                                    min="<?php echo date('Y-m-d');?>"
+                                    required>
                                 @if ($errors->has('deadline'))
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $errors->first('deadline') }}</strong>
@@ -79,18 +73,179 @@
                                 @endif
                             </div>
                         </div>
-
+                        <!-- Deadline Input Ends -->
+                        <!-- Pump Type Selection Starts -->
                         <div class="form-group row">
-                            <label for="password-confirm" class="col-md-4 col-form-label text-md-right">{{ __('Confirm Password') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required>
+                            <div class="input-group input-group-sm col-md-12" style='margin-top:-10px'>
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="inputGroup-sizing-sm">
+                                        Pump Type
+                                    </span>
+                                </div>
+                                <select name="type" 
+                                        id="type" 
+                                        class="form-control{{ $errors->has('type') ? ' is-invalid' : '' }}"
+                                        required
+                                        aria-label="pump type"
+                                        aria-describedby="inputGroup-sizing-sm"
+                                        onchange = "showEnqInputs(this)"
+                                        >
+                                    <option disabled selected>Select One</div>
+                                    <option value='surface'>Surface</div>
+                                    <option value='submerse'>Submersible</div>
+                                </select>
                             </div>
                         </div>
+                        <!-- Pump Type Selection Ends -->
+                        <!-- Surface Pump Type Selection Starts -->
+                        <div class="form-group row surface-row" style='margin-top:-10px;display:none'>
+                            <div class="input-group input-group-sm col-md-6">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text" id="inputGroup-sizing-sm">
+                                        <input 
+                                            type="radio" 
+                                            name='surftype' 
+                                            required 
+                                            disabled 
+                                            class="surface-row-el"
+                                            value="recirculating">
+                                    </div>
+                                </div>
+                                <input type="text" class="form-control" disabled value='Recirculating Water'>
+                            </div>
+                            <div class="input-group input-group-sm col-md-6">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text" id="inputGroup-sizing-sm">
+                                        <input 
+                                            type="radio" 
+                                            name='surftype' 
+                                            required 
+                                            disabled 
+                                            class="surface-row-el"
+                                            value="lifting">
+                                    </div>
+                                </div>
+                                <input type="text" class="form-control" disabled value='Lifting'>
+                            </div>
+                        </div>
+                        <!-- Surface Pump Type Selection Ends -->
+                        <!-- Submersible Pump Type Selection Starts -->
+                        <div class="form-group row submerse-row" style='margin-top:-10px;display:none'>
+                            <div class="input-group input-group-sm col-md-6">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text" id="inputGroup-sizing-sm">
+                                        <input 
+                                            type="radio" 
+                                            name='subtype' 
+                                            required 
+                                            disabled 
+                                            class="submerse-row-el" 
+                                            value='borewell'>
+                                    </div>
+                                </div>
+                                <input type="text" class="form-control" aria-label="Text input with radio button" disabled value='Bore Well'>
+                            </div>
+                            <div class="input-group input-group-sm col-md-6">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text" id="inputGroup-sizing-sm">
+                                        <input 
+                                            type="radio"
+                                            name='subtype' 
+                                            required 
+                                            disabled 
+                                            class="submerse-row-el"
+                                            value='openwell'>
+                                    </div>
+                                </div>
+                                <input type="text" class="form-control" aria-label="Text input with radio button" disabled value='Open Well'>
+                            </div>
+                        </div>
+                        <!-- Submersible Pump Type Selection Ends -->
+                        <div class="form-group row" style='margin-top:-10px'>
+                            <!-- Pump Head Input Type starts -->
+                            <div class="input-group input-group-sm col-md-6">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Head</span>
+                                </div>
+                                <input 
+                                    id="pumphead" 
+                                    type="text" 
+                                    class="form-control{{ $errors->has('pumphead') ? ' is-invalid' : '' }}" 
+                                    name="pumphead" 
+                                    placeholder="In Meter" 
+                                    required>
+                                @if ($errors->has('pumphead'))
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $errors->first('pumphead') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                            <!-- Pump Head Input Type ends -->
+                            <!-- Pump Capacity Input Type starts -->
+                            <div class="input-group input-group-sm col-md-6">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Capacity</span>
+                                </div>
+                                <input 
+                                    id="pumpcap" 
+                                    type="text" 
+                                    class="form-control{{ $errors->has('pumpcap') ? ' is-invalid' : '' }}" 
+                                    name="pumpcap" 
+                                    placeholder="In Cubic Meter" 
+                                    required>
 
-                        <div class="form-group row mb-0">
-                            <div class="col-md-6 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
+                                @if ($errors->has('pumpcap'))
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $errors->first('pumpcap') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                            <!-- Pump Capacity Input Type starts -->
+                        </div>
+
+                        <div class="form-group row" style='margin-top:-10px'>
+                            <div class="input-group input-group-sm col-md-6">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Liquid Name</span>
+                                </div>
+                                <input 
+                                    id="liquid" 
+                                    type="text" 
+                                    class="form-control{{ $errors->has('liquid') ? ' is-invalid' : '' }}" 
+                                    name="liquid" 
+                                    value="{{ old('liquid') }}" 
+                                    required>
+
+                                @if ($errors->has('liquid'))
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $errors->first('liquid') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                            <div class="input-group input-group-sm col-md-6">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">Liquid Temperature</span>
+                                </div>
+                                <input id="liqtemp" type="text" class="form-control{{ $errors->has('liqtemp') ? ' is-invalid' : '' }}" name="liqtemp" value="{{ old('liqtemp') }}" required>
+
+                                @if ($errors->has('liqtemp'))
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $errors->first('liqtemp') }}</strong>
+                                    </span>
+                                @endif
+                            </div>                            
+                        </div>
+
+                        <div class="input-group" style='margin-top:-10px'>
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" style='font-size:12px'>Description</span>
+                            </div>
+                            <textarea class="form-control" aria-label="With textarea" name='description' required></textarea>
+                        </div>
+
+                        <div class="form-group row" style='margin-top:5px'>
+                            <div class="input-group input-group-sm col-md-12">
+                                <button type="submit" class="btn btn-primary btn-block btn-sm">
                                     {{ __('Create') }}
                                 </button>
                             </div>
@@ -103,4 +258,4 @@
     </div>
 </div>
 @endsection
-<script src="{{ asset('js/projects.js') }}" defer></script>
+<script src="{{ asset('js/projects.js?version=0.1') }}" defer></script>

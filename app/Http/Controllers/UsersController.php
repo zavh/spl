@@ -51,14 +51,16 @@ class UsersController extends Controller
 
     public function show(User $user)
     {
-        //$user = User::find($user->id);
-        $thisuser = DB::table('users')
+        $user = User::find($user->id);
+        $role = User::find($user->id)->role->role_name;
+        $user['role_name'] = $role;
+/*        $thisuser = DB::table('users')
         ->join('roles', 'users.role_id', '=', 'roles.id')
         ->select('users.*', 'roles.role_name')
         ->where('users.id','=',$user->id)
         ->get()
-        ->first();
-        return view('users.show', ['user'=>$thisuser]);
+        ->first();*/
+        return view('users.show', ['user'=>$user]);
     }
 
     public function edit(User $user)
