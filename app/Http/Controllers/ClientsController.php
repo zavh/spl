@@ -27,7 +27,6 @@ class ClientsController extends Controller
      */
     public function create()
     {
-        //
         return view('clients.create');
     }
 
@@ -41,17 +40,18 @@ class ClientsController extends Controller
     {
         //
         $this->validate($request, [
-            'name' => 'required|max:191',
-            'organization' => 'required|max:191',
-            'address' => 'required|max:191'
+            'name' => 'required|max:50|min:4',
+            'organization' => 'required|max:191:min:4',
+            'address' => 'required|max:191',
+            'contact' => 'required|min:6'
         ]);
 
         $client = new Client;
         $client->name = $request->input('name');
         $client->organization = $request->input('organization');
         $client->address = $request->input('address');
-
-        $client->save();
+        $client->contact = $request->input('contact');
+        $newClient = $client->save();
 
         return redirect('/clients')->with('success', 'Client Created');
     }
