@@ -23,6 +23,7 @@ class CreateProjectsTable extends Migration
             $table->dateTime('deadline');
             $table->tinyInteger('status')->nullable();
             $table->tinyInteger('state')->nullable();
+            $table->string('description', 250);
             $table->timestamps();
         });
     }

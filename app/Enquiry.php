@@ -6,7 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Enquiry extends Model
 {
-    public function employee()
+    protected $fillable = [
+        'project_id',
+        'details'
+    ];
+
+    public function project()
     {
     	return $this->belongsTo('App\Project');
     }

@@ -3,17 +3,19 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Project;
 use App\Client;
+use App\Enquiry;
 use DB;
 
 class ProjectsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index()
     {
         
@@ -45,21 +47,31 @@ class ProjectsController extends Controller
             'project_name' => 'required',
             'client_id' => 'required',
             'deadline' => 'required',
+            'description' => 'required',
         ]);
-dd($request);
+
         // Create Project
-        // $project = new Project;
-        // $project->project_name = $request->input('project_name');
-        // $project->client_id = $request->input('client_id');
-        // $project->user_id = $request->input('user_id');
-        // $project->manager_id = $request->input('manager_id');
-        // $project->assigned = $request->input('assigned');
-        // $project->deadline = $request->input('deadline');
-        // $project->description = $request->input('description');
+        $project = new Project;
+        $project->project_name = $request->input('project_name');
+        $project->client_id = $request->input('client_id');
+        $project->user_id = Auth::User()->id;
+        $project->deadline = $request->input('deadline');
+        $project->description = $request->input('description');
 
-        // $project->save();
+        $project->save();
+        $project_id = $project->id;
 
-        // return redirect('/projects')->with('success', 'Project Created');
+        // Create First Enquiry
+        $enquiry_dat = $request->all();
+        unset($enquiry_dat['_token']);
+        $enquiry_dat = json_encode($enquiry_dat);
+
+        $enquiryCreate = Enquiry::create([
+            'project_id' => $project_id,
+            'details' => $enquiry_dat
+        ]);
+
+        return redirect('/projects')->with('success', 'Project Created');
     }
 
     /**
