@@ -18,8 +18,8 @@ class CreateTasksTable extends Migration
             $table->string('task_name');
             $table->text('task_description');
             $table->integer('user_id');
-            $table->dateTime('task_date_assigned');
-            $table->dateTime('task_deadline');
+            $table->date('task_date_assigned');
+            $table->date('task_deadline');
             $table->timestamps();
         });
     }

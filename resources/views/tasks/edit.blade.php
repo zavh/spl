@@ -41,7 +41,12 @@
                                     <select name="user_id" id="user_id" class="form-control{{ $errors->has('user_id') ? ' is-invalid' : '' }}" value="{{ $assignment->user_id }}" required>
                                     <option disabled selected>Select One
                                     @foreach($users as $user)
-                                        <option value="{{$user->id}}">{{$user->name}}</option>
+                                        @if ($user->id == $assignment->id)
+                                            <option value="{{$user->id}}" selected>{{$user->name}}</option>
+                                        @else  
+                                            <option value="{{$user->id}}">{{$user->name}}</option>
+                                        @endif
+                                        
                                     @endforeach
                                     </select>
     
