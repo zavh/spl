@@ -98,7 +98,7 @@ class UsersController extends Controller
     public function update(Request $request, $id)
     {
         $messages = [
-            'name.required' => 'Please enter the task name',
+            'task_name.required' => 'Please enter the task name',
             'task_name.min' => 'Task name must be minimum 2 characters',
             'task_name.max' => 'Task name cannot be more than 191 characters',
 

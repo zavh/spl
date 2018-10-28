@@ -18,7 +18,7 @@
             <tbody>
                 <tr>
                     <th scope="col">User Name</th>
-                    <td> <input type='text' name='name' value="{{$user->name}}" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" name="name" value="{{ old('name') }}"> 
+                    <td> <input type='text' name='name' value="{{$user->name}}" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" name="name" value="{{ $user->name }}"> 
                 
                 {{-- /<tr> --}}
                     @if ($errors->has('name'))
@@ -30,7 +30,7 @@
                 </td></tr>
                 <tr>
                     <th scope="col">Email</th>
-                    <td> <input type='text' name='email' value="{{$user->email}}" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" name="email" value="{{ old('email') }}"> 
+                    <td> <input type='text' name='email' value="{{$user->email}}" class="form-control{{ $errors->has('email') ? ' is-invalid' : '' }}" name="email" value="{{ $user->email }}"> 
                 {{-- <tr> --}}
                     @if ($errors->has('email'))
                     <span class="invalid-feedback" role="alert">
@@ -41,7 +41,7 @@
                 </td></tr>
                 <tr>
                     <th scope="col">First Name</th>
-                    <td> <input type='text' name='fname' value="{{$user->fname}}" class="form-control{{ $errors->has('fname') ? ' is-invalid' : '' }}" name="fname" value="{{ old('fname') }}"> 
+                    <td> <input type='text' name='fname' value="{{$user->fname}}" class="form-control{{ $errors->has('fname') ? ' is-invalid' : '' }}" name="fname" value="{{ $user->fname }}"> 
                 {{-- <tr> --}}
                     @if ($errors->has('fname'))
                     <span class="invalid-feedback" role="alert">
@@ -52,7 +52,7 @@
                 </td></tr>
                 <tr>
                     <th scope="col">Surname Name</th>
-                    <td> <input type='text' name='sname' value="{{$user->sname}}" class="form-control{{ $errors->has('sname') ? ' is-invalid' : '' }}" name="sname" value="{{ old('sname') }}"> 
+                    <td> <input type='text' name='sname' value="{{$user->sname}}" class="form-control{{ $errors->has('sname') ? ' is-invalid' : '' }}" name="sname" value="{{ $user->sname }}"> 
                 {{-- <tr> --}}
                     @if ($errors->has('sname'))
                     <span class="invalid-feedback" role="alert">
@@ -72,7 +72,7 @@
                 </tr>
                 <tr>
                     <th scope="col">Phone</th>
-                    <td> <input type='number' name='phone' value="{{$user->phone}}" class="form-control{{ $errors->has('phone') ? ' is-invalid' : '' }}" name="phone" value="{{ old('phone') }}"> 
+                    <td> <input type='number' name='phone' value="{{$user->phone}}" class="form-control{{ $errors->has('phone') ? ' is-invalid' : '' }}" name="phone" value="{{ $user->phone }}"> 
                 {{-- <tr> --}}
                     @if ($errors->has('phone'))
                     <span class="invalid-feedback" role="alert">
@@ -83,7 +83,7 @@
                 </td></tr>
                 <tr>
                     <th scope="col">Address</th>
-                    <td> <input type='text' name='address' value="{{$user->address}}" class="form-control{{ $errors->has('address') ? ' is-invalid' : '' }}" name="address" value="{{ old('address') }}"> 
+                    <td> <input type='text' name='address' value="{{$user->address}}" class="form-control{{ $errors->has('address') ? ' is-invalid' : '' }}" name="address" value="{{ $user->address }}"> 
                 {{-- <tr> --}}
                     @if ($errors->has('address'))
                     <span class="invalid-feedback" role="alert">
@@ -95,7 +95,7 @@
                 <tr>
                     <th scope="col">Role</th>
                     <td>
-                        <select name="role_id" class="form-control{{ $errors->has('role_id') ? ' is-invalid' : '' }}" name="role_id" value="{{ old('role_id') }}">
+                        <select name="role_id" class="form-control{{ $errors->has('role_id') ? ' is-invalid' : '' }}" name="role_id" value="{{ $user->role_id }}">
                             @foreach($roles as $role)
                                 @if($role->id == $user->role_id)
                                     <option value="{{$role->id}}" selected>{{$role->role_name}}</option>
