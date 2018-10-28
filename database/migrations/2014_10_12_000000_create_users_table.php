@@ -29,7 +29,7 @@ class CreateUsersTable extends Migration
         });
 
         Schema::table('users', function (Blueprint $table){
-            $table->unsignedInteger('phone')->nullable();
+            $table->unsignedBigInteger('phone')->nullable();
             $table->string('address', 255)->nullable();
         });
     }

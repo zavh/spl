@@ -1,7 +1,6 @@
     <form method='post' action="{{route('users.update', [$user->id])}}" style='width:100%'>
         {{csrf_field()}}
         <input type="hidden" name="_method" value="put">
-        <input type="hidden" name="command" value="profile_update">
         <table class="table table-hover table-sm">
             <tbody>
                 <tr class="bg-dark text-white text-center">
@@ -47,7 +46,7 @@
                 <tr>
                     <th scope="col">Last Activity</th>
                     <td> {{$user->updated_at}} </td>
-                    <td></td>
+                    <td><span class='text-left'>&#9998;</span></td>
                 </tr>
                 <tr>
                     <th scope="col">Phone</th>
