@@ -27,4 +27,18 @@ class Project extends Model
     {
     	return $this->hasMany('App\Enquiry');
     }
+
+    public function client()
+    {
+    	return $this->belongsTo('App\Client');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo('App\User');
+    }
+
+    public function tasks(){
+        return $this->hasMany('App\Task');
+    }
 }

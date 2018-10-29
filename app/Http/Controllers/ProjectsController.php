@@ -18,10 +18,15 @@ class ProjectsController extends Controller
 
     public function index()
     {
-        
-        $projects = Project::all();
-        //return view('projects.index', ['projects'=>$projects, 'roles'=>$roles]);
-        return view('projects.index')->with('projects',$projects);
+        $punalloc = $projects = Project::where('status', NULL)->get();
+        foreach ($punalloc as $index=>$project){
+            $client = Project::find($project->id)->client->organization;
+            $enquiries = Project::find($project->id)->enquiries;
+            $punalloc[$index]['client'] = $client;
+            $punalloc[$index]['enq_count'] = count($enquiries);
+        }
+        $projects = Project::where('status', 0)->get();
+        return view('projects.index')->with(['projects'=>$projects, 'punalloc'=>$punalloc]);
     }
 
     /**
@@ -82,9 +87,17 @@ class ProjectsController extends Controller
      */
     public function show($id)
     {
-        //
         $assignment = Project::find($id);
+        $assignment['client'] = Project::find($id)->client;
+        $assignment['postedby'] = Project::find($id)->user->name;
+        $assignment['tasks'] = Project::find($id)->tasks;
+        $x = Project::find($id)->enquiries;
+        for($i=0;$i<count($x);$i++){
+            $enquiries[$i] = json_decode($x[$i]['details']);
+        }
+        $assignment['enquiries'] = $enquiries;
         return view('projects.show')->with('assignment',$assignment);
+        
     }
 
     /**

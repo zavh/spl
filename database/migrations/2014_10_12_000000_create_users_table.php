@@ -24,13 +24,9 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
-
-            //$table->foreign('role_id')->references('id')->on('roles');
-        });
-
-        Schema::table('users', function (Blueprint $table){
-            $table->unsignedInteger('phone')->nullable();
+            $table->unsignedBigInteger('phone')->nullable();
             $table->string('address', 255)->nullable();
+            //$table->foreign('role_id')->references('id')->on('roles');
         });
     }
 

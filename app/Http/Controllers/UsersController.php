@@ -71,28 +71,22 @@ class UsersController extends Controller
 
     public function update(Request $request, User $user)
     {
-        $command = $request->input('command');
-        if($command === 'profile_update'){
-            $userUpdate = User::where('id', $user->id)->update(
-                [
-                    'name' => $request->input('name'),
-                    'email' => $request->input('email'),
-                    'fname' => $request->input('fname'),
-                    'sname' => $request->input('sname'),
-                    'phone' => $request->input('phone'),
-                    'address' => $request->input('address'),
-                    'role_id' => $request->input('role_id')
-                ]
-                );
-            if($userUpdate){
-                return redirect()->route('users.index')
-                ->with('success', 'User updated successfully');
-            }
-            return back()->withInput();
+        $userUpdate = User::where('id', $user->id)->update(
+            [
+                'name' => $request->input('name'),
+                'email' => $request->input('email'),
+                'fname' => $request->input('fname'),
+                'sname' => $request->input('sname'),
+                'phone' => $request->input('phone'),
+                'address' => $request->input('address'),
+                'role_id' => $request->input('role_id')
+            ]
+            );
+        if($userUpdate){
+            return redirect()->route('users.index')
+            ->with('success', 'User updated successfully');
         }
-        else if($command === 'change_pass'){
-            dump($request);
-        }
+        return back()->withInput();
     }
 
     public function destroy(User $user)

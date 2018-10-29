@@ -15,5 +15,9 @@ class RolesTableSeeder extends Seeder
             'role_name' => 'admin',
             'role_description' => 'All Permissions',
         ]);
+        DB::table('roles')->insert([
+            'role_name' => 'engineer',
+            'role_description' => 'Project Worker',
+        ]);
     }
 }
