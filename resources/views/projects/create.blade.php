@@ -3,7 +3,7 @@
 <nav aria-label="breadcrumb" style='font-size:12px'>
   <ol class="breadcrumb">
     <li class="breadcrumb-item"><a href="/">Home</a></li>
-    <li class="breadcrumb-item"><a href="/users">Projects</a></li>
+    <li class="breadcrumb-item"><a href="/projects">Projects</a></li>
     <li class="breadcrumb-item active" aria-current="page">Create Project</li>
   </ol>
 </nav>

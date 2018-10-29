@@ -1,17 +1,38 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container">
+    <div class="container-fluid">
       <div class="card-deck mb-3 text-center">
+        <!-- Unllocated Project Section Starts -->
         <div class="card mb-4 shadow-sm">
-          <div class="card-header">
-            <h4 class="my-0 font-weight-normal">Recent Projects</h4>
+          <div class="card-header text-white bg-danger" style='position:relative;font-size:12px;height:40px'>
+            <span class="my-0 font-weight-normal">Unassigned Projects</span>
+            <span style='position:absolute;right:10px'>
+            <a href="/projects/create" style='color:white'>Create</a>
+            </span>
           </div>
+          <!-- Body -->
           <div class="card-body">
-            <a href="/projects/create" class="btn btn-lg btn-block btn-outline-primary">Create Project</a>
-            <a href="/projects/create" class="btn btn-lg btn-block btn-outline-primary">Show All</a>
+          <table style='font-size:12px;width:100%;table-layout:fixed'>
+            <thead>
+                <tr style='border:1px solid black'>
+                    <th scope="col">Client</th>
+                    <th scope="col">Enquiry</th>
+                    <th scope="col">View</th>
+                </tr>
+            <thead>
+            @foreach($punalloc as $project)
+                <tr>
+                    <td><a href="/clients/{{$project->client_id}}">{{$project->client}}</a></td>
+                    <td><span class="badge badge-warning badge-pill">{{$project->enq_count}}</span></td>
+                    <td><a href="/projects/{{$project->id}}">Show</a></td>
+                </tr>
+            @endforeach
+            </table>            
           </div>
+          <!-- Body -->
         </div>
+        <!-- Unllocated Project Section Ends -->
         <div class="card mb-4 shadow-sm">
           <div class="card-header">
             <h4 class="my-0 font-weight-normal">Open Projects</h4>

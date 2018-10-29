@@ -24,6 +24,7 @@ Route::get('/changepass', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/tasks/create/{project_id?}', 'TasksController@create')->name('home');
 Route::post('/users/credentials', 'UsersController@changepass')->name('changepass');
 //Route::get('/clients', 'ClientsController@index')->name('clients');
 //Route::get('/projects', 'ProjectsController@index')->name('projects');

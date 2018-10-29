@@ -34,7 +34,12 @@ function ajaxFunction(instruction, execute_id, divid){
             document.getElementById("cp-supplimentary").style.display='';		
 			ajaxRequest.open("GET", "/clients/create", true);
 			ajaxRequest.send();
-		}        
+		}
+		if(instruction == "showAddTask"){
+            
+			ajaxRequest.open("GET", "/tasks/create/"+ execute_id, true);
+			ajaxRequest.send();
+		}		
 }
 
 function getClient(el){

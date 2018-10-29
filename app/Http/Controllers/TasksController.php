@@ -26,11 +26,11 @@ class TasksController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($project_id = null)
     {
         //
         $users = User::all();
-        return view('tasks.create',['users'=>$users]);
+        return view('tasks.create',['users'=>$users, 'project_id'=>$project_id]);
     }
 
     /**
@@ -54,7 +54,6 @@ class TasksController extends Controller
             'task_date_assigned.required' => 'please pick a assignment date',
             'task_date_assigned.date' => 'The date assigned must be a valid date',
             'task_date_assigned.before_or_equal' => 'the date assigned cannot be after the deadline', 
-            //'task_date_assigned.after' => 'the date assigned cannot be before the system date',           
             'task_deadline.required' => 'please pick a deadline',
             'task_deadline.date' => 'The deadline must be a valid date',
             'task_deadline.after_or_equal' => 'the deadline cannot be after the date assigned',
@@ -80,10 +79,10 @@ class TasksController extends Controller
         $task->task_date_assigned = $request->input('task_date_assigned');
         $task->task_deadline = $request->input('task_deadline');
 
-        
-        $task->save();
+        dd($request);
+        //$task->save();
 
-        return redirect('/tasks')->with('success', 'Task Created');
+        //return redirect('/tasks')->with('success', 'Task Created');
     }
 
     /**
