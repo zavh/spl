@@ -79,10 +79,10 @@ class TasksController extends Controller
         $task->task_date_assigned = $request->input('task_date_assigned');
         $task->task_deadline = $request->input('task_deadline');
 
-        dd($request);
-        //$task->save();
+        //dd($request);
+        $task->save();
 
-        //return redirect('/tasks')->with('success', 'Task Created');
+        return redirect('/tasks')->with('success', 'Task Created');
     }
 
     /**

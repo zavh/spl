@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Role;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
@@ -16,9 +17,8 @@ class RolesController extends Controller
      */
     public function index()
     {
-        $roles = Role::all();
-
-        return view('roles.index', ['roles'=>$roles]);
+        $assignments = Role::all();
+        return view('roles.index')->with('assignments', $assignments);
     }
 
     /**
@@ -79,8 +79,9 @@ class RolesController extends Controller
     public function show($id)
     {
         //
-        $role = Role::find($id);
-        return view('roles.show')->with('role',$role);
+        $assignment = Role::find($id);
+        
+        return view('roles.show')->with('assignment',$assignment);
     }
 
     /**
