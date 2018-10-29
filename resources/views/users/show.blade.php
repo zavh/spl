@@ -46,7 +46,7 @@
                 <tr>
                     <th scope="col">Last Activity</th>
                     <td> {{$user->updated_at}} </td>
-                    <td></td>
+                    <td><span class='text-left'>&#9998;</span></td>
                 </tr>
                 <tr>
                     <th scope="col">Phone</th>

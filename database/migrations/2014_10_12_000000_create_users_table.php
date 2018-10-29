@@ -26,7 +26,6 @@ class CreateUsersTable extends Migration
             $table->timestamps();
             $table->unsignedBigInteger('phone')->nullable();
             $table->string('address', 255)->nullable();
-            //$table->foreign('role_id')->references('id')->on('roles');
         });
     }
 

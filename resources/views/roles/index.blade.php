@@ -28,6 +28,7 @@
 
                     <a href="{{$role->id}}" class="btn btn-danger">Delete</a>
                     <a href="/roles/{{$role->id}}" class="btn btn-success">Details</a>
+                    <a href="/roles/{{$role->id}}/edit" class="btn btn-success">Edit</a>
                 @else 
                     <strong>Not configurable</strong>
                 @endif
