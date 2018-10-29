@@ -1,6 +1,5 @@
 
     <main role="main" class="container-fluid">
-        <!--Edit and close-->
         <div class="bg-dark text-white text-left">
             <div class='row'> 
                 <div class='col'>
@@ -9,9 +8,6 @@
                 <div class="col col-lg-2" style='font-size:10px;vertical-align:middle'>
                     <a href="{{route('roles.edit', [$assignment->id])}}">Edit</a>
                 </div>
-                {{-- <div class="col col-lg-2" style='font-size:10px'>
-                    Close
-                </div>                             --}}
             </div>
         </div>
         

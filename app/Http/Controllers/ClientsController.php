@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Client;
+use App\Role;
 use Illuminate\Support\Facades\Auth;
 use DB;
 
@@ -15,9 +16,9 @@ class ClientsController extends Controller
     }
     public function index()
     {
-        $clients = Client::all();
-        return view('clients.index')->with('clients',$clients);
-        // return view('clients.index');
+        
+        $assignments = Client::all();
+        return view('clients.index')->with('assignments', $assignments);
     }
 
     /**
@@ -65,8 +66,9 @@ class ClientsController extends Controller
     public function show($id)
     {
         //
+        $roles = Role::find($id);
         $assignment = Client::find($id);
-        return view('clients.show')->with('assignment',$assignment);
+        return view('clients.show',['roles',$roles])->with('assignment',$assignment);
     }
 
     /**
