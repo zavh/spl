@@ -36,10 +36,17 @@ function ajaxFunction(instruction, execute_id, divid){
 			ajaxRequest.send();
 		}
 		if(instruction == "showAddTask"){
-            
 			ajaxRequest.open("GET", "/tasks/create/"+ execute_id, true);
 			ajaxRequest.send();
-		}		
+		}
+		if(instruction == "showTasks"){
+			ajaxRequest.open("GET", "/tasks/project/"+ execute_id, true);
+			ajaxRequest.send();
+		}
+		if(instruction == "editTasks"){
+			ajaxRequest.open("GET", "/tasks/"+execute_id+"/edit", true);
+			ajaxRequest.send();
+		}
 }
 
 function getClient(el){
