@@ -31,3 +31,13 @@ function ajaxFunction(instruction, execute_id, divid){
 			ajaxRequest.send();
 		}        
 }
+
+function deleteClient(client, clientid){
+	var confirmation = confirm("Please confirm deletion of Client : '"+client+"'");
+	if(confirmation){
+		//preventDefault();
+		var formid = 'client-delete-form-'+clientid;
+		var formel = document.getElementById(formid);
+		formel.submit();
+	}
+}

@@ -117,13 +117,15 @@ class ClientsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Client $client)
     {
-        $client = Client::find($id);
+        $findClient = Client::find($client->id);
 
-        // Check for correct user
-        
-        $client->delete();
-        return redirect('/clients')->with('success', 'Post Removed');
+        if($findClient->delete()){
+            return redirect()->route('clients.index')
+            ->with('success', 'Client deleted successfully');
+        }
+
+        return back()->withInput()->with('error', 'Client could not be deleted');
     }
 }

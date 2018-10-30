@@ -1,6 +1,15 @@
-<div class="container">
+@extends('layouts.app')
+@section('content')
+<nav aria-label="breadcrumb" style='font-size:12px'>
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Home</a></li>
+    <li class="breadcrumb-item"><a href="/projects">Projects</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Create Project</li>
+  </ol>
+</nav>
+<div class="container-fluid">
     <div class="row justify-content-center">
-        <div class="col-md-12">
+        <div class="col-md-6">
             <div class="card shadow-lg">
                 <div class="card-header text-white bg-primary">
                     {{ __('Create new Client') }}
@@ -85,3 +94,4 @@
         </div>
     </div>
 </div>
+@endsection

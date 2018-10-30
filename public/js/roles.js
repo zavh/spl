@@ -31,3 +31,12 @@ function ajaxFunction(instruction, execute_id, divid){
 			ajaxRequest.send();
 		}        
 }
+function deleteRole(role, roleid){
+	var confirmation = confirm("Please confirm deletion of Role : '"+role+"'");
+	if(confirmation){
+		//preventDefault();
+		var formid = 'role-delete-form-'+roleid;
+		var formel = document.getElementById(formid);
+		formel.submit();
+	}
+}

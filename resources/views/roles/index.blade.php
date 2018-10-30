@@ -25,13 +25,16 @@
                                             <td> {{$assignment->role_description}} </td>
                                             <td> 
                                             @if (!($assignment->role_name === 'admin'))
-                                                <a href="{{$assignment->id}}" class="btn btn-danger btn-sm">Delete</a>
-                                                <a 
-                                                    href="javascript:void(0)" 
-                                                    class="btn btn-success btn-sm" 
-                                                    onclick="ajaxFunction('viewrole', '{{$assignment->id}}' , 'role-container')">
-                                                    Details
-                                                </a>
+                                            <a href="javascript:void(0)" class="btn btn-danger" onclick="deleteRole('{{$assignment->role_name}}','{{$assignment->id}}')">Delete</a>
+                                            <a href="javascript:void(0)" class="btn btn-success btn-sm" onclick="ajaxFunction('viewrole', '{{$assignment->id}}' , 'role-container')">Details</a>
+                                            <form 
+                                                id="role-delete-form-{{$assignment->id}}"
+                                                method="post"
+                                                action="{{route('roles.destroy', [$assignment->id])}}" 
+                                                >
+                                                <input type="hidden" name="_method" value="delete">
+                                                {{csrf_field()}}
+                                            </form>
                                             @else 
                                                 <strong>Not configurable</strong>
                                             @endif

@@ -29,13 +29,16 @@
                                             <td> {{$assignment->contact}} </td>
                                             <td> 
                                             @if (!($assignment->role_name === 'admin'))
-                                                <a href="{{$assignment->id}}" class="btn btn-danger btn-sm">Delete</a>
-                                                <a 
-                                                    href="javascript:void(0)" 
-                                                    class="btn btn-success btn-sm" 
-                                                    onclick="ajaxFunction('viewclient', '{{$assignment->id}}' , 'client-container')">
-                                                    Details
-                                                </a>
+                                            <a href="javascript:void(0)" class="btn btn-danger" onclick="deleteClient('{{$assignment->name}}','{{$assignment->id}}')">Delete</a>
+                                            <a href="javascript:void(0)" class="btn btn-success btn-sm" onclick="ajaxFunction('viewclient', '{{$assignment->id}}' , 'client-container')">Details</a>
+                                            <form 
+                                                id="client-delete-form-{{$assignment->id}}"
+                                                method="post"
+                                                action="{{route('clients.destroy', [$assignment->id])}}" 
+                                                >
+                                                <input type="hidden" name="_method" value="delete">
+                                                {{csrf_field()}}
+                                            </form>
                                             @else 
                                                 <strong>Not configurable</strong>
                                             @endif
