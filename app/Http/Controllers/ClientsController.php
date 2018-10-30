@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Client;
+use App\Role;
 use Illuminate\Support\Facades\Auth;
 use DB;
 
@@ -15,9 +16,9 @@ class ClientsController extends Controller
     }
     public function index()
     {
-        $clients = Client::all();
-        return view('clients.index')->with('clients',$clients);
-        // return view('clients.index');
+        
+        $assignments = Client::all();
+        return view('clients.index')->with('assignments', $assignments);
     }
 
     /**
@@ -115,13 +116,15 @@ class ClientsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Client $client)
     {
-        $client = Client::find($id);
+        $findClient = Client::find($client->id);
 
-        // Check for correct user
-        
-        $client->delete();
-        return redirect('/clients')->with('success', 'Post Removed');
+        if($findClient->delete()){
+            return redirect()->route('clients.index')
+            ->with('success', 'Client deleted successfully');
+        }
+
+        return back()->withInput()->with('error', 'Client could not be deleted');
     }
 }

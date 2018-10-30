@@ -86,9 +86,8 @@ class TasksController extends Controller
         $task->task_deadline = $request->input('task_deadline');
         $task->weight = $request->input('weight');
         $task->save();
-
         $this->addTaskUser($task->id, $request->get('user_id'));
-        
+
         return back()->with('success', 'Task Created');
     }
 

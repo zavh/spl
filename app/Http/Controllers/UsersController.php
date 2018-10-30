@@ -36,20 +36,22 @@ class UsersController extends Controller
             'task_name.required' => 'Please enter the task name',
             'task_name.min' => 'Task name must be minimum 2 characters',
             'task_name.max' => 'Task name cannot be more than 191 characters',
-            'task_name.unique' => 'This task name has already been taken',
-            'password.regex'=> 'The password contains characters from at least three of the following five categories:
-                                        English uppercase characters (A – Z)
-                                        English lowercase characters (a – z)
-                                        Base 10 digits (0 – 9)
-                                        Non-alphanumeric (For example: !, $, #, or %)
-                                        Unicode characters
-                                        '
+            'task_name.unique' => 'This task name has already been taken'
         ];
 
         $validator = Validator::make($request->all(), [
             'name' => 'required|min:2|max:191|unique:users,name',
             'email' => 'required',
-            'password' =>'required|regex:/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\X])(?=.*[!$#%]).*$/'
+            'password' =>['required','string','min:8',
+            function($attribute, $value, $fail){
+                $uppercase = preg_match('@[A-Z]@', $value);
+                $lowercase = preg_match('@[a-z]@', $value);
+                $number    = preg_match('@[0-9]@', $value);
+                if(!$uppercase || !$lowercase || !$number) {
+                    $fail('Must contain atleast one Uppercase, one Lowercase and one Numeral.');
+                  }
+                }
+            ],
         ],$messages);
 
         if($validator->fails()){
