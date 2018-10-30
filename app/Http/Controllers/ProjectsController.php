@@ -18,7 +18,7 @@ class ProjectsController extends Controller
 
     public function index()
     {
-        $punalloc = $projects = Project::where('status', NULL)->get();
+        $punalloc = Project::where('status', NULL)->get();
         foreach ($punalloc as $index=>$project){
             $client = Project::find($project->id)->client->organization;
             $enquiries = Project::find($project->id)->enquiries;
@@ -97,7 +97,6 @@ class ProjectsController extends Controller
         }
         $assignment['enquiries'] = $enquiries;
         return view('projects.show')->with('assignment',$assignment);
-        
     }
 
     /**

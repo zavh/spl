@@ -7,11 +7,12 @@ use Illuminate\Database\Eloquent\Model;
 class Task extends Model
 {
     protected $fillable = [
-        'project_id',
         'task_name', 
         'task_description',
         'task_date_assigned',
-        'task_deadline', 
+        'task_deadline',
+        'weight',
+        'completed',
     ];
     //
     protected $table = 'tasks';

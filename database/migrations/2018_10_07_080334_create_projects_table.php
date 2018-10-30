@@ -19,8 +19,8 @@ class CreateProjectsTable extends Migration
             $table->integer('client_id');
             $table->integer('user_id');
             $table->integer('manager_id')->nullable();
-            $table->dateTime('assigned')->nullable();
-            $table->dateTime('deadline');
+            $table->date('assigned')->nullable();
+            $table->date('deadline');
             $table->tinyInteger('status')->nullable();
             $table->tinyInteger('state')->nullable();
             $table->string('description', 250);
