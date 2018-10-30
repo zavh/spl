@@ -26,7 +26,6 @@ function ajaxFunction(instruction, execute_id, divid){
 	    } 
 
 		if(instruction == "viewclient"){
-			
 			ajaxRequest.open("GET", "/clients/"+ execute_id, true);
 			ajaxRequest.send();
 		}        

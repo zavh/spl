@@ -53,10 +53,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="card flex-md-row mb-4 shadow-sm h-md-250" id='clients-container'>
- 
-            </div>
+        <div class="col-md-6" id='client-container'>
         </div>
     </div>
 </div>

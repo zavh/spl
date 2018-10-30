@@ -66,9 +66,8 @@ class ClientsController extends Controller
     public function show($id)
     {
         //
-        $roles = Role::find($id);
         $assignment = Client::find($id);
-        return view('clients.show',['roles',$roles])->with('assignment',$assignment);
+        return view('clients.show')->with('assignment',$assignment);
     }
 
     /**
