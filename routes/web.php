@@ -27,6 +27,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/tasks/create/{project_id?}', 'TasksController@create');
 Route::get('/tasks/project/{project_id?}', 'TasksController@index');
+Route::post('/tasks/{project_id?}/edit', 'TasksController@edit');
 
 Route::post('/users/credentials', 'UsersController@changepass')->name('changepass');
 Route::post('/clients/store', 'ClientsController@store')->name('addclient');
