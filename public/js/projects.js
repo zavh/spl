@@ -44,6 +44,7 @@ function ajaxFunction(instruction, execute_id, divid){
 			ajaxRequest.send();
 		}
 		if(instruction == "editTasks"){
+			console.log('exeucute_id', execute_id);
 			ajaxRequest.open("GET", "/tasks/"+execute_id+"/edit", true);
 			ajaxRequest.send();
 		}

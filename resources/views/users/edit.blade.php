@@ -115,7 +115,10 @@
             </td></tr>
             </tbody>
         </table>
-        <input type="submit" class="btn btn-primary btn-lg btn-block" value="Submit Changes">
+        <div class='row d-flex justify-content-center'> 
+            <input type="submit" class="btn btn-primary btn-sm m-2" value="Submit Changes">
+            <a href="/users" class="btn btn-secondary btn-sm m-2">Cancel</a>
+        </div>
         </form>
         </div>
             </div>

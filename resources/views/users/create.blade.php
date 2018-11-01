@@ -87,12 +87,9 @@
                             </div>
                         </div>
 
-                        <div class="form-group row mb-0">
-                            <div class="col-md-6 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Register') }}
-                                </button>
-                            </div>
+                        <div class='row d-flex justify-content-center'> 
+                            <input type="submit" class="btn btn-primary btn-sm m-2" value="Create">
+                            <a href="/users" class="btn btn-secondary btn-sm m-2">Cancel</a>
                         </div>
                     </form>
                 </div>

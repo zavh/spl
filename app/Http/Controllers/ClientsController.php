@@ -6,19 +6,24 @@ use Illuminate\Http\Request;
 use App\Client;
 use App\Role;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use DB;
 
 class ClientsController extends Controller
 {
-    public function __construct()
+/*    public function __construct()
     {
         $this->middleware('auth');
-    }
+    }*/
     public function index()
     {
-        
-        $assignments = Client::all();
-        return view('clients.index')->with('assignments', $assignments);
+        if(Auth::Check()){ 
+            $assignments = Client::all();
+            return view('clients.index')->with('assignments', $assignments);
+        }
+        else {
+            return redirect('/login');
+        }
     }
 
     /**
@@ -39,22 +44,33 @@ class ClientsController extends Controller
      */
     public function store(Request $request)
     {
-        //
-        $this->validate($request, [
+        $messages = [
+            'name.required' => 'name|Please enter the contact person\'s name',
+            'organization.required' => 'organization|Client Organization must be of minimum 4 characters',
+            'address.required' => 'address|Address is required',
+            'contact' => 'contact|Client contact information is required',
+        ];
+
+        $validator = Validator::make($request->all(), [
             'name' => 'required|max:50|min:4',
             'organization' => 'required|max:191:min:4',
             'address' => 'required|max:191',
-            'contact' => 'required|min:6'
-        ]);
-
-        $client = new Client;
-        $client->name = $request->input('name');
-        $client->organization = $request->input('organization');
-        $client->address = $request->input('address');
-        $client->contact = $request->input('contact');
-        $newClient = $client->save();
-
-        return redirect('/clients')->with('success', 'Client Created');
+            'contact' => 'required|integer|min:100000|max:99999999999999999'],
+            $messages);
+        
+        if($validator->fails())
+            return response()->json(['result'=>'error','message'=>$validator->errors()->all()]);
+            //return response()->json(['error'=>$messages]);
+        else {
+            $client = new Client;
+            $client->name = $request->input('name');
+            $client->organization = $request->input('organization');
+            $client->address = $request->input('address');
+            $client->contact = $request->input('contact');
+            $newClient = $client->save();
+        }
+        //return redirect('/clients')->with('success', 'Client Created');
+        return response()->json(['result'=>'success','message'=>'Added new records.']);
     }
 
     /**
@@ -65,9 +81,14 @@ class ClientsController extends Controller
      */
     public function show($id)
     {
-        //
-        $assignment = Client::find($id);
-        return view('clients.show')->with('assignment',$assignment);
+        if(Auth::Check()){ 
+            $assignment = Client::find($id);
+            return view('clients.show')->with('assignment',$assignment);
+        }
+        else {
+            //return response()->json(['result'=>'error','message'=>'Session Expired']);
+            return view('partial.sessionexpired');
+        }
     }
 
     /**

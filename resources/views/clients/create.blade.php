@@ -1,21 +1,13 @@
-@extends('layouts.app')
-@section('content')
-<nav aria-label="breadcrumb" style='font-size:12px'>
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="/">Home</a></li>
-    <li class="breadcrumb-item"><a href="/projects">Projects</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Create Project</li>
-  </ol>
-</nav>
+
 <div class="container-fluid">
     <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow-lg">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
                 <div class="card-header text-white bg-primary">
                     {{ __('Create new Client') }}
                 </div>
                 <div class="card-body">
-                    <form method="POST" action="{{ route('clients.store') }}" style='font-size:10px'>
+                    <form method="POST" action="{{ route('clients.store') }}" style='font-size:10px' onsubmit="return addClient(event)">
                         @csrf
                         <!-- Client Name Input Starts -->
                         <div class="form-group row">
@@ -39,13 +31,13 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">{{ __('Contact Number') }}</span>
                                 </div>
-                                <input id="contact" type="text" class="form-control{{ $errors->has('contact') ? ' is-invalid' : '' }}" name="contact" value="{{ old('contact') }}" required>
+                                <input type="text" class="form-control{{ $errors->has('contact') ? ' is-invalid' : '' }}" name="contact" value="{{ old('contact') }}" required>
 
-                                @if ($errors->has('contact'))
+                                
                                     <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('contact') }}</strong>
+                                        <strong id="contact"></strong>
                                     </span>
-                                @endif
+                                
                             </div>
                         </div>
                         <!-- Client Contact Input Ends -->                    
@@ -94,4 +86,3 @@
         </div>
     </div>
 </div>
-@endsection
