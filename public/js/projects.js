@@ -48,6 +48,17 @@ function ajaxFunction(instruction, execute_id, divid){
 			ajaxRequest.open("GET", "/tasks/"+execute_id+"/edit", true);
 			ajaxRequest.send();
 		}
+
+		if(instruction == "showEnquiries"){
+			ajaxRequest.open("GET", "/enquiries/project/"+ execute_id, true);
+			ajaxRequest.send();
+		}
+		if(instruction == "editEnquiries"){
+			console.log('exeucute_id', execute_id);
+			ajaxRequest.open("GET", "/enquiries/"+execute_id+"/edit", true);
+			ajaxRequest.send();
+		}
+
 }
 
 function getClient(el){
@@ -83,5 +94,24 @@ function showEnqInputs(el){
 				els[j].disabled = true;
 			}
 		}
+	}
+}
+function deleteTask(task, taskid){
+	var confirmation = confirm("Please confirm deletion of Task : '"+task+"'");
+	if(confirmation){
+		//preventDefault();
+		var formid = 'task-delete-form-'+taskid;
+		var formel = document.getElementById(formid);
+		formel.submit();
+	}
+}
+
+function deleteEnquiry(enq, enqid){
+	var confirmation = confirm("Please confirm deletion of Enquiry : '"+enq+"'");
+	if(confirmation){
+		//preventDefault();
+		var formid = 'enquiry-delete-form-'+enqid;
+		var formel = document.getElementById(formid);
+		formel.submit();
 	}
 }

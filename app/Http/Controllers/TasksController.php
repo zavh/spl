@@ -202,12 +202,22 @@ class TasksController extends Controller
      */
     public function destroy($id)
     {
-        $task = Task::find($id);
-
-        // Check for correct user
+       
+        $findTask = Task::find($id);
         
-        $task->delete();
-        return redirect('/tasks')->with('success', 'Task Removed');
+        $weight = $findTask->weight;
+        $project= Project::find('task_id',id)->get();
+        $project_allocation = $project->allocation;
+
+
+
+        dd('allocation',$project_allocation,'weight',$weight);
+        if($findTask){ 
+            $this->deleteTaskUser($id);
+            $findTask->delete();
+            return back()->with('success', 'Task deleted successfully');
+        }
+        return back()->withInput()->with('error', 'Task could not be deleted');
     }
 
     private function addTaskUser($task_id, $users){
@@ -219,13 +229,18 @@ class TasksController extends Controller
         }
     }
 
-    private function deleteTaskUser($task_id, $users){
-        foreach($users as $user){
-            $tasks = TaskUser::where('task_id', '=', $task_id)->get();
-            //dd($task_id,$task);
-            foreach($tasks as $task){
-                $task->delete();
-            }            
+    private function deleteTaskUser($task_id){
+        // foreach($users as $user){
+        //     $tasks = TaskUser::where('task_id', '=', $task_id)->get();
+        //     //dd($task_id,$task);
+        //     foreach($tasks as $task){
+        //         $task->delete();
+        //     }            
+        // }
+
+        $taskUsers = TaskUser::where('task_id',$task_id)->get();
+        foreach($taskUsers as $taskuser){
+            $taskuser->delete();
         }
     }
 }

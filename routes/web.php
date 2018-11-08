@@ -29,6 +29,11 @@ Route::get('/tasks/create/{project_id?}', 'TasksController@create');
 Route::get('/tasks/project/{project_id?}', 'TasksController@index');
 Route::post('/tasks/{project_id?}/edit', 'TasksController@edit');
 
+Route::get('/enquiries/project/{project_id?}', 'EnquiriesController@index');
+Route::get('/enquiries/create/{project_id?}', 'EnquiriesController@create');
+Route::post('/enquiries/{project_id?}/edit', 'EnquiriesController@edit');
+Route::post('/enquiries/store', 'EnquiriesController@store')->name('addenquiries');
+
 Route::post('/users/credentials', 'UsersController@changepass')->name('changepass');
 Route::post('/clients/store', 'ClientsController@store')->name('addclient');
 //Route::get('/clients', 'ClientsController@index')->name('clients');
@@ -36,6 +41,7 @@ Route::post('/clients/store', 'ClientsController@store')->name('addclient');
 //Route::get('/tasks', 'TasksController@index')->name('tasks');
 Route::resource('clients','ClientsController');
 Route::resource('projects','ProjectsController');
+Route::resource('enquiries','EnquiriesController');
 Route::resource('tasks','TasksController');
 Route::resource('users', 'UsersController');
 Route::resource('roles', 'RolesController');
