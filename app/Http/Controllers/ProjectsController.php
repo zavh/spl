@@ -167,4 +167,14 @@ class ProjectsController extends Controller
         $Project->delete();
         return redirect('/projects')->with('success', 'Project Removed');
     }
+	
+	public function enquiries($project_id = null){
+		$x = Project::find($project_id)->enquiries;
+		$enquiries = array();
+        for($i=0;$i<count($x);$i++){
+            $enquiries[$i] = json_decode($x[$i]['details']);
+        }
+		//dd($enquiries);
+		return view('projects.enquiries', ['enquiries'=>$enquiries]);
+	}
 }

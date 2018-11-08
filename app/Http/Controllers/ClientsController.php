@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Client;
-use App\Role;
+use App\Clientcontact;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use DB;
@@ -19,6 +19,10 @@ class ClientsController extends Controller
     {
         if(Auth::Check()){ 
             $assignments = Client::all();
+			foreach($assignments as $index=>$assignment){
+				$projects = Client::find($assignment->id)->projects;
+				$assignments[$index]['projects'] = $projects;
+			}
             return view('clients.index')->with('assignments', $assignments);
         }
         else {
@@ -58,35 +62,35 @@ class ClientsController extends Controller
             'contact' => 'required|integer|min:100000|max:99999999999999999'],
             $messages);
         
-        if($validator->fails())
-            return response()->json(['result'=>'error','message'=>$validator->errors()->all()]);
-            //return response()->json(['error'=>$messages]);
+        if($validator->fails()){
+            return redirect()->route('clients.index')->with('success', 'Client deleted successfully');
+        }
         else {
             $client = new Client;
-            $client->name = $request->input('name');
             $client->organization = $request->input('organization');
             $client->address = $request->input('address');
-            $client->contact = $request->input('contact');
-            $newClient = $client->save();
+            $client->save();
+
+            $contactCreate = Clientcontact::create([
+                'name' => $request['name'],
+                'contact' => $request['contact'],
+                'designation' => $request['designation'],
+                'client_id' => $client->id,
+                ]);
         }
-        //return redirect('/clients')->with('success', 'Client Created');
-        return response()->json(['result'=>'success','message'=>'Added new records.']);
+        return redirect('/clients')->with('success', 'Client Created');
+        //return response()->json(['result'=>'success','message'=>'Added new records.']);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
         if(Auth::Check()){ 
-            $assignment = Client::find($id);
-            return view('clients.show')->with('assignment',$assignment);
+            $client = Client::find($id);
+            $client['contacts'] = Client::find($id)->clientcontacts;
+			$client['projects'] = Client::find($id)->projects;
+            return view('clients.show')->with('client',$client);
         }
         else {
-            //return response()->json(['result'=>'error','message'=>'Session Expired']);
             return view('partial.sessionexpired');
         }
     }
@@ -114,21 +118,21 @@ class ClientsController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'name' => 'required',
             'organization' => 'required',
             'address' => 'required'
         ]);
 
-        // Create Post
         $client = Client::find($id);
-        $client->name = $request->input('name');
         $client->organization = $request->input('organization');
         $client->address = $request->input('address');
 
-        
         $client->save();
-
-        return redirect('/clients')->with('success', 'Client Updated');
+        //return view('clients.clientdetails', ['organization'=>$client->organization, 'address'=>$client->address, 'client_id'=>$client->id]);
+        $response['view'] = view('clients.clientdetails', ['organization'=>$client->organization, 'address'=>$client->address, 'client_id'=>$client->id])->render();
+        $response['status'] = 'success';
+        $response['client_id'] = $client->id;
+        $response['organization'] = $client->organization;
+        return response()->json(['result'=>$response]);
     }
 
     /**
@@ -148,4 +152,11 @@ class ClientsController extends Controller
 
         return back()->withInput()->with('error', 'Client could not be deleted');
     }
+
+    public function cancel($client_id)
+    {
+        $findClient = Client::find($client_id);
+        return view('clients.clientdetails', ['organization'=>$findClient->organization, 'address'=>$findClient->address, 'client_id'=>$findClient->id]);
+    }
+
 }

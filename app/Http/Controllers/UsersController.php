@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use App\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -16,12 +17,15 @@ class UsersController extends Controller
     }
 
     public function index()
-    {      
-        $users = DB::table('users')
-        ->join('roles', 'users.role_id', '=', 'roles.id')
-        ->select('users.*', 'roles.role_name')
-        ->get();
-        return view('users.index', ['users'=>$users]);
+    {
+        if(Auth::User()->role_id ==1){
+            $users = DB::table('users')
+            ->join('roles', 'users.role_id', '=', 'roles.id')
+            ->select('users.*', 'roles.role_name')
+            ->get();
+            return view('users.index', ['users'=>$users]);
+        }
+        else abort(404);
     }
 
     public function create()
@@ -63,6 +67,7 @@ class UsersController extends Controller
                 'name' => $request['name'],
                 'email' => $request['email'],
                 'role_id' => $request['role'],
+                'active' => '1',
                 'password' => Hash::make($request['password']),
                 ]);
             if($userCreate){
@@ -82,19 +87,20 @@ class UsersController extends Controller
         $user = User::find($user->id);
         $role = User::find($user->id)->role->role_name;
         $user['role_name'] = $role;
-/*        $thisuser = DB::table('users')
-        ->join('roles', 'users.role_id', '=', 'roles.id')
-        ->select('users.*', 'roles.role_name')
-        ->where('users.id','=',$user->id)
-        ->get()
-        ->first();*/
+
         return view('users.show', ['user'=>$user]);
     }
 
     public function edit(User $user)
-    {
-        $roles = DB::table('roles')->get();
-        return view('users.edit', ['user'=>$user, 'roles'=>$roles]);
+    {   
+        if(Auth::Check()){
+            if(Auth::User()->id == 1 || $user->id == Auth::User()->id){
+                $roles = DB::table('roles')->get();
+                return view('users.edit', ['user'=>$user, 'roles'=>$roles]);
+            }
+        }
+        else 
+            abort(404);
     }
 
     public function update(Request $request, $id)
@@ -122,8 +128,6 @@ class UsersController extends Controller
 
             'address.required' => 'Please enter the address',
             'address.max' => 'address cannot be more than 3000 characters'
-
-            //'role_id.required' => 'Role is required'
         ];
 
         $validator = Validator::make($request->all(), [
@@ -133,7 +137,6 @@ class UsersController extends Controller
             'sname'=>'required|min:2|max:191',
             'phone'=>'required|numeric|min:1000000|max:999999999999999',
             'address'=>'required|max:3000'
-            //'role_id'=>'required'
         ],$messages);
 
         if($validator->fails()){
@@ -148,11 +151,16 @@ class UsersController extends Controller
         $user->sname = $request->input('sname');
         $user->phone = $request->input('phone');
         $user->address = $request->input('address');
-        $user->role_id = $request->input('role_id');
+        if(Auth::User()->role_id == 1)
+            $user->role_id = $request->input('role_id');
+        else 
+            $user->role_id = Auth::User()->role_id;
 
         $user->save();
-
-        return redirect('/users')->with('success', 'User Updated');
+        if(Auth::User()->role_id == 1)
+            return redirect('/users')->with('success', 'User Updated');
+        else 
+        return redirect('/home')->with('success', 'User Updated');
     }
 
     public function destroy(User $user)
@@ -217,5 +225,19 @@ class UsersController extends Controller
         ], $messages);
 
         return $validator;
+    }
+
+    public function tasks(){
+        //$user = User::find($id);
+        $tasks = User::find(Auth::User()->id)->tasks;
+        foreach($tasks as $task){
+            $task['project_name'] = Task::find($task->id)->project->project_name;
+        }
+        //dd($tasks);
+        return view('users.usertasks', ['tasks'=>$tasks]);
+    }
+
+    public function report(){
+        return view('users.report');
     }
 }

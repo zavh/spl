@@ -2,80 +2,50 @@
 @section('content')
     <div class="container-fluid">
         <div class="row" >
-            <div class="col-md-6">
-                <div class="card flex-md-row mb-4 shadow-sm h-md-250">
-                    <div class="card-body d-flex flex-column align-items-start">
-                        <strong class="d-inline-block mb-2 text-primary">List of configured users</strong>
-                        <table class="table table-hover table-sm table-responsive-sm">
-                            <thead>
-                                <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">User Name</th>
-                                <th scope="col">Email</th>
-                                <th scope="col">Role</th>
-                                <th scope="col">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            @php 
-                                $i = 0;
-                                $flag = 1;
-                            @endphp
-                            @foreach($users as $user)
-                                @if($user->id === Auth::user()->id)
-                                    @php 
+            <div class="col-md-12 col-lg-8">
+                <div class="card mb-4 shadow-sm h-md-250">
+				<div class=" mb-0 bg-white rounded">
+					<div class="media text-muted">
+						<div class="media-body small">
+							<div class="d-flex justify-content-between align-items-center w-100 border-bottom">
+								<strong class="text-dark pl-1 pt-1">List of configured users</strong>
+								<a href="/users/create" class="pr-2 pt-1">Create New User</a>
+							</div>
+							@foreach($users as $index=>$user)
+								@if($user->id === Auth::user()->id)
+									@php
                                         $me = $user;
-                                        $flag = 0;
                                     @endphp
-                                @else 
-                                    @php 
-                                        $flag = 1;
-                                    @endphp
-                                @endif
-                                @php
-                                    $i++
-                                @endphp
-                                <tr>
-                                <th scope="row"> {{$i}} </th>
-                                <td> {{$user->name}} </td>
-                                <td> {{$user->email}} </td>
-                                <td> {{$user->role_name}}</td>
-                                <td> 
-                                    @if($flag)
-                                    <a href="javascript:void(0)" class="btn btn-danger" onclick="deleteUser('{{$user->name}}','{{$user->id}}')">Delete</a>
-                                    <a href="javascript:void(0)" class="btn btn-success" onclick="ajaxFunction('viewuser', '{{$user->id}}', 'user-container' )">Details</a>
-                                    <form 
-                                        id="user-delete-form-{{$user->id}}"
-                                        method="post"
-                                        action="{{route('users.destroy', [$user->id])}}" 
-                                        >
-                                        <input type="hidden" name="_method" value="delete">
-                                        {{csrf_field()}}
-                                    </form>
-                                    @endif
-                                </td>
-                                </tr>
-                            @endforeach
-                            </tbody>
-                        </table>
-                    </div>              
-                <div class='m-2'>
-                    <a href="/users/create" class="btn btn-primary">Create new User</a>
-                </div>
+								@endif
+								<div class="row m-0 bg-light border-bottom w-100">
+									<div class="col-md-4 text-primary pl-1 text-primary ">Username: {{$user->name}}</div>
+									<div class="col-md-4 text-success pl-1 text-success ">Email: {{$user->email}}</div>
+									<div class="col-md-4 text-success pl-1 text-success ">
+										<div class="d-flex justify-content-between align-items-center w-100 ">
+										<a href="javascript:void(0)" onclick="deleteUser('{{$user->name}}','{{$user->id}}')" class='text-danger'>Delete</a>
+										<a href="javascript:void(0)" onclick="ajaxFunction('viewuser', '{{$user->id}}', 'user-container')">Details</a>
+										<a href="javascript:void(0)" onclick="ajaxFunction('viewuser', '{{$user->id}}', 'user-container')">Deactivate</a>
+										<form 
+											id="user-delete-form-{{$user->id}}"
+											method="post"
+											action="{{route('users.destroy', [$user->id])}}" 
+											>
+											<input type="hidden" name="_method" value="delete">
+											{{csrf_field()}}
+										</form>
+										</div>
+									</div>
+								</div>
+							@endforeach
+						</div>
+					</div>
+				</div>
             </div>      
         </div>
         
-        <div class="col-md-6">
-          <div class="card flex-md-row mb-4 shadow-sm h-md-250" id='user-container'>
-            <div class="card-body d-flex flex-column align-items-start">
-              <strong class="d-inline-block mb-2 text-success">My Profile</strong>
-              <h3 class="mb-0">
-                <a class="text-dark" href="#">Details of "{{ Auth::user()->name }}"</a>
-              </h3>
-              
-              @include('users.show', ['user'=>$me])
-            </div>
-            
+        <div class="col-md-12 col-lg-4">
+          <div class="card mb-4 shadow-sm" id='user-container'>
+				@include('users.show', ['user'=>$me])
           </div>
         </div>
       </div>

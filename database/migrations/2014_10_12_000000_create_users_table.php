@@ -21,11 +21,15 @@ class CreateUsersTable extends Migration
             $table->string('fname')->nullable();
             $table->string('sname')->nullable();
             $table->timestamp('email_verified_at')->nullable();
+            $table->timestamp('deactivated_at')->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
             $table->unsignedBigInteger('phone')->nullable();
             $table->string('address', 255)->nullable();
+            $table->string('designation', 100)->nullable();
+            $table->string('department', 100)->nullable();
+            $table->tinyInteger('active');
         });
     }
 
