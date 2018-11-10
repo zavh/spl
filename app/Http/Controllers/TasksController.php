@@ -46,7 +46,7 @@ class TasksController extends Controller
         // dd($allocation);
         if($allocation>=100)
         {
-            return back()->with('error', 'Allocation limit reached');
+            return redirect('tasks.index')->with('success', 'Allocation limit reached');
         }
         return view('tasks.create',['users'=>$users, 'project_id'=>$project_id,'allocation'=>$allocation]);
     }
@@ -165,10 +165,10 @@ class TasksController extends Controller
         $allocation = $project->allocation;
         // $project_id = $task->project_id;
         // dd($allocation);//getting corect allocation
-        if($allocation>=100)
-        {
-            return back()->with('success', 'Allocation limit reached');
-        }
+        // if($allocation>=100)
+        // {
+        //     return redirect('tasks.index')->with('success', 'Allocation limit reached');
+        // }
         return view('tasks.edit',['users'=>$userarr,'allocation'=>$allocation])->with('task', $task);
     }
 
