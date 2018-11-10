@@ -6,11 +6,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Task;
 use App\User;
+use App\Project;
 use App\TaskUser;
 use DB;
 
 class TasksController extends Controller
 {
+
+    //catch allocation exceeded for create using js
+    //catch allocation exceeded for edit using js
+
     /**
      * Display a listing of the resource.
      *
@@ -36,7 +41,14 @@ class TasksController extends Controller
             abort(404);    
         }
         $users = User::all();
-        return view('tasks.create',['users'=>$users, 'project_id'=>$project_id]);
+        $project = Project::find($project_id);
+        $allocation = $project->allocation;
+        // dd($allocation);
+        if($allocation>=100)
+        {
+            return back()->with('error', 'Allocation limit reached');
+        }
+        return view('tasks.create',['users'=>$users, 'project_id'=>$project_id,'allocation'=>$allocation]);
     }
 
     /**
@@ -48,36 +60,43 @@ class TasksController extends Controller
     public function store(Request $request)
     {
         //
+        // $messages = [
+        //     'task_name.required' => 'Please enter the task name',
+        //     'task_name.min' => 'Task name must be minimum 2 characters',
+        //     'task_name.max' => 'Task name cannot be more than 191 characters',
+        //     'task_name.unique' => 'This task name has already been taken',
+        //     'task_description.required' => 'Please enter the task description',
+        //     'task_description.max' => 'Task name cannot be more than 3000 characters',
+        //     'user_id.required' => 'please select an user',
+        //     'task_date_assigned.required' => 'please pick a assignment date',
+        //     'task_date_assigned.date' => 'The date assigned must be a valid date',
+        //     'task_date_assigned.before_or_equal' => 'the date assigned cannot be after the deadline', 
+        //     'task_deadline.required' => 'please pick a deadline',
+        //     'task_deadline.date' => 'The deadline must be a valid date',
+        //     'task_deadline.after_or_equal' => 'the deadline cannot be after the date assigned',
+        //     'task_deadline.after' => 'the deadline cannot be before the system date'
+        // ];
 
-        $messages = [
-            'task_name.required' => 'Please enter the task name',
-            'task_name.min' => 'Task name must be minimum 2 characters',
-            'task_name.max' => 'Task name cannot be more than 191 characters',
-            'task_name.unique' => 'This task name has already been taken',
-            'task_description.required' => 'Please enter the task description',
-            'task_description.max' => 'Task name cannot be more than 3000 characters',
-            'user_id.required' => 'please select an user',
-            'task_date_assigned.required' => 'please pick a assignment date',
-            'task_date_assigned.date' => 'The date assigned must be a valid date',
-            'task_date_assigned.before_or_equal' => 'the date assigned cannot be after the deadline', 
-            'task_deadline.required' => 'please pick a deadline',
-            'task_deadline.date' => 'The deadline must be a valid date',
-            'task_deadline.after_or_equal' => 'the deadline cannot be after the date assigned',
-            'task_deadline.after' => 'the deadline cannot be before the system date'
-        ];
+        // $validator = Validator::make($request->all(), [
+        //     'task_name' => 'required|min:2|max:191|unique:tasks,task_name',
+        //     'task_description' => 'required|max:3000',
+        //     'user_id' => 'required',
+        //     'task_date_assigned' => 'required|date|before_or_equal:task_deadline',
+        //     'task_deadline' => 'required|date|after_or_equal:task_date_assigned'
+        // ],$messages);
 
-        $validator = Validator::make($request->all(), [
-            'task_name' => 'required|min:2|max:191|unique:tasks,task_name',
-            'task_description' => 'required|max:3000',
-            'user_id' => 'required',
-            'task_date_assigned' => 'required|date|before_or_equal:task_deadline',
-            'task_deadline' => 'required|date|after_or_equal:task_date_assigned'
-        ],$messages);
-
-        if($validator->fails()){
-            return back()->withErrors($validator)->withInput();
-        }
+        // if($validator->fails()){
+        //     return back()->withErrors($validator)->withInput();
+        // }
         
+        $allocation = $request->allocation;
+        $weight = $request->get('weight');
+
+        // dd('allocation',$allocation,'weight',$weight);
+
+        if ($allocation+$weight>100) {
+            return back()->with('success', 'total allocation crosses 100%');
+        }
         $task = new Task;
         $task->task_name = $request->input('task_name');
         $task->task_description = $request->input('task_description');
@@ -86,6 +105,11 @@ class TasksController extends Controller
         $task->task_deadline = $request->input('task_deadline');
         $task->weight = $request->input('weight');
         $task->save();
+        $project = Project::find($request->input('project_id'));
+        $project->allocation = $allocation+$weight;
+        // dd($project->allocation);
+        $project->save();
+
         $this->addTaskUser($task->id, $request->get('user_id'));
 
         return back()->with('success', 'Task Created');
@@ -137,7 +161,15 @@ class TasksController extends Controller
             $i++;
         }
         //dd($userarr);
-        return view('tasks.edit',['users'=>$userarr])->with('task', $task);
+        $project = Project::find($task->project_id);
+        $allocation = $project->allocation;
+        // $project_id = $task->project_id;
+        // dd($allocation);//getting corect allocation
+        if($allocation>=100)
+        {
+            return back()->with('success', 'Allocation limit reached');
+        }
+        return view('tasks.edit',['users'=>$userarr,'allocation'=>$allocation])->with('task', $task);
     }
 
     /**
@@ -177,7 +209,16 @@ class TasksController extends Controller
         // if($validator->fails()){
         //     return back()->withErrors($validator)->withInput();
         // }
+        
+        $allocation = $request->allocation;
+        $new_weight = $request->get('weight');
+        $old_weight = $request->old_weight;
 
+        // dd('allocation',$allocation,'new_weight',$new_weight,'old_weight',$old_weight);
+        if(($allocation-$old_weight+$new_weight)>100)
+        {
+            return back()->with('success', 'Allocation limit reached');
+        }
         $task = Task::find($id);
         $task->task_name = $request->input('task_name');
         $task->task_description = $request->input('task_description');
@@ -186,6 +227,11 @@ class TasksController extends Controller
         $task->task_deadline = $request->input('task_deadline');
         $task->weight = $request->input('weight');
 
+        $project = Project::find($request->project_id);
+        // dd($project->id);
+        $project->allocation = $allocation-$old_weight+$new_weight;
+        // dd($project->allocation);
+        $project->save();
         
         $task->save();
         $this->deleteTaskUser($task->id, $request->get('user_id'));
@@ -206,13 +252,18 @@ class TasksController extends Controller
         $findTask = Task::find($id);
         
         $weight = $findTask->weight;
-        $project= Project::find('task_id',id)->get();
+        $project_id = $findTask->project_id;
+        // dd($project_id);
+        $project = Project::find($project_id);
         $project_allocation = $project->allocation;
+        // dd($project_allocation);
 
 
 
-        dd('allocation',$project_allocation,'weight',$weight);
-        if($findTask){ 
+        // dd('allocation',$project_allocation,'weight',$weight);
+        if($findTask){
+            $project->allocation = $project_allocation - $weight;
+            $project->save();
             $this->deleteTaskUser($id);
             $findTask->delete();
             return back()->with('success', 'Task deleted successfully');

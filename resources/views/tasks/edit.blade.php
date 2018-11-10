@@ -1,6 +1,8 @@
 <h6 class="border-bottom border-gray pb-2 mb-0">{{ __('Create new Task') }}</h6>
     <form method="POST" action="{{ route('tasks.update', [$task->id]) }}">
-        @csrf        
+        @csrf  
+        <input type="hidden" name="allocation" value="{{ $allocation }}">  
+        <input type="hidden" name="project_id" value="{{ $task->project_id }}">    
         <input name="_method" type="hidden" value="PUT">   
         <div class="form-group row">
             <div class="input-group input-group-sm col-md-12"  style='margin-top:-10px'>
@@ -83,6 +85,7 @@
                         <span class="input-group-text">Task Weight</span>
                     </div>
                     <input id="weight" type="number" class="form-control{{ $errors->has('weight') ? ' is-invalid' : '' }}" name="weight" value="{{ $task->weight }}" max="100" required>
+                    <input type="hidden" name="old_weight" value="{{ $task->weight }}">
                     <div class="input-group-append">
                         <span class="input-group-text">%</span>
                     </div>

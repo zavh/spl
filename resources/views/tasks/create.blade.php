@@ -2,6 +2,7 @@
 
 <form method="POST" action="{{ route('tasks.store') }}" class='mt-3'>
     @csrf
+    <input type="hidden" name="allocation" value="{{ $allocation }}">
     <!-- Task Name Input Starts-->
     <div class="form-group row">
         <div class="input-group input-group-sm col-md-12"  style='margin-top:-10px'>

@@ -138,7 +138,7 @@
                 </div>
 
                 <div class="my-3 p-3 bg-white rounded shadow-sm" id='taskdiv'>
-                    @include('tasks.index', ['tasks'=>$assignment->tasks])
+                    @include('tasks.index', ['tasks'=>$assignment->tasks, 'allocation'=>$assignment->allocation])
                 </div>
             </div>
         <!-- Task Column Ends-->
