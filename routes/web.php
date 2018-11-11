@@ -58,4 +58,5 @@ Route::resource('enquiries','EnquiriesController');
 Route::resource('tasks','TasksController');
 Route::resource('users', 'UsersController');
 Route::resource('roles', 'RolesController');
+Route::resource('departments', 'DepartmentsController');
 Route::resource('clientcontacts', 'ClientcontactsController');
