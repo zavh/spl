@@ -37,9 +37,12 @@ Route::get('/user/tasks/', 'UsersController@tasks')->name('usertasks');
 Route::get('/user/report/', 'UsersController@report')->name('userreport');
 
 Route::post('/clients/store', 'ClientsController@store')->name('addclient');
+Route::get('/clients/listing', 'ClientsController@clientslisting')->name('clientlist');
 
 Route::get('/clientcontacts/create/{client_id?}', 'ClientcontactsController@create');
 Route::get('/clientcontacts/revert/{client_id?}', 'ClientcontactsController@contactheader');
+Route::get('/clientcontacts/index/{client_id?}', 'ClientcontactsController@index');
+Route::get('/clientcontacts/listing/{client_id?}', 'ClientcontactsController@contactlist');
 //Route::get('/clients', 'ClientsController@index')->name('clients');
 //Route::get('/projects', 'ProjectsController@index')->name('projects');
 //Route::get('/tasks', 'TasksController@index')->name('tasks');

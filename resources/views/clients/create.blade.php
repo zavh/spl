@@ -1,6 +1,9 @@
-<div class="container-fluid">
+@extends('layouts.app')
+
+@section('content')
+<div class="container">
     <div class="row justify-content-center">
-        <div class="col">
+        <div class="col-md-5">
             <div class="card shadow-sm">
                 <div class="card-header text-white bg-primary">
                     {{ __('Create new Client') }}
@@ -99,3 +102,4 @@
         </div>
     </div>
 </div>
+@endsection

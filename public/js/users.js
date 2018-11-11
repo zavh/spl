@@ -1,4 +1,3 @@
-
 function ajaxFunction(instruction, execute_id, divid){
 	var ajaxRequest;  // The variable that makes Ajax possible!
 		try{

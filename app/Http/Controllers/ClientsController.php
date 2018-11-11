@@ -17,7 +17,7 @@ class ClientsController extends Controller
     }*/
     public function index()
     {
-        if(Auth::Check()){ 
+        if(Auth::Check()){
             $assignments = Client::all();
 			foreach($assignments as $index=>$assignment){
 				$projects = Client::find($assignment->id)->projects;
@@ -159,4 +159,16 @@ class ClientsController extends Controller
         return view('clients.clientdetails', ['organization'=>$findClient->organization, 'address'=>$findClient->address, 'client_id'=>$findClient->id]);
     }
 
+    public function clientslisting(){
+        $clients = CLient::all();
+        $response['view'] = view('clients.clientlisting',['clients'=>$clients])->render();
+
+        $response['status'] = 'success';
+        $response['clients'] = json_encode($clients);
+        return response()->json(['response'=>$response]);
+    }
+
+    public function reportclient(Request $request){
+        dd($request);
+    }
 }

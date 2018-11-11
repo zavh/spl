@@ -20,7 +20,6 @@
 						<span class="invalid-feedback" role="alert" id='contact_name_error_span'>
 							<strong id='contact_name_error'></strong>
 						</span>
-						
 					</div>
 				</div>
 				<!-- Contact Name Input Ends-->
