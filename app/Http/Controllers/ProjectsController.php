@@ -93,7 +93,8 @@ class ProjectsController extends Controller
         $assignment['tasks'] = Project::find($id)->tasks;
         $x = Project::find($id)->enquiries;
         for($i=0;$i<count($x);$i++){
-            $enquiries[$i] = json_decode($x[$i]['details']);
+            $enquiries[$i]['details'] = json_decode($x[$i]['details']);
+            $enquiries[$i]['id'] = $x[$i]['id'];
         }
         $assignment['enquiries'] = $enquiries;
         return view('projects.show')->with('assignment',$assignment);

@@ -11,8 +11,19 @@ class Enquiry extends Model
         'details'
     ];
 
+    protected $table = 'enquiries';
+    // Primary Key
+    public $primaryKey = 'id';
+    // Timestamps
+    public $timestamps = true;
+
     public function project()
     {
     	return $this->belongsTo('App\Project');
     }
+
+    public function users(){
+        return $this->belongsToMany('App\User');
+    }
+
 }

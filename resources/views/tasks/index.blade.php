@@ -15,17 +15,24 @@
         <div class="d-flex justify-content-between align-items-center w-100">
             <strong class="text-gray-dark">@ {{$task->task_description}} </strong>
             <div>
-            <a 
-                href="javascript:void(0)" 
-                onclick="ajaxFunction('editTasks', '{{ $task->id }}' , 'taskdiv')">
-                Edit
-            </a>
-            &nbsp;&nbsp;
-            <a 
-                href="javascript:void(0)" 
-                onclick="ajaxFunction('editTasks', '{{ $task->id }}' , 'taskdiv')">
-                Delete
-            </a>
+                <a 
+                    href="javascript:void(0)" 
+                    onclick="ajaxFunction('editTasks', '{{ $task->id }}' , 'taskdiv')">
+                    Edit
+                </a>
+                    &nbsp;&nbsp;
+                    <a href="javascript:void(0)" 
+                    onclick="deleteTask('{{$task->task_name}}','{{$task->id}}')">
+                    Delete
+                </a>
+                <form 
+                    id="task-delete-form-{{$task->id}}"
+                    method="post"
+                    action="{{route('tasks.destroy', [$task->id])}}" 
+                    >
+                    <input type="hidden" name="_method" value="delete">
+                    {{csrf_field()}}
+                </form>
             </div>
         </div>
         <span class="text-danger">Deadline: {{$task->task_deadline}}</span>  
