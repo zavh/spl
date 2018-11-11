@@ -15,6 +15,8 @@ class DesignationsController extends Controller
     public function index()
     {
         //
+        $designations = Designation::all();
+        return view('designations.index')->with('designations', $designations);
     }
 
     /**
@@ -25,6 +27,7 @@ class DesignationsController extends Controller
     public function create()
     {
         //
+        return view('designations.create');
     }
 
     /**
@@ -36,6 +39,11 @@ class DesignationsController extends Controller
     public function store(Request $request)
     {
         //
+        $designation = new Designation;
+        $designation->name = $request->input('name');
+        
+        $designation->save();
+        return redirect('/designations')->with('success', 'designation Created');
     }
 
     /**
@@ -55,9 +63,12 @@ class DesignationsController extends Controller
      * @param  \App\Designation  $designation
      * @return \Illuminate\Http\Response
      */
-    public function edit(Designation $designation)
+    public function edit($id)
     {
         //
+        $designation = Designation::find($id);
+        // dd($department);
+        return view('designations.edit',['designation'=>$designation]);
     }
 
     /**
@@ -67,9 +78,14 @@ class DesignationsController extends Controller
      * @param  \App\Designation  $designation
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Designation $designation)
+    public function update(Request $request,$id)
     {
         //
+        $department = Designation::find($id);
+        $department->name = $request->input('name');
+        
+        $department->save();
+        return redirect('/designations')->with('success', 'designations Updated');
     }
 
     /**
@@ -78,8 +94,12 @@ class DesignationsController extends Controller
      * @param  \App\Designation  $designation
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Designation $designation)
+    public function destroy($id)
     {
         //
+        $designation = Designation::find($id);
+        // dd($department);
+        $designation->delete();
+        return redirect('/designations')->with('success', 'Department Deleted');
     }
 }

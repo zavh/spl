@@ -27,6 +27,7 @@ class DepartmentsController extends Controller
     public function create()
     {
         //
+        return view('departments.create');
     }
 
     /**
@@ -38,6 +39,12 @@ class DepartmentsController extends Controller
     public function store(Request $request)
     {
         //
+        // dd($request);
+        $department = new Department;
+        $department->name = $request->input('name');
+        
+        $department->save();
+        return redirect('/departments')->with('success', 'Department Created');
     }
 
     /**
@@ -57,9 +64,12 @@ class DepartmentsController extends Controller
      * @param  \App\Department  $department
      * @return \Illuminate\Http\Response
      */
-    public function edit(Department $department)
+    public function edit($id)
     {
         //
+        $department = Department::find($id);
+        // dd($department);
+        return view('departments.edit',['department'=>$department]);
     }
 
     /**
@@ -69,9 +79,14 @@ class DepartmentsController extends Controller
      * @param  \App\Department  $department
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Department $department)
+    public function update(Request $request, $id)
     {
         //
+        $department = Department::find($id);
+        $department->name = $request->input('name');
+        
+        $department->save();
+        return redirect('/departments')->with('success', 'Department Updated');
     }
 
     /**
@@ -80,8 +95,12 @@ class DepartmentsController extends Controller
      * @param  \App\Department  $department
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Department $department)
+    public function destroy($id)
     {
         //
+        $department = Department::find($id);
+        // dd($department);
+        $department->delete();
+        return redirect('/departments')->with('success', 'Department Deleted');
     }
 }
