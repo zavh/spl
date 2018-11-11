@@ -12,11 +12,6 @@
 								<a href="/users/create" class="pr-2 pt-1">Create New User</a>
 							</div>
 							@foreach($users as $index=>$user)
-								@if($user->id === Auth::user()->id)
-									@php
-                                        $me = $user;
-                                    @endphp
-								@endif
 								<div class="row m-0 bg-light border-bottom w-100">
 									<div class="col-md-4 text-primary pl-1 text-primary ">Username: {{$user->name}}</div>
 									<div class="col-md-4 text-success pl-1 text-success ">Email: {{$user->email}}</div>
@@ -45,7 +40,7 @@
         
         <div class="col-md-12 col-lg-4">
           <div class="card mb-4 shadow-sm" id='user-container'>
-				@include('users.show', ['user'=>$me])
+				@include('users.show', ['user'=>Auth::User()])
           </div>
         </div>
       </div>
