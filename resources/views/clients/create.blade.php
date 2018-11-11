@@ -1,46 +1,16 @@
+@extends('layouts.app')
 
-<div class="container-fluid">
+@section('content')
+<div class="container">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-5">
             <div class="card shadow-sm">
                 <div class="card-header text-white bg-primary">
                     {{ __('Create new Client') }}
                 </div>
                 <div class="card-body">
-                    <form method="POST" action="{{ route('clients.store') }}" style='font-size:10px' onsubmit="return addClient(event)">
+                    <form method="POST" action="{{ route('clients.store') }}" style='font-size:10px'>
                         @csrf
-                        <!-- Client Name Input Starts -->
-                        <div class="form-group row">
-                            <div class="input-group input-group-sm col-md-12"  style='margin-top:-10px'>
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">{{ __('Contact Name') }}</span>
-                                </div>
-                                <input id="name" type="text" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" name="name" value="{{ old('name') }}" required>
-
-                                @if ($errors->has('name'))
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('name') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-                        <!-- Client Name Input Ends -->
-                        <!-- Client Contact Input Starts -->
-                        <div class="form-group row">
-                            <div class="input-group input-group-sm col-md-12"  style='margin-top:-10px'>
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text">{{ __('Contact Number') }}</span>
-                                </div>
-                                <input type="text" class="form-control{{ $errors->has('contact') ? ' is-invalid' : '' }}" name="contact" value="{{ old('contact') }}" required>
-
-                                
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong id="contact"></strong>
-                                    </span>
-                                
-                            </div>
-                        </div>
-                        <!-- Client Contact Input Ends -->                    
                         <!-- Organization Name Input Starts -->
                         <div class="form-group row">
                             <div class="input-group input-group-sm col-md-12"  style='margin-top:-10px'>
@@ -72,17 +42,64 @@
                                 @endif
                             </div>
                         </div>                    
-                        <!-- Address Input Ends -->
-                        <div class="form-group row" style='margin-top:5px'>
-                            <div class="input-group input-group-sm col-md-12">
-                                <button type="submit" class="btn btn-primary btn-block btn-sm">
-                                    {{ __('Create') }}
-                                </button>
+                        <!-- Address Input Ends -->                        
+                        <!-- Contact Name Input Starts -->
+                        <div class="form-group row">
+                            <div class="input-group input-group-sm col-md-12"  style='margin-top:-10px'>
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">{{ __('Contact Name') }}</span>
+                                </div>
+                                <input id="name" type="text" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" name="name" value="{{ old('name') }}" required>
+
+                                @if ($errors->has('name'))
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $errors->first('name') }}</strong>
+                                    </span>
+                                @endif
                             </div>
                         </div>
+                        <!-- Contact Name Input Ends -->
+                        <!-- Contact Designation Input Starts -->
+                        <div class="form-group row">
+                            <div class="input-group input-group-sm col-md-12"  style='margin-top:-10px'>
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">{{ __('Designation') }}</span>
+                                </div>
+                                <input id="designation" type="text" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" name="designation" value="{{ old('designation') }}" required>
+
+                                @if ($errors->has('name'))
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $errors->first('name') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+                        <!-- Contact Designation Input Ends -->                        
+                        <!-- Client Contact Input Starts -->
+                        <div class="form-group row">
+                            <div class="input-group input-group-sm col-md-12"  style='margin-top:-10px'>
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">{{ __('Contact Number') }}</span>
+                                </div>
+                                <input type="text" class="form-control{{ $errors->has('contact') ? ' is-invalid' : '' }}" name="contact" value="{{ old('contact') }}" required>
+
+                                
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong id="contact"></strong>
+                                    </span>
+                                
+                            </div>
+                        </div>
+                        <!-- Client Contact Input Ends -->                    
+                        <div class='row d-flex justify-content-center'> 
+                            <input type="submit" class="btn btn-primary btn-sm m-2" value="Create New">
+                            <a href="/clients" class="btn btn-secondary btn-sm m-2">Cancel</a>
+                        </div>
+
                     </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
+@endsection

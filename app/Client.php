@@ -12,4 +12,12 @@ class Client extends Model
     public $primaryKey = 'id';
     // Timestamps
     public $timestamps = true;
+	
+	public function projects(){
+        return $this->hasMany('App\Project');
+    }
+
+    public function clientcontacts(){
+        return $this->hasMany('App\Clientcontact');
+    }
 }

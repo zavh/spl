@@ -17,6 +17,7 @@ class ProjectsTableSeeder extends Seeder
             'user_id' => '2',
             'deadline' => '2018-11-20',
             'description' => 'Lifting water from 30m below surface from river.',
+            'allocation' => '0'
         ]);
     }
 }

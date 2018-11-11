@@ -74,7 +74,7 @@
             </div>
         </nav>
 
-        <main class="py-4">
+        <main class="py-2">
             @yield('content')
         </main>
         <div style='border-width:3px;position:fixed;padding:7px;bottom:0;right:0;max-width:450px;z-index:999'>
