@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Designation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class DesignationsController extends Controller
 {
@@ -39,6 +40,20 @@ class DesignationsController extends Controller
     public function store(Request $request)
     {
         //
+        $messages = [
+            'name.required' => 'Please enter the name',
+            'name.min' => 'Name must be minimum 2 characters',
+            'name.max' => 'Name cannot be more than 191 characters',
+            'name.unique' => 'This name has already been taken'
+        ];
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|min:2|max:191|unique:designations,name'
+        ],$messages);
+
+        if($validator->fails()){
+            return back()->withErrors($validator)->withInput();
+        }
         $designation = new Designation;
         $designation->name = $request->input('name');
         
@@ -81,6 +96,19 @@ class DesignationsController extends Controller
     public function update(Request $request,$id)
     {
         //
+        $messages = [
+            'name.required' => 'Please enter the task name',
+            'name.min' => 'Task name must be minimum 2 characters',
+            'name.max' => 'Task name cannot be more than 191 characters'
+        ];
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|min:2|max:191'
+        ],$messages);
+
+        if($validator->fails()){
+            return back()->withErrors($validator)->withInput();
+        }
         $department = Designation::find($id);
         $department->name = $request->input('name');
         
