@@ -63,7 +63,7 @@ class ClientsController extends Controller
             $messages);
         
         if($validator->fails()){
-            return redirect()->route('clients.index')->with('success', 'Client deleted successfully');
+            return redirect()->route('clients.index')->with('error', 'Client deleted successfully');
         }
         else {
             $client = new Client;
@@ -168,7 +168,50 @@ class ClientsController extends Controller
         return response()->json(['response'=>$response]);
     }
 
-    public function reportclient(Request $request){
-        dd($request);
+    public function validateonly(Request $request){
+        $request_data = $request->All();
+        $validator = $this->client_validation_rules($request_data);
+        if($validator->fails()){
+            $result['status'] = 'failed';
+            $result['message'] = $validator->errors()->all();
+            return response()->json(['result'=>$result]);
+         }
+         else {
+            $result['status'] = 'success';
+            return response()->json(['result'=>$result]);
+         }
+
+    }
+
+    private function client_validation_rules(array $data)
+    {
+        $messages = [
+            'organization.required' => 'organization|Required',
+            'organization.max' => 'organization|Max characters 191',
+            'organization.min' => 'organization|Minumum length 4 characters',
+            'address.required' => 'address|Required',
+            'address.max' => 'address|Maximum length 191',
+            'address.min' => 'address|Minimum length 4',
+            'name.required' => 'name|Required',
+            'name.max' => 'name|Maximum length 50',
+            'name.min' => 'name|Minimum length 4',
+            'designation.required' => 'designation|Required',
+            'designation.max' => 'designation|Maximum length 191',
+            'designation.max' => 'designation|Minimum length 4',
+            'contact.required' => 'contact|Required',
+            'contact.integer' => 'contact|Only digits allowed',
+            'contact.max' => 'contact|Cannot excced 17 digits',
+            'contact.min' => 'contact|Cannot be less than 6 digits',
+        ];
+
+        $validator = Validator::make($data, [
+            'organization' => 'required|max:191:min:4',
+            'address' => 'required|max:191|min:4',
+            'name' => 'required|max:50|min:4',
+            'designation' => 'required|max:191|min:4',
+            'contact' => 'required|integer|max:99999999999999999|min:100000',
+        ], $messages);
+
+        return $validator;
     }
 }

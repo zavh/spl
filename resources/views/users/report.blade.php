@@ -10,7 +10,7 @@
 
 <div class="container-fluid">
 	<div class="row" >
-		<div class="col-md-6">
+		<div class="col-md-12 col-lg-6 pl-3 pr-3">
 			<div class="card mb-4 shadow-sm h-md-250">
 				<div class=" mb-0 bg-white rounded">
 					<div class="media text-muted">
@@ -22,6 +22,7 @@
 							<div class="d-flex justify-content-center bg-light w-100 border-bottom pt-2 text-dark">
 								<h5 style='text-decoration:underline'>VISIT REPORT</h5>
 							</div>
+							<!-- Reported Detail Section Starts-->
 							<div class="m-0 pl-4 border-bottom">
 								<table class="text-primary small">
 									<tr><td>Name</td><td>:</td><td>{{Auth::User()->fname}}&nbsp;{{Auth::User()->sname}}</td></tr>
@@ -30,6 +31,8 @@
 									<tr><td>Date of submission</td><td>:</td><td>{{date('d-M-Y')}}</td></tr>
 								</table>
 							</div>
+							<!-- Reported Detail Section Ends-->
+							<!-- Client Detail Section Starts-->
 							<div class='row m-2 border' id='client-details' style='display:none'>
 								<div class='col-6 border-right'>
 									<h6 class='card-header bg-white text-dark' style='border:none'>Customer Name & Address</h6>
@@ -39,16 +42,16 @@
 									<div id='client-address' class='pt-0'></div>
 								</div>
 							</div>
-							<div class='row ml-2 mr-2 pt-2' id='client-details' style='display:none'>
-								<div class='col-6'>
+							<!-- Client Detail Section Ends-->
+							<!-- Client Contact Section Starts-->
+							<div class='row m-2 border' id='contact-row' style='display:none'>
+								<div class='col-6 border-right'>
 									<h6 class='card-header bg-white text-dark' style='border:none'>Person contacted</h6>
 								</div>
-								<div class='col-6 border'>
-									<div id='contact-name' class='border-bottom'></div>
-									<div id='contact-designation' class='border-bottom'></div>
-									<div id='contact-phone' class='pt-0'></div>
+								<div class='col-6' id='contact-details'>
 								</div>
 							</div>
+							<!-- Client Contact Section Ends-->
 						</div>
 					</div>
 				</div>
@@ -57,13 +60,12 @@
 	
 		<div class="col-md-12 col-lg-6">
 			<div class='row'>
-				<div class="col-md-6 w-100 m-0 p-0" id='client-chooser'>
+				<div class="col-md-6 w-100 pl-3 pr-3" id='client-chooser'>
 					<script>
 						ajaxFunction('viewClientList', '' , 'client-chooser');
 					</script>
 				</div>
-				
-				<div class="col-md-6 m-0 p-0" id='client-creator'>
+				<div class="col-md-6 pl-3 pr-3" id='client-creator'>
 					@include('users.newclient')
 				</div>
 			</div>

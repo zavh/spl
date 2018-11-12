@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div class="container-fluid p-0 m-0">
     <div class="row justify-content-center">
         <div class="col">
             <div class="card shadow-sm">
@@ -6,7 +6,7 @@
 					<strong class="text-dark pl-1 pt-1">Create New Client</strong>
 				</div>
                 <div class="card-body">
-                    <form method="POST" action="" style='font-size:10px' onsubmit="newClientValidation(event, this)" name='reportClientCreation'>
+                    <form method="POST" action="" style='font-size:10px' onsubmit="newClientValidation(event, this);" name='reportClientCreation' id='reportClientCreation'>
                         @csrf
                         <!-- Organization Name Input Starts -->
                         <div class="form-group row">
@@ -15,7 +15,7 @@
                                     <span class="input-group-text">{{ __('Organization') }}</span>
                                 </div>
                                 <input id="organization" type="text" class="form-control " name="organization" required>
-								<span class="invalid-feedback" role="alert" id='organization_error_span'>
+								<span class="invalid-feedback " role="alert" id='organization_error_span'>
 									<strong id='organization_error'></strong>
 								</span>
                             </div>
@@ -28,7 +28,7 @@
                                     <span class="input-group-text">{{ __('Address') }}</span>
                                 </div>
                                 <input id="address" type="text" class="form-control" name="address" required>
-								<span class="invalid-feedback" role="alert" id='address_error_span'>
+								<span class="invalid-feedback " role="alert" id='address_error_span'>
 									<strong id='address_error'></strong>
 								</span>
                             </div>
@@ -41,7 +41,7 @@
                                     <span class="input-group-text">{{ __('Contact Name') }}</span>
                                 </div>
                                 <input id="name" type="text" class="form-control" name="name" required>
-								<span class="invalid-feedback" role="alert" id='name_error_span'>
+								<span class="invalid-feedback " role="alert" id='name_error_span'>
 									<strong id='name_error'></strong>
 								</span>
                             </div>
@@ -54,7 +54,7 @@
                                     <span class="input-group-text">{{ __('Designation') }}</span>
                                 </div>
                                 <input id="designation" type="text" class="form-control" name="designation" required>
-								<span class="invalid-feedback" role="alert" id='designation_error_span'>
+								<span class="invalid-feedback " role="alert" id='designation_error_span'>
 									<strong id='designation_error'></strong>
 								</span>
                             </div>
@@ -67,7 +67,7 @@
                                     <span class="input-group-text">{{ __('Contact Number') }}</span>
                                 </div>
                                 <input type="text" class="form-control" name="contact" id='contact' required>
-								<span class="invalid-feedback" role="alert" id='contact_error_span'>
+								<span class="invalid-feedback " role="alert" id='contact_error_span'>
 									<strong id='contact_error'></strong>
 								</span>                                
                             </div>

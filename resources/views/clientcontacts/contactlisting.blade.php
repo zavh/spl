@@ -2,7 +2,8 @@
 	<div class="media text-muted">
 		<div class="media-body small">
 			<div class="d-flex justify-content-between align-items-center w-100 border-bottom">
-				<strong class="text-dark pl-1 pt-1">Choose an existing client</strong>
+				<strong class="text-dark pl-1 pt-1">Choose a contact</strong>
+				<a href="#" class='pr-2'>Add contact</a>
 			</div>
 			<div class="accordion" id="clientContactAccordion">
 			@foreach($contacts as $index=>$contact)
@@ -23,7 +24,8 @@
 							<input 
 								type='checkbox' 
 								name='contact[{{$index}}]'
-								data-name = "{{$contact->name}}"
+								data-cid = "{{$contact->client_id}}"
+								data-index = "{{$index}}"
 								onclick = "selectClientContat(this)"
 								>
 						</div>

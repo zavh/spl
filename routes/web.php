@@ -42,6 +42,7 @@ Route::get('/user/tasks/', 'UsersController@tasks')->name('usertasks');
 Route::get('/user/report/', 'UsersController@report')->name('userreport');
 
 Route::post('/clients/store', 'ClientsController@store')->name('addclient');
+Route::post('/clients/validateonly', 'ClientsController@validateonly')->name('validateclient');
 Route::get('/client/cancel/{client_id?}', 'ClientsController@cancel');
 Route::get('/clients/listing', 'ClientsController@clientslisting')->name('clientlist');
 
