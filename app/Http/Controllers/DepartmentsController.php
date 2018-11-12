@@ -104,7 +104,7 @@ class DepartmentsController extends Controller
         ];
 
         $validator = Validator::make($request->all(), [
-            'name' => 'required|min:2|max:191|unique:tasks,task_name'
+            'name' => 'required|min:2|max:191s'
         ],$messages);
 
         if($validator->fails()){
