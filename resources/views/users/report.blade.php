@@ -27,7 +27,7 @@
 								<table class="text-primary small">
 									<tr><td>Name</td><td>:</td><td>{{Auth::User()->fname}}&nbsp;{{Auth::User()->sname}}</td></tr>
 									<tr><td>Designation</td><td>:</td><td>{{Auth::User()->designation->name}}</td></tr>
-									<tr><td>Department</td><td>:</td><td>{{Auth::User()->department->name}}</td></tr>
+									<tr><td>Department</td><td>:</td><td>{{Auth::User()->department->nameUser}}</td></tr>
 									<tr><td>Date of submission</td><td>:</td><td>{{date('d-M-Y')}}</td></tr>
 								</table>
 							</div>
