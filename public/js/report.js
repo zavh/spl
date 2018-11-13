@@ -54,8 +54,20 @@ function ajaxFunction(instruction, execute_id, divid){
                 }
                 if(instruction == "newClientValidation"){
                     var vResponse = JSON.parse(ajaxRequest.responseText);
-                    if(vResponse.result.status == 'success')
-                        console.log(vResponse);
+                    if(vResponse.result.status == 'success'){
+                        document.getElementById('client-chooser').innerHTML = vResponse.result.view;
+                        
+                        client_data = JSON.parse(vResponse.result.clients);
+                        var i = client_data.length;
+                        client_index = i-1;
+                        client_data[client_index].contacts = JSON.parse(vResponse.result.contacts);
+                        client_data[client_index].contacts[0].selected = 1;
+                        client_data[client_index].contactview = vResponse.result.contactview;
+                        renderContact();
+                        renderReport();
+                        var x = document.getElementsByName('tempcontact');
+                        x[0].checked = true;
+                    }
                     else {
                         vResponse.result.message.forEach(formErrorProcessing);
                     }
@@ -105,7 +117,7 @@ function showClientContact(el){
     renderReport();
 }
 
-function selectClientContat(el){
+function selectClientContact(el){
     var contact_index = el.dataset.index;
     if(el.checked)
         client_data[client_index].contacts[contact_index].selected = 1;
@@ -122,10 +134,16 @@ function renderContact(){
 }
 
 function renderReport(){
+    //Displaying Customer Name and Address
     document.getElementById('client-name').innerHTML = client_data[client_index].organization;
     document.getElementById('client-address').innerHTML = client_data[client_index].address;
-    document.getElementById('client-details').style.display = '';
+    document.getElementById('details-row').style.display = '';
+
+    //Displaying Customer Background
     
+    document.getElementById('background-details').innerHTML = client_data[client_index].background;
+    document.getElementById('background-row').style.display = '';
+
     if(client_data[client_index].contacts != null){
         var i;
         var num_contacts = client_data[client_index].contacts.length;
@@ -150,9 +168,11 @@ function renderReport(){
                 }
                 if(select_flag>0){
                     document.getElementById("contact-row").style.display = '';
+                    document.getElementById("step1-complete").style.display = '';
                 }
                 else{ 
                     document.getElementById("contact-row").style.display = 'none';
+                    document.getElementById("step1-complete").style.display = 'none';
                 }
             }
         }
@@ -178,46 +198,7 @@ function addContactElements(parent_node, nodecontent,attObj){
 
 function newClientValidation(e, form){
     e.preventDefault();
-    var postqstring = '';
-    clearErrorFormatting(form.id);
-    var formels = document.forms[form.id].getElementsByTagName("input");
-    for(i=0;i<formels.length;i++){
-        ename = formels[i].name;
-        evalue = formels[i].value;
-        if(ename=="")
-            continue;
-        else{
-            if(i==0)
-                postqstring += ename+"="+evalue;
-            else 
-                postqstring += "&"+ename+"="+evalue;
-        } 
-    }
+    var postqstring = getQueryString(form.id);
+    
 	ajaxFunction('newClientValidation', postqstring, 'client-creator');
-}
-
-function formErrorProcessing(item, index){
-	var err = item.split("|");
-	var span = document.getElementById(err[0]+'_error_span');
-	var errmsg = document.getElementById(err[0]+'_error');
-	var inp = document.getElementById(err[0]);
-	inp.classList.add("is-invalid");
-	span.style.display = 'block';
-	errmsg.innerHTML += "&#9654;"+err[1]+"&nbsp;";
-}
-
-
-function clearErrorFormatting(name){
-	var els = document.forms[name].getElementsByTagName("input");
-	var e;
-	for(i=0;i<els.length;i++){
-		ename = els[i].name;
-		espan = document.getElementById(ename+"_error_span");
-		if(espan != null){
-			espan.style.display = 'none';
-			document.getElementById(ename).classList.remove("is-invalid");
-			document.getElementById(ename+"_error").innerHTML='';
-		}
-			
-	}
 }

@@ -160,14 +160,30 @@ class ClientsController extends Controller
     }
 
     public function clientslisting(){
-        $clients = CLient::all();
-        $response['view'] = view('clients.clientlisting',['clients'=>$clients])->render();
-
+        $response = $this->makeClientList();
         $response['status'] = 'success';
-        $response['clients'] = json_encode($clients);
         return response()->json(['response'=>$response]);
     }
 
+    private function makeClientList($tempclient = null){
+        $clients = CLient::all();
+        $newid = null;
+        if($tempclient !=null){
+            $lastid = $clients[count($clients)-1]->id;
+            $newid = $lastid + 1;
+            $newclient = new CLient;
+            $newclient->id = $newid;
+            $newclient->organization = $tempclient['organization'];
+            $newclient->address = $tempclient['address'];
+            $newclient->background = $tempclient['background'];
+            $clients->push($newclient);
+            $response['client_id'] = $newid;
+        }
+        $response['view'] = view('clients.clientlisting',['clients'=>$clients, 'newid'=>$newid])->render();
+        $response['clients'] = json_encode($clients);
+
+        return $response;
+    }
     public function validateonly(Request $request){
         $request_data = $request->All();
         $validator = $this->client_validation_rules($request_data);
@@ -175,12 +191,27 @@ class ClientsController extends Controller
             $result['status'] = 'failed';
             $result['message'] = $validator->errors()->all();
             return response()->json(['result'=>$result]);
-         }
-         else {
+        }
+        else {
+            $tempclient['organization'] = $request_data['organization'];
+            $tempclient['address'] = $request_data['address'];
+            $tempclient['background'] = $request_data['background'];
+            $result = $this->makeClientList($tempclient);
+            
+            $cleintcontact = new Clientcontact;
+            $cleintcontact->id = 0;
+            $cleintcontact->designation = $request_data['designation'];
+            $cleintcontact->contact = $request_data['contact'];
+            $cleintcontact->name = $request_data['name'];
+            $cleintcontact->client_id = $result['client_id'];
+            $contacts[0] = $cleintcontact;
+            
+            $result['contacts'] = json_encode($contacts);
+            $result['contactview'] = view('clientcontacts.contactlisting',['contacts'=>$contacts])->render();
             $result['status'] = 'success';
+            
             return response()->json(['result'=>$result]);
-         }
-
+        }
     }
 
     private function client_validation_rules(array $data)
@@ -192,6 +223,9 @@ class ClientsController extends Controller
             'address.required' => 'address|Required',
             'address.max' => 'address|Maximum length 191',
             'address.min' => 'address|Minimum length 4',
+            'background.required' => 'background|Required',
+            'background.max' => 'background|Max 300 characters',
+            'background.min' => 'background|Minimum 20 characters',
             'name.required' => 'name|Required',
             'name.max' => 'name|Maximum length 50',
             'name.min' => 'name|Minimum length 4',
@@ -207,6 +241,7 @@ class ClientsController extends Controller
         $validator = Validator::make($data, [
             'organization' => 'required|max:191:min:4',
             'address' => 'required|max:191|min:4',
+            'background' => 'required|max:300|min:20',
             'name' => 'required|max:50|min:4',
             'designation' => 'required|max:191|min:4',
             'contact' => 'required|integer|max:99999999999999999|min:100000',

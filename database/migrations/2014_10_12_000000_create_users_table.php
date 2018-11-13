@@ -27,8 +27,8 @@ class CreateUsersTable extends Migration
             $table->timestamps();
             $table->unsignedBigInteger('phone')->nullable();
             $table->string('address', 255)->nullable();
-            $table->string('designation', 100)->nullable();
-            $table->string('department', 100)->nullable();
+            $table->smallInteger('designation_id')->default(0);
+            $table->smallInteger('department_id')->default(0);
             $table->tinyInteger('active');
         });
     }

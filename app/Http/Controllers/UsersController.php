@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\User;
 use App\Task;
 use App\Client;
+use App\Role;
+use App\Department;
+use App\Designation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -20,19 +23,19 @@ class UsersController extends Controller
     public function index()
     {
         if(Auth::User()->role_id ==1){
-            $users = DB::table('users')
-            ->join('roles', 'users.role_id', '=', 'roles.id')
-            ->select('users.*', 'roles.role_name')
-            ->get();
-            return view('users.index', ['users'=>$users]);
+            $users = User::all();
+            $me = User::find(Auth::User()->id);
+            return view('users.index', ['users'=>$users,'me'=>$me]);
         }
         else abort(404);
     }
 
     public function create()
     {   
-        $roles = DB::table('roles')->get();
-        return view('users.create', ['roles'=>$roles]);
+        $roles = Role::all();
+        $departments = Department::all();
+        $designations = Designation::all();
+        return view('users.create', ['roles'=>$roles,'departments'=>$departments,'designations'=>$designations]);
     }
 
     public function store(Request $request)
@@ -68,15 +71,16 @@ class UsersController extends Controller
                 'name' => $request['name'],
                 'email' => $request['email'],
                 'role_id' => $request['role'],
+                'department_id' => $request['department'],
+                'designation_id' => $request['designation'],
                 'active' => '1',
                 'password' => Hash::make($request['password']),
                 ]);
             if($userCreate){
-                $users = DB::table('users')
-                ->join('roles', 'users.role_id', '=', 'roles.id')
-                ->select('users.*', 'roles.role_name')
-                ->get();
-                return view('users.index', ['users'=>$users]);
+                $users = User::all();
+                $me = User::find(Auth::User()->id);
+                dd($request);
+                //return view('users.index', ['users'=>$users,'me'=>$me]);
                 }
             }
         }
@@ -86,9 +90,6 @@ class UsersController extends Controller
     public function show(User $user)
     {
         $user = User::find($user->id);
-        $role = User::find($user->id)->role->role_name;
-        $user['role_name'] = $role;
-
         return view('users.show', ['user'=>$user]);
     }
 
@@ -97,7 +98,9 @@ class UsersController extends Controller
         if(Auth::Check()){
             if(Auth::User()->id == 1 || $user->id == Auth::User()->id){
                 $roles = DB::table('roles')->get();
-                return view('users.edit', ['user'=>$user, 'roles'=>$roles]);
+                $departments = Department::all();
+                $designations = Designation::all();
+                return view('users.edit', ['user'=>$user, 'roles'=>$roles, 'departments'=>$departments, 'designations'=>$designations]);
             }
         }
         else 
@@ -152,6 +155,8 @@ class UsersController extends Controller
         $user->sname = $request->input('sname');
         $user->phone = $request->input('phone');
         $user->address = $request->input('address');
+        $user->designation_id = $request->input('designation');
+        $user->department_id = $request->input('department');
         if(Auth::User()->role_id == 1)
             $user->role_id = $request->input('role_id');
         else 

@@ -28,8 +28,6 @@ class UsersTableSeeder extends Seeder
             'address' => 'Road-16, Flat-2B, Adabor, Mohammadpur, Dhaka',
             'password' => bcrypt('@lpha7SPL1'),
             'role_id' => '1',
-            'designation' => 'General Manager',
-            'department' => 'Sales & Marketing (Pumps & Valves)',
             'active' => '1',
         ]);
 
@@ -42,8 +40,6 @@ class UsersTableSeeder extends Seeder
             'address' => 'House-5, Road-16, Sector-9, Uttara, Dhaka',
             'password' => bcrypt('@lpha7SPL1'),
             'role_id' => '2',
-            'designation' => 'Deputy Manager',
-            'department' => 'Sales & Marketing (Pumps & Valves)',
             'active' => '1',
         ]);
     }

@@ -9,9 +9,17 @@
 				</div>
 				<div class="d-flex justify-content-center bg-light w-100 border-bottom pt-2 text-dark">
 					<select name='report-client' id='report-client' class='form-control form-control-sm ml-2 mr-2 mb-2' onchange='showClientContact(this)'>
+					@if($newid != null)
+						<option disabled> Select One</option>
+					@else
 					<option disabled selected> Select One</option>
+					@endif
 					@foreach($clients as $client)
+					@if($newid != null && $newid == $client->id)
+					<option class="text-primary bg-light" value='{{$client->id}}' selected>
+					@else
 					<option class="text-primary bg-light" value='{{$client->id}}'>
+					@endif
 						{{$client->organization}}
 					</option>
 					@endforeach

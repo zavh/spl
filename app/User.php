@@ -21,7 +21,10 @@ class User extends Authenticatable
         'email', 
         'password', 
         'phone', 
-        'address'
+        'address',
+        'active',
+        'department_id',
+        'designation_id'
     ];
 
     /**
@@ -37,8 +40,19 @@ class User extends Authenticatable
         return $this->belongsTo('App\Role');
     }
 
+    public function department(){
+        return $this->belongsTo('App\Department');
+    }
+
+    public function designation(){
+        return $this->belongsTo('App\Designation');
+    }
+
     public function tasks(){
         return $this->belongsToMany('App\Task');
     }
 
+    public function reports(){
+        return $this->belongsToMany('App\Report');
+    }
 }
