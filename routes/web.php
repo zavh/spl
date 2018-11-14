@@ -46,7 +46,9 @@ Route::post('/clients/validateonly', 'ClientsController@validateonly')->name('va
 Route::get('/client/cancel/{client_id?}', 'ClientsController@cancel');
 Route::get('/clients/listing', 'ClientsController@clientslisting')->name('clientlist');
 
+//Route::post('/clientcontacts/validateonly', 'ClientcontactsController@validateonly')->name('validateclient');
 Route::get('/clientcontacts/create/{client_id?}', 'ClientcontactsController@create');
+Route::get('/clientcontacts/{client_id?}/edit', 'ClientcontactsController@edit');
 Route::get('/clientcontacts/revert/{client_id?}', 'ClientcontactsController@contactheader');
 Route::get('/clientcontacts/index/{client_id?}', 'ClientcontactsController@index');
 Route::get('/clientcontacts/listing/{client_id?}', 'ClientcontactsController@contactlist');
