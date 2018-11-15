@@ -1,33 +1,25 @@
 function getQueryString(formname){
-    postqstring = '';
-    clearErrorFormatting(formname);
-    var textinput = document.forms[formname].getElementsByTagName("input");
-    var areainput = document.forms[formname].getElementsByTagName("textarea");
+    postqstring = '', formData = {};
+    var typeInput = document.forms[formname].getElementsByTagName("input");
+    var typeTextArea = document.forms[formname].getElementsByTagName("textarea");
 
-    var textQString = qstringFactory(textinput);
-    var areaQString = qstringFactory(areainput);
-    
-    if(textQString != '') postqstring = textQString;
-    if(postqstring != '' && areaQString !='') postqstring += "&" + areaQString;;
-    
-    return postqstring;
+    var formData = inputArrFactory(formData, typeInput);
+    var formData = inputArrFactory(formData, typeTextArea);
+    return JSON.stringify(formData);
 }
 
-function qstringFactory(nodelist){
-    var postqstring = '', i;
+function inputArrFactory(collection, nodelist){
+    var i;
     for(i=0;i<nodelist.length;i++){
         ename = nodelist[i].name;
         evalue = nodelist[i].value;
         if(ename=="")
             continue;
         else{
-            if(i==0)
-                postqstring += ename+"="+evalue;
-            else 
-                postqstring += "&"+ename+"="+evalue;
+            collection[ename] = evalue;
         } 
     }
-    return postqstring;
+    return collection;
 }
 function formErrorProcessing(item, index){
     var err = item.split("|");

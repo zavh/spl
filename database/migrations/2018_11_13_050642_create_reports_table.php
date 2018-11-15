@@ -18,8 +18,8 @@ class CreateReportsTable extends Migration
             $table->unsignedInteger('user_id');
             $table->json('report_data');
             $table->tinyInteger('stage');
-            $table->tinyInteger('completion');
-            $table->tinyInteger('acceptance');
+            $table->tinyInteger('completion')->default(0);
+            $table->tinyInteger('acceptance')->default(0);
             $table->timestamps();
         });
     }

@@ -5,7 +5,7 @@
           <div class="card-header text-white bg-danger" style='position:relative;font-size:12px;height:40px'>
             <span class="my-0 font-weight-normal">Unassigned Projects</span>
             <span style='position:absolute;right:10px'>
-            <a href="/user/report" style='color:white'>Create Report</a>
+            <a href="/reports/create" style='color:white'>Create Report</a>
             </span>
           </div>
           <!-- Body -->

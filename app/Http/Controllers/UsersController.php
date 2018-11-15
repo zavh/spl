@@ -102,6 +102,7 @@ class UsersController extends Controller
                 $designations = Designation::all();
                 return view('users.edit', ['user'=>$user, 'roles'=>$roles, 'departments'=>$departments, 'designations'=>$designations]);
             }
+            else return redirect('/home');
         }
         else 
             abort(404);
@@ -145,8 +146,6 @@ class UsersController extends Controller
 
         if($validator->fails()){
             return back()->withErrors($validator)->withInput();
-            //$abc = back()->withErrors($validator)->withInput();
-            //dd($abc);
         }
         $user = User::find($id);
         $user->name = $request->input('name');
@@ -234,16 +233,11 @@ class UsersController extends Controller
     }
 
     public function tasks(){
-        //$user = User::find($id);
         $tasks = User::find(Auth::User()->id)->tasks;
         foreach($tasks as $task){
             $task['project_name'] = Task::find($task->id)->project->project_name;
         }
-        //dd($tasks);
         return view('users.usertasks', ['tasks'=>$tasks]);
     }
 
-    public function report(){
-        return view('users.report');
-    }
 }

@@ -4,19 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Department;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DepartmentsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     public function index()
     {
-        //
-        $departments = Department::all();
-        return view('departments.index')->with('departments', $departments);
+        if(Auth::User()->id == 1){
+            $departments = Department::all();
+            return view('departments.index')->with('departments', $departments);
+        }
+        else abort(404);
     }
 
     /**
@@ -26,8 +28,10 @@ class DepartmentsController extends Controller
      */
     public function create()
     {
-        //
-        return view('departments.create');
+        if(Auth::User()->id == 1){
+            return view('departments.create');
+        }
+        else abort(404);
     }
 
     /**
@@ -66,10 +70,11 @@ class DepartmentsController extends Controller
      */
     public function edit($id)
     {
-        //
-        $department = Department::find($id);
-        // dd($department);
-        return view('departments.edit',['department'=>$department]);
+        if(Auth::User()->id == 1){
+            $department = Department::find($id);
+            return view('departments.edit',['department'=>$department]);
+        }
+        else abort(404);
     }
 
     /**
@@ -81,12 +86,13 @@ class DepartmentsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
-        $department = Department::find($id);
-        $department->name = $request->input('name');
-        
-        $department->save();
-        return redirect('/departments')->with('success', 'Department Updated');
+        if(Auth::User()->id == 1){
+            $department = Department::find($id);
+            $department->name = $request->input('name');
+            $department->save();
+            return redirect('/departments')->with('success', 'Department Updated');
+        }
+        else abort(404);
     }
 
     /**
@@ -97,10 +103,11 @@ class DepartmentsController extends Controller
      */
     public function destroy($id)
     {
-        //
-        $department = Department::find($id);
-        // dd($department);
-        $department->delete();
-        return redirect('/departments')->with('success', 'Department Deleted');
+        if(Auth::User()->id == 1){
+            $department = Department::find($id);
+            $department->delete();
+            return redirect('/departments')->with('success', 'Department Deleted');
+        }
+        else abort(404);
     }
 }

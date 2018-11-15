@@ -39,7 +39,6 @@ Route::post('/enquiries/store', 'EnquiriesController@store')->name('addenquiries
 
 Route::post('/users/credentials', 'UsersController@changepass')->name('changepass');
 Route::get('/user/tasks/', 'UsersController@tasks')->name('usertasks');
-Route::get('/user/report/', 'UsersController@report')->name('userreport');
 
 Route::post('/clients/store', 'ClientsController@store')->name('addclient');
 Route::post('/clients/validateonly', 'ClientsController@validateonly')->name('validateclient');
@@ -50,9 +49,7 @@ Route::get('/clientcontacts/create/{client_id?}', 'ClientcontactsController@crea
 Route::get('/clientcontacts/revert/{client_id?}', 'ClientcontactsController@contactheader');
 Route::get('/clientcontacts/index/{client_id?}', 'ClientcontactsController@index');
 Route::get('/clientcontacts/listing/{client_id?}', 'ClientcontactsController@contactlist');
-//Route::get('/clients', 'ClientsController@index')->name('clients');
-//Route::get('/projects', 'ProjectsController@index')->name('projects');
-//Route::get('/tasks', 'TasksController@index')->name('tasks');
+
 Route::resource('clients','ClientsController');
 Route::resource('projects','ProjectsController');
 Route::resource('enquiries','EnquiriesController');
@@ -62,3 +59,4 @@ Route::resource('roles', 'RolesController');
 Route::resource('departments', 'DepartmentsController');
 Route::resource('designations', 'DesignationsController');
 Route::resource('clientcontacts', 'ClientcontactsController');
+Route::resource('reports', 'ReportsController');

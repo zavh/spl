@@ -1,4 +1,4 @@
-var report_data = [];
+var report_data = {};
 var client_data;
 var client_index;
 function ajaxFunction(instruction, execute_id, divid){
@@ -62,6 +62,7 @@ function ajaxFunction(instruction, execute_id, divid){
                         client_index = i-1;
                         client_data[client_index].contacts = JSON.parse(vResponse.result.contacts);
                         client_data[client_index].contacts[0].selected = 1;
+                        client_data[client_index].contacts[0].dbflag = 0;
                         client_data[client_index].contactview = vResponse.result.contactview;
                         renderContact();
                         renderReport();
@@ -72,6 +73,14 @@ function ajaxFunction(instruction, execute_id, divid){
                         vResponse.result.message.forEach(formErrorProcessing);
                     }
                     return;
+                }
+                if(instruction == "saveStageOne"){
+                    var sResponse = JSON.parse(ajaxRequest.responseText);
+                    if(sResponse.result.status == 'success'){
+                        document.getElementById('stage_1').style.display = 'none';
+                        document.getElementById('stage_2').innerHTML = sResponse.result.view;
+                        return;
+                    }
                 }
                 ajaxDisplay.innerHTML = ajaxRequest.responseText;
             }
@@ -89,7 +98,13 @@ function ajaxFunction(instruction, execute_id, divid){
 
 		if(instruction == "newClientValidation"){
 			ajaxRequest.open("POST", "/clients/validateonly/", true);
-			ajaxRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			ajaxRequest.setRequestHeader("Content-type", "application/json");
+			ajaxRequest.send(execute_id);
+        }
+
+        if(instruction == "saveStageOne"){
+			ajaxRequest.open("POST", "/reports", true);
+			ajaxRequest.setRequestHeader("Content-type", "application/json");
 			ajaxRequest.send(execute_id);
         }
 }
@@ -166,19 +181,20 @@ function renderReport(){
                     nodecontent = 'Phone : ' + obj.contact;
                     addContactElements(parent_node, nodecontent,{class:'none'});
                 }
-                if(select_flag>0){
-                    document.getElementById("contact-row").style.display = '';
-                    document.getElementById("step1-complete").style.display = '';
-                }
-                else{ 
-                    document.getElementById("contact-row").style.display = 'none';
-                    document.getElementById("step1-complete").style.display = 'none';
-                }
+            }
+            console.log(select_flag);
+            if(select_flag>0){
+                document.getElementById("contact-row").style.display = '';
+                document.getElementById("step1-complete").style.display = '';
+            }
+            else{ 
+                document.getElementById("contact-row").style.display = 'none';
+                document.getElementById("step1-complete").style.display = 'none';
             }
         }
     }
     else {
-        
+        document.getElementById("step1-complete").style.display = 'none';
     }
 }
 
@@ -199,6 +215,19 @@ function addContactElements(parent_node, nodecontent,attObj){
 function newClientValidation(e, form){
     e.preventDefault();
     var postqstring = getQueryString(form.id);
-    
+    //console.log(postqstring);
+    clearErrorFormatting(form.id); // Clear any previous error
 	ajaxFunction('newClientValidation', postqstring, 'client-creator');
+}
+
+function saveStage(stage){
+    if(stage == 1){
+        var token = document.getElementsByName("_token");
+        report_data['client_data'] =client_data[client_index];
+        report_data['stage'] = stage;
+        report_data['client_index'] = client_index;
+        report_data['_token'] = token[0].value;
+        var qstring = JSON.stringify(report_data);
+        ajaxFunction('saveStageOne', qstring, 'stageTwo');
+    }
 }
