@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Clientcontact;
+use App\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
@@ -63,11 +64,14 @@ class ClientcontactsController extends Controller
             'name' => $request['contact_name'],
             'designation' => $request['designation'],
             'contact' => $request['contact'],
-            'client_id' => $request['client_id'],
+            'client_id' => $request['cc_client_id'],
             ]);
-        $result['status'] = 'success';
-        $result['client_id'] = $request['client_id'];
-        return response()->json(['result'=>$result]);
+        if($contactCreate){
+            $client_id = $request['cc_client_id'];
+            $contacts = Client::find($client_id)->clientcontacts;
+            $result['view'] = view('clientcontacts.index',['contacts'=>$contacts])->render();
+            $result['status'] = 'success';
+            return response()->json(['result'=>$result]);}
     }
 
     /**
@@ -122,15 +126,21 @@ class ClientcontactsController extends Controller
             $result['status'] = 'failed';
             $result['message'] = $validator->errors()->all();
             return response()->json(['result'=>$result]);
+            
         }
+        // dd($request);
         $contact = Clientcontact::find($id);
-        $contact->task_name = $request->input('contact_name');
+        // dd('request',$request,'contact',$contact);
+        $contact->name = $request->input('name');
         $contact->designation = $request->input('designation');
         $contact->contact = $request->input('contact');
-        $contact->client_id = $request->input('client_id');
-            
+        
+        $contact->save();
+
+        $contacts  = Clientcontact::where('client_id', $contact->client_id)->get(); 
         $result['status'] = 'success';
-        $result['client_id'] = $request['client_id'];
+        $result['client_id'] = $contact->client_id;
+        $result['view'] = view('clientcontacts.index',['contacts'=>$contacts])->render();
         return response()->json(['result'=>$result]);
     }
 

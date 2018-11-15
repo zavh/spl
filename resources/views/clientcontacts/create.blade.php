@@ -8,7 +8,7 @@
 <div class="media text-muted pt-0 pb-0 border-bottom border-secondary">
 	<div class="media-body pb-0 mb-0 small">
 		<div class="d-flex justify-content-center align-items-center w-100">
-			<form method="POST" action="{{ route('clientcontacts.store') }}" class='m-3 w-100' onsubmit="createContact(event, this);" name='addClientContactForm'>
+			<form method="POST" action="{{ route('clientcontacts.store') }}" class='m-3 w-100' onsubmit="createContact(event, this);" name='addClientContactForm' id='addClientContactForm'>
 				@csrf
 				<!-- Contact Name Input Starts-->
 				<div class="form-group row">
