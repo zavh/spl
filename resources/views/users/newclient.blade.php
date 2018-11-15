@@ -33,7 +33,20 @@
 								</span>
                             </div>
                         </div>                    
-                        <!-- Address Input Ends -->                        
+                        <!-- Address Input Ends -->
+                        <!-- Client Background Input Starts -->
+                        <div class="form-group row">
+                            <div class="input-group col-md-12" style="margin-top:-10px">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" style="font-size:12px">Company Background</span>
+                                </div>
+                                <textarea id="background" class="form-control" aria-label="With textarea" name="background" required=""></textarea>
+                                <span class="invalid-feedback " role="alert" id='background_error_span'>
+									<strong id='background_error'></strong>
+								</span>
+                            </div>
+                        </div>                    
+                        <!-- Client Background Input Ends -->
                         <!-- Contact Name Input Starts -->
                         <div class="form-group row">
                             <div class="input-group input-group-sm col-md-12"  style='margin-top:-10px'>

@@ -40,7 +40,7 @@
         
         <div class="col-md-12 col-lg-4">
           <div class="card mb-4 shadow-sm" id='user-container'>
-				@include('users.show', ['user'=>Auth::User()])
+				@include('users.show', ['user'=>$me])
           </div>
         </div>
       </div>

@@ -1,4 +1,4 @@
-var report_data = [];
+var report_data = {};
 var client_data;
 var client_index;
 function ajaxFunction(instruction, execute_id, divid){
@@ -54,12 +54,33 @@ function ajaxFunction(instruction, execute_id, divid){
                 }
                 if(instruction == "newClientValidation"){
                     var vResponse = JSON.parse(ajaxRequest.responseText);
-                    if(vResponse.result.status == 'success')
-                        console.log(vResponse);
+                    if(vResponse.result.status == 'success'){
+                        document.getElementById('client-chooser').innerHTML = vResponse.result.view;
+                        
+                        client_data = JSON.parse(vResponse.result.clients);
+                        var i = client_data.length;
+                        client_index = i-1;
+                        client_data[client_index].contacts = JSON.parse(vResponse.result.contacts);
+                        client_data[client_index].contacts[0].selected = 1;
+                        client_data[client_index].contacts[0].dbflag = 0;
+                        client_data[client_index].contactview = vResponse.result.contactview;
+                        renderContact();
+                        renderReport();
+                        var x = document.getElementsByName('tempcontact');
+                        x[0].checked = true;
+                    }
                     else {
                         vResponse.result.message.forEach(formErrorProcessing);
                     }
                     return;
+                }
+                if(instruction == "saveStageOne"){
+                    var sResponse = JSON.parse(ajaxRequest.responseText);
+                    if(sResponse.result.status == 'success'){
+                        document.getElementById('stage_1').style.display = 'none';
+                        document.getElementById('stage_2').innerHTML = sResponse.result.view;
+                        return;
+                    }
                 }
                 ajaxDisplay.innerHTML = ajaxRequest.responseText;
             }
@@ -77,7 +98,13 @@ function ajaxFunction(instruction, execute_id, divid){
 
 		if(instruction == "newClientValidation"){
 			ajaxRequest.open("POST", "/clients/validateonly/", true);
-			ajaxRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			ajaxRequest.setRequestHeader("Content-type", "application/json");
+			ajaxRequest.send(execute_id);
+        }
+
+        if(instruction == "saveStageOne"){
+			ajaxRequest.open("POST", "/reports", true);
+			ajaxRequest.setRequestHeader("Content-type", "application/json");
 			ajaxRequest.send(execute_id);
         }
 }
@@ -105,7 +132,7 @@ function showClientContact(el){
     renderReport();
 }
 
-function selectClientContat(el){
+function selectClientContact(el){
     var contact_index = el.dataset.index;
     if(el.checked)
         client_data[client_index].contacts[contact_index].selected = 1;
@@ -122,10 +149,16 @@ function renderContact(){
 }
 
 function renderReport(){
+    //Displaying Customer Name and Address
     document.getElementById('client-name').innerHTML = client_data[client_index].organization;
     document.getElementById('client-address').innerHTML = client_data[client_index].address;
-    document.getElementById('client-details').style.display = '';
+    document.getElementById('details-row').style.display = '';
+
+    //Displaying Customer Background
     
+    document.getElementById('background-details').innerHTML = client_data[client_index].background;
+    document.getElementById('background-row').style.display = '';
+
     if(client_data[client_index].contacts != null){
         var i;
         var num_contacts = client_data[client_index].contacts.length;
@@ -148,17 +181,20 @@ function renderReport(){
                     nodecontent = 'Phone : ' + obj.contact;
                     addContactElements(parent_node, nodecontent,{class:'none'});
                 }
-                if(select_flag>0){
-                    document.getElementById("contact-row").style.display = '';
-                }
-                else{ 
-                    document.getElementById("contact-row").style.display = 'none';
-                }
+            }
+            console.log(select_flag);
+            if(select_flag>0){
+                document.getElementById("contact-row").style.display = '';
+                document.getElementById("step1-complete").style.display = '';
+            }
+            else{ 
+                document.getElementById("contact-row").style.display = 'none';
+                document.getElementById("step1-complete").style.display = 'none';
             }
         }
     }
     else {
-        
+        document.getElementById("step1-complete").style.display = 'none';
     }
 }
 
@@ -178,46 +214,20 @@ function addContactElements(parent_node, nodecontent,attObj){
 
 function newClientValidation(e, form){
     e.preventDefault();
-    var postqstring = '';
-    clearErrorFormatting(form.id);
-    var formels = document.forms[form.id].getElementsByTagName("input");
-    for(i=0;i<formels.length;i++){
-        ename = formels[i].name;
-        evalue = formels[i].value;
-        if(ename=="")
-            continue;
-        else{
-            if(i==0)
-                postqstring += ename+"="+evalue;
-            else 
-                postqstring += "&"+ename+"="+evalue;
-        } 
-    }
+    var postqstring = getQueryString(form.id);
+    //console.log(postqstring);
+    clearErrorFormatting(form.id); // Clear any previous error
 	ajaxFunction('newClientValidation', postqstring, 'client-creator');
 }
 
-function formErrorProcessing(item, index){
-	var err = item.split("|");
-	var span = document.getElementById(err[0]+'_error_span');
-	var errmsg = document.getElementById(err[0]+'_error');
-	var inp = document.getElementById(err[0]);
-	inp.classList.add("is-invalid");
-	span.style.display = 'block';
-	errmsg.innerHTML += "&#9654;"+err[1]+"&nbsp;";
-}
-
-
-function clearErrorFormatting(name){
-	var els = document.forms[name].getElementsByTagName("input");
-	var e;
-	for(i=0;i<els.length;i++){
-		ename = els[i].name;
-		espan = document.getElementById(ename+"_error_span");
-		if(espan != null){
-			espan.style.display = 'none';
-			document.getElementById(ename).classList.remove("is-invalid");
-			document.getElementById(ename+"_error").innerHTML='';
-		}
-			
-	}
+function saveStage(stage){
+    if(stage == 1){
+        var token = document.getElementsByName("_token");
+        report_data['client_data'] =client_data[client_index];
+        report_data['stage'] = stage;
+        report_data['client_index'] = client_index;
+        report_data['_token'] = token[0].value;
+        var qstring = JSON.stringify(report_data);
+        ajaxFunction('saveStageOne', qstring, 'stageTwo');
+    }
 }

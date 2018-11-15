@@ -23,10 +23,10 @@
 							</button>
 							<input 
 								type='checkbox' 
-								name='contact[{{$index}}]'
+								name='tempcontact'
 								data-cid = "{{$contact->client_id}}"
 								data-index = "{{$index}}"
-								onclick = "selectClientContat(this)"
+								onclick = "selectClientContact(this)"
 								>
 						</div>
 					</div>

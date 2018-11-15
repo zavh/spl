@@ -49,29 +49,7 @@
 									{{-- </tr>                    --}}
 									</td></tr>
 									<tr>
-										<th scope="col">Designation</th>
-										<td> <input type='text' name='designation' value="{{$user->designation}}" class="form-control{{ $errors->has('designation') ? ' is-invalid' : '' }}" name="designation" value="{{ $user->designation }}"> 
-									{{-- <tr> --}}
-										@if ($errors->has('designation'))
-										<span class="invalid-feedback" role="alert">
-											<strong>{{ $errors->first('designation') }}</strong>
-										</span>
-										@endif
-									{{-- </tr>                    --}}
-									</td></tr>
-									<tr>
-										<th scope="col">Department</th>
-										<td> <input type='text' name='department' value="{{$user->department}}" class="form-control{{ $errors->has('department') ? ' is-invalid' : '' }}" name="department" value="{{ $user->department }}"> 
-									{{-- <tr> --}}
-										@if ($errors->has('department'))
-										<span class="invalid-feedback" role="alert">
-											<strong>{{ $errors->first('department') }}</strong>
-										</span>
-										@endif
-									{{-- </tr>                    --}}
-									</td></tr>									
-									<tr>
-										<th scope="col">Surname Name</th>
+										<th scope="col">Last Name</th>
 										<td> <input type='text' name='sname' value="{{$user->sname}}" class="form-control{{ $errors->has('sname') ? ' is-invalid' : '' }}" name="sname" value="{{ $user->sname }}"> 
 									{{-- <tr> --}}
 										@if ($errors->has('sname'))
@@ -79,8 +57,36 @@
 											<strong>{{ $errors->first('sname') }}</strong>
 										</span>
 										@endif
-									{{-- </tr>                    --}}
 									</td></tr>
+									<tr>
+										<th scope="col">Designation</th>
+										<td>
+											<select class="form-control" name="designation" required>
+												<option disabled value=''>Select One</option>
+												@foreach($designations as $designation)
+													@if($designation->id == $user->designation_id)
+													<option value="{{$designation->id}}" selected>{{$designation->name}}</option>
+													@else
+													<option value="{{$designation->id}}">{{$designation->name}}</option>
+													@endif
+												@endforeach
+											</select>
+										</td>
+									</tr>									<tr>
+										<th scope="col">Department</th>
+										<td>
+											<select class="form-control" name="department" required>
+												<option disabled value=''>Select One</option>
+												@foreach($departments as $department)
+													@if($department->id == $user->department_id)
+													<option value="{{$department->id}}" selected>{{$department->name}}</option>
+													@else
+													<option value="{{$department->id}}">{{$department->name}}</option>
+													@endif
+												@endforeach
+											</select>
+										</td>
+									</tr>
 									<tr>
 										<th scope="col">Phone</th>
 										<td> <input type='number' name='phone' value="{{$user->phone}}" class="form-control{{ $errors->has('phone') ? ' is-invalid' : '' }}" name="phone" value="{{ $user->phone }}"> 

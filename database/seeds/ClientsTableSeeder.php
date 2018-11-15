@@ -12,8 +12,9 @@ class ClientsTableSeeder extends Seeder
     public function run()
     {
         DB::table('clients')->insert([
-            'organization' => 'Applic Apparels',
-            'address' => 'Road-16, Flat-2B, Adabor, Mohammadpur, Dhaka',
+            'organization' => 'Megatek Engineering Pte Ltd',
+            'address' => '8 Jasimuddin Avenue, Sector-3, Uttara, Dhaka-1230',
+            'background' => 'Megatek is a supplier company of generators,boilers and installation works to energy sector.'
         ]);
     }
 }

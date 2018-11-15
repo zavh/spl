@@ -12,4 +12,8 @@ class Designation extends Model
     public $primaryKey = 'id';
     // Timestamps
     public $timestamps = true;
+
+    public function users(){
+        return $this->hasMany('App\User');
+    }
 }

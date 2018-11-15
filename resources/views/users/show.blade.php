@@ -33,11 +33,19 @@
 			</div>
 			<div class="row m-0 bg-light text-primary border-bottom w-100">
 				<div class="col-5 text-right text-primary ">Designation</div>
-				<div class="col-7 text-left text-success pl-0">{{$user->designation}}</div>
+				@if($user->designation_id == 0)
+				<div class="col-7 text-left text-danger pl-0">Not Configured</div>
+				@else 
+				<div class="col-7 text-left text-success pl-0">{{$user->designation->name}}</div>
+				@endif
 			</div>
 			<div class="row m-0 bg-light text-primary border-bottom w-100">
 				<div class="col-5 text-right text-primary ">Department</div>
-				<div class="col-7 text-left text-success pl-0">{{$user->department}}</div>
+				@if($user->department_id == 0)
+				<div class="col-7 text-left text-danger pl-0">Not Configured</div>
+				@else
+				<div class="col-7 text-left text-success pl-0">{{$user->department->name}}</div>
+				@endif
 			</div>	
 			<div class="row m-0 bg-light text-primary border-bottom w-100">
 				<div class="col-5 text-right text-primary ">Address</div>
@@ -53,7 +61,7 @@
 			</div>
 				<div class="row m-0 bg-light text-primary w-100">
 				<div class="col-5 text-right text-primary ">Role</div>
-				<div class="col-7 text-left text-success pl-0">{{$user->role_name}}</div>
+				<div class="col-7 text-left text-success pl-0">{{$user->role->role_name}}</div>
 			</div>
 		</div>
 	</div>
