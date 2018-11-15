@@ -102,8 +102,36 @@ class ClientcontactsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $contact = Clientcontact::find($id);
+        // dd($request);   
+        $messages = [
+            'name.required' => 'name|Please enter a valid name',
+            'designation.required' => 'designation|Designation is required',
+            'contact.required' => 'contact|Enter a valid phone number',
+            'contact.min' => 'contact|Contact number should be at least 6 digits',
+            'contact.max' => 'contact|Contact number should cannot exceed 17 digits',
+            'contact.integer' => 'contact|Phone number should contain digits only',
+        ];
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|max:100|min:3',
+            'designation' => 'required|max:100:min:4',
+            'contact' => 'required|integer|min:100000|max:99999999999999999'],
+            $messages);
         
+        if($validator->fails()){
+            $result['status'] = 'failed';
+            $result['message'] = $validator->errors()->all();
+            return response()->json(['result'=>$result]);
+        }
+        $contact = Clientcontact::find($id);
+        $contact->task_name = $request->input('contact_name');
+        $contact->designation = $request->input('designation');
+        $contact->contact = $request->input('contact');
+        $contact->client_id = $request->input('client_id');
+            
+        $result['status'] = 'success';
+        $result['client_id'] = $request['client_id'];
+        return response()->json(['result'=>$result]);
     }
 
     /**

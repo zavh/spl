@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Department;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+
 
 class DepartmentsController extends Controller
 {
@@ -43,6 +45,20 @@ class DepartmentsController extends Controller
     public function store(Request $request)
     {
         //
+        $messages = [
+            'name.required' => 'Please enter the name',
+            'name.min' => 'Name must be minimum 2 characters',
+            'name.max' => 'Name cannot be more than 191 characters',
+            'name.unique' => 'This name has already been taken'
+        ];
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|min:2|max:191|unique:departments,name'
+        ],$messages);
+
+        if($validator->fails()){
+            return back()->withErrors($validator)->withInput();
+        }
         // dd($request);
         $department = new Department;
         $department->name = $request->input('name');
@@ -87,10 +103,24 @@ class DepartmentsController extends Controller
     public function update(Request $request, $id)
     {
         if(Auth::User()->id == 1){
-            $department = Department::find($id);
-            $department->name = $request->input('name');
-            $department->save();
-            return redirect('/departments')->with('success', 'Department Updated');
+          $messages = [
+              'name.required' => 'Please enter the task name',
+              'name.min' => 'Task name must be minimum 2 characters',
+              'name.max' => 'Task name cannot be more than 191 characters'
+          ];
+
+          $validator = Validator::make($request->all(), [
+              'name' => 'required|min:2|max:191s'
+          ],$messages);
+
+          if($validator->fails()){
+              return back()->withErrors($validator)->withInput();
+          }
+          $department = Department::find($id);
+          $department->name = $request->input('name');
+
+          $department->save();
+          return redirect('/departments')->with('success', 'Department Updated');
         }
         else abort(404);
     }

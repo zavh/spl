@@ -59,6 +59,12 @@
                                         <a class="dropdown-item" href="{{ url('/roles') }}">
                                             {{ __('Role Management') }}
                                         </a>
+                                        <a class="dropdown-item" href="{{ url('/departments') }}">
+                                            {{ __('Department Management') }}
+                                        </a>
+                                        <a class="dropdown-item" href="{{ url('/designations') }}">
+                                            {{ __('Designation Management') }}
+                                        </a>
                                     @endif                                    
                                     <a class="dropdown-item" href="/changepass">
                                         {{ __('Change Password') }}

@@ -96,8 +96,16 @@ class ProjectsController extends Controller
             $enquiries[$i]['details'] = json_decode($x[$i]['details']);
             $enquiries[$i]['id'] = $x[$i]['id'];
         }
-        $assignment['enquiries'] = $enquiries;
-        return view('projects.show')->with('assignment',$assignment);
+        if(isset($enquiries))
+        {
+            $assignment['enquiries'] = $enquiries;
+            return view('projects.show')->with('assignment',$assignment);
+        }
+        else
+        {
+            return view('projects.show')->with('assignment',$assignment);
+        }
+        
     }
 
     /**
