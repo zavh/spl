@@ -97,3 +97,4 @@
 </div>
 @endsection
 <script src="{{ asset('js/clients.js?version=0.6') }}"></script>
+<script src="{{ asset('js/ajaxformprocess.js') }}"></script>

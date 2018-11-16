@@ -21,21 +21,25 @@ function ajaxFunction(instruction, execute_id, divid){
 		ajaxRequest.onreadystatechange = function(){
 			if(ajaxRequest.readyState == 4 && ajaxRequest.status == 200){
 				if(instruction == "editClientValidation"){
-					var ajaxDisplay = document.getElementById(divid);
 					var vResponse = JSON.parse(ajaxRequest.responseText);
-					if(vResponse.result.status == 'success'){
-						document.getElementById('client-contact-edit').innerHTML='';
+                    if(vResponse.result.status == 'success'){
+						console.log(vResponse);
+                        var ajaxDisplay = document.getElementById('client-contacts').innerHTML = vResponse.result.view;
+						
+                    }
+                    else {
+                        vResponse.result.message.forEach(formErrorProcessing);
+                    }
+                    return;
+				}
+				if(instruction == "addClientContact"){
+					var addResponse = JSON.parse(ajaxRequest.responseText);
+					//console.log(ajaxRequest.responseText);
+					if(addResponse.result.status == 'success'){
+						var ajaxDisplay = document.getElementById('client-contacts').innerHTML = addResponse.result.view;
+						ajaxFunction('cancelContactAdd', addResponse.result.client_id , 'clientcontact-add');
 						
 					}
-					else {
-						vResponse.result.message.forEach(formErrorProcessing);
-					}
-					return;
-				}
-				else if(instruction == "addClientContact"){
-					var addResponse = JSON.parse(ajaxRequest.responseText);
-					if(addResponse.result.status == 'success')
-						ajaxFunction('cancelContactAdd', addResponse.result.client_id , 'clientcontact-add');
 					else {
 						addResponse.result.message.forEach(formErrorProcessing);
 					}
@@ -75,7 +79,7 @@ function ajaxFunction(instruction, execute_id, divid){
 
 		if(instruction == "addClientContact"){
 			ajaxRequest.open("POST", "/clientcontacts", true);
-			ajaxRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			ajaxRequest.setRequestHeader("Content-type", "application/json");
 			ajaxRequest.send(execute_id);
 		}
 
@@ -113,9 +117,10 @@ function ajaxFunction(instruction, execute_id, divid){
 		if(instruction == "editClientValidation"){
 			var ccid = document.getElementById('clientcontact_id').value;
 			ajaxRequest.open("POST", "/clientcontacts/"+ccid, true);
-			ajaxRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			console.log(ccid);
+			ajaxRequest.setRequestHeader("Content-type", "application/json");
 			ajaxRequest.send(execute_id);
-        }
+		}
 }
 
 function deleteClient(client, clientid){
@@ -139,63 +144,29 @@ function updateClient(e){
 	ajaxFunction('updateClient', postqstring, 'client-details');
 }
 
-function createContact(e, el){
+function createContact(e, form){
+	// e.preventDefault();
+	// clearErrorFormatting(form.id);
+
+	// var postqstring = getQueryString(form.id);
+	// var token = document.getElementsByName("_token")[0].value;
+	// var name = document.getElementById("contact_name").value;
+	// var designation = document.getElementById("designation").value;
+	// var contact = document.getElementById("contact").value;
+	// var client_id = document.getElementById('cc_client_id').value;
+
+	// var postqstring = "_token="+token+"&designation="+designation+"&contact="+contact+"&contact_name="+name+"&client_id="+client_id;
+
 	e.preventDefault();
-	clearErrorFormatting(el.name);
-	var token = document.getElementsByName("_token")[0].value;
-	var name = document.getElementById("contact_name").value;
-	var designation = document.getElementById("designation").value;
-	var contact = document.getElementById("contact").value;
-	var client_id = document.getElementById('cc_client_id').value;
-
-	var postqstring = "_token="+token+"&designation="+designation+"&contact="+contact+"&contact_name="+name+"&client_id="+client_id;
-
+    var postqstring = getQueryString(form.id);
+	clearErrorFormatting(form.id); // Clear any previous error
+	console.log(postqstring);
 	ajaxFunction('addClientContact', postqstring, 'clientcontact-add');
 }
 
 function editClientValidation(e, form){
 	e.preventDefault();
-    var postqstring = '';
-    clearErrorFormatting(form.id);
-	var formels = document.forms[form.id].getElementsByTagName("input");
-	
-    for(i=0;i<formels.length;i++){
-        ename = formels[i].name;
-        evalue = formels[i].value;
-        if(ename=="")
-            continue;
-        else{
-            if(i==0)
-                postqstring += ename+"="+evalue;
-            else 
-                postqstring += "&"+ename+"="+evalue;
-        } 
-	}
-	//console.log(postqstring);
+    var postqstring = getQueryString(form.id);
+    clearErrorFormatting(form.id); // Clear any previous error
 	ajaxFunction('editClientValidation', postqstring, 'client-contact-edit');
-}
-
-function formErrorProcessing(item, index){
-	var err = item.split("|");
-	var span = document.getElementById(err[0]+'_error_span');
-	var errmsg = document.getElementById(err[0]+'_error');
-	var inp = document.getElementById(err[0]);
-	inp.classList.add("is-invalid");
-	span.style.display = 'block';
-	errmsg.innerHTML += "&#9654;"+err[1]+"&nbsp;";
-}
-
-function clearErrorFormatting(name){
-	var els = document.forms[name].getElementsByTagName("input");
-	var e;
-	for(i=0;i<els.length;i++){
-		ename = els[i].name;
-		espan = document.getElementById(ename+"_error_span");
-		if(espan != null){
-			espan.style.display = 'none';
-			document.getElementById(ename).classList.remove("is-invalid");
-			document.getElementById(ename+"_error").innerHTML='';
-		}
-			
-	}
 }
