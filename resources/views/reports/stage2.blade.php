@@ -10,9 +10,22 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text" style="font-size:12px;width:150px">Date of visit</span>
                         </div>
-                        <input type='date' name='visit-date' id='visit-date' class="form-control form-control" required>
-                        <span class="invalid-feedback " role="alert" id="visit-date_error_span" style="display: none;">
-                            <strong id="visit-date_error"></strong>
+                        <input 
+                            type='date' 
+                            name='visit_date' 
+                            id='visit_date' 
+                            class="form-control form-control" 
+                            placeholder='YYYY-mm-dd'
+                            onchange='stage2State()'
+                            required
+                            @isset($stage2["visit_date"])
+                                value="{{$stage2['visit_date']}}"
+                            @else 
+                                value=""
+                            @endisset
+                            >
+                        <span class="invalid-feedback " role="alert" id="visit_date_error_span" style="display: none;">
+                            <strong id="visit_date_error"></strong>
                         </span>
                     </div>
                 </div>
@@ -23,9 +36,20 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text" style="font-size:12px;width:150px">Meeting Issue</span>
                         </div>
-                        <textarea id="meeting-issue" class="form-control" aria-label="With textarea" name="meeting-issue" required=""></textarea>
-                        <span class="invalid-feedback " role="alert" id="meeting-issue_error_span" style="display: none;">
-                            <strong id="meeting-issue_error"></strong>
+                        <textarea 
+                            id="meeting_issue" 
+                            class="form-control" 
+                            aria-label="With textarea" 
+                            name="meeting_issue"
+                            @isset($stage2["visit_date"])
+                                value="{{$stage2['meeting_issue']}}"
+                            @else 
+                                value=""
+                            @endisset                            
+                            >
+                        </textarea>
+                        <span class="invalid-feedback " role="alert" id="meeting_issue_error_span" style="display: none;">
+                            <strong id="meeting_issue_error"></strong>
                         </span>
                     </div>
                 </div>
@@ -56,27 +80,51 @@
                     </div>
                 </div>
             <!-- Product discussed input ends -->
+            <!-- Outcome input starts -->
                 <div class="form-group row">
                     <div class="input-group col-md-12" style="margin-top:-10px">
                         <div class="input-group-prepend">
                             <span class="input-group-text" style="font-size:12px;width:150px">Outcome in brief</span>
                         </div>
-                        <textarea id="meeting-issue" class="form-control" aria-label="With textarea" name="meeting-issue" required=""></textarea>
-                        <span class="invalid-feedback " role="alert" id="meeting-issue_error_span" style="display: none;">
-                            <strong id="meeting-issue_error"></strong>
+                        <textarea id="outcome-brief" class="form-control" aria-label="With textarea" name="outcome-brief" required=""></textarea>
+                        <span class="invalid-feedback " role="alert" id="outcome-brief_error_span" style="display: none;">
+                            <strong id="outcome-brief_error"></strong>
                         </span>
                     </div>
                 </div>
+            <!-- Outcome input ends -->
+            <!-- Remarks input starts -->
                 <div class="form-group row">
                     <div class="input-group col-md-12" style="margin-top:-10px">
                         <div class="input-group-prepend">
                             <span class="input-group-text" style="font-size:12px;width:150px">Remarks, if any</span>
                         </div>
-                        <textarea id="meeting-issue" class="form-control" aria-label="With textarea" name="meeting-issue" required=""></textarea>
-                        <span class="invalid-feedback " role="alert" id="meeting-issue_error_span" style="display: none;">
-                            <strong id="meeting-issue_error"></strong>
+                        <textarea id="remarks" class="form-control" aria-label="With textarea" name="remarks"></textarea>
+                        <span class="invalid-feedback " role="alert" id="remarks_error_span" style="display: none;">
+                            <strong id="remarks_error"></strong>
                         </span>
                     </div>
+                </div>
+            <!-- Remarks input ends -->
+                <div class="d-flex justify-content-between border border-primary badge badge-pill w-100">
+                    
+                        <span class='text-primary'> 
+                            <a class='btn btn-primary rounded-circle text-white' onclick="backValidation()">
+                            <
+                            </a>
+                            &nbsp;Back
+                        </span>
+                        <span class='text-primary'> 
+                            <a class='btn btn-primary rounded text-white' onclick="saveStage(2)">
+                            Save
+                            </a>
+                        </span>
+                        <span class='text-primary'> 
+                            Submit
+                            <button type='submit' class='btn btn-primary rounded-circle' onclick="">
+                            >
+                            </button>
+                        </span>
                 </div>
                 </form>
             </div>

@@ -47,11 +47,11 @@ class ReportsController extends Controller
     public function store(Request $request)
     {
         $input = $request->all();
-        if($input["stage"] == 1){
-            $response['view'] = view('reports.stage2')->render();
-            $response['status'] = 'success';
-            return response()->json(['result'=>$response]);
-        }
+        //creating an empty stage2 variable
+
+        $response['view'] = view('reports.stage2')->render();
+        $response['status'] = 'success';
+        return response()->json(['result'=>$response]);
     }
 
     /**
@@ -62,7 +62,7 @@ class ReportsController extends Controller
      */
     public function show($id)
     {
-        //
+
     }
 
     /**

@@ -1,6 +1,8 @@
 var report_data = {};
 var client_data;
 var client_index;
+var stage2changed = false;
+var stage2save = true;
 function ajaxFunction(instruction, execute_id, divid){
 	var ajaxRequest;  // The variable that makes Ajax possible!
 		try{
@@ -76,8 +78,7 @@ function ajaxFunction(instruction, execute_id, divid){
                 }
                 if(instruction == "saveStageOne"){
                     var sResponse = JSON.parse(ajaxRequest.responseText);
-                    if(sResponse.result.status == 'success'){
-                        document.getElementById('stage_1').style.display = 'none';
+                    if(sResponse.result.status == 'success'){                        
                         document.getElementById('stage_2').innerHTML = sResponse.result.view;
                         return;
                     }
@@ -228,6 +229,34 @@ function saveStage(stage){
         report_data['client_index'] = client_index;
         report_data['_token'] = token[0].value;
         var qstring = JSON.stringify(report_data);
-        ajaxFunction('saveStageOne', qstring, 'stageTwo');
+        ajaxFunction('saveStageOne', qstring, 'stage_2');
+        document.getElementById('stage_1').style.display = 'none';
     }
+}
+
+function stage2State(){
+    stage2changed = true;
+    stage2save = false;
+}
+
+function backValidation(){
+    console.log(stage2changed);
+    console.log(stage2save);
+    if(stage2changed && !stage2save){
+        var saveStage = confirm("Your Input will be lost. Would you like to Save?");
+        if(saveStage){
+        }
+        else{
+            backToStageOne();
+        }
+    }
+    else 
+        backToStageOne();
+}
+
+function backToStageOne(){
+    stage2changed = false;
+    stage2save = true;
+    document.getElementById("stage_2").innerHTML='';
+    document.getElementById('stage_1').style.display = '';
 }
