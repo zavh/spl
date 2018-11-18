@@ -13,21 +13,13 @@
 							</div>
 							@foreach($users as $index=>$user)
 								<div class="row m-0 bg-light border-bottom w-100">
-									<div class="col-md-4 text-primary pl-1 text-primary ">Username: {{$user->name}}</div>
+									<div class="col-md-4 text-primary pl-1 text-secondary">Username: <strong>{{$user->name}}</strong></div>
 									<div class="col-md-4 text-success pl-1 text-success ">Email: {{$user->email}}</div>
 									<div class="col-md-4 text-success pl-1 text-success ">
-										<div class="d-flex justify-content-between align-items-center w-100 ">
-										<a href="javascript:void(0)" onclick="deleteUser('{{$user->name}}','{{$user->id}}')" class='text-danger'>Delete</a>
-										<a href="javascript:void(0)" onclick="ajaxFunction('viewuser', '{{$user->id}}', 'user-container')">Details</a>
-										<a href="javascript:void(0)" onclick="ajaxFunction('viewuser', '{{$user->id}}', 'user-container')">Deactivate</a>
-										<form 
-											id="user-delete-form-{{$user->id}}"
-											method="post"
-											action="{{route('users.destroy', [$user->id])}}" 
-											>
-											<input type="hidden" name="_method" value="delete">
-											{{csrf_field()}}
-										</form>
+										<div class="d-flex justify-content-between pt-1">
+										<a href="javascript:void(0)" onclick="deleteUser('{{$user->name}}','{{$user->id}}')" class='badge-danger badge padge-pill'>Delete</a>
+										<a href="javascript:void(0)" onclick="ajaxFunction('viewuser', '{{$user->id}}', 'user-container')" class='badge-primary badge padge-pill'>Details</a>
+										<a href="javascript:void(0)" onclick="ajaxFunction('viewuser', '{{$user->id}}', 'user-container')" class='badge-warning badge padge-pill'>Deactivate</a>
 										</div>
 									</div>
 								</div>
@@ -45,5 +37,9 @@
         </div>
       </div>
     </div>
+	<form id="user-delete-form-{{$user->id}}" method="post" action="{{route('users.destroy', [$user->id])}}" >
+		<input type="hidden" name="_method" value="delete">
+		{{csrf_field()}}
+	</form>
 @endsection
 <script src="{{ asset('js/users.js?version=0.1') }}"></script>

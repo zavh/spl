@@ -1,5 +1,5 @@
 var report_data = {};
-var client_data;
+var client_data = [];
 var client_index;
 var stage2changed = false;
 var stage2save = true;
@@ -83,6 +83,16 @@ function ajaxFunction(instruction, execute_id, divid){
                         return;
                     }
                 }
+                if(instruction == "clientDetails"){
+                    var cResponse = JSON.parse(ajaxRequest.responseText);
+                    var data = JSON.parse(cResponse.result.report_data);
+                    client_index = data.client_index;
+                    client_data[client_index] = data.client_data;
+                    //renderContact();
+                    renderReport();
+                    console.log(data);
+                    return;
+                }
                 ajaxDisplay.innerHTML = ajaxRequest.responseText;
             }
 	    } 
@@ -108,6 +118,10 @@ function ajaxFunction(instruction, execute_id, divid){
 			ajaxRequest.setRequestHeader("Content-type", "application/json");
 			ajaxRequest.send(execute_id);
         }
+		if(instruction == "clientDetails"){
+			ajaxRequest.open("GET", "/report/clientdetails/"+execute_id, true);
+			ajaxRequest.send();
+        }        
 }
 
 function showClientContact(el){
@@ -231,6 +245,7 @@ function saveStage(stage){
         var qstring = JSON.stringify(report_data);
         ajaxFunction('saveStageOne', qstring, 'stage_2');
         document.getElementById('stage_1').style.display = 'none';
+        console.log(qstring);
     }
 }
 
@@ -240,8 +255,6 @@ function stage2State(){
 }
 
 function backValidation(){
-    console.log(stage2changed);
-    console.log(stage2save);
     if(stage2changed && !stage2save){
         var saveStage = confirm("Your Input will be lost. Would you like to Save?");
         if(saveStage){

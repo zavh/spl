@@ -79,8 +79,8 @@ class UsersController extends Controller
             if($userCreate){
                 $users = User::all();
                 $me = User::find(Auth::User()->id);
-                dd($request);
-                //return view('users.index', ['users'=>$users,'me'=>$me]);
+                //dd($request);
+                return view('users.index', ['users'=>$users,'me'=>$me]);
                 }
             }
         }
@@ -96,7 +96,7 @@ class UsersController extends Controller
     public function edit(User $user)
     {   
         if(Auth::Check()){
-            if(Auth::User()->id == 1 || $user->id == Auth::User()->id){
+            if(Auth::User()->role_id == 1 || $user->id == Auth::User()->id){
                 $roles = DB::table('roles')->get();
                 $departments = Department::all();
                 $designations = Designation::all();
@@ -111,10 +111,6 @@ class UsersController extends Controller
     public function update(Request $request, $id)
     {
         $messages = [
-            'task_name.required' => 'Please enter the task name',
-            'task_name.min' => 'Task name must be minimum 2 characters',
-            'task_name.max' => 'Task name cannot be more than 191 characters',
-
             'email.required' => 'Please enter the email',
             'email.email' => 'Invalid email format',
             
@@ -126,13 +122,12 @@ class UsersController extends Controller
             'sname.min' => 'surname must be minimum 2 characters',
             'sname.max' => 'surname cannot be more than 191 characters',
 
-            'phone.required' => 'please type the Phone number',
             'phone.numeric' => 'the phone number must be a number',
             'phone.min' =>  'phone number must be minimum 2 characters',
             'phone.max' => 'phone number cannot be more than 15 characters',
 
-            'address.required' => 'Please enter the address',
-            'address.max' => 'address cannot be more than 3000 characters'
+            'address.max' => 'Address cannot be more than 100 characters',
+            'address.min' => 'Address cannot be less than 5 characters',
         ];
 
         $validator = Validator::make($request->all(), [
@@ -140,8 +135,8 @@ class UsersController extends Controller
             'email'=>'required|email',
             'fname'=>'required|min:2|max:191',
             'sname'=>'required|min:2|max:191',
-            'phone'=>'required|numeric|min:1000000|max:999999999999999',
-            'address'=>'required|max:3000'
+            'phone'=>'numeric|min:1000000|max:999999999999999',
+            'address'=>'max:100|min:5'
         ],$messages);
 
         if($validator->fails()){
@@ -240,4 +235,13 @@ class UsersController extends Controller
         return view('users.usertasks', ['tasks'=>$tasks]);
     }
 
+    public function reports(){
+        $x = User::find(Auth::User()->id)->reports->where('completion',0);
+        $reports = array();
+        foreach($x as $index=>$report){
+            $reports[$index]['data'] = json_decode($report->report_data);
+            $reports[$index]['id'] = $report->id;
+        }
+        return view('users.userreports', ['reports'=>$reports]);
+    }
 }

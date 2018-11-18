@@ -1,4 +1,4 @@
-<div class=" mb-0 bg-white rounded">
+<div class="mb-0 bg-white rounded">
 	<div class="media text-muted">
 		<div class="media-body small">
 			<div class="d-flex justify-content-between align-items-center w-100 border-bottom">

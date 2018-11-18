@@ -2,10 +2,8 @@
 @extends('layouts.app')
 @section('content')
 <div class='row pb-2 small w-100'>
-	<div class='col-md-3 text-center' style='border-bottom: 2px solid red'>Step 1</div>
-	<div class='col-md-3 text-center text-muted' style='border-bottom: 1px solid #eee'>Step 2</div>
-	<div class='col-md-3 text-center text-muted' style='border-bottom: 1px solid #eee'>Step 3</div>
-	<div class='col-md-3 text-center text-muted' style='border-bottom: 1px solid #eee'>Step 4</div>
+	<div class='col-md-6 text-center' style='border-bottom: 2px solid red'>Step 1</div>
+	<div class='col-md-6 text-center text-muted' style='border-bottom: 1px solid #eee'>Step 2</div>
 </div>
 
 <div class="container-fluid">
@@ -22,17 +20,20 @@
 							<div class="d-flex justify-content-center bg-light w-100 border-bottom pt-2 text-dark">
 								<h5 style='text-decoration:underline'>VISIT REPORT</h5>
 							</div>
-							<!-- Reported Detail Section Starts-->
+							<!-- Report Detail Section Starts-->
 							<div class="m-0 pl-4 border-bottom">
 								<table class="text-primary small">
-									<tr><td>Name</td><td>:</td><td>{{Auth::User()->fname}}&nbsp;{{Auth::User()->sname}}</td></tr>
-									<tr><td>Designation</td><td>:</td><td>{{Auth::User()->designation->name}}</td></tr>
-									<tr><td>Department</td><td>:</td><td>{{Auth::User()->department->name}}</td></tr>
+									<tr><td>Name</td><td>:</td><td>{{$rc_user->fname}}&nbsp;{{$rc_user->sname}}</td></tr>
+									<tr><td>Designation</td><td>:</td><td>{{$rc_user->designation->name}}</td></tr>
+									<tr><td>Department</td><td>:</td><td>{{$rc_user->department->name}}</td></tr>
 									<tr><td>Date of submission</td><td>:</td><td>{{date('d-M-Y')}}</td></tr>
 								</table>
 							</div>
-							<!-- Reported Detail Section Ends-->
-							<!-- Client Detail Section Starts-->
+							<!-- Report Detail Section Ends-->
+                            <script>
+                                ajaxFunction('clientDetails', '{{$report_id}}' , '');
+                            </script>
+                            							<!-- Client Detail Section Starts-->
 							<div class='row m-2 border' id='details-row' style='display:none'>
 								<div class='col-6 border-right'>
 									<h6 class='card-header bg-white text-dark' style='border:none'>Customer Name & Address</h6>

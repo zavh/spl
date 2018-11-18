@@ -32,7 +32,11 @@ function ajaxFunction(instruction, execute_id, divid){
 		if(instruction == "viewusertasks"){
 			ajaxRequest.open("GET", "/user/tasks", true);
 			ajaxRequest.send();
-		}		
+		}
+		if(instruction == "viewuserreports"){
+			ajaxRequest.open("GET", "/user/reports", true);
+			ajaxRequest.send();
+		}
 }
 
 function deleteUser(user, userid){

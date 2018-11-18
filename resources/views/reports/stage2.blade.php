@@ -18,7 +18,7 @@
                             placeholder='YYYY-mm-dd'
                             onchange='stage2State()'
                             required
-                            @isset($stage2["visit_date"])
+                            @isset($stage2->visit_date)
                                 value="{{$stage2['visit_date']}}"
                             @else 
                                 value=""

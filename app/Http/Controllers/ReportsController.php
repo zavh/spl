@@ -10,11 +10,11 @@ use App\Report;
 
 class ReportsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index()
     {
         //
@@ -31,8 +31,26 @@ class ReportsController extends Controller
             $user = Auth::User();
             if($user->fname && $user->sname && $user->designation_id >0 && $user->designation_id >0)
                 return view('reports.create');
-            else 
-                return redirect('/users/'.Auth::User()->id."/edit");
+            else {
+                $messages = [
+                    'fname.required' => 'Required for Visit Report creation',
+                    'fname.min' => 'First name must be minimum 2 characters',
+                    'fname.max' => 'first name cannot be more than 191 characters',
+                    
+                    'sname.required' => 'Required for Visit Report creation',
+                    'sname.min' => 'surname must be minimum 2 characters',
+                    'sname.max' => 'surname cannot be more than 191 characters',
+                ];
+                $x['fname'] = $user->fname;
+                $x['sname'] = $user->sname;
+
+                $validator = Validator::make($x, [
+                    'fname'=>'required|min:2|max:191',
+                    'sname'=>'required|min:2|max:191',
+                ],$messages);
+                return redirect("/users/".Auth::User()->id."/edit")->withErrors($validator);
+            }
+                
         }
         else 
         return redirect("/login");
@@ -46,12 +64,25 @@ class ReportsController extends Controller
      */
     public function store(Request $request)
     {
-        $input = $request->all();
-        //creating an empty stage2 variable
+        if(Auth::Check()){
+            $input = $request->all();
 
-        $response['view'] = view('reports.stage2')->render();
-        $response['status'] = 'success';
-        return response()->json(['result'=>$response]);
+            $reportCreate = Report::create([
+                'user_id' => Auth::User()->id,
+                'report_data' => json_encode($input),
+                'stage' => 1,
+                'completion' => 0,
+                'acceptance' => 0,
+                ]);
+
+            $response['view'] = view('reports.stage2')->render();
+            $response['status'] = 'success';
+            return response()->json(['result'=>$response]);
+        }
+        else {
+            $response['status'] = 'failed';
+            $response['message'] = 'not logged in';
+        }
     }
 
     /**
@@ -73,7 +104,22 @@ class ReportsController extends Controller
      */
     public function edit($id)
     {
-        //
+        if(Auth::Check()){
+            $report = Report::find($id);
+            if($report->completion == 0){
+                if($report->user_id == Auth::User()->id || Auth::User()->role_id == 1){
+                    $rc_user = User::find($report->user_id);
+                    return view('reports.edit', ['report_id'=>$id, 'rc_user'=>$rc_user]);
+                }
+                else 
+                    return redirect('/home');
+            }
+            else {
+                return view('reports.show', ['report'=>$report]);
+            }
+        }
+        else 
+            return redirect('/login');
     }
 
     /**
@@ -97,5 +143,11 @@ class ReportsController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function clientdetails($id)
+    {
+        $report = Report::find($id);
+        return response()->json(['result'=>$report]);
     }
 }
