@@ -40,6 +40,7 @@ Route::post('/enquiries/store', 'EnquiriesController@store')->name('addenquiries
 Route::post('/users/credentials', 'UsersController@changepass')->name('changepass');
 Route::get('/user/tasks', 'UsersController@tasks')->name('usertasks');
 Route::get('/user/reports', 'UsersController@reports')->name('userreports');
+Route::post('/user/deactivate/{user_id?}', 'UsersController@deactivate');
 
 Route::post('/clients/store', 'ClientsController@store')->name('addclient');
 Route::post('/clients/validateonly', 'ClientsController@validateonly')->name('validateclient');

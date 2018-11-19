@@ -244,4 +244,9 @@ class UsersController extends Controller
         }
         return view('users.userreports', ['reports'=>$reports]);
     }
+    public function deactivate($id)
+    {
+        $user = User::find($id);
+        dd($user);
+    }
 }
