@@ -8,7 +8,7 @@
 
 <div class="container-fluid">
 	<div class="row" >
-		<div class="col-md-12 col-lg-6 pl-3 pr-3">
+		<div class="col-md-12 col-lg-8 pl-3 pr-3">
 			<div class="card mb-4 shadow-sm h-md-250">
 				<div class=" mb-0 bg-white rounded">
 					<div class="media text-muted">
@@ -35,10 +35,10 @@
                             </script>
                             							<!-- Client Detail Section Starts-->
 							<div class='row m-2 border' id='details-row' style='display:none'>
-								<div class='col-6 border-right'>
+								<div class='col-5 border-right'>
 									<h6 class='card-header bg-white text-dark' style='border:none'>Customer Name & Address</h6>
 								</div>
-								<div class='col-6'>
+								<div class='col-7'>
 									<div id='client-name' class='border-bottom border-success'></div>
 									<div id='client-address' class='pt-0'></div>
 								</div>
@@ -46,41 +46,90 @@
 							<!-- Client Detail Section Ends-->
 							<!-- Client Contact Section Starts-->
 							<div class='row m-2 border' id='contact-row' style='display:none'>
-								<div class='col-6 border-right'>
+								<div class='col-5 border-right'>
 									<h6 class='card-header bg-white text-dark' style='border:none;'>Person contacted</h6>
 								</div>
-								<div class='col-6' id='contact-details'>
+								<div class='col-7' id='contact-details'>
 								</div>
 							</div>
 							<!-- Client Contact Section Ends-->
+							<!-- Visit Date Section Starts-->
+							<div class='row m-2 border' id='visit_date-row' style='display:none'>
+								<div class='col-5 border-right'>
+									<h6 class='card-header bg-white text-dark' style='border:none'>Visit Date</h6>
+								</div>
+								<div class='col-7' id='visit_date-details'>
+								</div>
+							</div>
+							<!-- Visit Date Section Ends-->
 							<!-- Client Background Section Starts-->
 							<div class='row m-2 border' id='background-row' style='display:none'>
-								<div class='col-6 border-right'>
+								<div class='col-5 border-right'>
 									<h6 class='card-header bg-white text-dark' style='border:none'>Company Background</h6>
 								</div>
-								<div class='col-6' id='background-details'>
+								<div class='col-7' id='background-details'>
 								</div>
 							</div>
 							<!-- Client Background Section Ends-->
+							<!-- Meeting Issue Section Starts-->
+							<div class='row m-2 border' id='meeting_issue-row' style='display:none'>
+								<div class='col-5 border-right'>
+									<h6 class='card-header bg-white text-dark' style='border:none'>Meeting Issue</h6>
+								</div>
+								<div class='col-7' id='meeting_issue-details'>
+								</div>
+							</div>
+							<!-- Meeting Issue Section Ends-->
+							<!-- Requirement Details Section Starts-->
+							<div class='row m-2 border' id='requirement-details-row' style='display:none'>
+								<div class='col-5 border-right'>
+									<h6 class='card-header bg-white text-dark' style='border:none'>Requirement Details</h6>
+								</div>
+								<div class='col-7' id='requirement-details-details'>
+								</div>
+							</div>
+							<!-- Requirement Details Section Ends-->
+							<!-- Product Discussed Section Starts-->
+							<div class='row m-2 border' id='product-discussed-row' style='display:none'>
+								<div class='col-5 border-right'>
+									<h6 class='card-header bg-white text-dark' style='border:none'>Product Discussed</h6>
+								</div>
+								<div class='col-7' id='product-discussed-details'>
+								</div>
+							</div>
+							<!-- Product Discussed Section Ends-->
+							<!-- Outcome in Brief Section Starts-->
+							<div class='row m-2 border' id='outcome-brief-row' style='display:none'>
+								<div class='col-5 border-right'>
+									<h6 class='card-header bg-white text-dark' style='border:none'>Outcome of the visit in brief</h6>
+								</div>
+								<div class='col-7' id='outcome-brief-details'>
+								</div>
+							</div>
+							<!-- Outcome in Brief Section Ends-->
+							<!-- Remarks Section Starts-->
+							<div class='row m-2 border' id='remarks-row' style='display:none'>
+								<div class='col-5 border-right'>
+									<h6 class='card-header bg-white text-dark' style='border:none'>Remarks, if any</h6>
+								</div>
+								<div class='col-7' id='remarks-details'>
+								</div>
+							</div>
+							<!-- Remarks Section Ends-->
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	
-		<div class="col-md-12 col-lg-6">
+		<div class="col-md-12 col-lg-4">
             <div id='stage_1'>
                 <div class='row'>
-                    <div class="col-md-6 w-100 pl-3 pr-3" id='client-chooser'>
-                        <script>
-                            ajaxFunction('viewClientList', '' , 'client-chooser');
-                        </script>
+                    <div class="col-md-12 w-100 pl-3 pr-3" id='client-chooser'>
+                        <div id='client-contacts' class="card mb-4 shadow-sm">
+                        </div>
                     </div>
-                    <div class="col-md-6 pl-3 pr-3" id='client-creator'>
-                        @include('users.newclient')
-                    </div>
-                </div>
-                
+                </div>                
                 <div class="d-flex justify-content-center">
                     <div class="m-4 border border-primary badge badge-pill shadow-sm" id='step1-complete' style='display:none'>
                         <span class='text-primary'> 

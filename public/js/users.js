@@ -42,9 +42,47 @@ function ajaxFunction(instruction, execute_id, divid){
 function deleteUser(user, userid){
 	var confirmation = confirm("Please confirm deletion of User : '"+user+"'");
 	if(confirmation){
-		//preventDefault();
-		var formid = 'user-delete-form-'+userid;
-		var formel = document.getElementById(formid);
-		formel.submit();
+		var uDeleteForm = document.createElement("form");
+		uDeleteForm.target = "";
+		uDeleteForm.method = "POST";
+		uDeleteForm.action = "/users/"+userid;
+
+		var methodInput = document.createElement("input");
+		methodInput.type = "hidden";
+		methodInput.name = "_method";
+		methodInput.value = "delete";
+		uDeleteForm.appendChild(methodInput);
+
+		var csrfInput = document.createElement("input");
+		csrfInput.type = "hidden";
+		csrfInput.name = "_token";
+		csrfInput.value = document.querySelector('meta[name="csrf-token"]').getAttribute('content');;
+		uDeleteForm.appendChild(csrfInput);
+
+		uDeleteForm.submit();	
+	}
+}
+
+function deleteReport(reportid){
+	var confirmation = confirm("Please confirm deletion of report");
+	if(confirmation){
+		var rDeleteForm = document.createElement("form");
+		rDeleteForm.target = "";
+		rDeleteForm.method = "POST";
+		rDeleteForm.action = "/reports/"+reportid;
+
+		var methodInput = document.createElement("input");
+		methodInput.type = "hidden";
+		methodInput.name = "_method";
+		methodInput.value = "delete";
+		rDeleteForm.appendChild(methodInput);
+
+		var csrfInput = document.createElement("input");
+		csrfInput.type = "hidden";
+		csrfInput.name = "_token";
+		csrfInput.value = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+		rDeleteForm.appendChild(csrfInput);
+
+		rDeleteForm.submit();
 	}
 }

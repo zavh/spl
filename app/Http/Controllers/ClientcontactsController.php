@@ -163,7 +163,6 @@ class ClientcontactsController extends Controller
     public function contactlist($client_id)
     {
         $clinetContacts = Clientcontact::where('client_id', $client_id)->get();
-        //return view('clientcontacts.contactlisting',['contacts'=>$clinetContacts]);
         $response['view'] = view('clientcontacts.contactlisting',['contacts'=>$clinetContacts])->render();
         $response['contacts'] = json_encode($clinetContacts);
         return response()->json(['data'=>$response]);

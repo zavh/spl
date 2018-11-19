@@ -29,7 +29,6 @@
 				</div>
             </div>      
         </div>
-        
         <div class="col-md-12 col-lg-4">
           <div class="card mb-4 shadow-sm" id='user-container'>
 				@include('users.show', ['user'=>$me])
@@ -37,9 +36,6 @@
         </div>
       </div>
     </div>
-	<form id="user-delete-form-{{$user->id}}" method="post" action="{{route('users.destroy', [$user->id])}}" >
-		<input type="hidden" name="_method" value="delete">
-		{{csrf_field()}}
-	</form>
+	@csrf
 @endsection
 <script src="{{ asset('js/users.js?version=0.1') }}"></script>

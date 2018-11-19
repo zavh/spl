@@ -1,6 +1,7 @@
 var report_data = {};
 var client_data = [];
 var client_index;
+var report_id = 0;
 var stage2changed = false;
 var stage2save = true;
 function ajaxFunction(instruction, execute_id, divid){
@@ -77,7 +78,7 @@ function ajaxFunction(instruction, execute_id, divid){
                     return;
                 }
                 if(instruction == "saveStageOne"){
-                    var sResponse = JSON.parse(ajaxRequest.responseText);
+                    var sResponse = JSON.parse(ajaxRequest.responseText); 
                     if(sResponse.result.status == 'success'){                        
                         document.getElementById('stage_2').innerHTML = sResponse.result.view;
                         return;
@@ -85,12 +86,19 @@ function ajaxFunction(instruction, execute_id, divid){
                 }
                 if(instruction == "clientDetails"){
                     var cResponse = JSON.parse(ajaxRequest.responseText);
+                    report_id = cResponse.result.id;
                     var data = JSON.parse(cResponse.result.report_data);
                     client_index = data.client_index;
                     client_data[client_index] = data.client_data;
-                    //renderContact();
                     renderReport();
-                    console.log(data);
+                    renderContact();
+
+                    var cv = document.getElementsByName('tempcontact'), i, cv_dataset;
+                    for(i=0;i<cv.length;i++){
+                        cv_dataset = cv[i].dataset.index;
+                        if(client_data[client_index].contacts[cv_dataset].selected == 1)
+                            cv[i].checked = true;
+                    }
                     return;
                 }
                 ajaxDisplay.innerHTML = ajaxRequest.responseText;
@@ -114,9 +122,14 @@ function ajaxFunction(instruction, execute_id, divid){
         }
 
         if(instruction == "saveStageOne"){
-			ajaxRequest.open("POST", "/reports", true);
-			ajaxRequest.setRequestHeader("Content-type", "application/json");
-			ajaxRequest.send(execute_id);
+            if(report_id>0){ //send to update
+                ajaxRequest.open("POST", "/reports/"+report_id, true);
+            }
+            else { //send to save
+                ajaxRequest.open("POST", "/reports", true);
+            }
+            ajaxRequest.setRequestHeader("Content-type", "application/json");
+            ajaxRequest.send(execute_id);
         }
 		if(instruction == "clientDetails"){
 			ajaxRequest.open("GET", "/report/clientdetails/"+execute_id, true);
@@ -129,7 +142,7 @@ function showClientContact(el){
     var y = el.selectedIndex;
     var index = x[y].value;
     var client_id = index;
-    
+
     if(client_data[y-1].contacts == null){
         ajaxFunction('viewClientContacts', client_id, 'client-contacts');
     }
@@ -197,7 +210,6 @@ function renderReport(){
                     addContactElements(parent_node, nodecontent,{class:'none'});
                 }
             }
-            console.log(select_flag);
             if(select_flag>0){
                 document.getElementById("contact-row").style.display = '';
                 document.getElementById("step1-complete").style.display = '';
@@ -230,28 +242,55 @@ function addContactElements(parent_node, nodecontent,attObj){
 function newClientValidation(e, form){
     e.preventDefault();
     var postqstring = getQueryString(form.id);
-    //console.log(postqstring);
     clearErrorFormatting(form.id); // Clear any previous error
 	ajaxFunction('newClientValidation', postqstring, 'client-creator');
 }
 
 function saveStage(stage){
+    var token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    report_data['_token'] = token;
+    report_data['client_index'] = client_index;
+    report_data['stage'] = stage;
     if(stage == 1){
-        var token = document.getElementsByName("_token");
         report_data['client_data'] =client_data[client_index];
-        report_data['stage'] = stage;
-        report_data['client_index'] = client_index;
-        report_data['_token'] = token[0].value;
+        if(report_id > 0)
+            report_data['_method'] = "PUT";
         var qstring = JSON.stringify(report_data);
         ajaxFunction('saveStageOne', qstring, 'stage_2');
         document.getElementById('stage_1').style.display = 'none';
-        console.log(qstring);
+    }
+    if(stage == 2){
+        report_data['report_data']=getQueryString('visitReportDetails');
+        console.log(report_data);
     }
 }
 
 function stage2State(){
-    stage2changed = true;
-    stage2save = false;
+    var x = document.forms['visitReportDetails'].getElementsByClassName("form-control"), i, foundflag=false;
+    for(i=0;i<x.length;i++){
+        if(x[i].value != ''){
+            stage2changed = true;
+            stage2save = false;
+            document.getElementById('stage2save').style.display = '';
+            foundflag = true;
+        }
+    }
+    if(!foundflag){
+        document.getElementById('stage2save').style.display = 'none';
+        stage2changed = false;
+        stage2save = true;
+    }
+}
+
+function stage2toReport(el){
+    if(el.value == ''){
+        document.getElementById(el.id+'-row').style.display = 'none';
+        document.getElementById(el.id+'-details').innerHTML = '';
+    }
+    else {
+        document.getElementById(el.id+'-row').style.display = '';
+        document.getElementById(el.id+'-details').innerHTML = el.value;
+    }
 }
 
 function backValidation(){

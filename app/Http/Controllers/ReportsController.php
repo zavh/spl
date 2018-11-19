@@ -131,7 +131,10 @@ class ReportsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $result['status'] = 'success';
+        $result['function'] = 'update';
+        $result['view'] = view('reports.stage2')->render();
+        return response()->json(['result'=>$result]);
     }
 
     /**
@@ -142,7 +145,14 @@ class ReportsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $report = Report::find($id);
+
+        if($report->delete()){
+            return back()
+            ->with('success', 'Report deleted successfully');
+        }
+
+        return back()->withInput()->with('error', 'Report could not be deleted');
     }
 
     public function clientdetails($id)

@@ -9,11 +9,12 @@
 			</div>
             <div class='bg-warning text-dark'>Incomplete Reports</div>
 			@foreach($reports as $index=>$report)
-				<div class="row m-0 pl-2 bg-light border-bottom w-100">
-					Visit Report of : &nbsp;
+				<div class="d-flex justify-content-between align-items-center w-100 border-bottom pl-1 pr-1">
+					<span>Visit Report of :
 					<a href="/reports/{{$report['id']}}/edit" class='text-success'>
-                        <strong class='text-dark'>{{$report['data']->client_data->organization}}&nbsp;</strong>
-                    </a>
+                        <strong class='text-dark'>{{$report['data']->client_data->organization}}</strong>
+                    </a></span>
+					<a href="javascript:void(0)" class='badge badge-pill badge-light shadow-sm border' onclick="deleteReport('{{$report['id']}}')">x</a>
 				</div>
 			@endforeach
             <div class='bg-success text-white'>Completed Reports</div>

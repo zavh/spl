@@ -8,15 +8,15 @@
                 <div class="form-group row">
                     <div class="input-group col-md-12">
                         <div class="input-group-prepend">
-                            <span class="input-group-text" style="font-size:12px;width:150px">Date of visit</span>
+                            <span class="input-group-text" style="font-size:12px;width:130px">Date of visit</span>
                         </div>
                         <input 
                             type='date' 
                             name='visit_date' 
                             id='visit_date' 
-                            class="form-control form-control" 
+                            class="form-control" 
                             placeholder='YYYY-mm-dd'
-                            onchange='stage2State()'
+                            onkeyup='stage2State();stage2toReport(this)'
                             required
                             @isset($stage2->visit_date)
                                 value="{{$stage2['visit_date']}}"
@@ -34,20 +34,15 @@
                 <div class="form-group row">
                     <div class="input-group col-md-12" style="margin-top:-10px">
                         <div class="input-group-prepend">
-                            <span class="input-group-text" style="font-size:12px;width:150px">Meeting Issue</span>
+                            <span class="input-group-text" style="font-size:12px;width:130px">Meeting Issue</span>
                         </div>
                         <textarea 
                             id="meeting_issue" 
                             class="form-control" 
                             aria-label="With textarea" 
                             name="meeting_issue"
-                            @isset($stage2["visit_date"])
-                                value="{{$stage2['meeting_issue']}}"
-                            @else 
-                                value=""
-                            @endisset                            
-                            >
-                        </textarea>
+                            onkeyup='stage2State();stage2toReport(this)'
+                            ></textarea>
                         <span class="invalid-feedback " role="alert" id="meeting_issue_error_span" style="display: none;">
                             <strong id="meeting_issue_error"></strong>
                         </span>
@@ -58,9 +53,15 @@
                 <div class="form-group row">
                     <div class="input-group col-md-12" style="margin-top:-10px">
                         <div class="input-group-prepend">
-                            <span class="input-group-text" style="font-size:12px;width:150px">Requirement Details</span>
+                            <span class="input-group-text" style="font-size:12px;width:130px">Requirement Details</span>
                         </div>
-                        <textarea id="requirement-details" class="form-control" aria-label="With textarea" name="requirement-details" required=""></textarea>
+                        <textarea 
+                            id="requirement-details" 
+                            class="form-control" 
+                            aria-label="With textarea" 
+                            name="requirement-details"
+                            onkeyup='stage2State();stage2toReport(this)'
+                            ></textarea>
                         <span class="invalid-feedback " role="alert" id="requirement-details_error_span" style="display: none;">
                             <strong id="requirement-details_error"></strong>
                         </span>
@@ -71,9 +72,15 @@
                 <div class="form-group row">
                     <div class="input-group col-md-12" style="margin-top:-10px">
                         <div class="input-group-prepend">
-                            <span class="input-group-text" style="font-size:12px;width:150px">Product Discussed</span>
+                            <span class="input-group-text" style="font-size:12px;width:130px">Product Discussed</span>
                         </div>
-                        <textarea id="product-discussed" class="form-control" aria-label="With textarea" name="product-discussed" required=""></textarea>
+                        <textarea 
+                            id="product-discussed"
+                            class="form-control"
+                            aria-label="With textarea"
+                            name="product-discussed" 
+                            onkeyup='stage2State();stage2toReport(this)'
+                            ></textarea>
                         <span class="invalid-feedback " role="alert" id="product-discussed_error_span" style="display: none;">
                             <strong id="product-discussed_error"></strong>
                         </span>
@@ -84,9 +91,15 @@
                 <div class="form-group row">
                     <div class="input-group col-md-12" style="margin-top:-10px">
                         <div class="input-group-prepend">
-                            <span class="input-group-text" style="font-size:12px;width:150px">Outcome in brief</span>
+                            <span class="input-group-text" style="font-size:12px;width:130px">Outcome in brief</span>
                         </div>
-                        <textarea id="outcome-brief" class="form-control" aria-label="With textarea" name="outcome-brief" required=""></textarea>
+                        <textarea 
+                            id="outcome-brief"
+                            class="form-control"
+                            aria-label="With textarea"
+                            name="outcome-brief"
+                            onkeyup='stage2State();stage2toReport(this)'
+                            ></textarea>
                         <span class="invalid-feedback " role="alert" id="outcome-brief_error_span" style="display: none;">
                             <strong id="outcome-brief_error"></strong>
                         </span>
@@ -97,9 +110,15 @@
                 <div class="form-group row">
                     <div class="input-group col-md-12" style="margin-top:-10px">
                         <div class="input-group-prepend">
-                            <span class="input-group-text" style="font-size:12px;width:150px">Remarks, if any</span>
+                            <span class="input-group-text" style="font-size:12px;width:130px">Remarks, if any</span>
                         </div>
-                        <textarea id="remarks" class="form-control" aria-label="With textarea" name="remarks"></textarea>
+                        <textarea 
+                            id="remarks"
+                            class="form-control"
+                            aria-label="With textarea"
+                            name="remarks"
+                            onkeyup='stage2State();stage2toReport(this)'
+                            ></textarea>
                         <span class="invalid-feedback " role="alert" id="remarks_error_span" style="display: none;">
                             <strong id="remarks_error"></strong>
                         </span>
@@ -114,8 +133,8 @@
                             </a>
                             &nbsp;Back
                         </span>
-                        <span class='text-primary'> 
-                            <a class='btn btn-primary rounded text-white' onclick="saveStage(2)">
+                        <span class='text-primary' id='stage2save' style='display:none'> 
+                            <a class='btn btn-primary rounded text-white btn-sm mt-1' onclick="saveStage(2)">
                             Save
                             </a>
                         </span>

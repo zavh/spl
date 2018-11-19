@@ -16,7 +16,7 @@ class DepartmentsController extends Controller
     }
     public function index()
     {
-        if(Auth::User()->id == 1){
+        if(Auth::User()->role_id == 1){
             $departments = Department::all();
             return view('departments.index')->with('departments', $departments);
         }
@@ -30,7 +30,7 @@ class DepartmentsController extends Controller
      */
     public function create()
     {
-        if(Auth::User()->id == 1){
+        if(Auth::User()->role_id == 1){
             return view('departments.create');
         }
         else abort(404);
@@ -86,7 +86,7 @@ class DepartmentsController extends Controller
      */
     public function edit($id)
     {
-        if(Auth::User()->id == 1){
+        if(Auth::User()->role_id == 1){
             $department = Department::find($id);
             return view('departments.edit',['department'=>$department]);
         }
@@ -102,7 +102,7 @@ class DepartmentsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if(Auth::User()->id == 1){
+        if(Auth::User()->role_id == 1){
           $messages = [
               'name.required' => 'Please enter the task name',
               'name.min' => 'Task name must be minimum 2 characters',
@@ -133,7 +133,7 @@ class DepartmentsController extends Controller
      */
     public function destroy($id)
     {
-        if(Auth::User()->id == 1){
+        if(Auth::User()->role_id == 1){
             $department = Department::find($id);
             $department->delete();
             return redirect('/departments')->with('success', 'Department Deleted');
