@@ -58,6 +58,7 @@ function deleteUser(user, userid){
 		csrfInput.name = "_token";
 		csrfInput.value = document.querySelector('meta[name="csrf-token"]').getAttribute('content');;
 		uDeleteForm.appendChild(csrfInput);
+		document.body.appendChild(uDeleteForm);
 
 		uDeleteForm.submit();	
 	}
@@ -82,12 +83,13 @@ function deleteReport(reportid){
 		csrfInput.name = "_token";
 		csrfInput.value = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 		rDeleteForm.appendChild(csrfInput);
+		document.body.appendChild(rDeleteForm);
 
 		rDeleteForm.submit();
 	}
 }
 function deactivateUser(user, userid){
-	var confirmation = confirm("Please confirm deactivation of User : '"+user+"'");
+	var confirmation = confirm("Please confirm deactivation/reactivation of User : '"+user+"'");
 	
 	if(confirmation){
 		var rDeactivate = document.createElement("form");
@@ -95,11 +97,18 @@ function deactivateUser(user, userid){
 		rDeactivate.method = "POST";
 		rDeactivate.action = "/user/deactivate/"+userid;
 
+		// var methodInput = document.createElement("input");
+		// methodInput.type = "button";
+		// methodInput.name = "submit";
+		// methodInput.value = "submit";
+		// rDeactivate.appendChild(methodInput);
+		
 		var csrfInput = document.createElement("input");
 		csrfInput.type = "hidden";
 		csrfInput.name = "_token";
 		csrfInput.value = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 		rDeactivate.appendChild(csrfInput);
+		document.body.appendChild(rDeactivate);
 
 		rDeactivate.submit();
 		

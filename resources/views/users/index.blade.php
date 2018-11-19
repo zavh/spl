@@ -24,7 +24,12 @@
 											@endif
 										
 										<a href="javascript:void(0)" onclick="ajaxFunction('viewuser', '{{$user->id}}', 'user-container')" class='badge-primary badge padge-pill'>Details</a>
-										<a href="javascript:void(0)" onclick="deactivateUser('{{$user->name}}','{{$user->id}}')" class='badge-warning badge padge-pill'>Deactivate</a>
+										@if ($user->active == 1)
+											<a href="javascript:void(0)" onclick="deactivateUser('{{$user->name}}','{{$user->id}}')" class='badge-warning badge padge-pill'>Deactivate</a>
+										@else
+										<a href="javascript:void(0)"onclick="deactivateUser('{{$user->name}}','{{$user->id}} ')" class='badge-info badge padge-pill'>Activate</a>
+										@endif
+										
 										</div>
 									</div>
 								</div>
