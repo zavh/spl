@@ -17,9 +17,14 @@
 									<div class="col-md-4 text-success pl-1 text-success ">Email: {{$user->email}}</div>
 									<div class="col-md-4 text-success pl-1 text-success ">
 										<div class="d-flex justify-content-between pt-1">
-										<a href="javascript:void(0)" onclick="deleteUser('{{$user->name}}','{{$user->id}}')" class='badge-danger badge padge-pill'>Delete</a>
+											@if ( count($user->reports) > 0 || count($user->tasks)>0 )
+												<a href="javascript:void(0)" onclick="alert('Cannot delete user')" class='badge-secondary badge padge-pill'>Delete</a>
+											@else
+												<a href="javascript:void(0)" onclick="deleteUser('{{$user->name}}','{{$user->id}}')" class='badge-danger badge padge-pill'>Delete</a>
+											@endif
+										
 										<a href="javascript:void(0)" onclick="ajaxFunction('viewuser', '{{$user->id}}', 'user-container')" class='badge-primary badge padge-pill'>Details</a>
-										<a href="javascript:void(0)" onclick="ajaxFunction('viewuser', '{{$user->id}}', 'user-container')" class='badge-warning badge padge-pill'>Deactivate</a>
+										<a href="javascript:void(0)" onclick="deactivateUser('{{$user->name}}','{{$user->id}}')" class='badge-warning badge padge-pill'>Deactivate</a>
 										</div>
 									</div>
 								</div>

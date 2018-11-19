@@ -62,6 +62,7 @@ class ProjectsController extends Controller
         $project->user_id = Auth::User()->id;
         $project->deadline = $request->input('deadline');
         $project->description = $request->input('description');
+        $project->allocation = 0;
 
         $project->save();
         $project_id = $project->id;

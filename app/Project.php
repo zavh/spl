@@ -14,7 +14,8 @@ class Project extends Model
         'deadline',
         'description', 
         'status', 
-        'state'
+        'state',
+        'allocation'
     ];
     //
     protected $table = 'projects';

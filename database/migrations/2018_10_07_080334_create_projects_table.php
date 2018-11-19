@@ -24,7 +24,7 @@ class CreateProjectsTable extends Migration
             $table->tinyInteger('status')->nullable();
             $table->tinyInteger('state')->nullable();
             $table->string('description', 250);
-            $table->integer('allocation');
+            $table->integer('allocation')->default(0);
             $table->timestamps();
         });
     }
