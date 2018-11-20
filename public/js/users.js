@@ -87,12 +87,24 @@ function deleteReport(reportid){
 	}
 }
 function deactivateUser(user, userid){
-	var confirmation = confirm("Please confirm deactivation of User : '"+user+"'");
-	// if(confirmation){
-	// 	//preventDefault();
-	// 	var formid = 'user-delete-form-'+userid;
-	// 	var formel = document.getElementById(formid);
-	// 	formel.submit();
-	// }
+	var confirmation = confirm("Please confirm deactivation/reactivation of User : '"+user+"'");
+	
+	if(confirmation){
+		var rDeactivate = document.createElement("form");
+		rDeactivate.target = "";
+		rDeactivate.method = "POST";
+		rDeactivate.action = "/user/deactivate/"+userid;
+
+		var csrfInput = document.createElement("input");
+		csrfInput.type = "hidden";
+		csrfInput.name = "_token";
+		csrfInput.value = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+		rDeactivate.appendChild(csrfInput);
+		document.body.appendChild(rDeactivate);
+
+		rDeactivate.submit();
+		
+		console.log(rDeactivate);
+	}
 	
 }

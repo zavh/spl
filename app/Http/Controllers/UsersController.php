@@ -151,12 +151,18 @@ class UsersController extends Controller
         $user->address = $request->input('address');
         $user->designation_id = $request->input('designation');
         $user->department_id = $request->input('department');
+
+        $user->active = $request->input('active');
+        
         if(Auth::User()->role_id == 1)
             $user->role_id = $request->input('role_id');
         else 
             $user->role_id = Auth::User()->role_id;
-
+        // dd($user->active);
         $user->save();
+        
+        
+        
         if(Auth::User()->role_id == 1)
             return redirect('/users')->with('success', 'User Updated');
         else 
@@ -243,5 +249,23 @@ class UsersController extends Controller
             $reports[$index]['id'] = $report->id;
         }
         return view('users.userreports', ['reports'=>$reports]);
+    }
+    public function deactivate($id)
+    {
+        $user = User::find($id);
+        // dd($user);
+        if($user->active==1)
+        {
+            $user->active=0;
+            $user->save();
+            return back()->with('success','Deactivated Successfully');
+        }
+        else
+        {
+            $user->active=1;
+            $user->save();
+            return back()->with('success','Activated Successfully');
+        }
+        
     }
 }

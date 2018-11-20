@@ -206,6 +206,25 @@
 									</div>
 								</div>
 							<!-- Role Input ends -->
+							<!-- Deactivation starts -->
+								<div class="form-group row" style='margin-top:-10px'>
+									<div class="input-group input-group-sm col-md-12">
+										<div class="input-group-prepend">
+											<span class="input-group-text" style="font-size:12px;width:150px">Role</span>
+										</div>
+											<select class="form-control" name="active">
+												<option value=1 
+												@if ($user->active==1)
+													selected
+												@endif>Active</option>
+												<option value=0 
+												@if ($user->active==0)
+														selected
+												@endif>Deactivated</option>
+											</select>
+									</div>
+								</div>
+								<!-- Deactivation ends -->
 								@endif
 								<div class='row'>
 									<div class='col-6 m-0 pr-1'> 
