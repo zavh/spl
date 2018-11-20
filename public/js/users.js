@@ -86,3 +86,13 @@ function deleteReport(reportid){
 		rDeleteForm.submit();
 	}
 }
+function deactivateUser(user, userid){
+	var confirmation = confirm("Please confirm deactivation of User : '"+user+"'");
+	// if(confirmation){
+	// 	//preventDefault();
+	// 	var formid = 'user-delete-form-'+userid;
+	// 	var formel = document.getElementById(formid);
+	// 	formel.submit();
+	// }
+	
+}
