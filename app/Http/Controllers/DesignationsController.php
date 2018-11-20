@@ -127,7 +127,10 @@ class DesignationsController extends Controller
         //
         $designation = Designation::find($id);
         // dd($department);
-        $designation->delete();
-        return redirect('/designations')->with('success', 'Department Deleted');
+        if($designation->delete())
+        {
+            return redirect('/designations')->with('success', 'Designation Deleted');
+        }
+        return back()->withInput()->with('error', 'Designation could not be deleted');
     }
 }

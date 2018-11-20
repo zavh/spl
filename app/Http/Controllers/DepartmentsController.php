@@ -133,11 +133,12 @@ class DepartmentsController extends Controller
      */
     public function destroy($id)
     {
-        if(Auth::User()->role_id == 1){
-            $department = Department::find($id);
-            $department->delete();
-            return redirect('/departments')->with('success', 'Department Deleted');
+        $department = Department::find($id);
+        // dd($department);
+        if($department->delete())
+        {
+            return redirect('/departments')->with('success', 'Designation Deleted');
         }
-        else abort(404);
+        return back()->withInput()->with('error', 'Designation could not be deleted');
     }
 }
