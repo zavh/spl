@@ -77,6 +77,7 @@ class ReportsController extends Controller
 
             $response['view'] = view('reports.stage2')->render();
             $response['status'] = 'success';
+            $response['report_id'] = $reportCreate->id;
             return response()->json(['result'=>$response]);
         }
         else {
@@ -131,9 +132,23 @@ class ReportsController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $x = $request->stage;
+        $report = Report::find($id);
+        $report->report_data = json_encode($request->all());
+        $report->stage = $x;
+        $report->save();
         $result['status'] = 'success';
         $result['function'] = 'update';
-        $result['view'] = view('reports.stage2')->render();
+        $result['stage'] = $request->stage;
+        $result['report_id'] = $report->id;
+        //determining the stage of the report
+        
+        if($x == 2){
+            $z = json_decode($report->report_data);
+            $result['view'] = view('reports.stage2',['report_data'=>$z->report_data])->render();
+        }
+        else $result['view'] = view('reports.stage2')->render();
+        $result['data'] = $request->all();
         return response()->json(['result'=>$result]);
     }
 
@@ -159,5 +174,12 @@ class ReportsController extends Controller
     {
         $report = Report::find($id);
         return response()->json(['result'=>$report]);
+    }
+
+    public function stage2view($id){
+        $report = Report::find($id);
+        $y = $report->report_data;
+        $x = json_decode($y);
+        return view('reports.stage2',['report_data'=>$x->report_data]);
     }
 }

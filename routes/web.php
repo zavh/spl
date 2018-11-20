@@ -54,6 +54,7 @@ Route::get('/clientcontacts/index/{client_id?}', 'ClientcontactsController@index
 Route::get('/clientcontacts/listing/{client_id?}', 'ClientcontactsController@contactlist');
 
 Route::get('/report/clientdetails/{report_id?}', 'ReportsController@clientdetails');
+Route::get('/reports/stage2/{report_id?}', 'ReportsController@stage2view');
 
 Route::resource('clients','ClientsController');
 Route::resource('projects','ProjectsController');

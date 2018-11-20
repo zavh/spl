@@ -59,7 +59,6 @@ function deleteUser(user, userid){
 		csrfInput.value = document.querySelector('meta[name="csrf-token"]').getAttribute('content');;
 		uDeleteForm.appendChild(csrfInput);
 		document.body.appendChild(uDeleteForm);
-
 		uDeleteForm.submit();	
 	}
 }
@@ -84,7 +83,6 @@ function deleteReport(reportid){
 		csrfInput.value = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 		rDeleteForm.appendChild(csrfInput);
 		document.body.appendChild(rDeleteForm);
-
 		rDeleteForm.submit();
 	}
 }
@@ -97,12 +95,6 @@ function deactivateUser(user, userid){
 		rDeactivate.method = "POST";
 		rDeactivate.action = "/user/deactivate/"+userid;
 
-		// var methodInput = document.createElement("input");
-		// methodInput.type = "button";
-		// methodInput.name = "submit";
-		// methodInput.value = "submit";
-		// rDeactivate.appendChild(methodInput);
-		
 		var csrfInput = document.createElement("input");
 		csrfInput.type = "hidden";
 		csrfInput.name = "_token";
