@@ -36,9 +36,9 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
-    public function findForPassport($identifier) {
+   /* public function findForPassport($identifier) {
         return User::orWhere('email', $identifier)->where('status', 1)->first();
-    }
+    } */
     public function role(){
         return $this->belongsTo('App\Role');
     }
