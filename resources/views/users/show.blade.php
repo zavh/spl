@@ -66,13 +66,19 @@
 		</div>
 	</div>
 </div>
+
 <div class="card-footer bg-transparent mt-0 mb-0 pt-0 pb-0 small">
-			<span class="small">Profile Completion: 45%</span>
-			<div class="progress mb-1" style="height: 4px;">
-				<div 
-					class="progress-bar bg-danger" 
+	<span class="small">Profile Completion: {{$completion}}%</span>
+			<div class="progress mb-1 bg-dark" style="height: 4px;">
+				<div
+					@if ($completion>80)
+						class="progress-bar bg-success"
+					@else
+						class="progress-bar bg-danger"
+					@endif 
+					 
 					role="progressbar" 
-					style="width: 45%;" 
+					style="width: {{$completion}}%;" 
 					aria-valuenow="25" 
 					aria-valuemin="0" 
 					aria-valuemax="100">

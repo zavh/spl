@@ -25,7 +25,8 @@ class UsersController extends Controller
         if(Auth::User()->role_id ==1){
             $users = User::all();
             $me = User::find(Auth::User()->id);
-            return view('users.index', ['users'=>$users,'me'=>$me]);
+            $completion = $this->profileCalculation($me);
+            return view('users.index', ['users'=>$users,'me'=>$me, 'completion'=>$completion]);
         }
         else abort(404);
     }
@@ -89,10 +90,30 @@ class UsersController extends Controller
 
     public function show(User $user)
     {
+        // dd($user);
+
+
+        // dd($completion);
+
         $user = User::find($user->id);
-        return view('users.show', ['user'=>$user]);
+        $completion = $this->profileCalculation($user);
+        return view('users.show', ['user'=>$user, 'completion'=>$completion]);
     }
 
+    private function profileCalculation($user){
+        $completion = 0;
+
+        if($user->fname != NULL) $completion+=22;
+        if($user->sname != NULL) $completion+=22;
+        if($user->phone != NULL) $completion+=6;
+        if($user->address != NULL) $completion+=6;
+        if($user->designation_id > 0) $completion+=22;
+        if($user->department_id > 0) $completion+=22;
+        
+        //$completion = $fname+$lname+$phone+$address+$designation+$department;
+
+        return $completion;
+    }
     public function edit(User $user)
     {   
         if(Auth::Check()){
