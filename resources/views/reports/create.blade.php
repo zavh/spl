@@ -34,33 +34,87 @@
 							<!-- Reported Detail Section Ends-->
 							<!-- Client Detail Section Starts-->
 							<div class='row m-2 border' id='details-row' style='display:none'>
-								<div class='col-6 border-right'>
+								<div class='col-5 border-right'>
 									<h6 class='card-header bg-white text-dark' style='border:none'>Customer Name & Address</h6>
 								</div>
-								<div class='col-6'>
+								<div class='col-7'>
 									<div id='client-name' class='border-bottom border-success'></div>
 									<div id='client-address' class='pt-0'></div>
 								</div>
 							</div>
 							<!-- Client Detail Section Ends-->
+							<!-- Visit Date Section Starts-->
+							<div class='row m-2 border' id='visit_date-row' style='display:none'>
+								<div class='col-5 border-right'>
+									<h6 class='card-header bg-white text-dark' style='border:none'>Visit Date</h6>
+								</div>
+								<div class='col-7' id='visit_date-details'>
+								</div>
+							</div>
+							<!-- Visit Date Section Ends-->
 							<!-- Client Contact Section Starts-->
 							<div class='row m-2 border' id='contact-row' style='display:none'>
-								<div class='col-6 border-right'>
+								<div class='col-5 border-right'>
 									<h6 class='card-header bg-white text-dark' style='border:none;'>Person contacted</h6>
 								</div>
-								<div class='col-6' id='contact-details'>
+								<div class='col-7' id='contact-details'>
 								</div>
 							</div>
 							<!-- Client Contact Section Ends-->
 							<!-- Client Background Section Starts-->
 							<div class='row m-2 border' id='background-row' style='display:none'>
-								<div class='col-6 border-right'>
+								<div class='col-5 border-right'>
 									<h6 class='card-header bg-white text-dark' style='border:none'>Company Background</h6>
 								</div>
-								<div class='col-6' id='background-details'>
+								<div class='col-7' id='background-details'>
 								</div>
 							</div>
 							<!-- Client Background Section Ends-->
+							<!-- Meeting Issue Section Starts-->
+							<div class='row m-2 border' id='meeting_issue-row' style='display:none'>
+								<div class='col-5 border-right'>
+									<h6 class='card-header bg-white text-dark' style='border:none'>Meeting Issue</h6>
+								</div>
+								<div class='col-7' id='meeting_issue-details'>
+								</div>
+							</div>
+							<!-- Meeting Issue Section Ends-->
+							<!-- Requirement Details Section Starts-->
+							<div class='row m-2 border' id='requirement_details-row' style='display:none'>
+								<div class='col-5 border-right'>
+									<h6 class='card-header bg-white text-dark' style='border:none'>Requirement Details</h6>
+								</div>
+								<div class='col-7' id='requirement_details-details'>
+								</div>
+							</div>
+							<!-- Requirement Details Section Ends-->
+							<!-- Product Discussed Section Starts-->
+							<div class='row m-2 border' id='product_discussed-row' style='display:none'>
+								<div class='col-5 border-right'>
+									<h6 class='card-header bg-white text-dark' style='border:none'>Product Discussed</h6>
+								</div>
+								<div class='col-7' id='product_discussed-details'>
+								</div>
+							</div>
+							<!-- Product Discussed Section Ends-->
+							<!-- Outcome in Brief Section Starts-->
+							<div class='row m-2 border' id='outcome_brief-row' style='display:none'>
+								<div class='col-5 border-right'>
+									<h6 class='card-header bg-white text-dark' style='border:none'>Outcome of the visit in brief</h6>
+								</div>
+								<div class='col-7' id='outcome_brief-details'>
+								</div>
+							</div>
+							<!-- Outcome in Brief Section Ends-->
+							<!-- Remarks Section Starts-->
+							<div class='row m-2 border' id='remarks-row' style='display:none'>
+								<div class='col-5 border-right'>
+									<h6 class='card-header bg-white text-dark' style='border:none'>Remarks, if any</h6>
+								</div>
+								<div class='col-7' id='remarks-details'>
+								</div>
+							</div>
+							<!-- Remarks Section Ends-->
 						</div>
 					</div>
 				</div>

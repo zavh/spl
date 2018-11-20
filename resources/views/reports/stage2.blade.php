@@ -18,10 +18,8 @@
                             placeholder='YYYY-mm-dd'
                             onkeyup='stage2State();stage2toReport(this)'
                             required
-                            @isset($stage2->visit_date)
-                                value="{{$stage2['visit_date']}}"
-                            @else 
-                                value=""
+                            @isset($report_data->visit_date)
+                                value="{{$report_data->visit_date}}" 
                             @endisset
                             >
                         <span class="invalid-feedback " role="alert" id="visit_date_error_span" style="display: none;">
@@ -42,7 +40,7 @@
                             aria-label="With textarea" 
                             name="meeting_issue"
                             onkeyup='stage2State();stage2toReport(this)'
-                            ></textarea>
+                            >@isset($report_data->meeting_issue){{$report_data->meeting_issue}}@endisset</textarea>
                         <span class="invalid-feedback " role="alert" id="meeting_issue_error_span" style="display: none;">
                             <strong id="meeting_issue_error"></strong>
                         </span>
@@ -56,14 +54,14 @@
                             <span class="input-group-text" style="font-size:12px;width:130px">Requirement Details</span>
                         </div>
                         <textarea 
-                            id="requirement-details" 
+                            id="requirement_details" 
                             class="form-control" 
                             aria-label="With textarea" 
-                            name="requirement-details"
+                            name="requirement_details"
                             onkeyup='stage2State();stage2toReport(this)'
-                            ></textarea>
-                        <span class="invalid-feedback " role="alert" id="requirement-details_error_span" style="display: none;">
-                            <strong id="requirement-details_error"></strong>
+                            >@isset($report_data->requirement_details){{$report_data->requirement_details}}@endisset</textarea>
+                        <span class="invalid-feedback " role="alert" id="requirement_details_error_span" style="display: none;">
+                            <strong id="requirement_details_error"></strong>
                         </span>
                     </div>
                 </div>
@@ -75,14 +73,14 @@
                             <span class="input-group-text" style="font-size:12px;width:130px">Product Discussed</span>
                         </div>
                         <textarea 
-                            id="product-discussed"
+                            id="product_discussed"
                             class="form-control"
                             aria-label="With textarea"
-                            name="product-discussed" 
+                            name="product_discussed" 
                             onkeyup='stage2State();stage2toReport(this)'
-                            ></textarea>
-                        <span class="invalid-feedback " role="alert" id="product-discussed_error_span" style="display: none;">
-                            <strong id="product-discussed_error"></strong>
+                            >@isset($report_data->product_discussed){{$report_data->product_discussed}}@endisset</textarea>
+                        <span class="invalid-feedback " role="alert" id="product_discussed_error_span" style="display: none;">
+                            <strong id="product_discussed_error"></strong>
                         </span>
                     </div>
                 </div>
@@ -94,14 +92,14 @@
                             <span class="input-group-text" style="font-size:12px;width:130px">Outcome in brief</span>
                         </div>
                         <textarea 
-                            id="outcome-brief"
+                            id="outcome_brief"
                             class="form-control"
                             aria-label="With textarea"
-                            name="outcome-brief"
+                            name="outcome_brief"
                             onkeyup='stage2State();stage2toReport(this)'
-                            ></textarea>
-                        <span class="invalid-feedback " role="alert" id="outcome-brief_error_span" style="display: none;">
-                            <strong id="outcome-brief_error"></strong>
+                            >@isset($report_data->outcome_brief){{$report_data->outcome_brief}}@endisset</textarea>
+                        <span class="invalid-feedback " role="alert" id="outcome_brief_error_span" style="display: none;">
+                            <strong id="outcome_brief_error"></strong>
                         </span>
                     </div>
                 </div>
@@ -118,7 +116,7 @@
                             aria-label="With textarea"
                             name="remarks"
                             onkeyup='stage2State();stage2toReport(this)'
-                            ></textarea>
+                            >@isset($report_data->remarks){{$report_data->remarks}}@endisset</textarea>
                         <span class="invalid-feedback " role="alert" id="remarks_error_span" style="display: none;">
                             <strong id="remarks_error"></strong>
                         </span>
@@ -140,7 +138,7 @@
                         </span>
                         <span class='text-primary'> 
                             Submit
-                            <button type='submit' class='btn btn-primary rounded-circle' onclick="">
+                            <button type='submit' class='btn btn-primary rounded-circle' onclick=''>
                             >
                             </button>
                         </span>

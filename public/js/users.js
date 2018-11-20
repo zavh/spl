@@ -58,7 +58,7 @@ function deleteUser(user, userid){
 		csrfInput.name = "_token";
 		csrfInput.value = document.querySelector('meta[name="csrf-token"]').getAttribute('content');;
 		uDeleteForm.appendChild(csrfInput);
-
+		document.body.appendChild(uDeleteForm);
 		uDeleteForm.submit();	
 	}
 }
@@ -82,7 +82,7 @@ function deleteReport(reportid){
 		csrfInput.name = "_token";
 		csrfInput.value = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 		rDeleteForm.appendChild(csrfInput);
-
+		document.body.appendChild(rDeleteForm);
 		rDeleteForm.submit();
 	}
 }

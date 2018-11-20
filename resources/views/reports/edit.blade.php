@@ -81,29 +81,29 @@
 							</div>
 							<!-- Meeting Issue Section Ends-->
 							<!-- Requirement Details Section Starts-->
-							<div class='row m-2 border' id='requirement-details-row' style='display:none'>
+							<div class='row m-2 border' id='requirement_details-row' style='display:none'>
 								<div class='col-5 border-right'>
 									<h6 class='card-header bg-white text-dark' style='border:none'>Requirement Details</h6>
 								</div>
-								<div class='col-7' id='requirement-details-details'>
+								<div class='col-7' id='requirement_details-details'>
 								</div>
 							</div>
 							<!-- Requirement Details Section Ends-->
 							<!-- Product Discussed Section Starts-->
-							<div class='row m-2 border' id='product-discussed-row' style='display:none'>
+							<div class='row m-2 border' id='product_discussed-row' style='display:none'>
 								<div class='col-5 border-right'>
 									<h6 class='card-header bg-white text-dark' style='border:none'>Product Discussed</h6>
 								</div>
-								<div class='col-7' id='product-discussed-details'>
+								<div class='col-7' id='product_discussed-details'>
 								</div>
 							</div>
 							<!-- Product Discussed Section Ends-->
 							<!-- Outcome in Brief Section Starts-->
-							<div class='row m-2 border' id='outcome-brief-row' style='display:none'>
+							<div class='row m-2 border' id='outcome_brief-row' style='display:none'>
 								<div class='col-5 border-right'>
 									<h6 class='card-header bg-white text-dark' style='border:none'>Outcome of the visit in brief</h6>
 								</div>
-								<div class='col-7' id='outcome-brief-details'>
+								<div class='col-7' id='outcome_brief-details'>
 								</div>
 							</div>
 							<!-- Outcome in Brief Section Ends-->
