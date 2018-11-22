@@ -294,4 +294,65 @@ class TasksController extends Controller
             $taskuser->delete();
         }
     }
+    public function completion(Request $request,$id)
+    {
+        // dd($request);
+        
+        $checkedstatus = $request['done-'.$id];
+        $date = $request['done-date-'.$id];
+
+        $task = Task::find($id);
+        $weight = $task->weight;  
+
+        $deadline = $task->task_deadline;    
+        
+        $project = Project::find($task->project_id);
+        $completed = $project->completed;
+
+        $currentdate = date('Y-m-d');
+
+        // dd('checkedstatus',$checkedstatus,'deadline',$deadline,'date',$date,'weight',$weight,'completed',$completed,'currentdate',$currentdate);
+
+        if($deadline>$date)
+        {
+            if ($checkedstatus == "on") 
+            {
+                if($task->completed == 0)
+                {
+                    $task->completed = 1;
+                    $project->completed +=$weight;
+                    $task->save();
+                    $project->save();
+                    return back()->with('success', 'Task updated successfully');
+                }
+                else//task completed
+                {
+                    return back()->withInput()->with('success', 'task already completed');
+                }
+            } 
+            else//checkedstatus = off 
+            {
+                if($task->completed == 1)
+                {
+                    $task->completed = 0;
+                    $project->completed -=$weight;
+                    $task->save();
+                    $project->save();
+                    return back()->with('success', 'Task updated successfully');
+                }
+                else//task already incomplete
+                {
+                    return back()->withInput()->with('success', 'Task already marked incomplete');
+                }
+            }
+        }
+        else if($date>$currentdate)//submitting on a future date
+        {
+            return back()->withInput()->with('success', "Time travel is not possible, yet");
+        }
+        else//deadline crossed
+        {
+            return back()->withInput()->with('success', 'Deadline crossed');
+        }
+    }
 }

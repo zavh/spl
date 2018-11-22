@@ -29,7 +29,7 @@ Route::get('/tasks/create/{project_id?}', 'TasksController@create');
 Route::get('/tasks/project/{project_id?}', 'TasksController@index');
 Route::get('/project/enquiries/{project_id?}', 'ProjectsController@enquiries');
 Route::post('/tasks/{project_id?}/edit', 'TasksController@edit');
-
+Route::post('/tasks/completion/{task_id?}', 'TasksController@completion');
 
 Route::get('/enquiries/project/{project_id?}', 'EnquiriesController@index');
 Route::get('/enquiries/create/{project_id?}', 'EnquiriesController@create');
@@ -41,6 +41,7 @@ Route::post('/users/credentials', 'UsersController@changepass')->name('changepas
 Route::get('/user/tasks', 'UsersController@tasks')->name('usertasks');
 Route::get('/user/reports', 'UsersController@reports')->name('userreports');
 Route::post('/user/deactivate/{user_id?}', 'UsersController@deactivate');
+
 
 Route::post('/clients/store', 'ClientsController@store')->name('addclient');
 Route::post('/clients/validateonly', 'ClientsController@validateonly')->name('validateclient');

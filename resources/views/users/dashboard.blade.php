@@ -23,3 +23,4 @@
 		  <!-- Profile Area Ends-->
   </div>
 </div>
+<script src="{{ asset('js/users.js?version=0.2') }}"></script>
