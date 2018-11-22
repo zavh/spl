@@ -77,10 +77,12 @@ class UsersController extends Controller
                 'active' => '1',
                 'password' => Hash::make($request['password']),
                 ]);
+            
             if($userCreate){
                 $users = User::all();
                 $me = User::find(Auth::User()->id);
-                return view('users.index', ['users'=>$users,'me'=>$me]);
+                $completion = $this->profileCalculation($me);
+                return view('users.index', ['users'=>$users,'me'=>$me,'completion'=>$completion]);
                 }
             }
         }
