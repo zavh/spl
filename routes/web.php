@@ -55,6 +55,7 @@ Route::get('/clientcontacts/listing/{client_id?}', 'ClientcontactsController@con
 
 Route::get('/report/clientdetails/{report_id?}', 'ReportsController@clientdetails');
 Route::get('/reports/stage2/{report_id?}', 'ReportsController@stage2view');
+Route::post('/reports/submit/{report_id?}', 'ReportsController@submit')->name('addclient');
 
 Route::resource('clients','ClientsController');
 Route::resource('projects','ProjectsController');

@@ -3,7 +3,10 @@
         <strong class="text-dark pl-1 pt-1">Organization: {{$organization}}</strong>
         <a href="javascript:void(0)" onclick="ajaxFunction('editClient', {{$client_id}} , 'client-details' )" class="pr-2 pt-1">Edit</a>
     </div>
-    <p class="text-primary pl-1 mb-0 bg-light ">
+    <p class="text-primary pl-1 mb-0 bg-light border-bottom">
         &#9993; {{$address}}
     </p>
+    <h6 class="text-primary p-2 mb-0 text-success">
+        {{$background}}
+    </h6>
 </div>

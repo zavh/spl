@@ -15,7 +15,7 @@
 				<div class="row m-0 pl-4 pt-2 bg-light border-bottom w-100">
 					<form>
 					{{csrf_field()}}
-					<input type='checkbox' name='done-{{$task->id}}'>&nbsp;Mark task as Done on &nbsp; <input type='date' name='done-date-{{$task->id}}' min='{{$task->task_date_assigned}}' disabled>
+					<input type='checkbox' name='done-{{$task->id}}' onchange='updateTask("{{$task->id}}")'>&nbsp;Mark task as Done on &nbsp; <input type='date' name='done-date-{{$task->id}}' min='{{$task->task_date_assigned}}' disabled>
 					</form>
 				</div>
 			@endforeach
