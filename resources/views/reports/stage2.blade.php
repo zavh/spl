@@ -2,7 +2,7 @@
     <div class="row justify-content-center">
         <div class="col">
             <div class="card shadow-sm p-2">
-            <form method="POST" action="" style='font-size:10px' onsubmit="visitReportDetails(event, this);" name='visitReportDetails' id='visitReportDetails'>
+            <form method="POST" action="" style='font-size:10px' onsubmit="vrd(event, this);" name='visitReportDetails' id='visitReportDetails'>
                         @csrf
             <!-- Visit day input starts -->
                 <div class="form-group row">
@@ -124,24 +124,23 @@
                 </div>
             <!-- Remarks input ends -->
                 <div class="d-flex justify-content-between border border-primary badge badge-pill w-100">
-                    
-                        <span class='text-primary'> 
-                            <a class='btn btn-primary rounded-circle text-white' onclick="backValidation()">
-                            <
-                            </a>
-                            &nbsp;Back
-                        </span>
-                        <span class='text-primary' id='stage2save' style='display:none'> 
-                            <a class='btn btn-primary rounded text-white btn-sm mt-1' onclick="saveStage(2)">
-                            Save
-                            </a>
-                        </span>
-                        <span class='text-primary'> 
-                            Submit
-                            <button type='submit' class='btn btn-primary rounded-circle' onclick=''>
-                            >
-                            </button>
-                        </span>
+                    <span class='text-primary'> 
+                        <a class='btn btn-primary rounded-circle text-white' onclick="backValidation()">
+                        <
+                        </a>
+                        &nbsp;Back
+                    </span>
+                    <span class='text-primary' id='stage2save' style='display:none'> 
+                        <a class='btn btn-primary rounded text-white btn-sm mt-1' onclick="saveStage(2)">
+                        Save
+                        </a>
+                    </span>
+                    <span class='text-primary'> 
+                        Submit
+                        <button type='submit' class='btn btn-primary rounded-circle'>
+                        >
+                        </button>
+                    </span>
                 </div>
                 </form>
             </div>
