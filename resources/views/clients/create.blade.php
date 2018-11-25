@@ -83,14 +83,30 @@
                                 </div>
                                 <input type="text" class="form-control{{ $errors->has('contact') ? ' is-invalid' : '' }}" name="contact" value="{{ old('contact') }}" required>
 
-                                
+                                @if ($errors->has('name'))
                                     <span class="invalid-feedback" role="alert">
                                         <strong id="contact"></strong>
                                     </span>
-                                
+                                @endif
                             </div>
                         </div>
-                        <!-- Client Contact Input Ends -->                    
+                        <!-- Client Contact Input Ends --> 
+                        <!-- Client Background Input Starts -->
+                        <div class="form-group row">
+                            <div class="input-group input-group-sm col-md-12"  style='margin-top:-10px'>
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">{{ __('Background') }}</span>
+                                </div>
+                                <input type="text" class="form-control{{ $errors->has('background') ? ' is-invalid' : '' }}" name="background" value="{{ old('background') }}" required>
+
+                                @if ($errors->has('name'))
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong id="background"></strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+                        <!-- Client Background Input Ends -->                   
                         <div class='row d-flex justify-content-center'> 
                             <input type="submit" class="btn btn-primary btn-sm m-2" value="Create New">
                             <a href="/clients" class="btn btn-secondary btn-sm m-2">Cancel</a>

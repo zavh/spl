@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\User;
 use App\Task;
 use App\Client;
+use App\TaskUser;
 use App\Role;
 use App\Department;
 use App\Designation;
@@ -258,7 +259,7 @@ class UsersController extends Controller
     }
 
     public function tasks(){
-        $tasks = User::find(Auth::User()->id)->tasks;
+        $tasks = User::find(Auth::User()->id)->tasks->where('completed',0);
         foreach($tasks as $task){
             $task['project_name'] = Task::find($task->id)->project->project_name;
         }
@@ -297,7 +298,6 @@ class UsersController extends Controller
             $user->active=1;
             $user->save();
             return back()->with('success','Activated Successfully');
-        }
-        
+        }       
     }
 }

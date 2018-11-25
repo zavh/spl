@@ -50,31 +50,43 @@ class ClientsController extends Controller
     {
         $messages = [
             'name.required' => 'name|Please enter the contact person\'s name',
+            'name.max' => 'name|Maximum 300 characters',
+            'name.min' => 'name|minimum 4 characters',
+
             'organization.required' => 'organization|Client Organization must be of minimum 4 characters',
+            'organization.max' => 'organization|Maximum 300 characters',
+            'organization.min' => 'organization|minimum 4 characters',
+
             'address.required' => 'address|Address is required',
-            'contact' => 'contact|Client contact information is required',
+            'address.max' => 'address|Maximum 300 characters',
+            'address.min' => 'address|minimum 4 characters',
+
+            'background.max' => 'background|Maximum 300 characters',
+            'background.min' => 'background|minimum 4 characters'
         ];
 
         $validator = Validator::make($request->all(), [
             'name' => 'required|max:50|min:4',
-            'organization' => 'required|max:191:min:4',
-            'address' => 'required|max:191',
-            'contact' => 'required|integer|min:100000|max:99999999999999999'],
-            $messages);
+            'organization' => 'required|max:191|min:4',
+            'address' => 'required|max:191|min:4',
+            'background' => 'max:300|min:4'
+            ],$messages);
         
         if($validator->fails()){
-            return redirect()->route('clients.index')->with('error', 'Client deleted successfully');
+            return redirect()->route('clients.index')->with('error', 'Cannot create client');
         }
         else {
             $client = new Client;
             $client->organization = $request->input('organization');
             $client->address = $request->input('address');
+            $client->background = $request->input('background');
             $client->save();
 
             $contactCreate = Clientcontact::create([
                 'name' => $request['name'],
                 'contact' => $request['contact'],
                 'designation' => $request['designation'],
+                'background' => $request['background'],
                 'client_id' => $client->id,
                 ]);
         }

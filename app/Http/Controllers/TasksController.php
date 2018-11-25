@@ -9,6 +9,7 @@ use App\User;
 use App\Project;
 use App\TaskUser;
 use DB;
+use Illuminate\Support\Facades\Auth;
 
 class TasksController extends Controller
 {
@@ -345,5 +346,12 @@ class TasksController extends Controller
                 return back()->withInput()->with('success', 'Task already marked incomplete');
             }
         }
+    }
+
+    public function showcompletion()
+    {
+        $ctasks = User::find(Auth::User()->id)->tasks->where('completed',1);
+        // dd($ctasks);
+        return view('users.usercompletedtasks')->with('tasks',$ctasks);
     }
 }
