@@ -19,10 +19,19 @@ class ReportsController extends Controller
 
     public function index()
     {
-        $reports = Report::where('completion',1)->get();
-        $visits = Report::where('completion',0)->get();
+        if(Auth::User()->role_id == 1){
+            $reports = Report::where('completion',1)->get();
+            $visits = Report::where('completion',0)->get();
+        }
+        else {
+            $reports = Report::where(['completion'=>1, 'user_id'=>Auth::User()->id])->get();
+            $visits = Report::where(['completion'=>0, 'user_id'=>Auth::User()->id])->get();            
+        }
         foreach($reports as $report){
             $report->report_data = json_decode($report->report_data);
+        }
+        foreach($visits as $visit){
+            $visit->report_data = json_decode($visit->report_data);
         }
         return view('reports.index',['reports'=>$reports, 'visits'=>$visits]);
     }

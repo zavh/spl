@@ -86,8 +86,9 @@ class ClientsController extends Controller
     {
         if(Auth::Check()){ 
             $client = Client::find($id);
+            
             $client['contacts'] = Client::find($id)->clientcontacts;
-			$client['projects'] = Client::find($id)->projects;
+            $client['projects'] = Client::find($id)->projects;
             return view('clients.show')->with('client',$client);
         }
         else {
@@ -183,10 +184,12 @@ class ClientsController extends Controller
 
     private function makeClientList($tempclient = null){
         $clients = CLient::all();
-        $newid = null;
+        $newid = 1;
         if($tempclient !=null){
-            $lastid = $clients[count($clients)-1]->id;
-            $newid = $lastid + 1;
+            if(count($clients)>0){
+                $lastid = $clients[count($clients)-1]->id;
+                $newid = $lastid + 1;
+            }
             $newclient = new CLient;
             $newclient->id = $newid;
             $newclient->organization = $tempclient['organization'];
