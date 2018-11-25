@@ -17,7 +17,7 @@ class CreateClientsTable extends Migration
             $table->bigIncrements('id');
             $table->string('organization', 191);
             $table->string('address', 191);
-            $table->string('background', 300)->nullable;
+            $table->string('background', 300)->nullable()->default(NULL);
             $table->timestamps();
         });
     }
