@@ -304,55 +304,46 @@ class TasksController extends Controller
         $task = Task::find($id);
         $weight = $task->weight;  
 
-        $deadline = $task->task_deadline;    
-        
         $project = Project::find($task->project_id);
         $completed = $project->completed;
 
         $currentdate = date('Y-m-d');
 
-        // dd('checkedstatus',$checkedstatus,'deadline',$deadline,'date',$date,'weight',$weight,'completed',$completed,'currentdate',$currentdate);
+        // dd('checkedstatus',$checkedstatus,'date',$date,'weight',$weight,'completed',$completed,'currentdate',$currentdate);
 
-        if($deadline>$date)
+        if ($checkedstatus == "on") 
         {
-            if ($checkedstatus == "on") 
+            if($task->completed == 0)
             {
-                if($task->completed == 0)
-                {
-                    $task->completed = 1;
-                    $project->completed +=$weight;
-                    $task->save();
-                    $project->save();
-                    return back()->with('success', 'Task updated successfully');
-                }
-                else//task completed
-                {
-                    return back()->withInput()->with('success', 'task already completed');
-                }
-            } 
-            else//checkedstatus = off 
-            {
-                if($task->completed == 1)
-                {
-                    $task->completed = 0;
-                    $project->completed -=$weight;
-                    $task->save();
-                    $project->save();
-                    return back()->with('success', 'Task updated successfully');
-                }
-                else//task already incomplete
-                {
-                    return back()->withInput()->with('success', 'Task already marked incomplete');
-                }
+                $task->completed = 1;
+                $task->date_completed = $date;              
+                $project->completed +=$weight;
+                $task->save();
+                $project->save();
+                // dd($request->get('date_completed'));
+                return back()->with('success', 'Task updated successfully');
             }
-        }
-        else if($date>$currentdate)//submitting on a future date
+            else//task completed
+            {
+                return back()->withInput()->with('success', 'task already completed');
+            }
+        } 
+        else//checkedstatus = off 
         {
-            return back()->withInput()->with('success', "Time travel is not possible, yet");
-        }
-        else//deadline crossed
-        {
-            return back()->withInput()->with('success', 'Deadline crossed');
+            if($task->completed == 1)
+            {
+                $task->completed = 0;
+                $task->date_completed = NULL;              
+                $project->completed -=$weight;
+                $task->save();
+                $project->save();
+                // dd($request->get('date_completed'));
+                return back()->with('success', 'Task updated successfully');
+            }
+            else//task already incomplete
+            {
+                return back()->withInput()->with('success', 'Task already marked incomplete');
+            }
         }
     }
 }

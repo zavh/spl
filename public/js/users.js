@@ -112,7 +112,7 @@ function updateTask(taskid)
 	var checkedstatus = document.getElementById('done-'+taskid);
 	//var today = new Date().toJSON().slice(0,10).replace(/-/g,'/');
 	var submitdate = document.getElementById('done-date-'+taskid).value;
-	console.log(submitdate);
+	// console.log(submitdate);
 
 	if (checkedstatus.checked)
 	{
@@ -131,7 +131,8 @@ function updateTask(taskid)
 
 			submit = new Date(submitdate);
 			assigned = new Date(assigneddate);
-			console.log(submit,assigned);
+			console.log('submit',submit,'assigned',assigned,'today',today);
+			
 
 			if(submit<assigned)
 			{
@@ -148,7 +149,7 @@ function updateTask(taskid)
 			else
 			{
 				checkedstatus.checked = true;
-				// formsubmission.submit();
+				formsubmission.submit();
 				console.log("checked-pass")
 			}
 		}					
@@ -169,8 +170,8 @@ function updateTask(taskid)
 			var assigneddate = document.getElementById('task_date_assigned').value;
 
 			submit = new Date(submitdate);
-			assigned = new Date(assigneddate);
-			console.log(submit,assigned);
+			assigned = new Date(assigneddate);			
+			console.log('submit',submit,'assigned',assigned,'today',today);
 
 			if(submit<assigned)
 			{
@@ -187,7 +188,7 @@ function updateTask(taskid)
 			else
 			{
 				checkedstatus.checked = false;
-				// formsubmission.submit();
+				formsubmission.submit();
 				console.log("unchecked-assigneddate")
 			}
 		}	

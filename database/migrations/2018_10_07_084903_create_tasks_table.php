@@ -22,6 +22,7 @@ class CreateTasksTable extends Migration
             $table->date('task_deadline');
             $table->integer('weight')->unsigned();
             $table->tinyInteger('completed')->unsigned()->default(0);
+            $table->date('date_completed')->nullable()->default(null);
             $table->timestamps();
         });
     }
