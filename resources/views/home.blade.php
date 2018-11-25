@@ -25,10 +25,10 @@
                                     <h2>Projects</h2>                         
                                 </div><!-- /.col-lg-4 -->
                                 <div class="col-lg-4 text-center">
-                                    <a href='/tasks'>
+                                    <a href='/reports'>
                                         <img class="rounded-circle" src="{{ asset('img/icon.role.png') }}" alt="Generic placeholder image" width="140" height="140">
                                     </a>
-                                    <h2>Tasks</h2>
+                                    <h2>Visit Reports</h2>
                                 </div><!-- /.col-lg-4 -->
                                 <div class="col-lg-4 text-center">
                                     <a href='/clients'>

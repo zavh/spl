@@ -117,21 +117,33 @@ class ClientsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
+        $validator = Validator::make($request->all(), [
             'organization' => 'required',
-            'address' => 'required'
+            'address' => 'required',
+            'background' => 'required|min:4'
         ]);
 
-        $client = Client::find($id);
-        $client->organization = $request->input('organization');
-        $client->address = $request->input('address');
-
-        $client->save();
-        //return view('clients.clientdetails', ['organization'=>$client->organization, 'address'=>$client->address, 'client_id'=>$client->id]);
-        $response['view'] = view('clients.clientdetails', ['organization'=>$client->organization, 'address'=>$client->address, 'client_id'=>$client->id])->render();
-        $response['status'] = 'success';
-        $response['client_id'] = $client->id;
-        $response['organization'] = $client->organization;
+        if($validator->fails()){
+            $response['status'] = 'failed';
+            $response['messages'] = $validator->errors()->messages();
+        }
+        else {
+            $client = Client::find($id);
+            $client->organization = $request->input('organization');
+            $client->address = $request->input('address');
+            $client->background = $request->input('background');
+    
+            $client->save();
+            
+            $response['view'] = view('clients.clientdetails', [
+                'organization'=>$client->organization, 
+                'address'=>$client->address, 
+                'client_id'=>$client->id,
+                'background'=>$client->background])->render();
+            $response['status'] = 'success';
+            $response['client_id'] = $client->id;
+            $response['organization'] = $client->organization;
+        }
         return response()->json(['result'=>$response]);
     }
 
@@ -156,7 +168,11 @@ class ClientsController extends Controller
     public function cancel($client_id)
     {
         $findClient = Client::find($client_id);
-        return view('clients.clientdetails', ['organization'=>$findClient->organization, 'address'=>$findClient->address, 'client_id'=>$findClient->id]);
+        return view('clients.clientdetails', [
+            'organization'=>$findClient->organization, 
+            'address'=>$findClient->address,
+            'background'=>$findClient->background, 
+            'client_id'=>$findClient->id]);
     }
 
     public function clientslisting(){

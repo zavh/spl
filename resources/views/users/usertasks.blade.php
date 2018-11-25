@@ -25,8 +25,6 @@
 							&nbsp;Mark task as Done on &nbsp;
 							<input type='date' name='done-date-{{$task->id}}' id='done-date-{{$task->id}}' min='{{$task->task_date_assigned}}' value="{{$task->date_completed}}">
 						@endif
-						 
-						
 					</form>
 				</div>
 			@endforeach

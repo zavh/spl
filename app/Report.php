@@ -14,4 +14,8 @@ class Report extends Model
         'phone', 
         'acceptance',
     ];
+    public function user(){
+        return $this->belongsTo('App\User');
+    }
+    
 }

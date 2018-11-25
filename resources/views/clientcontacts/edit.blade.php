@@ -16,7 +16,7 @@
 				<div class="form-group row">
 					<div class="input-group input-group-sm"  style='margin-top:-10px'>
 						<div class="input-group-prepend">
-							<span class="input-group-text">Name</span>
+							<span class="input-group-text" style="width:100px">Name</span>
 						</div>
 						<input id="name" type="text" class=" form-control " name="name" value= '{{$cc->name}}' required autofocus>
 						<span class="invalid-feedback" role="alert" id='name_error_span'>
@@ -30,7 +30,7 @@
 				<div class="form-group row">
 					<div class="input-group input-group-sm"  style='margin-top:-10px'>
 						<div class="input-group-prepend">
-							<span class="input-group-text">Designation</span>
+							<span class="input-group-text" style="width:100px">Designation</span>
 						</div>
 						<input id="designation" type="text" class=" form-control " name="designation" value= '{{$cc->designation}}' required>
 						<span class="invalid-feedback" role="alert" id='designation_error_span'>
@@ -43,7 +43,7 @@
 				<div class="form-group row">
 					<div class="input-group input-group-sm"  style='margin-top:-10px'>
 						<div class="input-group-prepend">
-							<span class="input-group-text">Phone</span>
+							<span class="input-group-text" style="width:100px">Phone</span>
 						</div>
 						<input id="contact" type="text" class=" form-control " name="contact" value= '{{$cc->contact}}' required>
 						<span class="invalid-feedback" role="alert" id='contact_error_span'>

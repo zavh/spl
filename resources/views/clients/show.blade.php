@@ -3,7 +3,12 @@
 		<!-- Organization/Client Detail Area Starts-->
 		<div class=" mb-2 bg-white rounded shadow-sm">
 			<div class="media text-muted border rounded" id='client-details'>
-				@include('clients.clientdetails', ['organization'=>$client->organization, 'address'=>$client->address, 'client_id'=>$client->id])
+				@include('clients.clientdetails', [
+					'organization'=>$client->organization, 
+					'address'=>$client->address, 
+					'client_id'=>$client->id,
+					'background'=>$client->background
+					])
 			</div>
 		</div>
 		<!-- Organization/Client Detail Area Ends-->

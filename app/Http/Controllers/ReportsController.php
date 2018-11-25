@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use App\User;
 use App\Report;
+use App\Client;
+use App\Clientcontact;
 
 class ReportsController extends Controller
 {
@@ -17,7 +19,12 @@ class ReportsController extends Controller
 
     public function index()
     {
-        //
+        $reports = Report::where('completion',1)->get();
+        $visits = Report::where('completion',0)->get();
+        foreach($reports as $report){
+            $report->report_data = json_decode($report->report_data);
+        }
+        return view('reports.index',['reports'=>$reports, 'visits'=>$visits]);
     }
 
     /**
@@ -94,7 +101,12 @@ class ReportsController extends Controller
      */
     public function show($id)
     {
-
+        $report = Report::find($id);
+        $report_data = json_decode($report->report_data);
+        $report_dates['created'] = date("d-M-Y",strtotime($report->created_at));
+        $report_dates['submitted'] = date("d-M-Y",strtotime($report->updated_at));
+        return view('reports.show',['report'=>$report_data, 'dates'=>$report_dates]);
+        //dd($report);
     }
 
     /**
@@ -181,5 +193,81 @@ class ReportsController extends Controller
         $y = $report->report_data;
         $x = json_decode($y);
         return view('reports.stage2',['report_data'=>$x->report_data]);
+    }
+
+    public function submit(Request $request, $id){
+        $report_data = $request->all();
+        $messages = [
+            'visit_date.max' => 'Visit date cannot be in future',
+        ];
+        $validator = Validator::make($report_data, [
+            'visit_date'=>'required|date|before_or_equal:today',
+            'meeting_issue'=>'required|min:4',
+            'requirement_details'=>'required|min:4',
+            'product_discussed'=>'required|min:4',
+            'outcome_brief'=>'required|min:4',
+        ],$messages);
+        if($validator->fails()){
+            $result['status'] = 'failed';
+            $result['messages'] = $validator->errors()->messages();
+        }
+        else {
+            $report = Report::find($id);  
+            $orig_report_data = json_decode($report->report_data);
+            unset($orig_report_data->_token);
+            unset($orig_report_data->_method);
+            unset($orig_report_data->stage);
+            unset($orig_report_data->client_index);
+
+            unset($report_data->_token);
+
+            $client = $orig_report_data->client_data;
+            unset($client->contactview);
+            if(array_key_exists('created_at',$client)){
+                $client->contacts = $this->setReportContacts($client->contacts, $client->id);
+            }
+            else {
+                $clientCreate = Client::create([
+                    'organization' => $client->organization,
+                    'address' => $client->address,
+                    'background' => $client->background,
+                    ]);
+                    $client->contacts = $this->setReportContacts($client->contacts, $clientCreate->id);
+            }
+            $orig_report_data->client_data = $client;
+            $orig_report_data->report_data = $report_data;
+            $orig_report_data->rc_user_id = Auth::User()->id;
+            $orig_report_data->rc_user_name = Auth::User()->fname." ".Auth::User()->sname;
+            $orig_report_data->rc_user_department = Auth::User()->department->name;
+            $orig_report_data->rc_user_designation = Auth::User()->designation->name;
+            
+            $report->report_data = json_encode($orig_report_data);
+            $report->completion = 1;
+            $report->stage = 2;
+            $report->save();
+            $result['status'] = 'success';
+        }
+        return response()->json(['result'=>$result]);
+    }
+
+    private function setReportContacts($contacts, $client_id){
+        $sortedContacts = array();
+        $count = 0;
+        for($i=0;$i<count($contacts);$i++){
+            if($contacts[$i]->selected){
+                $sortedContacts[$count] = $contacts[$i];
+                if(!$contacts[$i]->dbflag){
+                    $contactCreate = Clientcontact::create([
+                        'name' => $contacts[$i]->name,
+                        'designation' => $contacts[$i]->designation,
+                        'contact' => $contacts[$i]->contact,
+                        'client_id' => $client_id,
+                        ]);
+                    $sortedContacts[$count] = $contactCreate;
+                }
+                $count++;
+            }
+        }
+        return $sortedContacts;
     }
 }
