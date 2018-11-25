@@ -1,11 +1,11 @@
-<div class="media text-muted bg-secondary rounded" id="clientcontact-add">
+<div class="media text-muted bg-secondary rounded m-2" id="clientcontact-add">
     <div class="media-body pb-0 mb-0 small lh-125">
         <div class="d-flex justify-content-center w-100">
             <strong class="text-info">New Contact </strong>
         </div>
     </div>
 </div>
-<div class="media text-muted pt-0 pb-0 border-bottom border-secondary">
+<div class="media text-muted pt-0 pb-0 border-bottom border-secondary m-2">
 	<div class="media-body pb-0 mb-0 small">
 		<div class="d-flex justify-content-center align-items-center w-100">
 			<form method="POST" action="{{ route('clientcontacts.store') }}" class='m-3 w-100' onsubmit="createContact(event, this);" name='addClientContactForm' id='addClientContactForm'>
@@ -14,7 +14,7 @@
 				<div class="form-group row">
 					<div class="input-group input-group-sm"  style='margin-top:-10px'>
 						<div class="input-group-prepend">
-							<span class="input-group-text">Name</span>
+							<span class="input-group-text" style='width:100px'>Name</span>
 						</div>
 						<input id="contact_name" type="text" class=" form-control " name="contact_name" required autofocus>
 						<span class="invalid-feedback" role="alert" id='contact_name_error_span'>
@@ -27,7 +27,7 @@
 				<div class="form-group row">
 					<div class="input-group input-group-sm"  style='margin-top:-10px'>
 						<div class="input-group-prepend">
-							<span class="input-group-text">Designation</span>
+							<span class="input-group-text" style='width:100px'>Designation</span>
 						</div>
 						<input id="designation" type="text" class=" form-control " name="designation" required>
 						<span class="invalid-feedback" role="alert" id='designation_error_span'>
@@ -40,7 +40,7 @@
 				<div class="form-group row">
 					<div class="input-group input-group-sm"  style='margin-top:-10px'>
 						<div class="input-group-prepend">
-							<span class="input-group-text">Phone</span>
+							<span class="input-group-text" style='width:100px'>Phone</span>
 						</div>
 						<input id="contact" type="text" class=" form-control " name="contact" required>
 						<span class="invalid-feedback" role="alert" id='contact_error_span'>

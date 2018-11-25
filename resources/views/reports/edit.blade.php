@@ -1,15 +1,10 @@
 <script src="{{ asset('js/report.js') }}"></script>
 @extends('layouts.app')
 @section('content')
-<div class='row pb-2 small w-100'>
-	<div class='col-md-6 text-center' style='border-bottom: 2px solid red'>Step 1</div>
-	<div class='col-md-6 text-center text-muted' style='border-bottom: 1px solid #eee'>Step 2</div>
-</div>
-
 <div class="container-fluid">
 	<div class="row" >
 		<div class="col-md-12 col-lg-8 pl-3 pr-3">
-			<div class="card mb-4 shadow-sm h-md-250">
+			<div class="card shadow-sm h-md-250">
 				<div class=" mb-0 bg-white rounded">
 					<div class="media text-muted">
 						<div class="media-body small mb-2">

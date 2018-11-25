@@ -82,7 +82,6 @@ class UsersController extends Controller
             if($userCreate){
                 $users = User::all();
                 $me = User::find(Auth::User()->id);
-                //dd($request);
                 $completion = $this->profileCalculation($me);
                 return view('users.index', ['users'=>$users,'me'=>$me,'completion'=>$completion]);
                 }
@@ -93,14 +92,14 @@ class UsersController extends Controller
 
     public function show(User $user)
     {
-        // dd($user);
-
-
-        // dd($completion);
-
-        $user = User::find($user->id);
-        $completion = $this->profileCalculation($user);
-        return view('users.show', ['user'=>$user, 'completion'=>$completion]);
+        if(Auth::Check()){
+            $user = User::find($user->id);
+            $completion = $this->profileCalculation($user);
+            return view('users.show', ['user'=>$user, 'completion'=>$completion]);
+        }
+        else {
+            return view('partial.sessionexpired');
+        }
     }
 
     private function profileCalculation($user){
@@ -175,13 +174,15 @@ class UsersController extends Controller
         $user->address = $request->input('address');
         $user->designation_id = $request->input('designation');
         $user->department_id = $request->input('department');
-
-        $user->active = $request->input('active');
         
-        if(Auth::User()->role_id == 1)
+        if(Auth::User()->role_id == 1){
             $user->role_id = $request->input('role_id');
-        else 
+            $user->active = $request->input('active');
+        }
+        else {
             $user->role_id = Auth::User()->role_id;
+            $user->active = Auth::User()->active;
+        }
         // dd($user->active);
         $user->save();
         
@@ -266,14 +267,22 @@ class UsersController extends Controller
     }
 
     public function reports(){
-        $x = User::find(Auth::User()->id)->reports->where('completion',0);
-        $reports = array();
+        $x = User::find(Auth::User()->id)->reports;
+        $complete = array();
+        $incomplete = array();
         foreach($x as $index=>$report){
-            $reports[$index]['data'] = json_decode($report->report_data);
-            $reports[$index]['id'] = $report->id;
+            if($report->completion == 0){
+                $incomplete[$index]['data'] = json_decode($report->report_data);
+                $incomplete[$index]['id'] = $report->id;
+            }
+            else {
+                $complete[$index]['data'] = json_decode($report->report_data);
+                $complete[$index]['id'] = $report->id;
+            }
         }
-        return view('users.userreports', ['reports'=>$reports]);
+        return view('users.userreports', ['complete'=>$complete, 'incomplete'=>$incomplete]);
     }
+    
     public function deactivate($id)
     {
         $user = User::find($id);

@@ -49,3 +49,19 @@ function errorClearFactory(nodelist){
 		}			
 	}
 }
+
+function errorBagProcessing(messages){
+    var span, errmsg, inp, i;
+    for(var k in messages){
+        if(messages.hasOwnProperty(k)){
+            span = document.getElementById(k+'_error_span');
+            errmsg = document.getElementById(k+'_error');
+            inp = document.getElementById(k);
+            inp.classList.add("is-invalid");
+            span.style.display = 'block';
+            for(i=0;i<messages[k].length;i++){
+                errmsg.innerHTML += "&#9654;"+messages[k][i]+"&nbsp;";
+            }
+        }
+    }
+}

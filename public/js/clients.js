@@ -59,6 +59,10 @@ function ajaxFunction(instruction, execute_id, divid){
 							y.classList.add('bg-light');
 							}, 3000);
 					}
+					else {
+						console.log(clientEditResponse);
+						errorBagProcessing(clientEditResponse.result.messages);
+					}
 				}
 				else{
 					var ajaxDisplay = document.getElementById(divid);
@@ -86,7 +90,7 @@ function ajaxFunction(instruction, execute_id, divid){
 		if(instruction == "updateClient"){
 			var client_id = document.getElementById('client_id').value;
 			ajaxRequest.open("POST", "/clients/"+client_id, true);
-			ajaxRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+			ajaxRequest.setRequestHeader("Content-type", "application/json");
 			ajaxRequest.send(execute_id);
 		}
 		
@@ -132,35 +136,17 @@ function deleteClient(client, clientid){
 	}
 }
 
-function updateClient(e){
+function updateClient(e, form){
 	e.preventDefault();
-	
-	var token = document.getElementsByName("_token")[0].value;
-	var organization = document.getElementsByName("organization")[0].value;
-	var address = document.getElementsByName("address")[0].value;
-
-	var postqstring = "_token="+token+"&organization="+organization+"&address="+address+"&_method=PUT";
-	
+	var postqstring = getQueryString(form.id);
+	clearErrorFormatting(form.id);	
 	ajaxFunction('updateClient', postqstring, 'client-details');
 }
 
 function createContact(e, form){
-	// e.preventDefault();
-	// clearErrorFormatting(form.id);
-
-	// var postqstring = getQueryString(form.id);
-	// var token = document.getElementsByName("_token")[0].value;
-	// var name = document.getElementById("contact_name").value;
-	// var designation = document.getElementById("designation").value;
-	// var contact = document.getElementById("contact").value;
-	// var client_id = document.getElementById('cc_client_id').value;
-
-	// var postqstring = "_token="+token+"&designation="+designation+"&contact="+contact+"&contact_name="+name+"&client_id="+client_id;
-
 	e.preventDefault();
     var postqstring = getQueryString(form.id);
 	clearErrorFormatting(form.id); // Clear any previous error
-	console.log(postqstring);
 	ajaxFunction('addClientContact', postqstring, 'clientcontact-add');
 }
 
