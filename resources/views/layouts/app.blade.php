@@ -19,6 +19,7 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/commons.css') }}" rel="stylesheet">
 </head>
 <body>
     <div id="app">
@@ -38,10 +39,39 @@
                     </ul>
 
                     <!-- Right Side Of Navbar -->
-                    <ul class="navbar-nav ml-auto">
+                    <ul class="navbar-nav ml-auto small">
                         <!-- Authentication Links -->
                         @guest
                         @else
+                            <li class="nav-item">
+                            
+                            @if(Request::path()=='home')
+                                <a class="nav-link active-nav active" href="/home">Dashboard</a>
+                            @else
+                                <a class="nav-link" href="/home">Dashboard</a> 
+                            @endif
+                            </li>
+                            <li class="nav-item">
+                            @if(Request::path()=='reports')
+                                <a class="nav-link active-nav active" href="/reports">Reports</a>
+                            @else
+                                <a class="nav-link" href="/reports">Reports</a>
+                            @endif
+                            </li>
+                            <li class="nav-item">
+                            @if(Request::path()=='projects')
+                                <a class="nav-link active-nav active" href="/projects">Projects</a>
+                            @else
+                                <a class="nav-link" href="/projects">Projects</a>
+                            @endif
+                            </li>
+                            <li class="nav-item">
+                            @if(Request::path()=='clients')
+                                <a class="nav-link active-nav active" href="/clients">Clients</a>
+                            @else 
+                                <a class="nav-link" href="/clients">Clients</a>
+                            @endif
+                            </li>
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }} <span class="caret"></span>

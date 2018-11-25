@@ -1,0 +1,6 @@
+.active-nav{
+    text-decoration: underline overline;
+    -webkit-text-decoration-color: red;
+    text-decoration-color: red;
+    pointer-events: none;
+}

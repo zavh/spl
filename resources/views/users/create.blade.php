@@ -11,8 +11,9 @@
 							<div class="d-flex justify-content-between align-items-center w-100 border-bottom">
                                 <!-- Header Starts -->
                                 <span class="text-dark pl-1 pt-1">
-                                        <strong>Create New User</strong>
-                                    </span>
+                                    <strong>Create New User</strong>
+                                </span>
+                            </div>
                                 <!-- Header Ends -->
                                 <div class="card-body">
                                     <form method="POST" action="{{ route('users.store') }}">
@@ -91,7 +92,7 @@
                                         </div>
                                         <!-- Department Input Ends -->
                                         <!-- Designation Input Starts -->
-                                        <<div class="form-group row" style='margin-top:-10px'>
+                                        <div class="form-group row" style='margin-top:-10px'>
                                                 <div class="input-group input-group-sm col-md-12">
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text" style="font-size:12px;width:150px">Designation</span>

@@ -39,7 +39,7 @@
                 <div class="form-group row">
                     <div class="input-group" style="margin-top:-10px">
                         <div class="input-group-prepend">
-                            <span class="input-group-text" style="font-size:12px;width:140px">Company Background</span>
+                            <span class="input-group-text pl-2" style="font-size:12px;width:140px">Company Background</span>
                         </div>
                         <textarea id="background" class="form-control" aria-label="With textarea" name="background" required=""
                         >{{ $assignment->background }}</textarea>

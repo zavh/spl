@@ -19,11 +19,12 @@ class ReportsController extends Controller
 
     public function index()
     {
-        $reports = Report::all();
+        $reports = Report::where('completion',1)->get();
+        $visits = Report::where('completion',0)->get();
         foreach($reports as $report){
             $report->report_data = json_decode($report->report_data);
         }
-        return view('reports.index',['reports'=>$reports]);
+        return view('reports.index',['reports'=>$reports, 'visits'=>$visits]);
     }
 
     /**

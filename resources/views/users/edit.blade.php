@@ -210,7 +210,7 @@
 								<div class="form-group row" style='margin-top:-10px'>
 									<div class="input-group input-group-sm col-md-12">
 										<div class="input-group-prepend">
-											<span class="input-group-text" style="font-size:12px;width:150px">Role</span>
+											<span class="input-group-text" style="font-size:12px;width:150px">Status</span>
 										</div>
 											<select class="form-control" name="active">
 												<option value=1 
@@ -246,5 +246,5 @@
 			</div>
 		</div>
 	</div>
-</div>
+
 @endsection
