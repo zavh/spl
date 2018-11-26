@@ -39,9 +39,33 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
+    public function username()
+    {
+        $identity  = request()->get('identity');
+        $fieldName = filter_var($identity, FILTER_VALIDATE_EMAIL) ? 'email' : 'name';
+        request()->merge([$fieldName => $identity]);
+        return $fieldName;
+    }
+
+    protected function validateLogin(Request $request)
+    {
+        $this->validate(
+            $request,
+            [
+                'identity' => 'required|string',
+                'password' => 'required|string',
+            ],
+            [
+                'identity.required' => 'Username or email is required',
+                'password.required' => 'Password is required',
+            ]
+        );
+    }
+    
     protected function credentials(Request $request)
     {
         $credentials = $request->only($this->username(), 'password');
         return array_add($credentials, 'active', '1');
     }
+    
 }
