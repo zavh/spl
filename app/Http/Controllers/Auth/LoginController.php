@@ -55,26 +55,46 @@ class LoginController extends Controller
         // dd($request);
         $id = $request->get('identity');
         $pw = $request->get('password');
-        // dd($credentials);
-        // $active = Auth::credentials($request);
-        // dd($active);
+        $user = User::where('name',$id)
+                ->orWhere('email',$id)
+                ->first();
+        $active = $user['active'];
+        
+        // dd($user['name'],$user['email']);
 
-        // dd($request);
-        $this->validate( 
-            $request,
-            [
-                'identity' => 'required|string',
-                'password' => 'required|string|min:4',
-                
-            ],
-            [
-                'identity.required' => 'Username or email is required',
-                'identity.same' => 'does not match email or username',
-                'password.required' => 'Password is required',
-                'password.min' => 'minimum 4 characters',
-                'password.same' => 'passwords did not match',
-            ]
-        ); 
+        // dd('id',$id,'pw',$pw,'status',$active);
+        if ($user['name'] == NULL || $user['email'] == NULL)
+        {
+            return redirect('/login')->withInput()->with('success', 'ID Mismatch!');
+        }
+        else if($user['password'] != $pw)
+        {
+            return redirect('/login')->withInput()->with('success', 'Wrong Password!');
+        }
+        else if($active ==0)
+        {
+            return redirect('/login')->withInput()->with('success', 'Deactivated account, please contact the system adminitrator!');
+        }
+        else
+        {
+            $this->validate( 
+                $request,
+                [
+                    'identity' => ["required","string","regex:/".$id."/"],
+                    'password' => ["required","string","min:4","regex:/".$pw."/"],
+                    
+                ],
+                [
+                    'identity.required' => 'Username or email is required',
+                    'identity.regex' => 'does not match email or username',
+                    'password.required' => 'Password is required',
+                    'password.min' => 'minimum 4 characters',
+                    'password.regex' => 'passwords did not match',
+                ]
+            );            
+        }
+
+        
     }
 
     protected function credentials(Request $request)

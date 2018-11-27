@@ -5,7 +5,7 @@
         </button>            
         <strong>
             @php
-            var_dump($errors)
+            var_dump($errors->messages)
             @endphp
         </strong>
     </div>
