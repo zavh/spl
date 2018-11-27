@@ -161,10 +161,17 @@ class ClientcontactsController extends Controller
     }
 
     public function contactlist($client_id)
-    {
-        $clinetContacts = Clientcontact::where('client_id', $client_id)->get();
-        $response['view'] = view('clientcontacts.contactlisting',['contacts'=>$clinetContacts])->render();
-        $response['contacts'] = json_encode($clinetContacts);
-        return response()->json(['data'=>$response]);
+    {   
+        if(Auth::Check()){
+            $clinetContacts = Clientcontact::where('client_id', $client_id)->get();
+            $response['status'] = 'success';
+            $response['view'] = view('clientcontacts.contactlisting',['contacts'=>$clinetContacts])->render();
+            $response['contacts'] = json_encode($clinetContacts);
+            return response()->json(['data'=>$response]);
+        }
+        else {
+            $response['status'] = 'failed';
+            $response['message'] = 'session';
+        }
     }
 }

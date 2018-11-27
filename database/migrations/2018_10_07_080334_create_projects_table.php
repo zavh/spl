@@ -17,13 +17,11 @@ class CreateProjectsTable extends Migration
             $table->increments('id');
             $table->string('project_name');
             $table->integer('client_id');
+            $table->json('contacts');
             $table->integer('user_id');
-            $table->integer('manager_id')->nullable();
-            $table->date('assigned')->nullable();
             $table->date('deadline');
             $table->tinyInteger('status')->nullable();
             $table->tinyInteger('state')->nullable();
-            $table->string('description', 250);
             $table->integer('allocation')->default(0);
             $table->tinyInteger('completed')->unsigned()->default(0);
             $table->timestamps();

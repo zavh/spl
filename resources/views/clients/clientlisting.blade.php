@@ -9,7 +9,7 @@
 				</div>
 				<div class="d-flex justify-content-center bg-light w-100 border-bottom pt-2 text-dark">
 					<select name='report-client' id='report-client' class='form-control form-control-sm ml-2 mr-2 mb-2' onchange='showClientContact(this)'>
-					@if($newid != null)
+					@if($newid != 0)
 						<option disabled> Select One</option>
 					@else
 					<option disabled selected> Select One</option>
@@ -30,6 +30,6 @@
 	</div>
 </div>
 
-<div class="card mb-4 shadow-sm h-md-250" id='client-contacts' style='display:none'>
+<div id='client-contacts' style='display:none'>
 
 </div>

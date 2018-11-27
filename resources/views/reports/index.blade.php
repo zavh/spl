@@ -40,8 +40,9 @@
                         <div class="row m-0 bg-light border-bottom w-100">
                             <div class="col-md-12 text-primary pl-1 text-secondary">
                                 <strong class='text-primary'>{{$visit->report_data->rc_user_name}}</strong>
-                                Visiting <strong>{{$visit->report_data->client_data->organization}}</strong> on
-                                </strong>{{$visit->report_data->report_data->visit_date}}</strong>
+                                Visiting 
+                                <strong class='text-success'>{{$visit->report_data->client_data->organization}}</strong> on
+                                <span class='text-danger'>{{$visit->report_data->report_data->visit_date}}</span>
                             </div>
                         </div>
                         @endforeach

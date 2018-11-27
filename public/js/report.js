@@ -133,7 +133,7 @@ function ajaxFunction(instruction, execute_id, divid){
 	    } 
 
 		if(instruction == "viewClientList"){
-			ajaxRequest.open("GET", "/clients/listing/", true);
+			ajaxRequest.open("GET", "/clients/listing", true);
             ajaxRequest.send();
         }
 

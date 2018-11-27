@@ -123,7 +123,7 @@
                         </script>
                     </div>
                     <div class="col-md-6 pl-3 pr-3" id='client-creator'>
-                        @include('users.newclient')
+                        @include('clients.newclient')
                     </div>
                 </div>
                 

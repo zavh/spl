@@ -27,7 +27,6 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 Route::get('/tasks/create/{project_id?}', 'TasksController@create');
 Route::get('/tasks/project/{project_id?}', 'TasksController@index');
-Route::get('/project/enquiries/{project_id?}', 'ProjectsController@enquiries');
 Route::post('/tasks/{project_id?}/edit', 'TasksController@edit');
 Route::post('/tasks/completion/{task_id?}', 'TasksController@completion');
 
@@ -58,6 +57,9 @@ Route::get('/clientcontacts/listing/{client_id?}', 'ClientcontactsController@con
 Route::get('/report/clientdetails/{report_id?}', 'ReportsController@clientdetails');
 Route::get('/reports/stage2/{report_id?}', 'ReportsController@stage2view');
 Route::post('/reports/submit/{report_id?}', 'ReportsController@submit')->name('addclient');
+
+Route::get('/project/enquiries/{project_id?}', 'ProjectsController@enquiries');
+Route::get('/project/createclient', 'ProjectsController@createclient');
 
 Route::resource('clients','ClientsController');
 Route::resource('projects','ProjectsController');

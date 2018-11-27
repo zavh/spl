@@ -189,19 +189,27 @@ class ClientsController extends Controller
     }
 
     public function clientslisting(){
-        $response = $this->makeClientList();
-        $response['status'] = 'success';
-        return response()->json(['response'=>$response]);
+        if(Auth::Check()){
+            $response = $this->makeClientList();
+            $response['status'] = 'success';
+            return response()->json(['response'=>$response]);
+        }
+        else {
+            $response['status'] = "failed";
+            $response['message'] = "session";
+            return response()->json(['response'=>$response]);
+        }
     }
 
     private function makeClientList($tempclient = null){
         $clients = CLient::all();
-        $newid = 1;
+        $newid = 0;
         if($tempclient !=null){
             if(count($clients)>0){
                 $lastid = $clients[count($clients)-1]->id;
                 $newid = $lastid + 1;
             }
+            else $newid = 1;
             $newclient = new CLient;
             $newclient->id = $newid;
             $newclient->organization = $tempclient['organization'];

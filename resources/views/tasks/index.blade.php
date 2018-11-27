@@ -1,6 +1,6 @@
 <small class="d-block text-right">
-@isset($assignment)
-    <a href="javascript:void(0)" onclick="ajaxFunction('showAddTask', '{{ $assignment->id }}' , 'taskdiv')">
+@isset($project)
+    <a href="javascript:void(0)" onclick="ajaxFunction('showAddTask', '{{ $project->id }}' , 'taskdiv')">
 @else 
     <a href="javascript:void(0)" onclick="ajaxFunction('showAddTask', '{{ $project_id }}' , 'taskdiv')">
 @endisset

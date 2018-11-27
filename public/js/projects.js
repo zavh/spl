@@ -1,3 +1,4 @@
+var contacts = [];
 function ajaxFunction(instruction, execute_id, divid){
 	var ajaxRequest;  // The variable that makes Ajax possible!
 		try{
@@ -20,19 +21,42 @@ function ajaxFunction(instruction, execute_id, divid){
 		// Create a function that will receive data sent from the server
 		ajaxRequest.onreadystatechange = function(){
 				if(ajaxRequest.readyState == 4 && ajaxRequest.status == 200){
-				    var ajaxDisplay = document.getElementById(divid);
+					var ajaxDisplay = document.getElementById(divid);
+					if(instruction == "newClientValidation"){
+						var vResponse = JSON.parse(ajaxRequest.responseText);
+						if(vResponse.result.status == 'failed'){
+							vResponse.result.message.forEach(formErrorProcessing);
+						}
+						return;
+					}
+					if(instruction == "viewclient"){
+						ccResponse = JSON.parse(ajaxRequest.responseText);
+						contacts = JSON.parse(ccResponse.data.contacts);
+						for(i=0;i<contacts.length;i++){
+							contacts[i]['selected'] = 0;
+						}
+						var view = ccResponse.data.view; 
+						ajaxDisplay.innerHTML = view;
+						return;
+					}
+					if(instruction == "createClient"){
+						cpResponse = JSON.parse(ajaxRequest.responseText);
+						console.log(cpResponse);
+						return;
+					}
 				    ajaxDisplay.innerHTML = ajaxRequest.responseText;
 				}
 	    } 
 
 		if(instruction == "viewclient"){
 			document.getElementById("cp-supplimentary").style.display='';
-			ajaxRequest.open("GET", "/clients/"+ execute_id, true);
+			ajaxRequest.open("GET", "/clientcontacts/listing/"+execute_id, true);
 			ajaxRequest.send();
         }
 		if(instruction == "showCreateClient"){
-            document.getElementById("cp-supplimentary").style.display='';		
-			ajaxRequest.open("GET", "/clients/create", true);
+			document.getElementById("cp-supplimentary").style.display='';
+			document.getElementById("client_id").selectedIndex = 0;	
+			ajaxRequest.open("GET", "/project/createclient", true);
 			ajaxRequest.send();
 		}
 		if(instruction == "showAddTask"){
@@ -44,7 +68,6 @@ function ajaxFunction(instruction, execute_id, divid){
 			ajaxRequest.send();
 		}
 		if(instruction == "editTasks"){
-			console.log('exeucute_id', execute_id);
 			ajaxRequest.open("GET", "/tasks/"+execute_id+"/edit", true);
 			ajaxRequest.send();
 		}
@@ -54,11 +77,19 @@ function ajaxFunction(instruction, execute_id, divid){
 			ajaxRequest.send();
 		}
 		if(instruction == "editEnquiries"){
-			console.log('exeucute_id', execute_id);
 			ajaxRequest.open("GET", "/enquiries/"+execute_id+"/edit", true);
 			ajaxRequest.send();
 		}
-
+		if(instruction == "newClientValidation"){
+			ajaxRequest.open("POST", "/clients/validateonly/", true);
+			ajaxRequest.setRequestHeader("Content-type", "application/json");
+			ajaxRequest.send(execute_id);
+		}
+		if(instruction == "createClient"){
+			ajaxRequest.open("POST", "/projects", true);
+			ajaxRequest.setRequestHeader("Content-type", "application/json");
+			ajaxRequest.send(execute_id);
+		}
 }
 
 function getClient(el){
@@ -114,4 +145,50 @@ function deleteEnquiry(enq, enqid){
 		var formel = document.getElementById(formid);
 		formel.submit();
 	}
+}
+
+function newClientValidation(e, form){
+    e.preventDefault();
+    var postqstring = getQueryString(form.id);
+    clearErrorFormatting(form.id); // Clear any previous error
+	ajaxFunction('newClientValidation', postqstring, 'client-creator');
+}
+
+function showClientContact(el){
+    var x = el.options;
+    var y = el.selectedIndex;
+    var index = x[y].value;
+    var client_id = index;
+
+    ajaxFunction('viewClientContacts', client_id, 'client-contacts');
+}
+
+function selectClientContact(el){
+	if(el.checked){
+		contacts[el.dataset.index]['selected'] = 1;
+	}
+	else {
+		contacts[el.dataset.index]['selected'] = 0;
+	}
+	console.log(contacts);
+}
+
+function createProject(e, form){
+	e.preventDefault();
+	var i, c = [], count=0, formdat;
+	for(i=0; i<contacts.length;i++){
+		if(contacts[i].selected == 1)
+		c[count++] = contacts[i];
+	}
+	if(c.length == 0){
+		alert('No contact selected');
+		return;
+	}
+	else {
+		formdat = getQString(form.id, 'cpinput');
+		formdat['contacts'] = c;
+		formdat['_token'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');;
+		ajaxFunction('createClient', JSON.stringify(formdat) , '');
+	}
+		
 }

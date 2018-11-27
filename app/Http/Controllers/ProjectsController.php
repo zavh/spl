@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use App\Project;
 use App\Client;
 use App\Enquiry;
@@ -48,36 +49,33 @@ class ProjectsController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
+        $validator = Validator::make($request->all(), [
             'project_name' => 'required',
             'client_id' => 'required',
-            'deadline' => 'required',
-            'description' => 'required',
-        ]);
-
+            'deadline' => 'required|date|after_or_equal:today',
+            ]);
         // Create Project
-        $project = new Project;
-        $project->project_name = $request->input('project_name');
-        $project->client_id = $request->input('client_id');
-        $project->user_id = Auth::User()->id;
-        $project->deadline = $request->input('deadline');
-        $project->description = $request->input('description');
-        $project->allocation = 0;
+        if($validator->fails()){
+            $response['status'] = 'failed';
+            $response['messages'] = $validator->errors()->messages();
+        }
+        else {
+            $project = new Project;
+            $project->project_name = $request->input('project_name');
+            $project->client_id = $request->input('client_id');
+            $project->user_id = Auth::User()->id;
+            $project->deadline = $request->input('deadline');
+            $project->contacts = json_encode($request->input('contacts'));
+            $project->allocation = 0;
+    
+            $project->save();
+            //$project_id = $project->id;
+            $response['status'] = 'success';
+            $response['project_id'] = $project->id;
+        }
 
-        $project->save();
-        $project_id = $project->id;
-
-        // Create First Enquiry
-        $enquiry_dat = $request->all();
-        unset($enquiry_dat['_token']);
-        $enquiry_dat = json_encode($enquiry_dat);
-
-        $enquiryCreate = Enquiry::create([
-            'project_id' => $project_id,
-            'details' => $enquiry_dat
-        ]);
-
-        return redirect('/projects')->with('success', 'Project Created');
+        //return redirect('/projects')->with('success', 'Project Created');
+        return response()->json(['response'=>$response]);
     }
 
     /**
@@ -88,25 +86,13 @@ class ProjectsController extends Controller
      */
     public function show($id)
     {
-        $assignment = Project::find($id);
-        $assignment['client'] = Project::find($id)->client;
-        $assignment['postedby'] = Project::find($id)->user->name;
-        $assignment['tasks'] = Project::find($id)->tasks;
-        $x = Project::find($id)->enquiries;
-        for($i=0;$i<count($x);$i++){
-            $enquiries[$i]['details'] = json_decode($x[$i]['details']);
-            $enquiries[$i]['id'] = $x[$i]['id'];
+        $project = Project::find($id);
+
+        foreach($project->enquiries as $index=>$enquiry){
+            $project->enquiries[$index]->details = json_decode($enquiry->details);
         }
-        if(isset($enquiries))
-        {
-            $assignment['enquiries'] = $enquiries;
-            return view('projects.show')->with('assignment',$assignment);
-        }
-        else
-        {
-            return view('projects.show')->with('assignment',$assignment);
-        }
-        
+        $project->contacts = json_decode($project->contacts);
+        return view('projects.show')->with('project',$project);
     }
 
     /**
@@ -186,5 +172,12 @@ class ProjectsController extends Controller
         }
 		//dd($enquiries);
 		return view('projects.enquiries', ['enquiries'=>$enquiries]);
-	}
+    }
+    
+    public function createclient(){
+        if(Auth::Check())
+            return view('clients.newclient');
+        else 
+            return view('partial.sessionexpired');
+    }
 }

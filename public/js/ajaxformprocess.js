@@ -65,3 +65,17 @@ function errorBagProcessing(messages){
         }
     }
 }
+
+function getQString(f, c){
+    var inputs = document.forms[f].getElementsByClassName(c), i, result = {};
+    for(i=0;i<inputs.length;i++){
+        if(inputs[i].hasAttribute("disabled"))
+            continue;
+        if(inputs[i].getAttribute("type") == 'radio' || inputs[i].getAttribute("type") == 'checkbox'){
+            if(!inputs[i].checked)
+                continue;
+        }
+        result[inputs[i].name] = inputs[i].value;
+    }
+    return result;
+}
