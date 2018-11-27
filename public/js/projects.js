@@ -41,7 +41,13 @@ function ajaxFunction(instruction, execute_id, divid){
 					}
 					if(instruction == "createClient"){
 						cpResponse = JSON.parse(ajaxRequest.responseText);
-						console.log(cpResponse);
+						if(cpResponse.response.status == 'failed'){
+							errorBagProcessing(cpResponse.response.messages);
+						}
+						else {
+							location.href = "/home";
+						}
+						 //console.log(cpResponse);
 						return;
 					}
 				    ajaxDisplay.innerHTML = ajaxRequest.responseText;
