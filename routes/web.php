@@ -30,7 +30,6 @@ Route::get('/tasks/project/{project_id?}', 'TasksController@index');
 Route::post('/tasks/{project_id?}/edit', 'TasksController@edit');
 Route::post('/tasks/completion/{task_id?}', 'TasksController@completion');
 
-
 Route::get('/enquiries/project/{project_id?}', 'EnquiriesController@index');
 Route::get('/enquiries/create/{project_id?}', 'EnquiriesController@create');
 Route::post('/enquiries/{project_id?}/edit', 'EnquiriesController@edit');

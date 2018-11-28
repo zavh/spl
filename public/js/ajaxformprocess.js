@@ -67,7 +67,7 @@ function errorBagProcessing(messages){
 }
 
 function getQString(f, c){
-    var inputs = document.forms[f].getElementsByClassName(c), i, result = {};
+    var inputs = document.forms[f].getElementsByClassName(c), i, result = {}, options, index=0, j;
     for(i=0;i<inputs.length;i++){
         if(inputs[i].hasAttribute("disabled"))
             continue;
@@ -75,7 +75,17 @@ function getQString(f, c){
             if(!inputs[i].checked)
                 continue;
         }
-        result[inputs[i].name] = inputs[i].value;
+        if(inputs[i].type == 'select-multiple'){
+            options = inputs[i].options;
+            result[inputs[i].name] = [];
+            for(j=0;j<options.length;j++){
+                if(options[j].selected){
+                    result[inputs[i].name][index++] = options[j].value;
+                }
+            }  
+        }
+        else 
+            result[inputs[i].name] = inputs[i].value;
     }
     return result;
 }

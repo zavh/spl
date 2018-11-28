@@ -104,15 +104,25 @@
         <!-- Enquiry Column Ends-->
         <!-- Task Column Starts-->
             <div class='col-md-4'>
-                <div class="d-flex align-items-center p-3 my-3 text-white-50 bg-primary rounded shadow-sm">
+                <div class="p-2 my-1 text-white-50 bg-primary rounded shadow-sm">
                     <div class="lh-100">
-                    <h6 class="mb-0 text-white lh-100">Tasks</h6>
-                    @if(count($project->tasks) == 0)
-                    <small>No Task defined yet</small>
-                    @else
-                        <small>Total number of tasks: {{count($project->tasks)}} </small>
-                    @endif
-                    </div>
+                        <h6 class="mb-0 text-white lh-100">Tasks</h6>
+                        <div class="d-flex justify-content-between align-items-center small">
+                            <span> 
+                                @if(count($project->tasks) == 0)
+                                    <small>No Task defined yet</small>
+                                @else
+                                    <small>Total number of tasks: {{count($project->tasks)}} </small>
+                                @endif 
+                            </span>
+                            @isset($project)
+                                <a href="javascript:void(0)" class="text-white small" onclick="ajaxFunction('showAddTask', '{{ $project->id }}' , 'taskdiv')">
+                            @else 
+                                <a href="javascript:void(0)" class="text-white small" onclick="ajaxFunction('showAddTask', '{{ $project_id }}' , 'taskdiv')">
+                            @endisset
+                                    Add Task
+                                </a>
+                        </div>
                 </div>
 
                 <div class="my-3 p-3 bg-white rounded shadow-sm" id='taskdiv'>
@@ -138,4 +148,5 @@
         </div>
     </main>    
 @endsection
-<script src="{{ asset('js/projects.js?version=0.1') }}" defer></script>
+<script src="{{ asset('js/projects.js?version=0.2') }}" defer></script>
+<script src="{{ asset('js/ajaxformprocess.js') }}" defer></script>
