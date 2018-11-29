@@ -56,7 +56,7 @@ function ajaxFunction(instruction, execute_id, divid){
 						y.classList.add('updateflash');
 						setTimeout(function(){
 							y.classList.remove('updateflash');
-							y.classList.add('bg-light');
+							y.classList.add('bg-success');
 							}, 3000);
 					}
 					else {

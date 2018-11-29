@@ -47,6 +47,7 @@ Route::post('/clients/store', 'ClientsController@store')->name('addclient');
 Route::post('/clients/validateonly', 'ClientsController@validateonly')->name('validateclient');
 Route::get('/client/cancel/{client_id?}', 'ClientsController@cancel');
 Route::get('/clients/listing', 'ClientsController@clientslisting')->name('clientlist');
+Route::get('/client/{client_id?}', 'ClientsController@index');
 
 Route::get('/clientcontacts/create/{client_id?}', 'ClientcontactsController@create');
 Route::get('/clientcontacts/{client_id?}/edit', 'ClientcontactsController@edit');

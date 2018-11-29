@@ -15,15 +15,13 @@ class ClientsController extends Controller
     {
         $this->middleware('auth');
     }*/
-    public function index()
+    public function index($target = null)
     {
         if(Auth::Check()){
-            $assignments = Client::all();
-			foreach($assignments as $index=>$assignment){
-				$projects = Client::find($assignment->id)->projects;
-				$assignments[$index]['projects'] = $projects;
-			}
-            return view('clients.index')->with('assignments', $assignments);
+            $client = Client::all()->sortBy('organization');
+            if($target == null)
+                $target = $client->first()->id;
+            return view('clients.index', ['clients'=>$client, 'target'=>$target]);
         }
         else {
             return redirect('/login');
@@ -90,8 +88,7 @@ class ClientsController extends Controller
                 'client_id' => $client->id,
                 ]);
         }
-        return redirect('/clients')->with('success', 'Client Created');
-        //return response()->json(['result'=>'success','message'=>'Added new records.']);
+        return redirect('/client'."/".$client->id)->with('success', 'Client Created');
     }
 
     public function show($id)

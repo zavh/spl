@@ -8,14 +8,14 @@
 
 /* Safari 4.0 - 8.0 */
 @-webkit-keyframes example {
-    0%   {background-color:rgb(155, 233, 152);}
-    100% {background-color: rgba(0,0,0,0.02);}
+	0% {background-color: rgba(0,0,0,0.02);}
+    100%   {background-color:rgb(92,184,92);}
 }
 
 /* Standard syntax */
 @keyframes example {
-    0%   {background-color:rgb(155, 233, 152);}
-    100% {background-color: rgba(0,0,0,0.02);}
+	0% {background-color: rgba(0,0,0,0.02);}
+    100%   {background-color:rgb(92,184,92);}
 }
 </style>
 @extends('layouts.app')
@@ -51,29 +51,29 @@
                         </div>
 					<!-- Search Client Section Ends -->
 					<!-- Client Listing Section starts -->
-						@foreach($assignments as $assignment)
-							<div class="align-items-center p-1 my-1 text-black-50 bg-light rounded border-bottom " id="parent-of-{{$assignment->id}}">
+						@foreach($clients as $index=>$client)
+							<div class="align-items-center p-1 my-1 text-black-50 @if($target==$client->id) bg-success @else bg-light @endif rounded border-bottom " id="parent-of-{{$client->id}}">
 								<div class='row'>
 									<div class="col-md-6 col-lg-9 col-sm-12">
 										<a 
 											href="javascript:void(0)"
 											class="badge badge-light shadow-sm" 
-											onclick="ajaxFunction('viewclient', '{{$assignment->id}}' , 'client-container')">
-											<span id="client-list-{{$assignment->id}}">{{$assignment->organization}}</span>
+											onclick="ajaxFunction('viewclient', '{{$client->id}}' , 'client-container')">
+											<span id="client-list-{{$client->id}}">{{$client->organization}}</span>
 												<span class="badge badge-pill badge-warning" title="Number of Projects">
 													<small>
-														{{count($assignment->projects)}}
+														{{count($client->projects)}}
 													</small>
 												</span>
 										</a>
 									</div>
 									<div class="col-md-12 col-lg-3 col-sm-12">
 									<small>
-										@if(count($assignment->projects) == 0)
+										@if(count($client->projects) == 0)
 											<a 
 												href="javascript:void(0)" 
 												class='text-danger' 
-												onclick="deleteClient('{{$assignment->name}}','{{$assignment->id}}')">Delete</a>
+												onclick="deleteClient('{{$client->name}}','{{$client->id}}')">Delete</a>
 										@else 
 											<a 
 												href="javascript:void(0)" 
@@ -92,6 +92,9 @@
             </div>
         </div>
         <div class="col-md-8" id='client-container'>
+			<script>
+				ajaxFunction('viewclient', '{{$target}}' , 'client-container');
+			</script>
         </div>
     </div>
 </div>
