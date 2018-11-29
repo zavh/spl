@@ -52,21 +52,29 @@ class EnquiriesController extends Controller
      */
     public function store(Request $request)
     {
-        //dd($request);
-        // Create First Enquiry
         $project_id = $request->get('project_id');
         $enquiry_dat = $request->all();
         unset($enquiry_dat['_token']);
         $enquiry_dat = json_encode($enquiry_dat);
 
+        $validator = Validator::make($request->all(), [
+            'enquiry_dat' => 'required'
+        ]);
+
+        if($validator->fails()){
+
+            $response['status'] = 'failed';
+            $response['messages'] = $validator->errors()->messages();
+            return response()->json(['result'=>$response]);
+        }
+        
+        
         $enquiry = new Enquiry;
         $enquiry->project_id = $project_id;
         $enquiry->details =  $enquiry_dat;
         
-        // dd($enquiry);
         $enquiry->save();
 
-        // //dd($project_id,$enquiry_dat);
         return redirect('/projects/'.$project_id)->with('success', 'Enquiry saved');
     }
 

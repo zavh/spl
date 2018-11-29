@@ -16,8 +16,8 @@
                 </div>
 
                 <div class="card-body">
-                    <form method="POST" action="{{ route('enquiries.store') }}" style='font-size:10px'>
-                    <input type="hidden" name="project_id" value="{{$project_id}}">
+                    <form method="POST" action="{{ route('enquiries.store') }}" style='font-size:10px' name='createenquiries' id='createenquiries' onsubmit='createEnquiries(event, this)'>
+                    <input type="hidden" name="project_id" class="ceinput" value="{{$project_id}}">
                         @csrf
                         <!-- Pump Type Selection Starts -->
                         <div class="form-group row">
@@ -29,7 +29,7 @@
                                 </div>
                                 <select name="type" 
                                         id="type" 
-                                        class="form-control{{ $errors->has('type') ? ' is-invalid' : '' }}"
+                                        class="ceinput form-control{{ $errors->has('type') ? ' is-invalid' : '' }}"
                                         required
                                         aria-label="pump type"
                                         aria-describedby="inputGroup-sizing-sm"
@@ -52,11 +52,11 @@
                                             name='surftype' 
                                             required 
                                             disabled 
-                                            class="surface-row-el"
+                                            class="ceinput surface-row-el"
                                             value="recirculating">
                                     </div>
                                 </div>
-                                <input type="text" class="form-control" disabled value='Recirculating Water'>
+                                <input type="text" class="ceinput form-control" disabled value='Recirculating Water'>
                             </div>
                             <div class="input-group input-group-sm col-md-6">
                                 <div class="input-group-prepend">
@@ -66,11 +66,11 @@
                                             name='surftype' 
                                             required 
                                             disabled 
-                                            class="surface-row-el"
+                                            class="ceinput surface-row-el"
                                             value="lifting">
                                     </div>
                                 </div>
-                                <input type="text" class="form-control" disabled value='Lifting'>
+                                <input type="text" class="ceinput form-control" disabled value='Lifting'>
                             </div>
                         </div>
                         <!-- Surface Pump Type Selection Ends -->
@@ -84,11 +84,11 @@
                                             name='subtype' 
                                             required 
                                             disabled 
-                                            class="submerse-row-el" 
+                                            class="ceinput submerse-row-el" 
                                             value='borewell'>
                                     </div>
                                 </div>
-                                <input type="text" class="form-control" aria-label="Text input with radio button" disabled value='Bore Well'>
+                                <input type="text" class="ceinput form-control" aria-label="Text input with radio button" disabled value='Bore Well'>
                             </div>
                             <div class="input-group input-group-sm col-md-6">
                                 <div class="input-group-prepend">
@@ -98,11 +98,11 @@
                                             name='subtype' 
                                             required 
                                             disabled 
-                                            class="submerse-row-el"
+                                            class="ceinput submerse-row-el"
                                             value='openwell'>
                                     </div>
                                 </div>
-                                <input type="text" class="form-control" aria-label="Text input with radio button" disabled value='Open Well'>
+                                <input type="text" class="ceinput form-control" aria-label="Text input with radio button" disabled value='Open Well'>
                             </div>
                         </div>
                         <!-- Submersible Pump Type Selection Ends -->
@@ -115,15 +115,13 @@
                                 <input 
                                     id="pumphead" 
                                     type="text" 
-                                    class="form-control{{ $errors->has('pumphead') ? ' is-invalid' : '' }}" 
+                                    class="ceinput form-control{{ $errors->has('pumphead') ? ' is-invalid' : '' }}" 
                                     name="pumphead" 
                                     placeholder="In Meter" 
                                     required>
-                                @if ($errors->has('pumphead'))
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('pumphead') }}</strong>
+                                    <span class="invalid-feedback" role="alert" id="pumphead_error_span">
+                                        <strong id="pumphead_error">{{ $errors->first('pumphead') }}</strong>
                                     </span>
-                                @endif
                             </div>
                             <!-- Pump Head Input Type ends -->
                             <!-- Pump Capacity Input Type starts -->
@@ -134,16 +132,14 @@
                                 <input 
                                     id="pumpcap" 
                                     type="text" 
-                                    class="form-control{{ $errors->has('pumpcap') ? ' is-invalid' : '' }}" 
+                                    class="ceinput form-control{{ $errors->has('pumpcap') ? ' is-invalid' : '' }}" 
                                     name="pumpcap" 
                                     placeholder="In Cubic Meter" 
                                     required>
 
-                                @if ($errors->has('pumpcap'))
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('pumpcap') }}</strong>
+                                    <span class="invalid-feedback" role="alert" id="pumpcap_error_span">
+                                        <strong id="pumpcap_error">{{ $errors->first('pumpcap') }}</strong>
                                     </span>
-                                @endif
                             </div>
                             <!-- Pump Capacity Input Type starts -->
                         </div>
@@ -156,28 +152,24 @@
                                 <input 
                                     id="liquid" 
                                     type="text" 
-                                    class="form-control{{ $errors->has('liquid') ? ' is-invalid' : '' }}" 
+                                    class="ceinput form-control{{ $errors->has('liquid') ? ' is-invalid' : '' }}" 
                                     name="liquid" 
                                     value="{{ old('liquid') }}" 
                                     required>
 
-                                @if ($errors->has('liquid'))
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('liquid') }}</strong>
+                                    <span class="invalid-feedback" role="alert" id="liquid_error_span">
+                                        <strong id="liquid_error">{{ $errors->first('liquid') }}</strong>
                                     </span>
-                                @endif
                             </div>
                             <div class="input-group input-group-sm col-md-6">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">Liquid Temperature</span>
                                 </div>
-                                <input id="liqtemp" type="text" class="form-control{{ $errors->has('liqtemp') ? ' is-invalid' : '' }}" name="liqtemp" value="{{ old('liqtemp') }}" required>
+                                <input id="liqtemp" type="text" class="ceinput form-control{{ $errors->has('liqtemp') ? ' is-invalid' : '' }}" name="liqtemp" value="{{ old('liqtemp') }}" required>
 
-                                @if ($errors->has('liqtemp'))
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('liqtemp') }}</strong>
-                                    </span>
-                                @endif
+                                <span class="invalid-feedback" role="alert" id="liqtemp_error_span">
+                                    <strong id="liqtemp_error">{{ $errors->first('liqtemp') }}</strong>
+                                </span>
                             </div>                            
                         </div>
 
@@ -185,7 +177,7 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text" style='font-size:12px'>Description</span>
                             </div>
-                            <textarea class="form-control" aria-label="With textarea" name='description' required></textarea>
+                            <textarea class="ceinput form-control" aria-label="With textarea" name='description' required></textarea>
                         </div>
 
                         <div class="form-group row" style='margin-top:5px'>
@@ -203,4 +195,6 @@
     </div>
 </div>
 @endsection
-<script src="{{ asset('js/projects.js?version=0.1') }}" defer></script>
+<script src="{{ asset('js/projects.js?version=0.2') }}" defer></script>
+
+<script src="{{ asset('js/ajaxformprocess.js') }}" defer></script>

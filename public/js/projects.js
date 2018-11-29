@@ -72,6 +72,17 @@ function ajaxFunction(instruction, execute_id, divid){
 						console.log(etResponse);
 						return;
 					}
+					if(instruction == "createEnquiries"){
+						etResponse = JSON.parse(ajaxRequest.responseText);
+						if(etResponse.result.status == 'failed'){
+							errorBagProcessing(etResponse.result.messages);
+						}
+						else {
+							ajaxFunction('showEnquiries', '1' , 'enqdiv');
+						}
+						console.log(ceResponse);
+						return;
+					}
 				    ajaxDisplay.innerHTML = ajaxRequest.responseText;
 				}
 	    } 
@@ -128,6 +139,12 @@ function ajaxFunction(instruction, execute_id, divid){
 			ajaxRequest.open("POST", "/tasks/"+task_id, true);
 			ajaxRequest.setRequestHeader("Content-type", "application/json");
 			console.log(ajaxRequest);
+			ajaxRequest.send(execute_id);
+		}
+		if(instruction == "createEnquiries"){
+			ajaxRequest.open("POST", "/enquiries", true);
+			// console.log(ajaxRequest);
+			ajaxRequest.setRequestHeader("Content-type", "application/json");			
 			ajaxRequest.send(execute_id);
 		}
 }
@@ -243,4 +260,15 @@ function editTask(e, form){
 	formdat['_method'] = "PUT";
 	console.log(JSON.stringify(formdat));//works
 	ajaxFunction('editTask', JSON.stringify(formdat) , 'taskdiv');
+}
+function createEnquiries(e, form){
+	e.preventDefault();
+	clearErrorFormatting(form.id);
+	var formdat;
+	formdat = getQString(form.id, 'ceinput');
+	
+	formdat['_token'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+	// formdat['_method'] = "PUT";
+	console.log(JSON.stringify(formdat));//works
+	ajaxFunction('createEnquiries', JSON.stringify(formdat) , 'enqdiv');
 }
