@@ -35,11 +35,15 @@
                                         aria-describedby="inputGroup-sizing-sm"
                                         onchange = "showEnqInputs(this)"
                                         >
-                                    <option disabled selected>Select One</div>
-                                    <option value='surface'>Surface</div>
-                                    <option value='submerse'>Submersible</div>
+                                    <option disabled selected>Select One</option>
+                                    <option value='surface'>Surface</option>
+                                    <option value='submerse'>Submersible</option>
                                 </select>
                             </div>
+
+                            <span class="invalid-feedback" role="alert" id="type_error_span">
+                                <strong id="type_error">{{ $errors->first('type') }}</strong>
+                            </span>
                         </div>
                         <!-- Pump Type Selection Ends -->
                         <!-- Surface Pump Type Selection Starts -->
@@ -56,7 +60,7 @@
                                             value="recirculating">
                                     </div>
                                 </div>
-                                <input type="text" class="ceinput form-control" disabled value='Recirculating Water'>
+                                <input type="text" class="form-control" disabled value='Recirculating Water'>
                             </div>
                             <div class="input-group input-group-sm col-md-6">
                                 <div class="input-group-prepend">
@@ -70,8 +74,12 @@
                                             value="lifting">
                                     </div>
                                 </div>
-                                <input type="text" class="ceinput form-control" disabled value='Lifting'>
+                                <input type="text" class="form-control" disabled value='Lifting'>
                             </div>
+
+                            <span class="invalid-feedback" role="alert" id="surftype_error_span">
+                                <strong id="surftype_error">{{ $errors->first('surftype') }}</strong>
+                            </span>
                         </div>
                         <!-- Surface Pump Type Selection Ends -->
                         <!-- Submersible Pump Type Selection Starts -->
@@ -88,7 +96,7 @@
                                             value='borewell'>
                                     </div>
                                 </div>
-                                <input type="text" class="ceinput form-control" aria-label="Text input with radio button" disabled value='Bore Well'>
+                                <input type="text" class="form-control" aria-label="Text input with radio button" disabled value='Bore Well'>
                             </div>
                             <div class="input-group input-group-sm col-md-6">
                                 <div class="input-group-prepend">
@@ -102,8 +110,12 @@
                                             value='openwell'>
                                     </div>
                                 </div>
-                                <input type="text" class="ceinput form-control" aria-label="Text input with radio button" disabled value='Open Well'>
+                                <input type="text" class="form-control" aria-label="Text input with radio button" disabled value='Open Well'>
                             </div>
+                            
+                            <span class="invalid-feedback" role="alert" id="subtype_error_span">
+                                <strong id="subtype_error">{{ $errors->first('subtype') }}</strong>
+                            </span>
                         </div>
                         <!-- Submersible Pump Type Selection Ends -->
                         <div class="form-group row" style='margin-top:-10px'>
@@ -119,6 +131,7 @@
                                     name="pumphead" 
                                     placeholder="In Meter" 
                                     required>
+                                    
                                     <span class="invalid-feedback" role="alert" id="pumphead_error_span">
                                         <strong id="pumphead_error">{{ $errors->first('pumphead') }}</strong>
                                     </span>

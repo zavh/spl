@@ -57,6 +57,9 @@ function errorBagProcessing(messages){
             span = document.getElementById(k+'_error_span');
             errmsg = document.getElementById(k+'_error');
             inp = document.getElementById(k);
+            // console.log(span);
+            // console.log(errmsg);
+            // console.log(inp);
             inp.classList.add("is-invalid");
             span.style.display = 'block';
             for(i=0;i<messages[k].length;i++){

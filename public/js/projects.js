@@ -20,71 +20,77 @@ function ajaxFunction(instruction, execute_id, divid){
 		}
 		// Create a function that will receive data sent from the server
 		ajaxRequest.onreadystatechange = function(){
-				if(ajaxRequest.readyState == 4 && ajaxRequest.status == 200){
-					var ajaxDisplay = document.getElementById(divid);
-					if(instruction == "newClientValidation"){
-						var vResponse = JSON.parse(ajaxRequest.responseText);
-						if(vResponse.result.status == 'failed'){
-							vResponse.result.message.forEach(formErrorProcessing);
-						}
-						return;
+			if(ajaxRequest.readyState == 4 && ajaxRequest.status == 200){
+				var ajaxDisplay = document.getElementById(divid);
+				if(instruction == "newClientValidation"){
+					var vResponse = JSON.parse(ajaxRequest.responseText);
+					if(vResponse.result.status == 'failed'){
+						vResponse.result.message.forEach(formErrorProcessing);
 					}
-					if(instruction == "viewclient"){
-						ccResponse = JSON.parse(ajaxRequest.responseText);
-						contacts = JSON.parse(ccResponse.data.contacts);
-						for(i=0;i<contacts.length;i++){
-							contacts[i]['selected'] = 0;
-						}
-						var view = ccResponse.data.view; 
-						ajaxDisplay.innerHTML = view;
-						return;
-					}
-					if(instruction == "createClient"){
-						cpResponse = JSON.parse(ajaxRequest.responseText);
-						if(cpResponse.response.status == 'failed'){
-							errorBagProcessing(cpResponse.response.messages);
-						}
-						else {
-							location.href = "/home";
-						}
-						 //console.log(cpResponse);
-						return;
-					}
-					if(instruction == "createTask"){
-						ctResponse = JSON.parse(ajaxRequest.responseText);
-						if(ctResponse.result.status == 'failed'){
-							errorBagProcessing(ctResponse.result.messages);
-						}
-						else {
-							ajaxFunction('showTasks', '1' , 'taskdiv');
-						}
-						 //console.log(cpResponse);
-						return;
-					}
-					if(instruction == "editTask"){
-						etResponse = JSON.parse(ajaxRequest.responseText);
-						if(etResponse.result.status == 'failed'){
-							errorBagProcessing(etResponse.result.messages);
-						}
-						else {
-							ajaxFunction('showTasks', '1' , 'taskdiv');
-						}
-						console.log(etResponse);
-						return;
-					}
-					if(instruction == "createEnquiries"){
-						etResponse = JSON.parse(ajaxRequest.responseText);
-						if(etResponse.result.status == 'failed'){
-							errorBagProcessing(etResponse.result.messages);
-						}
-						else {
-							ajaxFunction('showEnquiries', '1' , 'enqdiv');
-						}
-						console.log(ceResponse);
-						return;
-					}
-				    ajaxDisplay.innerHTML = ajaxRequest.responseText;
+					return;
 				}
+				if(instruction == "viewclient"){
+					ccResponse = JSON.parse(ajaxRequest.responseText);
+					contacts = JSON.parse(ccResponse.data.contacts);
+					for(i=0;i<contacts.length;i++){
+						contacts[i]['selected'] = 0;
+					}
+					var view = ccResponse.data.view; 
+					ajaxDisplay.innerHTML = view;
+					return;
+				}
+				if(instruction == "createClient"){
+					cpResponse = JSON.parse(ajaxRequest.responseText);
+					if(cpResponse.response.status == 'failed'){
+						errorBagProcessing(cpResponse.response.messages);
+					}
+					else {
+						location.href = "/home";
+					}
+						//console.log(cpResponse);
+					return;
+				}
+				if(instruction == "createTask"){
+					ctResponse = JSON.parse(ajaxRequest.responseText);
+					if(ctResponse.result.status == 'failed'){
+						errorBagProcessing(ctResponse.result.messages);
+					}
+					else {
+						ajaxFunction('showTasks', '1' , 'taskdiv');
+					}
+						//console.log(cpResponse);
+					return;
+				}
+				if(instruction == "editTask"){
+					etResponse = JSON.parse(ajaxRequest.responseText);
+					if(etResponse.result.status == 'failed'){
+						errorBagProcessing(etResponse.result.messages);
+					}
+					else {
+						ajaxFunction('showTasks', '1' , 'taskdiv');
+					}
+					console.log(etResponse);
+					return;
+				}
+				if(instruction == "createEnquiries"){
+					// console.log(JSON.parse(ajaxRequest.responseText));
+					ceResponse = JSON.parse(ajaxRequest.responseText);
+					// console.log(ceResponse.result);
+					var project_id = ceResponse.result.project_id;
+					if(ceResponse.result.status == 'failed'){
+						// 
+						errorBagProcessing(ceResponse.result.messages);
+					}
+					else {
+						console.log(ceResponse);
+						// ajaxFunction('showEnquiries', '1' , 'enqdiv');
+						location.href = "/projects/"+project_id;
+					}
+					
+					return;
+				}
+				ajaxDisplay.innerHTML = ajaxRequest.responseText;
+			}
 	    } 
 
 		if(instruction == "viewclient"){
@@ -142,6 +148,7 @@ function ajaxFunction(instruction, execute_id, divid){
 			ajaxRequest.send(execute_id);
 		}
 		if(instruction == "createEnquiries"){
+			// var project_id = document.getElementById("project_id").value;
 			ajaxRequest.open("POST", "/enquiries", true);
 			// console.log(ajaxRequest);
 			ajaxRequest.setRequestHeader("Content-type", "application/json");			
@@ -274,12 +281,12 @@ function editTask(e, form){
 }
 function createEnquiries(e, form){
 	e.preventDefault();
-	clearErrorFormatting(form.id);
+	// clearErrorFormatting(form.id);
 	var formdat;
 	formdat = getQString(form.id, 'ceinput');
 	
 	formdat['_token'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 	// formdat['_method'] = "PUT";
-	console.log(JSON.stringify(formdat));//works
+	// console.log(JSON.stringify(formdat));//works
 	ajaxFunction('createEnquiries', JSON.stringify(formdat) , 'enqdiv');
 }

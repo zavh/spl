@@ -54,11 +54,40 @@ class EnquiriesController extends Controller
     {
         $project_id = $request->get('project_id');
         $enquiry_dat = $request->all();
+        // dd($request);
         unset($enquiry_dat['_token']);
-        $enquiry_dat = json_encode($enquiry_dat);
+        
+
+        $project_id = $enquiry_dat['project_id'];
+        $type = $enquiry_dat['type'];
+        if(isset($enquiry_dat['surftype'])) 
+        {
+            $surftype = $enquiry_dat['surftype'];
+            $subtype = NULL;
+        }
+        else
+        {
+            $surftype = NULL;
+            $subtype = $enquiry_dat['subtype'];
+        }
+        $pumphead = $enquiry_dat['pumphead'];
+        $pumpcap = $enquiry_dat['pumpcap'];
+        $liquid = $enquiry_dat['liquid'];
+        $liqtemp = $enquiry_dat['liqtemp'];
+        $description = $enquiry_dat['description'];
+
+        // dd($project_id,$type,$surftype,$subtype,$pumphead,$pumpcap,$liquid,$liqtemp,$description);
 
         $validator = Validator::make($request->all(), [
-            'enquiry_dat' => 'required'
+            'type' => 'required',
+            'surftype' => 'required_without:subtype',
+            'subtype' => 'required_without:surftype',
+            'pumphead' => 'required',
+            'pumpcap' => 'required',
+            'liquid' => 'required',
+            'liqtemp' => 'required',
+            'description' => 'required'
+
         ]);
 
         if($validator->fails()){
@@ -68,14 +97,17 @@ class EnquiriesController extends Controller
             return response()->json(['result'=>$response]);
         }
         
-        
+        $enquiry_dat = json_encode($enquiry_dat);
         $enquiry = new Enquiry;
         $enquiry->project_id = $project_id;
         $enquiry->details =  $enquiry_dat;
         
         $enquiry->save();
 
-        return redirect('/projects/'.$project_id)->with('success', 'Enquiry saved');
+        $response['status'] = 'success';
+        $response['project_id'] = $project_id;
+        return response()->json(['result'=>$response]);
+        // return redirect('/projects/'.$project_id)->with('success', 'Enquiry saved');
     }
 
     /**
