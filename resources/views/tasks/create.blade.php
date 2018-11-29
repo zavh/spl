@@ -1,4 +1,4 @@
-<div class='shadow-sm border rounded bg-light'>
+<div class='shadow-sm border rounded bg-light mb-0'>
     <div class="border-bottom border-gray">
         <span class='mx-2'>{{ __('Create new Task') }}</span>
     </div>
@@ -6,6 +6,7 @@
         <form method="POST" action="{{ route('tasks.store') }}" style='font-size:10px' name='createtask' id='createtask' onsubmit='createTask(event, this)'>
             @csrf
             <input type="hidden" name="allocation"  class="ctinput" value="{{ $allocation }}">
+            <input type="hidden" name="project_id" class="ctinput" value="{{$project_id}}">
             <!-- Task Name Input Starts-->
             <div class="form-group row">
                 <div class="input-group input-group-sm col-md-12"  >
@@ -15,7 +16,7 @@
                     <input id="task_name" type="text" class="ctinput form-control{{ $errors->has('task_name') ? ' is-invalid' : '' }}" name="task_name" value="{{ old('task_name') }}" required autofocus>
 
                     <span class="invalid-feedback" role="alert" id="task_name_error_span">
-                            <strong id="task_name_error">{{ $errors->first('task_name') }}</strong>
+                            <strong id="task_name_error"></strong>
                     </span>
                 </div>
             </div>
@@ -29,7 +30,7 @@
                     <input id="task_description" type="text" class="ctinput form-control{{ $errors->has('task_description') ? ' is-invalid' : '' }}" name="task_description" value="{{ old('task_description') }}" required>
 
                     <span class="invalid-feedback" role="alert" id="task_description_error_span">
-                            <strong id="task_description_error">{{ $errors->first('task_description') }}</strong>
+                            <strong id="task_description_error"></strong>
                     </span>
                 </div>
             </div>
@@ -43,7 +44,7 @@
                     <input id="task_date_assigned" type="date" class="ctinput form-control{{ $errors->has('task_date_assigned') ? ' is-invalid' : '' }}" name="task_date_assigned" required>
 
                     <span class="invalid-feedback" role="alert" id="task_date_assigned_error_span">
-                            <strong id="task_date_assigned_error">{{ $errors->first('task_date_assigned') }}</strong>
+                            <strong id="task_date_assigned_error"></strong>
                     </span>
                 </div>
             </div>
@@ -57,7 +58,7 @@
                     <input id="task_deadline" type="date" class="ctinput form-control{{ $errors->has('task_deadline') ? ' is-invalid' : '' }}" name="task_deadline" required>
 
                     <span class="invalid-feedback" role="alert" id="task_deadline_error_span">
-                            <strong id="task_deadline_error">{{ $errors->first('task_deadline') }}</strong>
+                            <strong id="task_deadline_error"></strong>
                     </span>
                 </div>
             </div>
@@ -74,7 +75,7 @@
                     </div>
 
                     <span class="invalid-feedback" role="alert" id="weight_error_span">
-                            <strong id="weight_error">{{ $errors->first('weight') }}</strong>
+                            <strong id="weight_error"></strong>
                     </span>
                 </div>
             </div>
@@ -94,7 +95,7 @@
                     </select>
 
                     <span class="invalid-feedback" role="alert" id="user_id_error_span">
-                            <strong id="user_id_error">{{ $errors->first('user_id') }}</strong>
+                            <strong id="user_id_error"></strong>
                     </span>                                
 
             </div>

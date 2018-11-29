@@ -13,15 +13,6 @@ use Illuminate\Support\Facades\Auth;
 
 class TasksController extends Controller
 {
-
-    //catch allocation exceeded for create using js
-    //catch allocation exceeded for edit using js
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index($project_id = null)
     {
         if($project_id == null){
@@ -31,11 +22,6 @@ class TasksController extends Controller
         return view('tasks.index', ['tasks'=>$tasks, 'project_id'=>$project_id]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create($project_id = null)
     {
         if($project_id == null){
@@ -44,7 +30,6 @@ class TasksController extends Controller
         $users = User::all();
         $project = Project::find($project_id);
         $allocation = $project->allocation;
-        // dd($allocation);
         if($allocation>=100)
         {
             return redirect('tasks.index')->with('success', 'Allocation limit reached');
@@ -52,15 +37,8 @@ class TasksController extends Controller
         return view('tasks.create',['users'=>$users, 'project_id'=>$project_id,'allocation'=>$allocation]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
-    {
-        
+    {        
         // $messages = [
         //     'task_name.required' => 'Please enter the task name',
         //     'task_name.min' => 'Task name must be minimum 2 characters',
@@ -81,27 +59,20 @@ class TasksController extends Controller
         $validator = Validator::make($request->all(), [
             'task_name' => 'required|min:2|max:191|unique:tasks,task_name',
             'task_description' => 'required|max:3000',
-            // 'user_id' => 'required',
             'task_date_assigned' => 'required|date|before_or_equal:task_deadline',
             'task_deadline' => 'required|date|after_or_equal:task_date_assigned'
-        // ],$messages);
         ]);
 
         if($validator->fails()){
-            // return back()->withErrors($validator)->withInput();
             $response['status'] = 'failed';
             $response['messages'] = $validator->errors()->messages();
             return response()->json(['result'=>$response]);
-            // dd($response);
         }
         
         $allocation = $request->allocation;
         $weight = $request->get('weight');
 
-        // dd('allocation',$allocation,'weight',$weight);
-
         if ($allocation+$weight>100) {
-            //return back()->with('success', 'total allocation crosses 100%');
             $response['status'] = 'failed';
             $response['type'] = 'allocation';
             $response['message'] = 'total allocation crosses 100%';
@@ -120,11 +91,9 @@ class TasksController extends Controller
         $project->save();
 
         $this->addTaskUser($task->id, $request->get('user_id'));
-
-        $response['status'] = 'success';
+        $response['result'] = 'success';
+        $response['project_id'] = $request->input('project_id');
         return response()->json(['result'=>$response]);
-
-        //return back()->with('success', 'Task Created');
     }
 
     /**

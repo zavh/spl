@@ -125,9 +125,7 @@
                 </div>
                 <div id='taskdiv'>
                 @if(count($project->tasks) > 0)
-                <div class="my-1 bg-light rounded shadow-sm border" >
-                    @include('tasks.index', ['tasks'=>$project->tasks, 'allocation'=>$project->allocation])
-                </div>
+                @include('tasks.index', ['tasks'=>$project->tasks, 'allocation'=>$project->allocation])
                 @endif
                 </div>
             </div>

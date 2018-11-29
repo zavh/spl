@@ -47,7 +47,6 @@ function ajaxFunction(instruction, execute_id, divid){
 						else {
 							location.href = "/home";
 						}
-						 //console.log(cpResponse);
 						return;
 					}
 					if(instruction == "createTask"){
@@ -55,10 +54,11 @@ function ajaxFunction(instruction, execute_id, divid){
 						if(ctResponse.result.status == 'failed'){
 							errorBagProcessing(ctResponse.result.messages);
 						}
-						else {
-							ajaxFunction('showTasks', '1' , 'taskdiv');
+						else{
+							console.log(ctResponse);
+							var pid = ctResponse.result.project_id;
+							ajaxFunction('showTasks', pid , 'taskdiv');
 						}
-						 //console.log(cpResponse);
 						return;
 					}
 					if(instruction == "editTask"){
@@ -223,9 +223,17 @@ function createProject(e, form){
 		formdat['contacts'] = c;
 		formdat['_token'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');;
 		ajaxFunction('createClient', JSON.stringify(formdat) , '');
-	}
-		
+	}		
 }
+
+function createTask(e, form){
+	e.preventDefault();
+	clearErrorFormatting(form.id);
+	var formdat = getQString(form.id, 'ctinput');
+	formdat['_token'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+	ajaxFunction('createTask', JSON.stringify(formdat) , 'taskdiv');
+}
+
 function editTask(e, form){
 	e.preventDefault();
 	clearErrorFormatting(form.id);
