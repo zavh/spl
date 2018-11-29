@@ -250,6 +250,17 @@ function createProject(e, form){
 	}
 		
 }
+function createTask(e, form){
+	e.preventDefault();
+	clearErrorFormatting(form.id);
+	var formdat;
+	formdat = getQString(form.id, 'ctinput');
+	
+	formdat['_token'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+	// formdat['_method'] = "PUT";
+	console.log(JSON.stringify(formdat));//works
+	ajaxFunction('createTask', JSON.stringify(formdat) , 'taskdiv');
+}
 function editTask(e, form){
 	e.preventDefault();
 	clearErrorFormatting(form.id);
