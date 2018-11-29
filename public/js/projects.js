@@ -170,20 +170,13 @@ function showEnqInputs(el){
 function deleteTask(task, taskid){
 	var confirmation = confirm("Please confirm deletion of Task : '"+task+"'");
 	if(confirmation){
-		//preventDefault();
-		var formid = 'task-delete-form-'+taskid;
-		var formel = document.getElementById(formid);
-		formel.submit();
+		submitDeleteForm('tasks', taskid);
 	}
 }
-
-function deleteEnquiry(enq, enqid){
-	var confirmation = confirm("Please confirm deletion of Enquiry : '"+enq+"'");
+function deleteEnquiry(enqid){
+	var confirmation = confirm("Please confirm deletion of report");
 	if(confirmation){
-		//preventDefault();
-		var formid = 'enquiry-delete-form-'+enqid;
-		var formel = document.getElementById(formid);
-		formel.submit();
+		submitDeleteForm('enquiries', enqid);
 	}
 }
 

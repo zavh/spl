@@ -1,4 +1,8 @@
-<h6 class="border-bottom border-gray pb-2 mb-0">{{ __('Edit Enquiry') }}</h6>
+
+<div class="border-bottom border-gray mb-3">
+    <span class='pl-2'>{{ __('Edit Enquiry') }}</span>
+</div>
+<div class="m-2">
 <form method="POST" action="{{ route('enquiries.update', [$enquiry->id]) }}" style='font-size:10px'>
 
     @csrf
@@ -214,7 +218,7 @@
 
     <div class="form-group row" style='margin-top:5px'>
         <div class="input-group input-group-sm col-md-6">
-            <button type="submit" class="btn btn-primary btn-block btn-sm">
+            <button type="submit" class="btn btn-outline-primary btn-block btn-sm">
                 {{ __('Submit') }}
             </button>
             
@@ -222,7 +226,7 @@
         <div class="input-group input-group-sm col-md-6">
             <button 
                 type="button" 
-                class="btn btn-primary btn-block btn-sm" 
+                class="btn btn-outline-secondary btn-block btn-sm" 
                 onclick="ajaxFunction('showEnquiries', '{{$project_id}}' , 'enqdiv')">
                 Cancel
             </button>
@@ -231,4 +235,4 @@
         
     
 </form>
-{{-- <script src="{{ asset('js/projects.js?version=0.2') }}" defer></script> --}}
+</div>

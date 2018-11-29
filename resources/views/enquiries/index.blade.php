@@ -66,18 +66,7 @@
             onclick="ajaxFunction('editEnquiries',  {{$enquiry['id']}}  , 'enqdiv')" class='text-white-50'>
             [ Edit ]
         </a>
-        <a href="javascript:void(0)" 
-            onclick="deleteEnquiry('{{$enquiry['details']->description}}','{{$enquiry['id']}}')" class='text-white-50'>
-            [ Delete ]
-        </a>
-        <form 
-            id="enquiry-delete-form-{{$enquiry['id']}}"
-            method="post"
-            action="{{route('enquiries.destroy', $enquiry['id'])}}" 
-            >
-            <input type="hidden" name="_method" value="delete">
-            {{csrf_field()}}
-        </form>
+        <a href="javascript:void(0)"  onclick="deleteEnquiry({{$enquiry['id']}})" class='text-white-50'>[Delete]</a>
     </div>
 </div>
 </div>
