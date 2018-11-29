@@ -41,7 +41,35 @@ function ajaxFunction(instruction, execute_id, divid){
 					}
 					if(instruction == "createClient"){
 						cpResponse = JSON.parse(ajaxRequest.responseText);
-						console.log(cpResponse);
+						if(cpResponse.response.status == 'failed'){
+							errorBagProcessing(cpResponse.response.messages);
+						}
+						else {
+							location.href = "/home";
+						}
+						 //console.log(cpResponse);
+						return;
+					}
+					if(instruction == "createTask"){
+						ctResponse = JSON.parse(ajaxRequest.responseText);
+						if(ctResponse.result.status == 'failed'){
+							errorBagProcessing(ctResponse.result.messages);
+						}
+						else {
+							ajaxFunction('showTasks', '1' , 'taskdiv');
+						}
+						 //console.log(cpResponse);
+						return;
+					}
+					if(instruction == "editTask"){
+						etResponse = JSON.parse(ajaxRequest.responseText);
+						if(etResponse.result.status == 'failed'){
+							errorBagProcessing(etResponse.result.messages);
+						}
+						else {
+							ajaxFunction('showTasks', '1' , 'taskdiv');
+						}
+						console.log(etResponse);
 						return;
 					}
 				    ajaxDisplay.innerHTML = ajaxRequest.responseText;
@@ -88,6 +116,18 @@ function ajaxFunction(instruction, execute_id, divid){
 		if(instruction == "createClient"){
 			ajaxRequest.open("POST", "/projects", true);
 			ajaxRequest.setRequestHeader("Content-type", "application/json");
+			ajaxRequest.send(execute_id);
+		}
+		if(instruction == "createTask"){
+			ajaxRequest.open("POST", "/tasks", true);
+			ajaxRequest.setRequestHeader("Content-type", "application/json");
+			ajaxRequest.send(execute_id);
+		}
+		if(instruction == "editTask"){
+			var task_id = document.getElementById("task_id").value;
+			ajaxRequest.open("POST", "/tasks/"+task_id, true);
+			ajaxRequest.setRequestHeader("Content-type", "application/json");
+			console.log(ajaxRequest);
 			ajaxRequest.send(execute_id);
 		}
 }
@@ -175,6 +215,7 @@ function selectClientContact(el){
 
 function createProject(e, form){
 	e.preventDefault();
+	clearErrorFormatting(form.id);
 	var i, c = [], count=0, formdat;
 	for(i=0; i<contacts.length;i++){
 		if(contacts[i].selected == 1)
@@ -191,4 +232,15 @@ function createProject(e, form){
 		ajaxFunction('createClient', JSON.stringify(formdat) , '');
 	}
 		
+}
+function editTask(e, form){
+	e.preventDefault();
+	clearErrorFormatting(form.id);
+	var formdat;
+	formdat = getQString(form.id, 'etinput');
+	
+	formdat['_token'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+	formdat['_method'] = "PUT";
+	console.log(JSON.stringify(formdat));//works
+	ajaxFunction('editTask', JSON.stringify(formdat) , 'taskdiv');
 }

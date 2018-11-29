@@ -38,11 +38,11 @@
                                             <option value="{{$client->id}}">{{$client->organization}}</option>
                                         @endforeach
                                 </select>
-                                @if ($errors->has('client_id'))
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('client_id') }}</strong>
+                                
+                                    <span class="invalid-feedback" role="alert" id="client_id_error_span">
+                                        <strong id="client_id_error">{{ $errors->first('client_id') }}</strong>
                                     </span>
-                                @endif
+                                    
                             </div>
                         </div>
                         <!-- Client Input Ends -->
@@ -54,11 +54,9 @@
                                 </div>
                                 <input id="project_name" type="text" class="cpinput form-control{{ $errors->has('project_name') ? ' is-invalid' : '' }}" name="project_name" value="{{ old('project_name') }}" required>
 
-                                @if ($errors->has('project_name'))
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('project_name') }}</strong>
+                                    <span class="invalid-feedback" role="alert" id="project_name_error_span">
+                                        <strong id="project_name_error">{{ $errors->first('project_name') }}</strong>
                                     </span>
-                                @endif
                             </div>
                         </div>
                         <!-- Project Name Input Ends -->
@@ -71,11 +69,10 @@
                                 <input id="deadline" type="date" class="cpinput form-control{{ $errors->has('deadline') ? ' is-invalid' : '' }}" name="deadline" value="{{ old('deadline') }}" 
                                     min="<?php echo date('Y-m-d');?>"
                                     required>
-                                @if ($errors->has('deadline'))
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('deadline') }}</strong>
+
+                                    <span class="invalid-feedback" role="alert" id="deadline_error_span">
+                                        <strong id="deadline_error">{{ $errors->first('deadline') }}</strong>
                                     </span>
-                                @endif
                             </div>
                         </div>
                         <!-- Deadline Input Ends -->
