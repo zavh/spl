@@ -199,6 +199,9 @@
                                     {{ __('Create') }}
                                 </button>
                             </div>
+                            <span class="invalid-feedback" role="alert" id="description_error_span">
+                                <strong id="description_error">{{ $errors->first('description') }}</strong>
+                            </span>
                         </div>
                     </form>
                 </div>

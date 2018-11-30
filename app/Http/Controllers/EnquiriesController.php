@@ -97,8 +97,9 @@ class EnquiriesController extends Controller
             return response()->json(['result'=>$response]);
         }
         
-        $enquiry_dat = json_encode($enquiry_dat);
+        
         $enquiry = new Enquiry;
+        $enquiry_dat = json_encode($enquiry_dat);
         $enquiry->project_id = $project_id;
         $enquiry->details =  $enquiry_dat;
         
@@ -157,21 +158,65 @@ class EnquiriesController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // $project_id = $request->get('project_id');
+        // $enquiry_id = $request->get('enquiry_id');
+        $enquiry_dat = $request->all();
+        // dd($request);
+        unset($enquiry_dat['_token']);
+        unset($enquiry_dat['_method']);
+
+        $project_id = $enquiry_dat['project_id'];
+        $enquiry_id = $enquiry_dat['enquiry_id'];
+        $type = $enquiry_dat['type'];
+        if(isset($enquiry_dat['surftype'])) 
+        {
+            $surftype = $enquiry_dat['surftype'];
+            $subtype = NULL;
+        }
+        else
+        {
+            $surftype = NULL;
+            $subtype = $enquiry_dat['subtype'];
+        }
+        $pumphead = $enquiry_dat['pumphead'];
+        $pumpcap = $enquiry_dat['pumpcap'];
+        $liquid = $enquiry_dat['liquid'];
+        $liqtemp = $enquiry_dat['liqtemp'];
+        $description = $enquiry_dat['description'];
+
+        // dd($project_id,$type,$surftype,$subtype,$pumphead,$pumpcap,$liquid,$liqtemp,$description);
+
+        $validator = Validator::make($request->all(), [
+            'type' => 'required',
+            'surftype' => 'required_without:subtype',
+            'subtype' => 'required_without:surftype',
+            'pumphead' => 'required',
+            'pumpcap' => 'required',
+            'liquid' => 'required',
+            'liqtemp' => 'required',
+            'description' => 'required'
+
+        ]);
+
+        if($validator->fails()){
+
+            $response['status'] = 'failed';
+            $response['project_id'] = $project_id;
+            $response['messages'] = $validator->errors()->messages();
+            return response()->json(['result'=>$response]);
+        }
         //
-        $enquiry_id = $id;//got enquiry id
-        $project_id = $request->project_id;//got project id
-
-        $details = $request->all();
-        unset($details['_token']);
-        unset($details['_method']);
-        $details = json_encode($details);//got details
-
         $enquiry = Enquiry::find($id);
-        // dd($enquiry1);
-        $enquiry->details = $details;
-        // dd($enquiry);
+        $enquiry_dat = json_encode($enquiry_dat);
+        $enquiry->project_id = $project_id;
+        $enquiry->details =  $enquiry_dat;
+        
         $enquiry->save();
-        return back()->with('success', 'Enquiry Updated');
+
+        $response['status'] = 'success';
+        $response['project_id'] = $project_id;
+        $response['enquiry_id'] = $enquiry_id;
+        return response()->json(['result'=>$response]);
     }
 
     /**

@@ -89,6 +89,23 @@ function ajaxFunction(instruction, execute_id, divid){
 					
 					return;
 				}
+				if(instruction == "editEnquiries"){
+					// console.log(JSON.parse(ajaxRequest.responseText));
+					// ceResponse = JSON.parse(ajaxRequest.responseText);
+					// console.log(ceResponse.result);
+					// var project_id = ceResponse.result.project_id;
+					// if(ceResponse.result.status == 'failed'){
+					// 	// 
+					// 	errorBagProcessing(ceResponse.result.messages);
+					// }
+					// else {
+					// 	console.log(ceResponse);
+					// 	// ajaxFunction('showEnquiries', '1' , 'enqdiv');
+					// 	location.href = "/projects/"+project_id;
+					// }
+					
+					// return;
+				}
 				ajaxDisplay.innerHTML = ajaxRequest.responseText;
 			}
 	    } 
@@ -121,10 +138,10 @@ function ajaxFunction(instruction, execute_id, divid){
 			ajaxRequest.open("GET", "/enquiries/project/"+ execute_id, true);
 			ajaxRequest.send();
 		}
-		if(instruction == "editEnquiries"){
-			ajaxRequest.open("GET", "/enquiries/"+execute_id+"/edit", true);
-			ajaxRequest.send();
-		}
+		// if(instruction == "editEnquiries"){
+		// 	ajaxRequest.open("GET", "/enquiries/"+execute_id+"/edit", true);
+		// 	ajaxRequest.send();
+		// }
 		if(instruction == "newClientValidation"){
 			ajaxRequest.open("POST", "/clients/validateonly/", true);
 			ajaxRequest.setRequestHeader("Content-type", "application/json");
@@ -151,6 +168,13 @@ function ajaxFunction(instruction, execute_id, divid){
 			// var project_id = document.getElementById("project_id").value;
 			ajaxRequest.open("POST", "/enquiries", true);
 			// console.log(ajaxRequest);
+			ajaxRequest.setRequestHeader("Content-type", "application/json");			
+			ajaxRequest.send(execute_id);
+		}
+		if(instruction == "editEnquiries"){
+			var eid = document.getElementById("enquiry_id").value;
+			ajaxRequest.open("POST", "/enquiries/"+eid, true);
+			console.log(eid);
 			ajaxRequest.setRequestHeader("Content-type", "application/json");			
 			ajaxRequest.send(execute_id);
 		}
@@ -289,4 +313,15 @@ function createEnquiries(e, form){
 	// formdat['_method'] = "PUT";
 	// console.log(JSON.stringify(formdat));//works
 	ajaxFunction('createEnquiries', JSON.stringify(formdat) , 'enqdiv');
+}
+function editEnquiries(e, form){
+	e.preventDefault();
+	// clearErrorFormatting(form.id);
+	var formdat;
+	formdat = getQString(form.id, 'eeinput');
+	
+	formdat['_token'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+	formdat['_method'] = "PUT";
+	console.log(JSON.stringify(formdat));//works
+	ajaxFunction('editEnquiries', JSON.stringify(formdat) , 'enqdiv');
 }

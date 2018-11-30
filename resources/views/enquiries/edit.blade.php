@@ -1,9 +1,10 @@
 <h6 class="border-bottom border-gray pb-2 mb-0">{{ __('Edit Enquiry') }}</h6>
-<form method="POST" action="{{ route('enquiries.update', [$enquiry->id]) }}" style='font-size:10px'>
+<form method="POST" action="{{ route('enquiries.update', [$enquiry->id]) }}" style='font-size:10px' name='editenquiries' id='editenquiries' onsubmit='editEnquiries(event, this)'>
 
     @csrf
     <input name="_method" type="hidden" value="PUT">
-    <input name="project_id" type="hidden" value="{{$project_id}}">
+    <input name="project_id" type="hidden" class="eeinput" value="{{$project_id}}">
+    <input type="hidden" name="enquiry_id" id="enquiry_id" class="eeinput" value="{{ $enquiry->id }}">
     <!-- Pump Type Selection Starts -->
     <div class="form-group row">
         <div class="input-group input-group-sm col-md-12" style='margin-top:-10px'>
@@ -14,7 +15,7 @@
             </div>
             <select name="type" 
                     id="type" 
-                    class="form-control{{ $errors->has('type') ? ' is-invalid' : '' }}"
+                    class="eeinput form-control{{ $errors->has('type') ? ' is-invalid' : '' }}"
                     required
                     aria-label="pump type"
                     aria-describedby="inputGroup-sizing-sm"
@@ -34,6 +35,9 @@
                 @endif
             </select>
         </div>
+        <span class="invalid-feedback" role="alert" id="type_error_span">
+            <strong id="type_error">{{ $errors->first('type') }}</strong>
+        </span>
     </div>
     <!-- Pump Type Selection Ends -->
     <!-- Surface Pump Type Selection Starts -->
@@ -55,7 +59,7 @@
                             @endif
                         @else disabled
                         @endisset 
-                        class="surface-row-el"
+                        class="eeinput surface-row-el"
                         value="recirculating">
                 </div>
             </div>
@@ -74,12 +78,15 @@
                             @endif
                         @else disabled
                         @endisset  
-                        class="surface-row-el"
+                        class="eeinput surface-row-el"
                         value="lifting">
                 </div>
             </div>
             <input type="text" class="form-control" disabled value='Lifting'>
         </div>
+        <span class="invalid-feedback" role="alert" id="surftype_error_span">
+            <strong id="surftype_error">{{ $errors->first('surftype') }}</strong>
+        </span>
     </div>
     <!-- Surface Pump Type Selection Ends -->
     <!-- Submersible Pump Type Selection Starts -->
@@ -101,7 +108,7 @@
                             @endif
                         @else disabled
                         @endisset
-                        class="submerse-row-el" 
+                        class="eeinput submerse-row-el" 
                         value='borewell'>
                 </div>
             </div>
@@ -120,12 +127,15 @@
                             @endif
                         @else disabled
                         @endisset
-                        class="submerse-row-el"
+                        class="eeinput submerse-row-el"
                         value='openwell'>
                 </div>
             </div>
             <input type="text" class="form-control" aria-label="Text input with radio button" disabled value='Open Well'>
         </div>
+        <span class="invalid-feedback" role="alert" id="subtype_error_span">
+            <strong id="subtype_error">{{ $errors->first('subtype') }}</strong>
+        </span>
     </div>
     <!-- Submersible Pump Type Selection Ends -->
     <div class="form-group row" style='margin-top:-10px'>
@@ -137,16 +147,14 @@
             <input 
                 id="pumphead" 
                 type="text" 
-                class="form-control{{ $errors->has('pumphead') ? ' is-invalid' : '' }}" 
+                class="eeinput form-control{{ $errors->has('pumphead') ? ' is-invalid' : '' }}" 
                 name="pumphead" 
                 placeholder="In Meter" 
                 value="{{ $details->pumphead }}" 
                 required>
-            @if ($errors->has('pumphead'))
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $errors->first('pumphead') }}</strong>
+                <span class="invalid-feedback" role="alert" id="pumphead_error_span">
+                    <strong id="pumphead_error">{{ $errors->first('pumphead') }}</strong>
                 </span>
-            @endif
         </div>
         <!-- Pump Head Input Type ends -->
         <!-- Pump Capacity Input Type starts -->
@@ -157,17 +165,15 @@
             <input 
                 id="pumpcap" 
                 type="text" 
-                class="form-control{{ $errors->has('pumpcap') ? ' is-invalid' : '' }}" 
+                class="eeinput form-control{{ $errors->has('pumpcap') ? ' is-invalid' : '' }}" 
                 name="pumpcap" 
                 placeholder="In Cubic Meter" 
                 value="{{ $details->pumpcap }}"
                 required>
 
-            @if ($errors->has('pumpcap'))
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $errors->first('pumpcap') }}</strong>
+                <span class="invalid-feedback" role="alert" id="pumpcap_error_span">
+                    <strong id="pumpcap_error">{{ $errors->first('pumpcap') }}</strong>
                 </span>
-            @endif
         </div>
         <!-- Pump Capacity Input Type starts -->
     </div>
@@ -180,28 +186,24 @@
             <input 
                 id="liquid" 
                 type="text" 
-                class="form-control{{ $errors->has('liquid') ? ' is-invalid' : '' }}" 
+                class="eeinput form-control{{ $errors->has('liquid') ? ' is-invalid' : '' }}" 
                 name="liquid" 
                 value="{{ $details->liquid }}"
                 required>
 
-            @if ($errors->has('liquid'))
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $errors->first('liquid') }}</strong>
+                <span class="invalid-feedback" role="alert" id="liquid_error_span">
+                    <strong id="liquid_error">{{ $errors->first('liquid') }}</strong>
                 </span>
-            @endif
         </div>
         <div class="input-group input-group-sm col-md-6">
             <div class="input-group-prepend">
                 <span class="input-group-text">Liquid Temperature</span>
             </div>
-            <input id="liqtemp" type="text" class="form-control{{ $errors->has('liqtemp') ? ' is-invalid' : '' }}" name="liqtemp" value="{{ $details->liqtemp }}" required>
+            <input id="liqtemp" type="text" class="eeinput form-control{{ $errors->has('liqtemp') ? ' is-invalid' : '' }}" name="liqtemp" value="{{ $details->liqtemp }}" required>
 
-            @if ($errors->has('liqtemp'))
-                <span class="invalid-feedback" role="alert">
-                    <strong>{{ $errors->first('liqtemp') }}</strong>
-                </span>
-            @endif
+            <span class="invalid-feedback" role="alert" id="liqtemp_error_span">
+                <strong id="liqtemp_error">{{ $errors->first('liqtemp') }}</strong>
+            </span>
         </div>                            
     </div>
 
@@ -209,7 +211,10 @@
         <div class="input-group-prepend">
             <span class="input-group-text" style='font-size:12px'>Description</span>
         </div>
-        <textarea class="form-control" aria-label="With textarea" name='description' value="" required>{{ $details->description }}</textarea>
+        <textarea class="eeinput form-control" aria-label="With textarea" name='description' value="" required>{{ $details->description }}</textarea>
+        <span class="invalid-feedback" role="alert" id="description_error_span">
+            <strong id="description_error">{{ $errors->first('description') }}</strong>
+        </span>
     </div>
 
     <div class="form-group row" style='margin-top:5px'>
@@ -231,4 +236,6 @@
         
     
 </form>
-{{-- <script src="{{ asset('js/projects.js?version=0.2') }}" defer></script> --}}
+{{-- <script src="{{ asset('js/projects.js?version=0.2') }}" defer></script>
+
+<script src="{{ asset('js/ajaxformprocess.js') }}" defer></script> --}}
