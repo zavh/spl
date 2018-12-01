@@ -90,21 +90,35 @@ function ajaxFunction(instruction, execute_id, divid){
 					return;
 				}
 				if(instruction == "editEnquiries"){
-					// console.log(JSON.parse(ajaxRequest.responseText));
+					// // console.log(JSON.parse(ajaxRequest.responseText));
 					// ceResponse = JSON.parse(ajaxRequest.responseText);
-					// console.log(ceResponse.result);
+					// // console.log(ceResponse.result);
 					// var project_id = ceResponse.result.project_id;
 					// if(ceResponse.result.status == 'failed'){
 					// 	// 
 					// 	errorBagProcessing(ceResponse.result.messages);
 					// }
 					// else {
-					// 	console.log(ceResponse);
+					// 	// console.log(ceResponse);
 					// 	// ajaxFunction('showEnquiries', '1' , 'enqdiv');
 					// 	location.href = "/projects/"+project_id;
 					// }
 					
 					// return;
+				}
+				if(instruction == "newClientValidation"){
+					ncvResponse = JSON.parse(ajaxRequest.responseText);
+					console.log(ncvResponse);
+					if(ncvResponse.result.status == 'failed'){
+						errorBagProcessing(ncvResponse.result.messages);
+						// console.log(cpResponse);
+					}
+					else {
+						ajaxFunction('showCreateClient', '1', 'cp-supplimentary');
+						// location.href = "/projects/create";
+					}
+						// console.log(cpResponse);
+					return;
 				}
 				ajaxDisplay.innerHTML = ajaxRequest.responseText;
 			}
@@ -142,11 +156,11 @@ function ajaxFunction(instruction, execute_id, divid){
 		// 	ajaxRequest.open("GET", "/enquiries/"+execute_id+"/edit", true);
 		// 	ajaxRequest.send();
 		// }
-		if(instruction == "newClientValidation"){
-			ajaxRequest.open("POST", "/clients/validateonly/", true);
-			ajaxRequest.setRequestHeader("Content-type", "application/json");
-			ajaxRequest.send(execute_id);
-		}
+		// if(instruction == "newClientValidation"){
+		// 	ajaxRequest.open("POST", "/clients/validateonly/", true);
+		// 	ajaxRequest.setRequestHeader("Content-type", "application/json");
+		// 	ajaxRequest.send(execute_id);
+		// }
 		if(instruction == "createClient"){
 			ajaxRequest.open("POST", "/projects", true);
 			ajaxRequest.setRequestHeader("Content-type", "application/json");
@@ -176,6 +190,12 @@ function ajaxFunction(instruction, execute_id, divid){
 			ajaxRequest.open("POST", "/enquiries/"+eid, true);
 			console.log(eid);
 			ajaxRequest.setRequestHeader("Content-type", "application/json");			
+			ajaxRequest.send(execute_id);
+		}
+		if(instruction == "newClientValidation"){
+			ajaxRequest.open("POST", "/clients/validateonly/", true);
+			// console.log(ajaxRequest);
+			ajaxRequest.setRequestHeader("Content-type", "application/json");
 			ajaxRequest.send(execute_id);
 		}
 }
@@ -235,12 +255,12 @@ function deleteEnquiry(enq, enqid){
 	}
 }
 
-function newClientValidation(e, form){
-    e.preventDefault();
-    var postqstring = getQueryString(form.id);
-    clearErrorFormatting(form.id); // Clear any previous error
-	ajaxFunction('newClientValidation', postqstring, 'client-creator');
-}
+// function newClientValidation(e, form){
+//     e.preventDefault();
+//     var postqstring = getQueryString(form.id);
+//     clearErrorFormatting(form.id); // Clear any previous error
+// 	ajaxFunction('newClientValidation', postqstring, 'client-creator');
+// }
 
 function showClientContact(el){
     var x = el.options;
@@ -324,4 +344,15 @@ function editEnquiries(e, form){
 	formdat['_method'] = "PUT";
 	console.log(JSON.stringify(formdat));//works
 	ajaxFunction('editEnquiries', JSON.stringify(formdat) , 'enqdiv');
+}
+function newClientValidation(e, form){
+	e.preventDefault();
+	// clearErrorFormatting(form.id);
+	var formdat;
+	formdat = getQString(form.id, 'ncvinput');
+	
+	formdat['_token'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+	// formdat['_method'] = "PUT";
+	console.log(JSON.stringify(formdat));//works
+	ajaxFunction('newClientValidation', JSON.stringify(formdat) , 'cp-supplimentary');
 }

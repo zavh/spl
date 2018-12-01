@@ -14,7 +14,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">{{ __('Organization') }}</span>
                                 </div>
-                                <input id="organization" type="text" class="form-control " name="organization" required>
+                                <input id="organization" type="text" class="ncvinput form-control " name="organization" required>
 								<span class="invalid-feedback " role="alert" id='organization_error_span'>
 									<strong id='organization_error'></strong>
 								</span>
@@ -27,7 +27,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">{{ __('Address') }}</span>
                                 </div>
-                                <input id="address" type="text" class="form-control" name="address" required>
+                                <input id="address" type="text" class="ncvinput form-control" name="address" required>
 								<span class="invalid-feedback " role="alert" id='address_error_span'>
 									<strong id='address_error'></strong>
 								</span>
@@ -40,7 +40,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" style="font-size:12px">Company Background</span>
                                 </div>
-                                <textarea id="background" class="form-control" aria-label="With textarea" name="background" required=""></textarea>
+                                <textarea id="background" class="ncvinput form-control" aria-label="With textarea" name="background" required=""></textarea>
                                 <span class="invalid-feedback " role="alert" id='background_error_span'>
 									<strong id='background_error'></strong>
 								</span>
@@ -53,7 +53,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">{{ __('Contact Name') }}</span>
                                 </div>
-                                <input id="name" type="text" class="form-control" name="name" required>
+                                <input id="name" type="text" class="ncvinput form-control" name="name" required>
 								<span class="invalid-feedback " role="alert" id='name_error_span'>
 									<strong id='name_error'></strong>
 								</span>
@@ -66,7 +66,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">{{ __('Designation') }}</span>
                                 </div>
-                                <input id="designation" type="text" class="form-control" name="designation" required>
+                                <input id="designation" type="text" class="ncvinput form-control" name="designation" required>
 								<span class="invalid-feedback " role="alert" id='designation_error_span'>
 									<strong id='designation_error'></strong>
 								</span>
@@ -79,7 +79,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">{{ __('Contact Number') }}</span>
                                 </div>
-                                <input type="text" class="form-control" name="contact" id='contact' required>
+                                <input type="text" class="ncvinput form-control" name="contact" id='ncvinput contact' required>
 								<span class="invalid-feedback " role="alert" id='contact_error_span'>
 									<strong id='contact_error'></strong>
 								</span>                                

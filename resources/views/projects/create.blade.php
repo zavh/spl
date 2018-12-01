@@ -92,5 +92,5 @@
     </div>
 </div>
 @endsection
-<script src="{{ asset('js/projects.js?version=0.1') }}" defer></script>
+<script src="{{ asset('js/projects.js?version=0.3') }}" defer></script>
 <script src="{{ asset('js/ajaxformprocess.js') }}" defer></script>

@@ -224,11 +224,13 @@ class ClientsController extends Controller
         return $response;
     }
     public function validateonly(Request $request){
-        $request_data = $request->All();
+        $request_data = $request->all();
         $validator = $this->client_validation_rules($request_data);
+        // dd($request_data);
         if($validator->fails()){
             $result['status'] = 'failed';
             $result['message'] = $validator->errors()->all();
+            
             return response()->json(['result'=>$result]);
         }
         else {
@@ -278,12 +280,19 @@ class ClientsController extends Controller
         ];
 
         $validator = Validator::make($data, [
-            'organization' => 'required|max:191:min:4',
-            'address' => 'required|max:191|min:4',
-            'background' => 'required|max:300|min:20',
-            'name' => 'required|max:50|min:4',
-            'designation' => 'required|max:191|min:4',
-            'contact' => 'required|integer|max:99999999999999999|min:100000',
+            // 'organization' => 'required|max:191:min:4',
+            // 'address' => 'required|max:191|min:4',
+            // 'background' => 'required|max:300|min:20',
+            // 'name' => 'required|max:50|min:4',
+            // 'designation' => 'required|max:191|min:4',
+            // 'contact' => 'required|integer|max:99999999999999999|min:100000',
+
+            'organization' => 'required',
+            'address' => 'required',
+            'background' => 'required',
+            'name' => 'required',
+            'designation' => 'required',
+            'contact' => 'required',
         ], $messages);
 
         return $validator;
