@@ -13,10 +13,6 @@
     <script src="{{ asset('js/app.js') }}" defer></script>
     <script src="{{ asset('js/smallB.js') }}" defer></script>
 
-    <!-- Fonts -->
-    <link rel="dns-prefetch" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet" type="text/css">
-
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/commons.css') }}" rel="stylesheet">
@@ -35,7 +31,6 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
-
                     </ul>
 
                     <!-- Right Side Of Navbar -->
@@ -43,30 +38,34 @@
                         <!-- Authentication Links -->
                         @guest
                         @else
+                            @php
+                                $path = explode('/',Request::path());
+                                $thispath = $path[0];
+                            @endphp
                             <li class="nav-item">
                             
-                            @if(Request::path()=='home')
+                            @if($thispath=='home')
                                 <a class="nav-link active-nav active" href="/home">Dashboard</a>
                             @else
                                 <a class="nav-link" href="/home">Dashboard</a> 
                             @endif
                             </li>
                             <li class="nav-item">
-                            @if(Request::path()=='reports')
+                            @if($thispath=='reports')
                                 <a class="nav-link active-nav active" href="/reports">Reports</a>
                             @else
                                 <a class="nav-link" href="/reports">Reports</a>
                             @endif
                             </li>
                             <li class="nav-item">
-                            @if(Request::path()=='projects')
+                            @if($thispath=='projects' || $thispath=='enquiries')
                                 <a class="nav-link active-nav active" href="/projects">Projects</a>
                             @else
                                 <a class="nav-link" href="/projects">Projects</a>
                             @endif
                             </li>
                             <li class="nav-item">
-                            @if(Request::path()=='clients')
+                            @if($thispath=='clients')
                                 <a class="nav-link active-nav active" href="/clients">Clients</a>
                             @else 
                                 <a class="nav-link" href="/clients">Clients</a>
@@ -110,6 +109,24 @@
                 </div>
             </div>
         </nav>
+        
+        @isset($breadcrumb)
+        <div>
+            <ol class="breadcrumb small p-1 m-0">
+                @foreach ($breadcrumb as $item)
+                    <li class="breadcrumb-item small {{$item['style']}}">
+                        @if ($item['link'] == 'none')
+                        {{$item['title']}}
+                        @else
+                        <a href="{{$item['link']}}">
+                            {{$item['title']}}
+                        </a>
+                        @endif
+                    </li>                    
+                @endforeach
+            </ol>
+        </div>
+        @endisset
 
         <main class="py-2">
             @yield('content')

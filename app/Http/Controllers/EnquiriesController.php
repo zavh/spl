@@ -13,46 +13,42 @@ use DB;
 
 class EnquiriesController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index($project_id)
+    public function __construct()
     {
-        //
+        $this->middleware('auth');
+    }
+    public function index($project_id=null)
+    {
         if($project_id == null)
             abort(404);
-        // dd($project_id);
+     
         $enquiries = Project::find($project_id)->enquiries;
  
         for($i=0;$i<count($enquiries);$i++){
             $enquiries[$i]['details'] = json_decode($enquiries[$i]['details']);
         }
-
         return view('enquiries.index')->with('enquiries',$enquiries);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create($project_id=null)
     {
-        //
-        return view('enquiries.create')->with('project_id',$project_id);
+        if($project_id == null)
+            abort(404);
+        $project = Project::find($project_id)->project_name;
+        $breadcrumb[0]['title'] = 'Project';
+        $breadcrumb[0]['link'] = '/projects';
+        $breadcrumb[0]['style'] = '';
+        $breadcrumb[1]['title'] = $project;
+        $breadcrumb[1]['link'] = '/projects'.'/'.$project_id;
+        $breadcrumb[1]['style'] = '';
+        $breadcrumb[2]['title'] = 'Create Enquiry';
+        $breadcrumb[2]['link'] = 'none';
+        $breadcrumb[2]['style'] = 'active';
+        return view('enquiries.create', ['breadcrumb'=>$breadcrumb,'project_id'=>$project_id]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
-        //dd($request);
         // Create First Enquiry
         $project_id = $request->get('project_id');
         $enquiry_dat = $request->all();
@@ -63,11 +59,9 @@ class EnquiriesController extends Controller
         $enquiry->project_id = $project_id;
         $enquiry->details =  $enquiry_dat;
         
-        // dd($enquiry);
         $enquiry->save();
 
-        // //dd($project_id,$enquiry_dat);
-        return redirect('/projects/'.$project_id)->with('success', 'Enquiry saved');
+        return redirect('/projects/'.$project_id)->with('success', 'Enquiry created');
     }
 
     /**

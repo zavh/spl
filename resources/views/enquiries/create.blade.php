@@ -1,29 +1,22 @@
 @extends('layouts.app')
 @section('content')
-<nav aria-label="breadcrumb" style='font-size:12px'>
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="/">Home</a></li>
-    <li class="breadcrumb-item"><a href="/projects">Enquiries</a></li>
-    <li class="breadcrumb-item active" aria-current="page">Create Enquiry</li>
-  </ol>
-</nav>
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-7">
-            <div class="card shadow-lg">
-                <div class="card-header text-white bg-primary">
-                    {{ __('Create new Enquiry') }}
+            <div class="card shadow-sm">
+                <div class="border-bottom">
+                     <span class='px-2'>{{ __('Create new Enquiry') }}</span>
                 </div>
 
-                <div class="card-body">
+                <div class="mx-2 mt-2">
                     <form method="POST" action="{{ route('enquiries.store') }}" style='font-size:10px'>
                     <input type="hidden" name="project_id" value="{{$project_id}}">
                         @csrf
                         <!-- Pump Type Selection Starts -->
                         <div class="form-group row">
-                            <div class="input-group input-group-sm col-md-12" style='margin-top:-10px'>
+                            <div class="input-group input-group-sm col-md-12">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text" id="inputGroup-sizing-sm">
+                                    <span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px">
                                         Pump Type
                                     </span>
                                 </div>
@@ -110,7 +103,7 @@
                             <!-- Pump Head Input Type starts -->
                             <div class="input-group input-group-sm col-md-6">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text">Head</span>
+                                    <span class="input-group-text" style="width:100px">Head</span>
                                 </div>
                                 <input 
                                     id="pumphead" 
@@ -129,7 +122,7 @@
                             <!-- Pump Capacity Input Type starts -->
                             <div class="input-group input-group-sm col-md-6">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text">Capacity</span>
+                                    <span class="input-group-text" style="width:100px">Capacity</span>
                                 </div>
                                 <input 
                                     id="pumpcap" 
@@ -151,7 +144,7 @@
                         <div class="form-group row" style='margin-top:-10px'>
                             <div class="input-group input-group-sm col-md-6">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text">Liquid Name</span>
+                                    <span class="input-group-text" style="width:100px">Liquid Name</span>
                                 </div>
                                 <input 
                                     id="liquid" 
@@ -169,7 +162,7 @@
                             </div>
                             <div class="input-group input-group-sm col-md-6">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text">Liquid Temperature</span>
+                                    <span class="input-group-text" style="width:100px">Temperature</span>
                                 </div>
                                 <input id="liqtemp" type="text" class="form-control{{ $errors->has('liqtemp') ? ' is-invalid' : '' }}" name="liqtemp" value="{{ old('liqtemp') }}" required>
 
@@ -183,23 +176,27 @@
 
                         <div class="input-group" style='margin-top:-10px'>
                             <div class="input-group-prepend">
-                                <span class="input-group-text" style='font-size:12px'>Description</span>
+                                <span class="input-group-text" style='font-size:12px;width:100px'>Description</span>
                             </div>
                             <textarea class="form-control" aria-label="With textarea" name='description' required></textarea>
                         </div>
 
-                        <div class="form-group row" style='margin-top:5px'>
-                            <div class="input-group input-group-sm col-md-12">
-                                <button type="submit" class="btn btn-primary btn-block btn-sm">
-                                    {{ __('Create') }}
-                                </button>
+                        <div class="form-group row mt-2 mb-0">
+                                <div class="input-group input-group-sm col-md-6">
+                                    <button type="submit" class="btn btn-outline-primary btn-block btn-sm">
+                                        Create
+                                    </button>  
+                                </div>
+                                <div class="input-group input-group-sm col-md-6">
+                                    <a href="/projects/{{$project_id}}" class="btn btn-outline-secondary btn-block btn-sm">
+                                        Cancel
+                                    </a>
+                                </div>
                             </div>
-                        </div>
                     </form>
                 </div>
             </div>
         </div>
-        <div class="col-md-5" style='display:none' id='cp-supplimentary'></div>
     </div>
 </div>
 @endsection

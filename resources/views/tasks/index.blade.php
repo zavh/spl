@@ -3,9 +3,13 @@
 @foreach ($tasks as $index=>$task)
     <div class="card small">
         <div id="heading{{$index}}" class='border-bottom d-flex justify-content-between align-items-center w-100'>
-            <button class="btn btn-link btn-sm" type="button" data-toggle="collapse" data-target="#collapse{{$index}}" aria-expanded="true" aria-controls="collapseOne">
-            {{$task->task_name}} <span class='badge badge-warning border border-dark'>{{$task->weight}}</span>
-            </button>
+            <span>
+                <button class="btn btn-link btn-sm" type="button" data-toggle="collapse" data-target="#collapse{{$index}}" aria-expanded="true" aria-controls="collapseOne">
+                    {{$task->task_name}}
+                </button>
+                <span class='badge badge-info border border-dark'>Weight {{$task->weight}}</span>
+            </span>
+
             <span class='mx-1'>
                     <a 
                         href="javascript:void(0)" 
@@ -19,17 +23,24 @@
                         onclick="deleteTask('{{$task->task_name}}','{{$task->id}}')"
                         class='badge bg-light shadow-sm border'
                         >
-                        &#x2718;
+                        x
                     </a>
                 </span>
         </div>
 
-        <div id="collapse{{$index}}" class="collapse  @if($index == 0) show @endif" aria-labelledby="heading{{$index}}" data-parent="#taskAccordion">
-        <div class="bg-light">
-            <div class='border-bottom'> <p class='px-4'>{{$task->task_description}}</p></div>
+        <div id="collapse{{$index}}" class="collapse " aria-labelledby="heading{{$index}}" data-parent="#taskAccordion">
+            <div class='border-bottom text-success'> <p class='px-4 mb-0 pb-0'>{{$task->task_description}}</p></div>
             <div class="text-danger border-bottom"> <span class='px-4'> Deadline: {{$task->task_deadline}}</span></div>
-            <div class="text-primary"> <span class='px-4'>Weight: {{$task->weight}}</span></div>
-        </div>
+            <div class="text-primary"> 
+                <p class='px-4 pb-0 mb-0 text-muted'>Assigned to:
+                @foreach ($task->users as $user)
+                    <p class='px-5 pb-0 mb-0'>
+                            {{$user->fname}} {{$user->sname}}
+                    </p>
+                    
+                @endforeach
+                </p>
+            </div>
         </div>
     </div>
 @endforeach

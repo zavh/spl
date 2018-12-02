@@ -112,7 +112,11 @@
 											<span class="input-group-text" style="font-size:12px;width:150px">Designation</span>
 										</div>
 										<select class="form-control" name="designation" required>
+											@if($user->designation_id == NULL)
+												<option disabled value='' selected>Select One</option>
+											@else 
 												<option disabled value=''>Select One</option>
+											@endif
 												@foreach($designations as $designation)
 													@if($designation->id == $user->designation_id)
 													<option value="{{$designation->id}}" selected>{{$designation->name}}</option>
@@ -120,7 +124,7 @@
 													<option value="{{$designation->id}}">{{$designation->name}}</option>
 													@endif
 												@endforeach
-											</select>
+										</select>
 									</div>
 								</div>
 							<!-- Designation Input ends -->
@@ -131,7 +135,11 @@
 											<span class="input-group-text" style="font-size:12px;width:150px">Department</span>
 										</div>
 										<select class="form-control" name="department" required>
+											@if($user->department_id == NULL)
+											<option disabled value='' selected>Select One</option>
+											@else 
 											<option disabled value=''>Select One</option>
+											@endif
 											@foreach($departments as $department)
 												@if($department->id == $user->department_id)
 												<option value="{{$department->id}}" selected>{{$department->name}}</option>

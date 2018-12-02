@@ -39,13 +39,14 @@ function ajaxFunction(instruction, execute_id, divid){
 						ajaxDisplay.innerHTML = view;
 						return;
 					}
-					if(instruction == "createClient"){
+					if(instruction == "createProject"){
 						cpResponse = JSON.parse(ajaxRequest.responseText);
 						if(cpResponse.response.status == 'failed'){
 							errorBagProcessing(cpResponse.response.messages);
 						}
 						else {
-							location.href = "/home";
+							var pid = cpResponse.response.project_id;
+							location.href = "/projects/"+pid;
 						}
 						return;
 					}
@@ -55,9 +56,10 @@ function ajaxFunction(instruction, execute_id, divid){
 							errorBagProcessing(ctResponse.result.messages);
 						}
 						else{
-							console.log(ctResponse);
 							var pid = ctResponse.result.project_id;
 							ajaxFunction('showTasks', pid , 'taskdiv');
+							var new_alloc = ctResponse.result.new_alloc;
+							renderAlloc(new_alloc);
 						}
 						return;
 					}
@@ -67,7 +69,10 @@ function ajaxFunction(instruction, execute_id, divid){
 							errorBagProcessing(etResponse.result.messages);
 						}
 						else {
-							ajaxFunction('showTasks', '1' , 'taskdiv');
+							var pid = etResponse.result.project_id;
+							ajaxFunction('showTasks', pid , 'taskdiv');
+							var new_alloc = etResponse.result.new_alloc;
+							renderAlloc(new_alloc);
 						}
 						console.log(etResponse);
 						return;
@@ -113,7 +118,7 @@ function ajaxFunction(instruction, execute_id, divid){
 			ajaxRequest.setRequestHeader("Content-type", "application/json");
 			ajaxRequest.send(execute_id);
 		}
-		if(instruction == "createClient"){
+		if(instruction == "createProject"){
 			ajaxRequest.open("POST", "/projects", true);
 			ajaxRequest.setRequestHeader("Content-type", "application/json");
 			ajaxRequest.send(execute_id);
@@ -222,7 +227,7 @@ function createProject(e, form){
 		formdat = getQString(form.id, 'cpinput');
 		formdat['contacts'] = c;
 		formdat['_token'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');;
-		ajaxFunction('createClient', JSON.stringify(formdat) , '');
+		ajaxFunction('createProject', JSON.stringify(formdat) , '');
 	}		
 }
 
@@ -230,6 +235,7 @@ function createTask(e, form){
 	e.preventDefault();
 	clearErrorFormatting(form.id);
 	var formdat = getQString(form.id, 'ctinput');
+
 	formdat['_token'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 	ajaxFunction('createTask', JSON.stringify(formdat) , 'taskdiv');
 }
@@ -237,11 +243,28 @@ function createTask(e, form){
 function editTask(e, form){
 	e.preventDefault();
 	clearErrorFormatting(form.id);
-	var formdat;
-	formdat = getQString(form.id, 'etinput');
+	var formdat = getQString(form.id, 'etinput');
 	
 	formdat['_token'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 	formdat['_method'] = "PUT";
-	console.log(JSON.stringify(formdat));//works
+	console.log(JSON.stringify(formdat));
 	ajaxFunction('editTask', JSON.stringify(formdat) , 'taskdiv');
+}
+
+function renderAlloc(alloc){
+	var t = document.getElementById('al-at-title');
+	var v = document.getElementById('al-at-value');
+
+	t.innerHTML = alloc;
+	v.style.width = alloc+'%';
+
+	if(alloc > 80){
+		v.classList.remove('bg-danger');
+		v.classList.add('bg-success');
+	}
+	else {
+		v.classList.remove('bg-success');
+		v.classList.add('bg-danger');
+	}
+
 }

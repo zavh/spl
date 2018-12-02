@@ -92,7 +92,18 @@ class ProjectsController extends Controller
             $project->enquiries[$index]->details = json_decode($enquiry->details);
         }
         $project->contacts = json_decode($project->contacts);
-        return view('projects.show')->with('project',$project);
+        
+        $breadcrumb[0]['title'] = 'Dashboard';
+        $breadcrumb[0]['link'] = '/home';
+        $breadcrumb[0]['style'] = '';
+        $breadcrumb[1]['title'] = 'Project';
+        $breadcrumb[1]['link'] = '/projects';
+        $breadcrumb[1]['style'] = 'active';
+        $breadcrumb[2]['title'] = $project->project_name;
+        $breadcrumb[2]['link'] = 'none';
+        $breadcrumb[2]['style'] = 'active';
+
+        return view('projects.show',['project'=>$project, 'breadcrumb'=>$breadcrumb]);
     }
 
     /**
@@ -145,7 +156,7 @@ class ProjectsController extends Controller
 
         $project->save();
 
-        return redirect('/projects')->with('success', 'Project Updated');
+        return redirect('/projects'.'/'.$project->id)->with('success', 'Project Updated');
     }
 
     /**

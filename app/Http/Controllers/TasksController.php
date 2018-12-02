@@ -27,7 +27,7 @@ class TasksController extends Controller
         if($project_id == null){
             abort(404);    
         }
-        $users = User::all();
+        $users = User::all()->where('active',1);
         $project = Project::find($project_id);
         $allocation = $project->allocation;
         if($allocation>=100)
@@ -39,28 +39,20 @@ class TasksController extends Controller
 
     public function store(Request $request)
     {        
-        // $messages = [
-        //     'task_name.required' => 'Please enter the task name',
-        //     'task_name.min' => 'Task name must be minimum 2 characters',
-        //     'task_name.max' => 'Task name cannot be more than 191 characters',
-        //     'task_name.unique' => 'This task name has already been taken',
-        //     'task_description.required' => 'Please enter the task description',
-        //     'task_description.max' => 'Task name cannot be more than 3000 characters',
-        //     // 'user_id.required' => 'please select an user',
-        //     'task_date_assigned.required' => 'please pick a assignment date',
-        //     'task_date_assigned.date' => 'The date assigned must be a valid date',
-        //     'task_date_assigned.before_or_equal' => 'the date assigned cannot be after the deadline', 
-        //     'task_deadline.required' => 'please pick a deadline',
-        //     'task_deadline.date' => 'The deadline must be a valid date',
-        //     'task_deadline.after_or_equal' => 'the deadline cannot be after the date assigned',
-        //     'task_deadline.after' => 'the deadline cannot be before the system date'
-        // ];
+        $allocation = $request->allocation;
+        $weight = $request->get('weight');
 
         $validator = Validator::make($request->all(), [
-            'task_name' => 'required|min:2|max:191|unique:tasks,task_name',
-            'task_description' => 'required|max:3000',
+            'task_name' => 'required|min:2|max:191',
+            'task_description' => 'required|max:300',
             'task_date_assigned' => 'required|date|before_or_equal:task_deadline',
-            'task_deadline' => 'required|date|after_or_equal:task_date_assigned'
+            'task_deadline' => 'required|date|after_or_equal:task_date_assigned',
+            'weight' => ['required','integer',
+                            function($attribute, $value, $fail) use($allocation){
+                                if($value + $allocation > 100)
+                                    $fail($attribute.' results in allocation to exceed 100%');
+                            }
+                        ]
         ]);
 
         if($validator->fails()){
@@ -69,15 +61,6 @@ class TasksController extends Controller
             return response()->json(['result'=>$response]);
         }
         
-        $allocation = $request->allocation;
-        $weight = $request->get('weight');
-
-        if ($allocation+$weight>100) {
-            $response['status'] = 'failed';
-            $response['type'] = 'allocation';
-            $response['message'] = 'total allocation crosses 100%';
-            return response()->json(['result'=>$response]);
-        }
         $task = new Task;
         $task->task_name = $request->input('task_name');
         $task->task_description = $request->input('task_description');
@@ -93,6 +76,7 @@ class TasksController extends Controller
         $this->addTaskUser($task->id, $request->get('user_id'));
         $response['result'] = 'success';
         $response['project_id'] = $request->input('project_id');
+        $response['new_alloc'] = $allocation + $weight;
         return response()->json(['result'=>$response]);
     }
 
@@ -119,7 +103,7 @@ class TasksController extends Controller
     public function edit($task_id)
     {
         //
-        $users = User::where('id', '>', '1')->get();
+        $users = User::where([['id', '>', '1'],['active','=','1']])->get();
         $task = Task::find($task_id);
         $userarr = array();
         $i = 0;
@@ -141,87 +125,47 @@ class TasksController extends Controller
             }
             $i++;
         }
-        //dd($userarr);
+        
         $project = Project::find($task->project_id);
         $allocation = $project->allocation;
-        // $project_id = $task->project_id;
-        // dd($allocation);//getting corect allocation
-        // if($allocation>=100)
-        // {
-        //     return redirect('tasks.index')->with('success', 'Allocation limit reached');
-        // }
         return view('tasks.edit',['users'=>$userarr,'allocation'=>$allocation])->with('task', $task);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
-        //dd($request);
-        // $messages = [
-        //     'task_name.required' => 'Please enter the task name',
-        //     'task_name.min' => 'Task name must be minimum 2 characters',
-        //     'task_name.max' => 'Task name cannot be more than 191 characters',
-        //     'task_description.required' => 'Please enter the task description',
-        //     'task_description.max' => 'Task name cannot be more than 3000 characters',
-        //     'user_id.required' => 'please select an user',
-        //     'task_date_assigned.required' => 'please pick a assignment date',
-        //     'task_date_assigned.date' => 'The date assigned must be a valid date',
-        //     'task_date_assigned.before_or_equal' => 'the date assigned cannot be after the deadline', 
-        //     'task_deadline.required' => 'please pick a deadline',
-        //     'task_deadline.date' => 'The deadline must be a valid date',
-        //     'task_deadline.after_or_equal' => 'the deadline cannot be after the date assigned',
-        //     'task_deadline.after' => 'the deadline cannot be before the system date'
-        // ];
+        $allocation = $request->allocation;
+        $new_weight = $request->weight;
+        $old_weight = $request->old_weight;
 
         $validator = Validator::make($request->all(), [
             'task_name' => 'required|min:2|max:191',
             'task_description' => 'required|max:3000',
-            // 'user_id' => 'required',
             'task_date_assigned' => 'required|date|before_or_equal:task_deadline',
-            'task_deadline' => 'required|date|after_or_equal:task_date_assigned|after:today'
+            'task_deadline' => 'required|date|after_or_equal:task_date_assigned',
+            'weight' => ['required','integer',
+                function($attribute, $value, $fail) use($allocation, $old_weight){
+                    if($value + $allocation - $old_weight > 100)
+                        $fail($attribute.' results in allocation to exceed 100%');
+                }
+            ]
         ]);
 
         if($validator->fails()){
-            // return back()->withErrors($validator)->withInput();
             $response['status'] = 'failed';
             $response['messages'] = $validator->errors()->messages();
             return response()->json(['result'=>$response]);
-            // dd($response);
         }
-        
-        $allocation = $request->allocation;
-        $new_weight = $request->get('weight');
-        $old_weight = $request->old_weight;
 
-        // dd('allocation',$allocation,'new_weight',$new_weight,'old_weight',$old_weight);
-        if(($allocation-$old_weight+$new_weight)>100)
-        {
-            $response['status'] = 'failed';
-            $response['type'] = 'allocation';
-            $response['message'] = 'total allocation crosses 100%';
-            // dd($response['status'],$response['message']);
-            return response()->json(['result'=>$response]);
-            
-        }
         $task = Task::find($id);
-        // dd($task);
         $task->task_name = $request->input('task_name');
         $task->task_description = $request->input('task_description');
-        //$task->project_id = $request->input('project_id');
         $task->task_date_assigned = $request->input('task_date_assigned');
         $task->task_deadline = $request->input('task_deadline');
         $task->weight = $request->input('weight');
 
         $project = Project::find($request->project_id);
-        // dd($project->id);
-        $project->allocation = $allocation-$old_weight+$new_weight;
-        // dd($project->allocation);
+        $new_allocation = $allocation-$old_weight+$new_weight;
+        $project->allocation = $new_allocation;
         $project->save();
         
         $task->save();
@@ -229,20 +173,14 @@ class TasksController extends Controller
         $this->addTaskUser($task->id, $request->get('user_id'));
 
         $response['status'] = 'success';
-        // dd($response['status']);
+        $response['project_id'] = $request->get('project_id');
+        $response['new_alloc'] = $new_allocation;
         return response()->json(['result'=>$response]);
         
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
-    {
-       
+    {       
         $findTask = Task::find($id);
         
         $weight = $findTask->weight;
@@ -250,11 +188,7 @@ class TasksController extends Controller
         // dd($project_id);
         $project = Project::find($project_id);
         $project_allocation = $project->allocation;
-        // dd($project_allocation);
 
-
-
-        // dd('allocation',$project_allocation,'weight',$weight);
         if($findTask){
             $project->allocation = $project_allocation - $weight;
             $project->save();
@@ -275,19 +209,12 @@ class TasksController extends Controller
     }
 
     private function deleteTaskUser($task_id){
-        // foreach($users as $user){
-        //     $tasks = TaskUser::where('task_id', '=', $task_id)->get();
-        //     //dd($task_id,$task);
-        //     foreach($tasks as $task){
-        //         $task->delete();
-        //     }            
-        // }
-
         $taskUsers = TaskUser::where('task_id',$task_id)->get();
         foreach($taskUsers as $taskuser){
             $taskuser->delete();
         }
     }
+
     public function completion(Request $request,$id)
     {
         // dd($request);

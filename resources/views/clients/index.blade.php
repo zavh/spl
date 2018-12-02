@@ -93,7 +93,9 @@
         </div>
         <div class="col-md-8" id='client-container'>
 			<script>
-				ajaxFunction('viewclient', '{{$target}}' , 'client-container');
+				@if($target != null)
+					ajaxFunction('viewclient', '{{$target}}' , 'client-container');
+				@endif
 			</script>
         </div>
     </div>

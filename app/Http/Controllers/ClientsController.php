@@ -19,7 +19,7 @@ class ClientsController extends Controller
     {
         if(Auth::Check()){
             $client = Client::all()->sortBy('organization');
-            if($target == null)
+            if($target == null && count($client)>0)
                 $target = $client->first()->id;
             return view('clients.index', ['clients'=>$client, 'target'=>$target]);
         }

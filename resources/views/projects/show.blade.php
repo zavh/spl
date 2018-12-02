@@ -20,69 +20,77 @@
                     </div>
                 </div>
                 <!-- Client Name Area Ends-->
-                <!-- Project Detail Area Starts-->
+                <!-- Project Contact Area Starts-->
                 <div class="my-2 bg-white rounded shadow-sm border">
                     <div class='border-bottom border-gray'>
-                        <span class="pb-0 pl-2 mb-0">Project Details</span>
+                        <span class="pb-0 pl-2 mb-0">Client Contacts</span>
                     </div>
-                    @foreach($project->contacts as $contact)
-                    <div class="media text-muted pt-1">
-                        <p class="media-body pl-2 mb-0 small lh-125 border-bottom border-gray">
-                            <span class="text-primary">Contact Person: {{$contact->name}}</span>  
-                            <span class="text-success">&#9742; {{$contact->contact}} </span>
-                        </p>
+                    <div class="accordion" id="contactAccordion">
+                    @foreach($project->contacts as $index=>$contact)
+                    <div class="small">
+                        <div id="contactHeading{{$index}}" class='border-bottom w-100'>                            
+                            <button class="btn btn-link btn-sm" type="button" data-toggle="collapse" data-target="#collapseContact{{$index}}" aria-expanded="true" aria-controls="collapseContact{{$index}}">
+                                    {{$contact->name}}
+                            </button>
+                        </div>
+                        <div id="collapseContact{{$index}}" class="collapse " aria-labelledby="contactHeading{{$index}}" data-parent="#contactAccordion">
+                            <div class='border-bottom text-success'> <p class='px-4 mb-0 pb-0'>{{$contact->designation}}</p></div>
+                            <div class="text-danger border-bottom"> <span class='px-4'>&#9742; {{$contact->contact}}</span></div>
+                        </div>
                     </div>
                     @endforeach
-                    <!-- Client Area Ends-->
-                    <!-- Project Management Area Starts-->
-                    <div class="media text-muted">
-                        <p class="media-body pl-2 mb-0 small lh-125">
-                            <span class="text-danger">Deadline: {{$project->deadline}}</span>  
+                    </div>
+                </div>
+                <!-- Project Contact Area Ends-->
+                <!-- Project Allocation Area Starts-->
+                <div class="my-1 bg-white rounded shadow-sm border">
+                    <div class='pl-2 border-bottom'>Allocation Status</div>
+                    <div class='px-2 mb-1'>
+                        <span class="small">Total Allocation: <span id='al-at-title'>{{$project->allocation}}</span>%</span>
+                        <div class="progress mb-1 bg-dark" style="height: 4px;">
+                            <div
+                                @if ($project->allocation>80)
+                                    class="progress-bar bg-success"
+                                @else
+                                    class="progress-bar bg-danger"
+                                @endif 
+                                role="progressbar" 
+                                style="width:{{$project->allocation}}%;" 
+                                aria-valuenow="25" 
+                                aria-valuemin="0" 
+                                aria-valuemax="100"
+                                id='al-at-value'>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Project Allocation Area Ends-->
+                <div class="my-1 bg-white rounded shadow-sm border">
+                    <div class='pl-2 border-bottom'>Project Status</div>
+                    <div class='px-2'>
+                        <span class="small">Total Completion: {{($project->completion == NULL) ? 0 :$project->completion}}%</span>
+                        <div class="progress mb-1 bg-dark" style="height: 4px;">
+                            <div
+                                @if ($project->completion>80)
+                                    class="progress-bar bg-success"
+                                @else
+                                    class="progress-bar bg-danger"
+                                @endif 
+                                role="progressbar" 
+                                style="width: {{$project->completion}}%;" 
+                                aria-valuenow="25" 
+                                aria-valuemin="0" 
+                                aria-valuemax="100">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Project Deadline Area Starts-->
+                    <div class="media">
+                        <p class="media-body mb-0 small lh-125">
+                            <span class="text-danger px-2">Deadline: {{$project->deadline}}</span>  
                         </p>
                     </div>
-                    <!-- Project Management Area Ends-->
-                </div>
-                <!-- Project Detail Area Ends-->
-                <!-- Project Status Area Starts-->
-                <div class="my-1 p-2 bg-white rounded shadow-sm">
-                    <h6 class="border-bottom border-gray pb-2 mb-0">Allocation Status</h6>
-                    <span class="small">Total Allocation: {{$project->allocation}}%</span>
-                    <div class="progress mb-1 bg-dark" style="height: 4px;">
-                        <div
-                            @if ($project->allocation>80)
-                                class="progress-bar bg-success"
-                            @else
-                                class="progress-bar bg-danger"
-                            @endif 
-                            role="progressbar" 
-                            style="width: {{$project->allocation}}%;" 
-                            aria-valuenow="25" 
-                            aria-valuemin="0" 
-                            aria-valuemax="100">
-                        </div>
-                    </div>
-                </div>
-                <!-- Project Status Area Ends-->
-                <div class="my-1 p-2 bg-white rounded shadow-sm">
-                    <div class='border-bottom border-gray'>
-                    <h6 class="pb-2 mb-0">Completion Status</h6>
-                    </div>
-                    
-                    <span class="small">Total Completion: {{$project->completion}}%</span>
-                    <div class="progress mb-1 bg-dark" style="height: 4px;">
-                        <div
-                            @if ($project->completion>80)
-                                class="progress-bar bg-success"
-                            @else
-                                class="progress-bar bg-danger"
-                            @endif 
-                            role="progressbar" 
-                            style="width: {{$project->completion}}%;" 
-                            aria-valuenow="25" 
-                            aria-valuemin="0" 
-                            aria-valuemax="100">
-                        </div>
-                    </div>
+                    <!-- Project Deadline Area Ends-->
                 </div>
             </div>
         <!-- Project Details Column Ends-->
@@ -97,7 +105,7 @@
                         </div>
                     </div>
                 </div>
-                <div id='enqdiv' style='max-height:60vh;overflow-x:hidden;overflow-y:scroll' class="rounded shadow-sm">
+                <div id='enqdiv' style='max-height:80vh;overflow-x:hidden;overflow-y:auto' class="rounded shadow-sm">
                     @include('enquiries.index', ['enquiries'=>$project['enquiries']])
                 </div>
             </div>
@@ -113,12 +121,8 @@
                             @else
                                 Total number of tasks: {{count($project->tasks)}}
                             @endif 
-                        </span>
-                        @isset($project)
+                        </span>                        
                             <a href="javascript:void(0)" class="text-white small" onclick="ajaxFunction('showAddTask', '{{ $project->id }}' , 'taskdiv')">
-                        @else 
-                            <a href="javascript:void(0)" class="text-white small" onclick="ajaxFunction('showAddTask', '{{ $project_id }}' , 'taskdiv')">
-                        @endisset
                                 Add Task
                             </a>
                     </div>

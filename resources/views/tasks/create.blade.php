@@ -11,7 +11,7 @@
             <div class="form-group row">
                 <div class="input-group input-group-sm col-md-12"  >
                     <div class="input-group-prepend">
-                        <span class="input-group-text">Task Name</span>
+                        <span class="input-group-text" style='width:110px'>Task Name</span>
                     </div>
                     <input id="task_name" type="text" class="ctinput form-control{{ $errors->has('task_name') ? ' is-invalid' : '' }}" name="task_name" value="{{ old('task_name') }}" required autofocus>
 
@@ -25,7 +25,7 @@
             <div class="form-group row">
                 <div class="input-group input-group-sm col-md-12"  style='margin-top:-10px'>
                     <div class="input-group-prepend">
-                        <span class="input-group-text">Task Description</span>
+                        <span class="input-group-text" style='width:110px'>Task Description</span>
                     </div>
                     <input id="task_description" type="text" class="ctinput form-control{{ $errors->has('task_description') ? ' is-invalid' : '' }}" name="task_description" value="{{ old('task_description') }}" required>
 
@@ -39,7 +39,7 @@
             <div class="form-group row">
                 <div class="input-group input-group-sm col-md-12"  style='margin-top:-10px'>
                     <div class="input-group-prepend">
-                        <span class="input-group-text">Assigned Date</span>
+                        <span class="input-group-text" style='width:110px'>Assigned Date</span>
                     </div>
                     <input id="task_date_assigned" type="date" class="ctinput form-control{{ $errors->has('task_date_assigned') ? ' is-invalid' : '' }}" name="task_date_assigned" required>
 
@@ -53,7 +53,7 @@
             <div class="form-group row">
                 <div class="input-group input-group-sm col-md-12"  style='margin-top:-10px'>
                     <div class="input-group-prepend">
-                        <span class="input-group-text">Deadline</span>
+                        <span class="input-group-text" style='width:110px'>Deadline</span>
                     </div>
                     <input id="task_deadline" type="date" class="ctinput form-control{{ $errors->has('task_deadline') ? ' is-invalid' : '' }}" name="task_deadline" required>
 
@@ -67,7 +67,7 @@
             <div class="form-group row">
                 <div class="input-group input-group-sm col-md-12"  style='margin-top:-10px'>
                     <div class="input-group-prepend">
-                        <span class="input-group-text">Task Weight</span>
+                        <span class="input-group-text" style='width:110px'>Task Weight</span>
                     </div>
                     <input id="weight" type="number" class="ctinput form-control{{ $errors->has('weight') ? ' is-invalid' : '' }}" name="weight" max="100" required>
                     <div class="input-group-append">
@@ -83,7 +83,7 @@
             <!-- Assign User Input Starts-->
             <div class="input-group" style='margin-top:-10px'>
                 <div class="input-group-prepend">
-                    <span class="input-group-text" style='font-size:12px'>Assign User/s</span>
+                    <span class="input-group-text" style='width:110px' style='font-size:12px'>Assign User/s</span>
                 </div>
                 <select name="user_id" id="user_id" class="ctinput form-control{{ $errors->has('user_id') ? ' is-invalid' : '' }}" required multiple="multiple">
                     <option disabled selected>Select One
