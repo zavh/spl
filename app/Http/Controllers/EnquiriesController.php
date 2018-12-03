@@ -61,7 +61,7 @@ class EnquiriesController extends Controller
         
         $enquiry->save();
 
-        return redirect('/projects/'.$project_id)->with('success', 'Enquiry created');
+        return redirect('/projects'.'/'.$project_id)->with('success', 'Enquiry created');
     }
 
     /**
@@ -87,18 +87,10 @@ class EnquiriesController extends Controller
      */
     public function edit($id)
     {
-        //
-
         $enquiry = Enquiry::find($id);
-        // dd($id);
         $x = $enquiry->details;
-        // for($i=0;$i<count($x);$i++){
-        //     $enquiries[$i]['details'] = json_decode($x[$i]['details']);
-        // }
         $details = json_decode($x);
-        //dd($details);
         $project_id = $details->project_id;
-        // dd($project_id);
         return view('enquiries.edit',['project_id'=>$project_id,'enquiry'=>$enquiry,'details'=>$details]);
     }
 
@@ -121,9 +113,8 @@ class EnquiriesController extends Controller
         $details = json_encode($details);//got details
 
         $enquiry = Enquiry::find($id);
-        // dd($enquiry1);
         $enquiry->details = $details;
-        // dd($enquiry);
+        
         $enquiry->save();
         return back()->with('success', 'Enquiry Updated');
     }

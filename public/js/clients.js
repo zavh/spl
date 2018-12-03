@@ -23,9 +23,7 @@ function ajaxFunction(instruction, execute_id, divid){
 				if(instruction == "editClientValidation"){
 					var vResponse = JSON.parse(ajaxRequest.responseText);
                     if(vResponse.result.status == 'success'){
-						console.log(vResponse);
                         var ajaxDisplay = document.getElementById('client-contacts').innerHTML = vResponse.result.view;
-						
                     }
                     else {
                         vResponse.result.message.forEach(formErrorProcessing);
@@ -60,9 +58,20 @@ function ajaxFunction(instruction, execute_id, divid){
 							}, 3000);
 					}
 					else {
-						console.log(clientEditResponse);
 						errorBagProcessing(clientEditResponse.result.messages);
 					}
+				}
+				else if(instruction == "findclientNames"){
+					cnlResponse = JSON.parse(ajaxRequest.responseText);
+					if(cnlResponse.result.status == 'failed'){
+						document.getElementById('display-names').innerHTML = cnlResponse.result.message;
+					}
+					else {
+						document.getElementById('display-names').innerHTML = cnlResponse.result.view;
+						var target = cnlResponse.result.target;
+						ajaxFunction('viewclient', target , 'client-container');
+					}
+					return;
 				}
 				else{
 					var ajaxDisplay = document.getElementById(divid);
@@ -121,8 +130,12 @@ function ajaxFunction(instruction, execute_id, divid){
 		if(instruction == "editClientValidation"){
 			var ccid = document.getElementById('clientcontact_id').value;
 			ajaxRequest.open("POST", "/clientcontacts/"+ccid, true);
-			console.log(ccid);
 			ajaxRequest.setRequestHeader("Content-type", "application/json");
+			ajaxRequest.send(execute_id);
+		}
+		if(instruction == "findclientNames"){
+			ajaxRequest.open("POST", "/clients/listnames", true);
+			ajaxRequest.setRequestHeader("Content-type", "application/json");			
 			ajaxRequest.send(execute_id);
 		}
 }
@@ -130,9 +143,10 @@ function ajaxFunction(instruction, execute_id, divid){
 function deleteClient(client, clientid){
 	var confirmation = confirm("Please confirm deletion of Client : '"+client+"'");
 	if(confirmation){
-		var formid = 'client-delete-form-'+clientid;
-		var formel = document.getElementById(formid);
-		formel.submit();
+		// var formid = 'client-delete-form-'+clientid;
+		// var formel = document.getElementById(formid);
+		// formel.submit();
+		submitDeleteForm('clients', clientid);
 	}
 }
 
@@ -155,4 +169,13 @@ function editClientValidation(e, form){
     var postqstring = getQueryString(form.id);
     clearErrorFormatting(form.id); // Clear any previous error
 	ajaxFunction('editClientValidation', postqstring, 'client-contact-edit');
+}
+
+function findclientNames(e, form){
+	e.preventDefault();
+
+	var formdat;
+	formdat = getQString(form.id, 'cnlinput');
+	formdat['_token'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+	ajaxFunction('findclientNames', JSON.stringify(formdat) , 'display-names');
 }

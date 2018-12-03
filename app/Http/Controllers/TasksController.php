@@ -230,8 +230,6 @@ class TasksController extends Controller
 
         $currentdate = date('Y-m-d');
 
-        // dd('checkedstatus',$checkedstatus,'date',$date,'weight',$weight,'completed',$completed,'currentdate',$currentdate);
-
         if ($checkedstatus == "on") 
         {
             if($task->completed == 0)
@@ -258,7 +256,7 @@ class TasksController extends Controller
                 $project->completed -=$weight;
                 $task->save();
                 $project->save();
-                // dd($request->get('date_completed'));
+                
                 return back()->with('success', 'Task updated successfully');
             }
             else//task already incomplete
@@ -271,7 +269,6 @@ class TasksController extends Controller
     public function showcompletion()
     {
         $ctasks = User::find(Auth::User()->id)->tasks->where('completed',1);
-        // dd($ctasks);
         return view('users.usercompletedtasks')->with('tasks',$ctasks);
     }
 }

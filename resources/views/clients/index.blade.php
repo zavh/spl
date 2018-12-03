@@ -35,57 +35,34 @@
 							</div>
 						</div>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body py-2">
 					<!-- Search Client Section starts -->
 					    <div class="align-items-center text-black-50">
                             <div class='row'>
                                 <div class="col-md-12">
-                                <div class="input-group input-group-sm">
-                                    <input type="text" class="form-control" placeholder="Search Client" aria-label="Recipient's username" aria-describedby="button-addon2">
-                                    <div class="input-group-append">
-                                        <button class="btn btn-outline-secondary btn-sm" type="button" id="button-addon2">Go</button>
-                                    </div>
-                                </div>
+								<form action="" class='m-0 p-0' autocomplete="off" id="findclientnames" name='findclientnames' onsubmit='findclientNames(event, this)'>
+									<div class="input-group input-group-sm">
+										<input type="text" name='clientname' id='clientname' class="cnlinput form-control" placeholder="Search Client" aria-label="Recipient's username" aria-describedby="button-addon2">
+										<div class="input-group-append">
+											<button class="btn btn-secondary btn-sm" type="submit" id="button-addon2">Go</button>
+										</div>
+										<div class="autocomplete"></div>
+									</div>
+								</form>
+								<script>
+									var x = '{{$names}}' ;
+									var names = x.split(',');
+									var inp = document.getElementById("clientname");
+									autocomplete(document.getElementById("clientname"), names);
+								</script>
                             </div>
                             </div>
                         </div>
 					<!-- Search Client Section Ends -->
 					<!-- Client Listing Section starts -->
-						@foreach($clients as $index=>$client)
-							<div class="align-items-center p-1 my-1 text-black-50 @if($target==$client->id) bg-success @else bg-light @endif rounded border-bottom " id="parent-of-{{$client->id}}">
-								<div class='row'>
-									<div class="col-md-6 col-lg-9 col-sm-12">
-										<a 
-											href="javascript:void(0)"
-											class="badge badge-light shadow-sm" 
-											onclick="ajaxFunction('viewclient', '{{$client->id}}' , 'client-container')">
-											<span id="client-list-{{$client->id}}">{{$client->organization}}</span>
-												<span class="badge badge-pill badge-warning" title="Number of Projects">
-													<small>
-														{{count($client->projects)}}
-													</small>
-												</span>
-										</a>
-									</div>
-									<div class="col-md-12 col-lg-3 col-sm-12">
-									<small>
-										@if(count($client->projects) == 0)
-											<a 
-												href="javascript:void(0)" 
-												class='text-danger' 
-												onclick="deleteClient('{{$client->name}}','{{$client->id}}')">Delete</a>
-										@else 
-											<a 
-												href="javascript:void(0)" 
-												title="Projects assigned to the client. Cannot delete."
-												class="text-black-50"
-												style='text-decoration:none'> Delete</a>
-										@endif
-									</small>
-									</div>
-								</div>
-							</div>
-						@endforeach
+					<div id="display-names">
+						@include('clients.showclientlist')
+					</div>
 					<!-- Client Listing Section ends -->
                     </div>
                 </div>
@@ -103,3 +80,5 @@
 @endsection
 <script src="{{ asset('js/clients.js?version=0.6') }}"></script>
 <script src="{{ asset('js/ajaxformprocess.js') }}"></script>
+<script src="{{ asset('js/deleteform.js') }}"></script>
+<script src="{{ asset('js/search.js') }}"></script>

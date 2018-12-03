@@ -1,4 +1,6 @@
 var contacts = [];
+var preload = false;
+var preloaded_contacts = [];
 function ajaxFunction(instruction, execute_id, divid){
 	var ajaxRequest;  // The variable that makes Ajax possible!
 		try{
@@ -32,11 +34,12 @@ function ajaxFunction(instruction, execute_id, divid){
 					if(instruction == "viewclient"){
 						ccResponse = JSON.parse(ajaxRequest.responseText);
 						contacts = JSON.parse(ccResponse.data.contacts);
+						var view = ccResponse.data.view;
+						ajaxDisplay.innerHTML = view;
 						for(i=0;i<contacts.length;i++){
 							contacts[i]['selected'] = 0;
 						}
-						var view = ccResponse.data.view; 
-						ajaxDisplay.innerHTML = view;
+						if(preload) renderContact();
 						return;
 					}
 					if(instruction == "createProject"){
@@ -251,6 +254,16 @@ function editTask(e, form){
 	ajaxFunction('editTask', JSON.stringify(formdat) , 'taskdiv');
 }
 
+function newClientValidation(e, form){
+	e.preventDefault();
+	clearErrorFormatting(form.id);
+	var formdat = getQString(form.id, 'form-control');
+
+	formdat['_token'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+	console.log(formdat);
+	//ajaxFunction('editTask', JSON.stringify(formdat) , 'taskdiv');
+}
+
 function renderAlloc(alloc){
 	var t = document.getElementById('al-at-title');
 	var v = document.getElementById('al-at-value');
@@ -266,5 +279,17 @@ function renderAlloc(alloc){
 		v.classList.remove('bg-success');
 		v.classList.add('bg-danger');
 	}
+}
 
+function renderContact(){
+	var i, j, x = document.getElementsByName('tempcontact');
+	for(i=0;i<contacts.length;i++){
+		for(j=0;j<preloaded_contacts.length;j++){
+			if(contacts[i]['id'] == preloaded_contacts[j]){
+				contacts[i]['selected'] = 1;
+				if(x[i].dataset['id']==preloaded_contacts[j])
+					x[i].checked = true;
+			}
+		}
+	}
 }

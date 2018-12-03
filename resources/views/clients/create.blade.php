@@ -11,6 +11,7 @@
                 <div class="card-body">
                     <form method="POST" action="{{ route('clients.store') }}" style='font-size:10px'>
                         @csrf
+                        <input type="hidden" name='page' value='{{$page}}'>
                         <!-- Organization Name Input Starts -->
                         <div class="form-group row">
                             <div class="input-group input-group-sm col-md-12"  style='margin-top:-10px'>
@@ -109,7 +110,7 @@
                         <!-- Client Background Input Ends -->                   
                         <div class='row d-flex justify-content-center'> 
                             <input type="submit" class="btn btn-primary btn-sm m-2" value="Create New">
-                            <a href="/clients" class="btn btn-secondary btn-sm m-2">Cancel</a>
+                            <a href="{{ $page == null ? '/clients' : '/projects/create'}}" class="btn btn-secondary btn-sm m-2">Cancel</a>
                         </div>
 
                     </form>

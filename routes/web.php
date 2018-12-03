@@ -42,11 +42,13 @@ Route::get('/user/reports', 'UsersController@reports')->name('userreports');
 Route::post('/user/deactivate/{user_id?}', 'UsersController@deactivate');
 Route::get('/users/completedtasks', 'TasksController@showcompletion');
 
-Route::post('/clients/store', 'ClientsController@store')->name('addclient');
+//Route::post('/clients/store', 'ClientsController@store')->name('addclient');
+Route::get('/clients/create/{page?}', 'ClientsController@create');
 Route::post('/clients/validateonly', 'ClientsController@validateonly')->name('validateclient');
 Route::get('/client/cancel/{client_id?}', 'ClientsController@cancel');
 Route::get('/clients/listing', 'ClientsController@clientslisting')->name('clientlist');
 Route::get('/client/{client_id?}', 'ClientsController@index');
+Route::post('/clients/listnames', 'ClientsController@search');
 
 Route::get('/clientcontacts/create/{client_id?}', 'ClientcontactsController@create');
 Route::get('/clientcontacts/{client_id?}/edit', 'ClientcontactsController@edit');

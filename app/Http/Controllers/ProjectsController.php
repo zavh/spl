@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Session;
 use App\Project;
 use App\Client;
 use App\Enquiry;
@@ -26,8 +27,14 @@ class ProjectsController extends Controller
             $punalloc[$index]['client'] = $client;
             $punalloc[$index]['enq_count'] = count($enquiries);
         }
+        $breadcrumb[0]['title'] = 'Dashboard';
+        $breadcrumb[0]['link'] = '/home';
+        $breadcrumb[0]['style'] = '';
+        $breadcrumb[1]['title'] = 'Project';
+        $breadcrumb[1]['link'] = 'none';
+        $breadcrumb[1]['style'] = 'active';
         $projects = Project::where('status', 0)->get();
-        return view('projects.index')->with(['projects'=>$projects, 'punalloc'=>$punalloc]);
+        return view('projects.index', ['projects'=>$projects, 'punalloc'=>$punalloc, 'breadcrumb'=>$breadcrumb]);
     }
 
     /**
@@ -37,8 +44,29 @@ class ProjectsController extends Controller
      */
     public function create()
     {
-        $clients = DB::table('clients')->get();
-        return view('projects.create', ['clients'=>$clients]);
+        $clients = Client::all();
+        $breadcrumb[0]['title'] = 'Dashboard';
+        $breadcrumb[0]['link'] = '/home';
+        $breadcrumb[0]['style'] = '';
+        $breadcrumb[1]['title'] = 'Project';
+        $breadcrumb[1]['link'] = '/projects';
+        $breadcrumb[1]['style'] = '';
+        $breadcrumb[2]['title'] = 'Create Project';
+        $breadcrumb[2]['link'] = 'none';
+        $breadcrumb[2]['style'] = 'active';
+        $client_id = Session::get('client_id');
+        $contacts = Session::get('contacts');
+        
+        if($client_id == null)
+            return view('projects.create', ['clients'=>$clients,'breadcrumb'=>$breadcrumb]);
+        else {
+            return view('projects.create', ['clients'=>$clients,
+                                            'breadcrumb'=>$breadcrumb, 
+                                            'client_id'=>$client_id, 
+                                            'contacts'=>implode(",",$contacts),
+                                            'preload'=>'1']);
+        }
+            
     }
 
     /**

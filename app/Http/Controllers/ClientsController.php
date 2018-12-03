@@ -18,10 +18,12 @@ class ClientsController extends Controller
     public function index($target = null)
     {
         if(Auth::Check()){
-            $client = Client::all()->sortBy('organization');
-            if($target == null && count($client)>0)
-                $target = $client->first()->id;
-            return view('clients.index', ['clients'=>$client, 'target'=>$target]);
+            $clients = Client::all()->sortBy('organization');
+            $n = $clients->map(function($client){return $client->organization;});
+            $orgnames = implode(',',$n->all());
+            if($target == null && count($clients)>0)
+                $target = $clients->first()->id;
+            return view('clients.index', ['clients'=>$clients, 'target'=>$target,'names'=>$orgnames]);
         }
         else {
             return redirect('/login');
@@ -33,9 +35,9 @@ class ClientsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($page=null)
     {
-        return view('clients.create');
+        return view('clients.create',['page'=>$page]);
     }
 
     /**
@@ -88,7 +90,12 @@ class ClientsController extends Controller
                 'client_id' => $client->id,
                 ]);
         }
-        return redirect('/client'."/".$client->id)->with('success', 'Client Created');
+        if($request->page == null)
+            return redirect('/client'."/".$client->id)->with('success', 'Client Created');
+        else if($request->page == 'project'){
+            $contacts[0] = $contactCreate->id;
+            return redirect()->route('projects.create')->with(['client_id'=>$client->id, 'contacts'=>$contacts]);
+        }
     }
 
     public function show($id)
@@ -220,6 +227,7 @@ class ClientsController extends Controller
 
         return $response;
     }
+    
     public function validateonly(Request $request){
         $request_data = $request->All();
         $validator = $this->client_validation_rules($request_data);
@@ -284,5 +292,26 @@ class ClientsController extends Controller
         ], $messages);
 
         return $validator;
+    }
+
+    public function search(Request $request)
+    {
+        if(Auth::Check())
+        {
+            $searchstring = $request->clientname;
+            $clients = Client::orderBy('organization', 'ASC')->where('organization', 'LIKE', '%'.$searchstring.'%')->get();
+            if(count($clients)>0){
+                $target = $clients->first()->id;
+                $result['status'] = 'success';
+                $result['data'] = $clients;
+                $result['view'] =  view('clients.showclientlist', ["clients"=>$clients, "target"=>$target])->render();
+                $result['target'] = $target;
+            }
+            else {
+                $result['status'] = 'failed';
+                $result['message'] = "No Record found for $searchstring";
+            }
+            return response()->json(['result'=>$result]);
+        }
     }
 }
