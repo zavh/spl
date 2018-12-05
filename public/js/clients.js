@@ -81,6 +81,7 @@ function ajaxFunction(instruction, execute_id, divid){
 		} 
 
 		if(instruction == "viewclient"){
+			cosmeticChange(execute_id);
 			ajaxRequest.open("GET", "/clients/"+ execute_id, true);
 			ajaxRequest.send();
 		}
@@ -140,12 +141,17 @@ function ajaxFunction(instruction, execute_id, divid){
 		}
 }
 
+function cosmeticChange(id){
+	var x = document.getElementsByClassName('cosmetics');
+	for(i=0;i<x.length;i++){
+		x[i].classList.remove('bg-success');
+	}
+	document.getElementById('parent-of-'+id).classList.add('bg-success');
+}
+
 function deleteClient(client, clientid){
 	var confirmation = confirm("Please confirm deletion of Client : '"+client+"'");
 	if(confirmation){
-		// var formid = 'client-delete-form-'+clientid;
-		// var formel = document.getElementById(formid);
-		// formel.submit();
 		submitDeleteForm('clients', clientid);
 	}
 }

@@ -18,12 +18,19 @@ class ClientsController extends Controller
     public function index($target = null)
     {
         if(Auth::Check()){
+            $breadcrumb[0]['title'] = 'Dashboard';
+            $breadcrumb[0]['link'] = '/home';
+            $breadcrumb[0]['style'] = '';
+            $breadcrumb[1]['title'] = 'Clients';
+            $breadcrumb[1]['link'] = 'none';
+            $breadcrumb[1]['style'] = 'active';
+
             $clients = Client::all()->sortBy('organization');
             $n = $clients->map(function($client){return $client->organization;});
             $orgnames = implode(',',$n->all());
             if($target == null && count($clients)>0)
                 $target = $clients->first()->id;
-            return view('clients.index', ['clients'=>$clients, 'target'=>$target,'names'=>$orgnames]);
+            return view('clients.index', ['clients'=>$clients, 'target'=>$target,'names'=>$orgnames, 'breadcrumb'=>$breadcrumb]);
         }
         else {
             return redirect('/login');
@@ -37,7 +44,17 @@ class ClientsController extends Controller
      */
     public function create($page=null)
     {
-        return view('clients.create',['page'=>$page]);
+        $breadcrumb[0]['title'] = 'Dashboard';
+        $breadcrumb[0]['link'] = '/home';
+        $breadcrumb[0]['style'] = '';
+        $breadcrumb[1]['title'] = 'Clients';
+        $breadcrumb[1]['link'] = '/clients';
+        $breadcrumb[1]['style'] = '';
+        $breadcrumb[2]['title'] = 'Create Client';
+        $breadcrumb[2]['link'] = 'none';
+        $breadcrumb[2]['style'] = 'active';
+
+        return view('clients.create',['page'=>$page, 'breadcrumb'=>$breadcrumb]);
     }
 
     /**

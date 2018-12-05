@@ -42,8 +42,7 @@ Route::get('/user/reports', 'UsersController@reports')->name('userreports');
 Route::post('/user/deactivate/{user_id?}', 'UsersController@deactivate');
 Route::get('/users/completedtasks', 'TasksController@showcompletion');
 
-//Route::post('/clients/store', 'ClientsController@store')->name('addclient');
-Route::get('/clients/create/{page?}', 'ClientsController@create');
+Route::get('/clients/create/{page?}', 'ClientsController@create')->name('createfrom');
 Route::post('/clients/validateonly', 'ClientsController@validateonly')->name('validateclient');
 Route::get('/client/cancel/{client_id?}', 'ClientsController@cancel');
 Route::get('/clients/listing', 'ClientsController@clientslisting')->name('clientlist');
@@ -59,6 +58,7 @@ Route::get('/clientcontacts/listing/{client_id?}', 'ClientcontactsController@con
 Route::get('/report/clientdetails/{report_id?}', 'ReportsController@clientdetails');
 Route::get('/reports/stage2/{report_id?}', 'ReportsController@stage2view');
 Route::post('/reports/submit/{report_id?}', 'ReportsController@submit')->name('addclient');
+Route::get('/reports/rtop/{report_id?}', 'ReportsController@rtop')->name('rtop'); //rtop = Report to Project
 
 Route::get('/project/enquiries/{project_id?}', 'ProjectsController@enquiries');
 Route::get('/project/createclient', 'ProjectsController@createclient');

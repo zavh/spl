@@ -24,22 +24,24 @@
 		<!-- Client Area Ends-->
 			
 		<!-- Project Detail Area Starts-->
-		<div class="p-3 mt-2 mb-2 bg-white rounded shadow-sm">
-		<h6 class="border-bottom border-gray pb-2 mb-0">Projects</h6>
+		<div class="mt-2 mb-2 bg-white rounded shadow-sm border small">
+		<div class="border-bottom border-gray pb-0 mb-0">
+			<strong class='pl-2 text-secondary'>Projects</strong>
+		</div>
 			@if(count($client->projects) == 0)
-				<span>No Projects from {{$client->organization}}</span>
+				<p class='pb-0 mb-0 px-2'>No Projects from {{$client->organization}}</p>
 			@else
 				@foreach($client->projects as $project)
-					<div class="media text-muted pt-1">
+					<div class="media text-muted py-1">
 					@if($project->status == NULL)
-						<div class="media-body small bg-light">
+						<div class="media-body bg-light">
 					@elseif($project->state == 1)
-						<div class="media-body small bg-success">
+						<div class="media-body bg-success">
 					@elseif($project->state == 0)
-						<div class="media-body small bg-danger">
+						<div class="media-body bg-danger">
 					@endif
-							<div class="d-flex justify-content-between align-items-center w-100">
-								<strong class="text-gray-dark">
+							<div class="d-flex justify-content-between align-items-center w-100 px-2">
+								<strong>
 									Title: <a href="javascript:void(0)" onclick="ajaxFunction('showEnquiries','{{$project->id}}', 'enquiries-content')">{{$project->project_name}}</a>
 								</strong>
 							</div>

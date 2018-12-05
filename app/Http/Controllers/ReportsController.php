@@ -279,4 +279,15 @@ class ReportsController extends Controller
         }
         return $sortedContacts;
     }
+
+    public function rtop($report_id){
+        $report = Report::find($report_id);
+        $rd = json_decode($report->report_data);
+        $client_id = $rd->client_data->id;
+        $cc = $rd->client_data->contacts;
+        for($i=0;$i<count($cc);$i++){
+            $contacts[$i] = $cc[$i]->id;
+        }
+        return redirect()->route('projects.create')->with(['client_id'=>$client_id, 'contacts'=>$contacts, 'report_id'=>$report_id]);
+    }
 }

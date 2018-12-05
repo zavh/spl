@@ -1,5 +1,5 @@
 @foreach($clients as $index=>$client)
-    <div class="align-items-center p-1 my-1 text-black-50 @if($target==$client->id) bg-success @else bg-light @endif rounded border-bottom " id="parent-of-{{$client->id}}">
+    <div class="cosmetics align-items-center p-1 my-1 text-black-50 border rounded " id="parent-of-{{$client->id}}">
         <div class='row'>
             <div class="col-md-6 col-lg-9 col-sm-12">
                 <a 

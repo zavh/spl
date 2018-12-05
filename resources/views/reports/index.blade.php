@@ -16,7 +16,7 @@
                                 By <strong>{{$report->report_data->rc_user_name}}</strong>
                                 <div class="d-flex  align-items-center border-top border-success px-2">
                                 <a href="/reports/{{$report->id}}" class='text-primary'>View</a> &nbsp;
-                                <a href="javascript:void(0)" onclick="ajaxFunction('viewuser', '1', 'user-container')" class='text-success'>Convert</a> &nbsp;
+                                <a href="{{route('rtop',['report_id'=>$report->id])}}" class='text-success'>Convert</a> &nbsp;
                                 <a href="javascript:void(0)" class='text-danger'>Reject</a>                      
                             </div>
 

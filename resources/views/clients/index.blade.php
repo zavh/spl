@@ -26,10 +26,10 @@
             <div class="card-deck">
                 <div class="card shadow-sm">
                     <div class="border-bottom">
-						<div class="media text-muted ml-2 mr-2">
+						<div class="media ml-2 mr-2">
 							<div class="media-body pb-0 mb-0 lh-125">
 								<div class="d-flex justify-content-between align-items-center w-100">
-									<strong class="text-gray-dark">Cleint Listing</strong>
+									<strong class="text-dark pl-1">Cleint Listing</strong>
 									<a href="/clients/create" class='small'>Create Client</a>
 								</div>
 							</div>

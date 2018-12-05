@@ -7,25 +7,25 @@
                 <button class="btn btn-link btn-sm" type="button" data-toggle="collapse" data-target="#collapse{{$index}}" aria-expanded="true" aria-controls="collapseOne">
                     {{$task->task_name}}
                 </button>
-                <span class='badge badge-info border border-dark'>Weight {{$task->weight}}</span>
             </span>
 
             <span class='mx-1'>
-                    <a 
-                        href="javascript:void(0)" 
-                        onclick="ajaxFunction('editTasks', '{{ $task->id }}' , 'taskdiv')"
-                        class='badge bg-light shadow-sm border'
-                        >
-                        &#9997;
-                    </a>
-                        &nbsp;&nbsp;
-                        <a href="javascript:void(0)" 
-                        onclick="deleteTask('{{$task->task_name}}','{{$task->id}}')"
-                        class='badge bg-light shadow-sm border'
-                        >
-                        x
-                    </a>
-                </span>
+                <span class='badge badge-light border border shadow-sm mx-2'>Weight {{$task->weight}}</span>
+                <a 
+                    href="javascript:void(0)" 
+                    onclick="ajaxFunction('editTasks', '{{ $task->id }}' , 'taskdiv')"
+                    class='badge bg-light shadow-sm border'
+                    >
+                    &#9997;
+                </a>
+                    &nbsp;&nbsp;
+                    <a href="javascript:void(0)" 
+                    onclick="deleteTask('{{$task->task_name}}','{{$task->id}}')"
+                    class='badge bg-light shadow-sm border'
+                    >
+                    x
+                </a>
+            </span>
         </div>
 
         <div id="collapse{{$index}}" class="collapse " aria-labelledby="heading{{$index}}" data-parent="#taskAccordion">

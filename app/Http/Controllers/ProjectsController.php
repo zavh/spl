@@ -56,15 +56,24 @@ class ProjectsController extends Controller
         $breadcrumb[2]['style'] = 'active';
         $client_id = Session::get('client_id');
         $contacts = Session::get('contacts');
+        $report_id = Session::get('report_id');
         
         if($client_id == null)
             return view('projects.create', ['clients'=>$clients,'breadcrumb'=>$breadcrumb]);
         else {
+            if(is_null($report_id))
             return view('projects.create', ['clients'=>$clients,
                                             'breadcrumb'=>$breadcrumb, 
                                             'client_id'=>$client_id, 
                                             'contacts'=>implode(",",$contacts),
                                             'preload'=>'1']);
+            else 
+            return view('projects.create', ['clients'=>$clients,
+                                            'breadcrumb'=>$breadcrumb, 
+                                            'client_id'=>$client_id, 
+                                            'contacts'=>implode(",",$contacts),
+                                            'preload'=>'1',
+                                            'report_id'=>$report_id]);
         }
             
     }

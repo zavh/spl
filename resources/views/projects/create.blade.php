@@ -17,11 +17,13 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px">
                                         Client &nbsp;
-                                            <a href="/clients/create/project"
+                                        @empty($report_id)
+                                            <a href="{{route('createfrom', ['page'=>'project'])}}"
                                                 class='btn btn-outline-primary btn-sm' 
                                                 style='border-radius:50%;width:15px;height:15px;padding:2px'>
                                                 <div style='position:absolute;top:-3px;left:2.3px'>+</div>
                                             </a>
+                                        @endempty
                                     </span>
                                 </div>
                                 @isset($preload)
@@ -32,7 +34,7 @@
                                     @isset($preload)
                                         <option disabled value>Select One</div>
                                         @foreach($clients as $client)
-                                            <option value="{{$client->id}}" {{$client_id == $client->id ? 'selected':''}} > {{$client->organization}}</option>
+                                            <option value="{{$client->id}}" {{$client_id == $client->id ? 'selected':'disabled'}} > {{$client->organization}}</option>
                                         @endforeach
                                     @else
                                     <option disabled selected value>Select One</div>
