@@ -44,15 +44,20 @@ class TasksController extends Controller
         $project = Project::find($request->input('project_id'));
 
         $project_deadline = $project->deadline;
+        $project_start = $project->start_date;
+
         $validator = Validator::make($request->all(), [
             'task_name' => 'required|min:2|max:191',
             'task_description' => 'required|max:300',
             'task_deadline' => ['required', 'date',
-                            function($attribute, $value, $fail) use($project_deadline){
+                            function($attribute, $value, $fail) use($project_deadline, $project_start){
                                 $td = strtotime($value);
                                 $pd = strtotime($project_deadline);
+                                $ps = strtotime($project_start);
                                 if($pd<$td)
                                     $fail('Task Deadline cannot be later than Project deadline');
+                                if($td<$ps)
+                                    $fail('Task Deadline cannot be earlier than Project start date');
                             }
                         ],
             'weight' => ['required','integer',
@@ -73,7 +78,6 @@ class TasksController extends Controller
         $task->task_name = $request->input('task_name');
         $task->task_description = $request->input('task_description');
         $task->project_id = $request->input('project_id');
-        $task->task_date_assigned = $request->input('task_date_assigned');
         $task->task_deadline = $request->input('task_deadline');
         $task->weight = $request->input('weight');
         $task->save();
@@ -96,7 +100,7 @@ class TasksController extends Controller
      */
     public function show($id)
     {
-        if($assignment == null)
+        if($id == null)
             abort(404);
         $assignment = Task::find($id);
         return view('tasks.show')->with('assignment',$assignment);
@@ -146,16 +150,20 @@ class TasksController extends Controller
         $old_weight = $request->old_weight;
         $project = Project::find($request->project_id);
         $project_deadline = $project->deadline;
+        $project_start = $project->start_date;
 
         $validator = Validator::make($request->all(), [
             'task_name' => 'required|min:2|max:191',
             'task_description' => 'required|max:3000',
             'task_deadline' => ['required', 'date',
-                function($attribute, $value, $fail) use($project_deadline){
+                function($attribute, $value, $fail) use($project_deadline, $project_start){
                     $td = strtotime($value);
                     $pd = strtotime($project_deadline);
+                    $ps = strtotime($project_start);
                     if($pd<$td)
-                        $fail($attribute.' cannot be later than Project deadline');
+                        $fail('Task Deadline cannot be later than Project deadline');
+                    if($td<$ps)
+                        $fail('Task Deadline cannot be earlier than Project start date');
                 }
             ],
             'weight' => ['required','integer',
@@ -175,7 +183,6 @@ class TasksController extends Controller
         $task = Task::find($id);
         $task->task_name = $request->input('task_name');
         $task->task_description = $request->input('task_description');
-        $task->task_date_assigned = $request->input('task_date_assigned');
         $task->task_deadline = $request->input('task_deadline');
         $task->weight = $request->input('weight');
 

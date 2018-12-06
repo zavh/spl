@@ -63,6 +63,7 @@ function ajaxFunction(instruction, execute_id, divid){
 							ajaxFunction('showTasks', pid , 'taskdiv');
 							var new_alloc = ctResponse.result.new_alloc;
 							renderAlloc(new_alloc);
+							renderTaskCount();
 						}
 						return;
 					}
@@ -292,4 +293,10 @@ function renderContact(){
 			}
 		}
 	}
+}
+
+function renderTaskCount(){
+	var x = document.getElementById('taskcount');
+	var current_task_count = parseInt(x.innerText) + 1;
+	x.innerHTML = current_task_count;
 }

@@ -34,10 +34,7 @@
             <div class="text-primary"> 
                 <p class='px-4 pb-0 mb-0 text-muted'>Assigned to:
                 @foreach ($task->users as $user)
-                    <p class='px-5 pb-0 mb-0'>
-                            {{$user->fname}} {{$user->sname}}
-                    </p>
-                    
+                    <p class='px-5 pb-0 mb-0'>{{$user->fname}} {{$user->sname}}</p>
                 @endforeach
                 </p>
             </div>

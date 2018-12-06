@@ -35,20 +35,6 @@
                 </div>
             </div>
             <!-- Task Description Input Ends-->
-            <!-- Assigned Date Input Starts-->
-            <div class="form-group row">
-                <div class="input-group input-group-sm col-md-12"  style='margin-top:-10px'>
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" style='width:110px'>Assigned Date</span>
-                    </div>
-                    <input id="task_date_assigned" type="date" class="ctinput form-control{{ $errors->has('task_date_assigned') ? ' is-invalid' : '' }}" name="task_date_assigned" required>
-
-                    <span class="invalid-feedback" role="alert" id="task_date_assigned_error_span">
-                            <strong id="task_date_assigned_error"></strong>
-                    </span>
-                </div>
-            </div>
-            <!-- Assigned Date Input Ends-->
             <!-- Deadline Date Input Ends-->
             <div class="form-group row">
                 <div class="input-group input-group-sm col-md-12"  style='margin-top:-10px'>
