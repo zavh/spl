@@ -17,7 +17,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="inputGroup-sizing-sm" style="width:100px">
                                         Client &nbsp;
-                                        @empty($report_id)
+                                        @empty($preload)
                                             <a href="{{route('createfrom', ['page'=>'project'])}}"
                                                 class='btn btn-outline-primary btn-sm' 
                                                 style='border-radius:50%;width:15px;height:15px;padding:2px'>
@@ -64,6 +64,21 @@
                             </div>
                         </div>
                         <!-- Project Name Input Ends -->
+                       <!-- Start Date Input Starts -->
+                       <div class="form-group row">
+                            <div class="input-group input-group-sm col-md-12"  style='margin-top:-10px'>
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" style="width:100px">Starting Date</span>
+                                </div>
+                                <input id="start_date" type="date" class="cpinput form-control{{ $errors->has('start_date') ? ' is-invalid' : '' }}" name="start_date" value="{{ old('start_date') }}" 
+                                    required>
+
+                                    <span class="invalid-feedback" role="alert" id="start_date_error_span">
+                                        <strong id="start_date_error">{{ $errors->first('start_date') }}</strong>
+                                    </span>
+                            </div>
+                        </div>
+                        <!-- Start Date Input Ends -->
                         <!-- Deadline Input Starts -->
                         <div class="form-group row">
                             <div class="input-group input-group-sm col-md-12"  style='margin-top:-10px'>

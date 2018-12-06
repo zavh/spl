@@ -57,7 +57,7 @@ class ProjectsController extends Controller
         $client_id = Session::get('client_id');
         $contacts = Session::get('contacts');
         $report_id = Session::get('report_id');
-        
+
         if($client_id == null)
             return view('projects.create', ['clients'=>$clients,'breadcrumb'=>$breadcrumb]);
         else {
@@ -89,7 +89,8 @@ class ProjectsController extends Controller
         $validator = Validator::make($request->all(), [
             'project_name' => 'required',
             'client_id' => 'required',
-            'deadline' => 'required|date|after_or_equal:today',
+            'start_date' => 'required|date|before:deadline',
+            'deadline' => 'required|date|after_or_equal:start_date',
             ]);
         // Create Project
         if($validator->fails()){
@@ -101,6 +102,7 @@ class ProjectsController extends Controller
             $project->project_name = $request->input('project_name');
             $project->client_id = $request->input('client_id');
             $project->user_id = Auth::User()->id;
+            $project->start_date = $request->input('start_date');
             $project->deadline = $request->input('deadline');
             $project->contacts = json_encode($request->input('contacts'));
             $project->allocation = 0;
@@ -165,15 +167,13 @@ class ProjectsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //$project = Project::find($id);
-        //return dd($request);
         $this->validate($request, [
             'project_name' => 'required',
             'client_id' => 'required',
             'user_id' => 'required',
             'manager_id' => 'required',
             'assigned' => 'required',
-            'deadline' => 'required',
+            'deadline' => 'required|date',
             'description' => 'required',
             'status' => 'required',
             'state' => 'required'
@@ -186,6 +186,7 @@ class ProjectsController extends Controller
         $project->user_id = $request->input('user_id');
         $project->manager_id = $request->input('manager_id');
         $project->assigned = $request->input('assigned');
+        $project->start_date = $request->input('start_date');
         $project->deadline = $request->input('deadline');
         $project->description = $request->input('description');
         $project->status = $request->input('status');

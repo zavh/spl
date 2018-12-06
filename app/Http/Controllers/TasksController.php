@@ -41,12 +41,20 @@ class TasksController extends Controller
     {        
         $allocation = $request->allocation;
         $weight = $request->get('weight');
+        $project = Project::find($request->input('project_id'));
 
+        $project_deadline = $project->deadline;
         $validator = Validator::make($request->all(), [
             'task_name' => 'required|min:2|max:191',
             'task_description' => 'required|max:300',
-            'task_date_assigned' => 'required|date|before_or_equal:task_deadline',
-            'task_deadline' => 'required|date|after_or_equal:task_date_assigned',
+            'task_deadline' => ['required', 'date',
+                            function($attribute, $value, $fail) use($project_deadline){
+                                $td = strtotime($value);
+                                $pd = strtotime($project_deadline);
+                                if($pd<$td)
+                                    $fail('Task Deadline cannot be later than Project deadline');
+                            }
+                        ],
             'weight' => ['required','integer',
                             function($attribute, $value, $fail) use($allocation){
                                 if($value + $allocation > 100)
@@ -69,7 +77,7 @@ class TasksController extends Controller
         $task->task_deadline = $request->input('task_deadline');
         $task->weight = $request->input('weight');
         $task->save();
-        $project = Project::find($request->input('project_id'));
+        
         $project->allocation = $allocation+$weight;
         $project->save();
 
@@ -136,12 +144,20 @@ class TasksController extends Controller
         $allocation = $request->allocation;
         $new_weight = $request->weight;
         $old_weight = $request->old_weight;
+        $project = Project::find($request->project_id);
+        $project_deadline = $project->deadline;
 
         $validator = Validator::make($request->all(), [
             'task_name' => 'required|min:2|max:191',
             'task_description' => 'required|max:3000',
-            'task_date_assigned' => 'required|date|before_or_equal:task_deadline',
-            'task_deadline' => 'required|date|after_or_equal:task_date_assigned',
+            'task_deadline' => ['required', 'date',
+                function($attribute, $value, $fail) use($project_deadline){
+                    $td = strtotime($value);
+                    $pd = strtotime($project_deadline);
+                    if($pd<$td)
+                        $fail($attribute.' cannot be later than Project deadline');
+                }
+            ],
             'weight' => ['required','integer',
                 function($attribute, $value, $fail) use($allocation, $old_weight){
                     if($value + $allocation - $old_weight > 100)
@@ -163,7 +179,6 @@ class TasksController extends Controller
         $task->task_deadline = $request->input('task_deadline');
         $task->weight = $request->input('weight');
 
-        $project = Project::find($request->project_id);
         $new_allocation = $allocation-$old_weight+$new_weight;
         $project->allocation = $new_allocation;
         $project->save();

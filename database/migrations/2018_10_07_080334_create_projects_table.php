@@ -19,7 +19,9 @@ class CreateProjectsTable extends Migration
             $table->integer('client_id');
             $table->json('contacts');
             $table->integer('user_id');
+            $table->date('start_date');
             $table->date('deadline');
+            $table->integer('report_id')->unsigned()->nullable()->default(0);
             $table->tinyInteger('status')->nullable();
             $table->tinyInteger('state')->nullable();
             $table->integer('allocation')->default(0);
