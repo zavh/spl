@@ -9,6 +9,8 @@ use App\User;
 use App\Report;
 use App\Client;
 use App\Clientcontact;
+use Carbon\Carbon;
+use DateTime;
 
 class ReportsController extends Controller
 {
@@ -19,6 +21,20 @@ class ReportsController extends Controller
 
     public function index()
     {
+        $report_of_month = array();
+        $visit_date = array();
+        $i=0;
+        $j=0;
+        $months = ['January', 'February', 'March', 
+                    'April', 'May', 'June', 
+                    'July','August', 'September', 
+                    'October', 'November', 'December'];
+        // $now = Carbon::now();
+        // $month = $now->month;
+        // $dateObj   = DateTime::createFromFormat('!m', $now);
+        // $now = $dateObj->format('F'); // March
+        $current_month = date("Y-m");
+        // dd($month);
         if(Auth::User()->role_id == 1){
             $reports = Report::where('completion',1)->get();
             $visits = Report::where('completion',0)->get();
@@ -29,11 +45,29 @@ class ReportsController extends Controller
         }
         foreach($reports as $report){
             $report->report_data = json_decode($report->report_data);
+            $visit_date[$i] = $report->report_data->report_data->visit_date;
+            $key = date("Y-m", strtotime($visit_date[$i]));
+            if(isset($report_of_month[$key][$visit_date[$i]]))
+                $j = count($report_of_month[$key][$visit_date[$i]]);
+            else $j = 0;
+            $report_of_month[$key][$visit_date[$i]][$j]['data'] = $report->report_data;
+            $report_of_month[$key][$visit_date[$i]][$j]['id'] = $report->id;
+            $i++; 
         }
         foreach($visits as $visit){
             $visit->report_data = json_decode($visit->report_data);
         }
-        return view('reports.index',['reports'=>$reports, 'visits'=>$visits]);
+        ksort($report_of_month);
+        foreach($report_of_month as $month=>$date)
+        {
+             ksort($report_of_month[$month]); 
+        }
+        $current_month_report = $report_of_month[$current_month];
+        unset($report_of_month[$current_month]);
+        // dd($report_of_month);
+        return view('reports.index',['reports'=>$reports, 'visits'=>$visits, 
+                                'months'=>$months,'current_month_report'=>$current_month_report,
+                                    'report_of_month'=>$report_of_month]);
     }
 
     /**
