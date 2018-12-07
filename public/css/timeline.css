@@ -1,5 +1,6 @@
 .timelinediv{
-    width: 100%;
+    width: auto;
+    overflow: scroll;
     height: 100%;
     justify-content: center;
     font-family: "Titillium Web", sans serif;
@@ -22,7 +23,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    font-weight: 100;
+    font-weight: 400;
   }
   
   .status {
@@ -32,6 +33,10 @@
     border-top: 2px solid #D6DCE0;
     position: relative;
     transition: all 200ms ease-in;
+  }
+  .status .date{
+      position: absolute;
+      top:10px;
   }
   .status .heading {
     font-weight: 600;
