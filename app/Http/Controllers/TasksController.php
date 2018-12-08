@@ -18,7 +18,7 @@ class TasksController extends Controller
         if($project_id == null){
             abort(404);
         }
-        $tasks = Task::where('project_id',$project_id)->get();
+        $tasks = Task::orderBy('task_deadline','ASC')->where('project_id',$project_id)->get();
         return view('tasks.index', ['tasks'=>$tasks, 'project_id'=>$project_id]);
     }
 

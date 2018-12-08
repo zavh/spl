@@ -31,7 +31,7 @@
     </div>
     <div class="status">
       <span class='heading'>Deadline</span>
-      <span class="date small">{{date('d M y',strtotime($project->start_date))}}<span>
+      <span class="date small">{{date('d M y',strtotime($project->deadline))}}<span>
     </div>
   </li>
  </ul>

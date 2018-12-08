@@ -229,4 +229,9 @@ class ProjectsController extends Controller
         else 
             return view('partial.sessionexpired');
     }
+
+    public function timeline($project_id){
+        $x = Project::find($project_id);
+        return view('projects.projecttimeline',['project'=>$x]);
+    }
 }
