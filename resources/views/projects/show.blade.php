@@ -122,7 +122,7 @@
                     <div class="d-flex justify-content-between align-items-center small">
                         <span> 
                             @if(count($project->tasks) == 0)
-                                No Task defined yet
+                                Total number of tasks: <span id='taskcount'>0</span>
                             @else
                                 Total number of tasks: <span id='taskcount'>{{count($project->tasks)}}</span>
                             @endif 
@@ -140,7 +140,9 @@
             </div>
         <!-- Task Column Ends-->
         </div>
-        <div class='timelinediv my-4 small' id='projecttimeline'>@include('projects.projecttimeline',['project'=>$project])</div>
+        <div class='timelinediv my-4 small' id='projecttimeline'>
+            @include('projects.projecttimeline',['project'=>$project])
+        </div>
     </main>    
 @endsection
 <script src="{{ asset('js/projects.js?version=0.2') }}" defer></script>
