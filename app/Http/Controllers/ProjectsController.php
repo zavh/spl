@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Session;
 use App\Project;
 use App\Client;
 use App\Enquiry;
+use App\Report;
 use DB;
 
 class ProjectsController extends Controller
@@ -20,20 +21,15 @@ class ProjectsController extends Controller
 
     public function index()
     {
-        $punalloc = Project::where('status', NULL)->get();
-        foreach ($punalloc as $index=>$project){
-            $client = Project::find($project->id)->client->organization;
-            $enquiries = Project::find($project->id)->enquiries;
-            $punalloc[$index]['client'] = $client;
-            $punalloc[$index]['enq_count'] = count($enquiries);
-        }
+        $punalloc = Project::where('allocation','<', 100)->get();
+
         $breadcrumb[0]['title'] = 'Dashboard';
         $breadcrumb[0]['link'] = '/home';
         $breadcrumb[0]['style'] = '';
         $breadcrumb[1]['title'] = 'Project';
         $breadcrumb[1]['link'] = 'none';
         $breadcrumb[1]['style'] = 'active';
-        $projects = Project::where('status', 0)->get();
+        $projects = Project::where('allocation','=', 100)->get();
         return view('projects.index', ['projects'=>$projects, 'punalloc'=>$punalloc, 'breadcrumb'=>$breadcrumb]);
     }
 
@@ -57,23 +53,16 @@ class ProjectsController extends Controller
         $client_id = Session::get('client_id');
         $contacts = Session::get('contacts');
         $report_id = Session::get('report_id');
-
+        if($report_id ==  NULL) $report_id = 0;
         if($client_id == null)
-            return view('projects.create', ['clients'=>$clients,'breadcrumb'=>$breadcrumb]);
+            return view('projects.create', ['clients'=>$clients,'breadcrumb'=>$breadcrumb, 'report_id'=>$report_id]);
         else {
-            if(is_null($report_id))
-            return view('projects.create', ['clients'=>$clients,
-                                            'breadcrumb'=>$breadcrumb, 
-                                            'client_id'=>$client_id, 
-                                            'contacts'=>implode(",",$contacts),
-                                            'preload'=>'1']);
-            else 
             return view('projects.create', ['clients'=>$clients,
                                             'breadcrumb'=>$breadcrumb, 
                                             'client_id'=>$client_id, 
                                             'contacts'=>implode(",",$contacts),
                                             'preload'=>'1',
-                                            'report_id'=>$report_id]);
+                                            'report_id'=>$report_id,]);
         }
             
     }
@@ -105,9 +94,15 @@ class ProjectsController extends Controller
             $project->start_date = $request->input('start_date');
             $project->deadline = $request->input('deadline');
             $project->contacts = json_encode($request->input('contacts'));
+            $project->report_id = $request->input('report_id');;
             $project->allocation = 0;
     
             $project->save();
+            if($request->input('report_id')>0){
+                $report = Report::find($request->input('report_id'));
+                $report->acceptance = 1;
+                $report->save();
+            }
             //$project_id = $project->id;
             $response['status'] = 'success';
             $response['project_id'] = $project->id;

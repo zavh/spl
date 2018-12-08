@@ -20,7 +20,7 @@
       </span>
     </div>
     <div class="status">
-      <span class='heading'>{{$task->task_name}}</span>
+      <div class='heading d-flex text-center'>{{$task->task_name}}</div>
       <span class="date small">{{date('d M y',strtotime($task->task_deadline))}}<span>
     </div>
   </li>

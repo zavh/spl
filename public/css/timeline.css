@@ -1,7 +1,7 @@
 .timelinediv{
     width: auto;
-    overflow: scroll;
-    height: 100%;
+    overflow: auto;
+    height: 120px;
     justify-content: center;
     font-family: "Titillium Web", sans serif;
     color: #758D96;

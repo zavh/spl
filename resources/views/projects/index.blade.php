@@ -2,33 +2,32 @@
 
 @section('content')
     <div class="container-fluid">
-      <div class="card-deck mb-3 text-center">
+      <div class="card-deck text-center">
         <!-- Unllocated Project Section Starts -->
         <div class="card mb-4 shadow-sm">
-          <div class="card-header text-white bg-danger" style='position:relative;font-size:12px;height:40px'>
+          <div class="card-header text-white bg-danger m-0 p-0">
             <span class="my-0 font-weight-normal">Unassigned Projects</span>
             <span style='position:absolute;right:10px'>
             <a href="/projects/create" style='color:white'>Create</a>
             </span>
           </div>
           <!-- Body -->
-          <div class="card-body">
-          <table style='font-size:12px;width:100%;table-layout:fixed'>
-            <thead>
-                <tr style='border:1px solid black'>
-                    <th scope="col">Client</th>
-                    <th scope="col">Enquiry</th>
-                    <th scope="col">View</th>
-                </tr>
-            <thead>
+          <div class="card-body p-0 m-0 small">
+
             @foreach($punalloc as $project)
-                <tr>
-                    <td><a href="/clients/{{$project->client_id}}">{{$project->client}}</a></td>
-                    <td><span class="badge badge-warning badge-pill">{{$project->enq_count}}</span></td>
-                    <td><a href="/projects/{{$project->id}}">Show</a></td>
-                </tr>
+            <div class="border-bottom">
+                <div class='text-left bg-light border-bottom'>
+                    <span class="mx-2">Cleint: {{$project->client->organization}}</span>
+                </div>
+                <p class='text-left mx-4 mb-0 pb-0'>
+                    Project title: <a href="/projects/{{$project->id}}">{{$project->project_name}}</a>
+                </p>
+                <div class='border-top text-left mx-4'>
+                        Allocation: {{$project->allocation}}%
+                </div>
+            </div>
             @endforeach
-            </table>            
+
           </div>
           <!-- Body -->
         </div>
