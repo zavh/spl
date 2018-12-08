@@ -9,7 +9,7 @@
     </div>
   </li>
   @foreach($project->tasks as $task)
-  <li class="li {{$task->completion==1?'complete':''}}">
+  <li class="li {{$task->completed==1?'complete':''}}">
     <div class="timestamp">
       <span class="author">
         @if(count($task->users)>1)
