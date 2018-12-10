@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\User;
 use App\Report;
 use App\Client;
@@ -323,5 +324,58 @@ class ReportsController extends Controller
             $contacts[$i] = $cc[$i]->id;
         }
         return redirect()->route('projects.create')->with(['client_id'=>$client_id, 'contacts'=>$contacts, 'report_id'=>$report_id]);
+    }
+
+    public function search(Request $request)
+    {
+        $searched_month_report = array();
+        $visit_date = array();
+        $i=0;
+        $j=0;
+        $current_month = date("Y-m");
+        //dd($request);
+        if(Auth::Check())
+        {
+            // dd($request);
+            $searchstring = $request->reportmonth;
+            $searchstring = date("Y-m",strtotime($searchstring));
+            //$reports =  DB::table('reports')->where('report_data->report_data->visit_date', $searchstring)->get();
+            // $reports =  DB::table('reports')->where("json_contains(report_data,JSON_QUOTE($searchstring),'$.report_data.visit_date')")->get();
+             //$reports = DB::table('reports')->whereRaw('JSON_CONTAINS(report_data->"$.report_data.visit_date", JSON_QUOTE($searchstring)')->get();
+            $reports = DB::table('reports')->whereRaw('JSON_CONTAINS(report_data,JSON_QUOTE("'.$searchstring.'"),"$.report_data.visit_date")')->get();
+
+            foreach($reports as $report){
+                $report->report_data = json_decode($report->report_data);
+                $visit_date[$i] = $report->report_data->report_data->visit_date;
+   //             $key = date("Y-m", strtotime($visit_date[$i]));
+                if(isset($searched_month_report[$visit_date[$i]]))
+                    $j = count($searched_month_report[$visit_date[$i]]);
+                else $j = 0;
+                $searched_month_report[$visit_date[$i]][$j]['data'] = $report->report_data;
+                $searched_month_report[$visit_date[$i]][$j]['id'] = $report->id;
+                $i++; 
+            }
+            //ksort($searched_month_report);
+            foreach($searched_month_report as $month=>$date)
+            {
+                 ksort($searched_month_report[$month]); 
+            }
+
+            // dd($searched_month_report);
+/////////////////////////////////////////under construction////////////////////////////////////
+            if(count($reports)>0){
+                //$target = $reports->first()->id;
+                $result['status'] = 'success';
+                $result['data'] = $searched_month_report;
+                $result['view'] =  view('reports.showreportlist', ['current_month_report'=>$searched_month_report])->render();
+                //$result['target'] = $target;
+            }
+            else {
+                $result['status'] = 'failed';
+                $result['message'] = "No Record found for $searchstring";
+            }
+            return response()->json(['result'=>$result]);
+/////////////////////////////////////////under construction////////////////////////////////////
+        }
     }
 }
