@@ -129,6 +129,7 @@
                                 <strong class='text-success'>{{$visit->report_data->client_data->organization}}</strong> on
                                 @if(isset($visit->report_data->report_data->visit_date))
                                 <span class='text-danger'>{{$visit->report_data->report_data->visit_date}}</span>
+                                <span>{{$visit->organization}}</span>
                                 @endif
                             </div>
                         </div>
@@ -141,3 +142,5 @@
     </div>
 </div>
 @endsection
+<script src="{{ asset('js/ajaxformprocess.js') }}"></script>
+<script src="{{ asset('js/report.js') }}"></script>

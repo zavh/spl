@@ -128,6 +128,18 @@ function ajaxFunction(instruction, execute_id, divid){
                     }
                     return;
                 }
+                if(instruction == "findReports"){
+                    var rloResponse = JSON.parse(ajaxRequest.responseText);
+                    
+					if(rloResponse.result.status == 'failed'){
+                        console.log(rloResponse);
+					//	document.getElementById('day-wise').innerHTML = rloResponse.result.message;
+					}
+					else {
+						document.getElementById('day-wise').innerHTML = rloResponse.result.view;
+					}
+					return;
+				}
                 ajaxDisplay.innerHTML = ajaxRequest.responseText;
             }
 	    } 
@@ -173,6 +185,11 @@ function ajaxFunction(instruction, execute_id, divid){
             ajaxRequest.setRequestHeader("Content-type", "application/json");
             ajaxRequest.send(execute_id);
         }
+        if(instruction == "findReports"){
+			ajaxRequest.open("POST", "/reports/listnames", true);
+            ajaxRequest.setRequestHeader("Content-type", "application/json");	
+			ajaxRequest.send(execute_id);
+		}
 }
 
 function showClientContact(el){
