@@ -128,19 +128,6 @@ function ajaxFunction(instruction, execute_id, divid){
                     }
                     return;
                 }
-                if(instruction == "findReports"){
-                    var rloResponse = JSON.parse(ajaxRequest.responseText);
-                    console.log(rloResponse);
-					if(rloResponse.result.status == 'failed'){
-						document.getElementById('day-wise').innerHTML = rloResponse.result.message;
-					}
-					else {
-						document.getElementById('day-wise').innerHTML = rloResponse.result.view;
-						//var target = rloResponse.result.target;
-						//ajaxFunction('viewreport', target , 'report-container');
-					}
-					return;
-				}
                 ajaxDisplay.innerHTML = ajaxRequest.responseText;
             }
 	    } 
@@ -175,7 +162,6 @@ function ajaxFunction(instruction, execute_id, divid){
             }
             ajaxRequest.setRequestHeader("Content-type", "application/json");
             ajaxRequest.send(execute_id);
-            console.log(execute_id);
         }
 		if(instruction == "clientDetails"){
 			ajaxRequest.open("GET", "/report/clientdetails/"+execute_id, true);
@@ -186,14 +172,7 @@ function ajaxFunction(instruction, execute_id, divid){
 
             ajaxRequest.setRequestHeader("Content-type", "application/json");
             ajaxRequest.send(execute_id);
-            console.log(execute_id);
         }
-        if(instruction == "findReports"){
-			ajaxRequest.open("POST", "/reports/listnames", true);
-            ajaxRequest.setRequestHeader("Content-type", "application/json");	
-            console.log(ajaxRequest);	
-			ajaxRequest.send(execute_id);
-		}
 }
 
 function showClientContact(el){
@@ -402,15 +381,4 @@ function vrd(e, form){
     var postqstring = getQueryString(form.id);
     clearErrorFormatting(form.id); // Clear any previous error
     ajaxFunction('finalSubmission', postqstring, 'stage_2');
-}
-
-function findReports(e, form){
-	e.preventDefault();
-
-    var formdat;
-    // console.log(JSON.stringify(formdat));
-	formdat = getQString(form.id, 'rloinput');
-    formdat['_token'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-    console.log(JSON.stringify(formdat));
-	ajaxFunction('findReports', JSON.stringify(formdat) , 'day-wise');
 }

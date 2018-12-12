@@ -58,11 +58,12 @@ function ajaxFunction(instruction, execute_id, divid){
 						if(ctResponse.result.status == 'failed'){
 							errorBagProcessing(ctResponse.result.messages);
 						}
-						else{
+						else if(ctResponse.result.status == 'success'){
 							var pid = ctResponse.result.project_id;
 							ajaxFunction('showTasks', pid , 'taskdiv');
 							var new_alloc = ctResponse.result.new_alloc;
 							renderAlloc(new_alloc);
+							renderTaskCount(pid);
 						}
 						return;
 					}
@@ -76,11 +77,16 @@ function ajaxFunction(instruction, execute_id, divid){
 							ajaxFunction('showTasks', pid , 'taskdiv');
 							var new_alloc = etResponse.result.new_alloc;
 							renderAlloc(new_alloc);
+							renderProjectTimeline(pid);
 						}
-						console.log(etResponse);
 						return;
 					}
 				    ajaxDisplay.innerHTML = ajaxRequest.responseText;
+				}
+				else if(ajaxRequest.readyState == 4 && ajaxRequest.status == 419){
+					var ajaxDisplay = document.getElementById("app");
+					ajaxDisplay.innerHTML = ajaxRequest.responseText;
+					//window.location.href = '/login';
 				}
 	    } 
 
@@ -116,6 +122,10 @@ function ajaxFunction(instruction, execute_id, divid){
 			ajaxRequest.open("GET", "/enquiries/"+execute_id+"/edit", true);
 			ajaxRequest.send();
 		}
+		if(instruction == "renderTimeline"){
+			ajaxRequest.open("GET", "/project/timeline/"+execute_id, true);
+			ajaxRequest.send();
+		}
 		if(instruction == "newClientValidation"){
 			ajaxRequest.open("POST", "/clients/validateonly/", true);
 			ajaxRequest.setRequestHeader("Content-type", "application/json");
@@ -135,7 +145,6 @@ function ajaxFunction(instruction, execute_id, divid){
 			var task_id = document.getElementById("task_id").value;
 			ajaxRequest.open("POST", "/tasks/"+task_id, true);
 			ajaxRequest.setRequestHeader("Content-type", "application/json");
-			console.log(ajaxRequest);
 			ajaxRequest.send(execute_id);
 		}
 }
@@ -292,4 +301,15 @@ function renderContact(){
 			}
 		}
 	}
+}
+
+function renderTaskCount(project_id){
+	var x = document.getElementById('taskcount');
+	var current_task_count = parseInt(x.innerText) + 1;
+	x.innerHTML = current_task_count;
+	renderProjectTimeline(project_id);
+}
+
+function renderProjectTimeline(project_id){
+	ajaxFunction('renderTimeline',project_id,'projecttimeline');
 }

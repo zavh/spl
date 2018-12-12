@@ -13,46 +13,64 @@ use Illuminate\Support\Facades\Auth;
 
 class TasksController extends Controller
 {
+    // public function __construct()
+    // {
+    //     //$this->middleware('auth');
+    // }
     public function index($project_id = null)
     {
-        if($project_id == null){
-            abort(404);
+        if (Auth::check()){
+            if($project_id == null){
+                abort(404);
+            }
+            $tasks = Task::orderBy('task_deadline','ASC')->where('project_id',$project_id)->get();
+            return view('tasks.index', ['tasks'=>$tasks, 'project_id'=>$project_id]);
         }
-        $tasks = Task::where('project_id',$project_id)->get();
-        return view('tasks.index', ['tasks'=>$tasks, 'project_id'=>$project_id]);
+        else 
+            return view('partial.sessionexpired');
     }
 
     public function create($project_id = null)
     {
-        if($project_id == null){
-            abort(404);    
+        if(Auth::Check()){
+            if($project_id == null){
+                abort(404);    
+            }
+            $users = User::all()->where('active',1);
+            $project = Project::find($project_id);
+            $allocation = $project->allocation;
+            if($allocation>=100)
+            {
+                return redirect('tasks.index')->with('success', 'Allocation limit reached');
+            }
+            return view('tasks.create',['users'=>$users, 'project_id'=>$project_id,'allocation'=>$allocation]);
         }
-        $users = User::all()->where('active',1);
-        $project = Project::find($project_id);
-        $allocation = $project->allocation;
-        if($allocation>=100)
-        {
-            return redirect('tasks.index')->with('success', 'Allocation limit reached');
+        else {
+            return view('partial.sessionexpired');
         }
-        return view('tasks.create',['users'=>$users, 'project_id'=>$project_id,'allocation'=>$allocation]);
     }
 
     public function store(Request $request)
-    {        
+    {   
         $allocation = $request->allocation;
         $weight = $request->get('weight');
         $project = Project::find($request->input('project_id'));
 
         $project_deadline = $project->deadline;
+        $project_start = $project->start_date;
+
         $validator = Validator::make($request->all(), [
-            'task_name' => 'required|min:2|max:191',
+            'task_name' => 'required|min:2|max:191|unique:tasks,task_name,NULL,id,project_id,' . $request->input('project_id'),
             'task_description' => 'required|max:300',
             'task_deadline' => ['required', 'date',
-                            function($attribute, $value, $fail) use($project_deadline){
+                            function($attribute, $value, $fail) use($project_deadline, $project_start){
                                 $td = strtotime($value);
                                 $pd = strtotime($project_deadline);
+                                $ps = strtotime($project_start);
                                 if($pd<$td)
                                     $fail('Task Deadline cannot be later than Project deadline');
+                                if($td<$ps)
+                                    $fail('Task Deadline cannot be earlier than Project start date');
                             }
                         ],
             'weight' => ['required','integer',
@@ -73,7 +91,6 @@ class TasksController extends Controller
         $task->task_name = $request->input('task_name');
         $task->task_description = $request->input('task_description');
         $task->project_id = $request->input('project_id');
-        $task->task_date_assigned = $request->input('task_date_assigned');
         $task->task_deadline = $request->input('task_deadline');
         $task->weight = $request->input('weight');
         $task->save();
@@ -82,7 +99,7 @@ class TasksController extends Controller
         $project->save();
 
         $this->addTaskUser($task->id, $request->get('user_id'));
-        $response['result'] = 'success';
+        $response['status'] = 'success';
         $response['project_id'] = $request->input('project_id');
         $response['new_alloc'] = $allocation + $weight;
         return response()->json(['result'=>$response]);
@@ -96,7 +113,7 @@ class TasksController extends Controller
      */
     public function show($id)
     {
-        if($assignment == null)
+        if($id == null)
             abort(404);
         $assignment = Task::find($id);
         return view('tasks.show')->with('assignment',$assignment);
@@ -110,7 +127,6 @@ class TasksController extends Controller
      */
     public function edit($task_id)
     {
-        //
         $users = User::where([['id', '>', '1'],['active','=','1']])->get();
         $task = Task::find($task_id);
         $userarr = array();
@@ -146,16 +162,20 @@ class TasksController extends Controller
         $old_weight = $request->old_weight;
         $project = Project::find($request->project_id);
         $project_deadline = $project->deadline;
+        $project_start = $project->start_date;
 
         $validator = Validator::make($request->all(), [
-            'task_name' => 'required|min:2|max:191',
+            'task_name' => 'required|min:2|max:191|unique:tasks,task_name,NULL,id,project_id,' . $request->project_id,
             'task_description' => 'required|max:3000',
             'task_deadline' => ['required', 'date',
-                function($attribute, $value, $fail) use($project_deadline){
+                function($attribute, $value, $fail) use($project_deadline, $project_start){
                     $td = strtotime($value);
                     $pd = strtotime($project_deadline);
+                    $ps = strtotime($project_start);
                     if($pd<$td)
-                        $fail($attribute.' cannot be later than Project deadline');
+                        $fail('Task Deadline cannot be later than Project deadline');
+                    if($td<$ps)
+                        $fail('Task Deadline cannot be earlier than Project start date');
                 }
             ],
             'weight' => ['required','integer',
@@ -175,7 +195,6 @@ class TasksController extends Controller
         $task = Task::find($id);
         $task->task_name = $request->input('task_name');
         $task->task_description = $request->input('task_description');
-        $task->task_date_assigned = $request->input('task_date_assigned');
         $task->task_deadline = $request->input('task_deadline');
         $task->weight = $request->input('weight');
 

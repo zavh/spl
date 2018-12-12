@@ -11,6 +11,7 @@
                 <div class="card-body">
                     <form method="POST" action="{{ route('projects.store') }}" style='font-size:10px' name='createproject' id='createproject' onsubmit='createProject(event, this)'>
                         @csrf
+                        <input type="hidden" name='report_id' value={{$report_id}} class="cpinput">
                         <!-- Client Input Starts -->
                         <div class="form-group row">
                             <div class="input-group input-group-sm col-md-12">

@@ -1,3 +1,5 @@
+<link href='https://fonts.googleapis.com/css?family=Titillium+Web:400,200,300,600,700' rel='stylesheet' type='text/css'>
+<link href="{{ asset('css/timeline.css') }}" rel="stylesheet">
 @extends('layouts.app')
 @section('content')
     <main role="main" class="container-fluid">
@@ -84,13 +86,16 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Project Deadline Area Starts-->
-                    <div class="media">
-                        <p class="media-body mb-0 small lh-125">
-                            <span class="text-danger px-2">Deadline: {{$project->deadline}}</span>  
-                        </p>
-                    </div>
-                    <!-- Project Deadline Area Ends-->
+                    <!-- Project Dates Area Starts-->
+                        <div class="small text-primary mx-2 border-bottom">
+                            <span>Project Start Date</span>
+                            <strong> &#8674; {{$project->start_date}}</strong>
+                        </div>
+                        <div class="small text-danger mx-2">
+                            <span>Deadline</span>
+                            <strong> &#8674; {{$project->deadline}}</strong>
+                        </div>
+                    <!-- Project Dates Area Ends-->
                 </div>
             </div>
         <!-- Project Details Column Ends-->
@@ -117,9 +122,9 @@
                     <div class="d-flex justify-content-between align-items-center small">
                         <span> 
                             @if(count($project->tasks) == 0)
-                                No Task defined yet
+                                Total number of tasks: <span id='taskcount'>0</span>
                             @else
-                                Total number of tasks: {{count($project->tasks)}}
+                                Total number of tasks: <span id='taskcount'>{{count($project->tasks)}}</span>
                             @endif 
                         </span>                        
                             <a href="javascript:void(0)" class="text-white small" onclick="ajaxFunction('showAddTask', '{{ $project->id }}' , 'taskdiv')">
@@ -135,7 +140,8 @@
             </div>
         <!-- Task Column Ends-->
         </div>
-
+        <div class='timelinediv my-4 small' id='projecttimeline'>
+            @include('projects.projecttimeline',['project'=>$project])
         </div>
     </main>    
 @endsection

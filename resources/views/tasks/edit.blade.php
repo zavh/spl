@@ -35,18 +35,6 @@
             <div class="form-group row">
                 <div class="input-group input-group-sm col-md-12"  style='margin-top:-10px'>
                     <div class="input-group-prepend">
-                        <span class="input-group-text" style='width:110px'>Date Assigned</span>
-                    </div>
-                    <input id="task_date_assigned" type="date" class="etinput form-control{{ $errors->has('task_date_assigned') ? ' is-invalid' : '' }}" name="task_date_assigned" value="{{ $task->task_date_assigned }}" required>
-
-                    <span class="invalid-feedback" role="alert" id="task_date_assigned_error_span">
-                            <strong id="task_date_assigned_error"></strong>
-                    </span>                               
-                </div>
-            </div>
-            <div class="form-group row">
-                <div class="input-group input-group-sm col-md-12"  style='margin-top:-10px'>
-                    <div class="input-group-prepend">
                         <span class="input-group-text" style='width:110px'>Deadline</span>
                     </div>
                     <input id="task_deadline" type="date" class="etinput form-control" name="task_deadline" value="{{ $task->task_deadline }}" required>

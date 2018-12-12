@@ -16,4 +16,8 @@ class Department extends Model
     public function users(){
         return $this->hasMany('App\User');
     }
+
+    public function product(){
+        return $this->hasOne('App\Product');
+    }
 }

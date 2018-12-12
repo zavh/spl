@@ -59,6 +59,13 @@
                             @endif
                             </li>
                             <li class="nav-item">
+                            @if($thispath=='products')
+                                <a class="nav-link active-nav active" href="/products">Products</a>
+                            @else
+                                <a class="nav-link" href="/products">Products</a>
+                            @endif
+                            </li>
+                            <li class="nav-item">
                             @if($thispath=='projects' || $thispath=='enquiries')
                                 <a class="nav-link active-nav active" href="/projects">Projects</a>
                             @else

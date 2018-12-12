@@ -30,10 +30,7 @@ class ReportsController extends Controller
                     'April', 'May', 'June', 
                     'July','August', 'September', 
                     'October', 'November', 'December'];
-        // $now = Carbon::now();
-        // $month = $now->month;
-        // $dateObj   = DateTime::createFromFormat('!m', $now);
-        // $now = $dateObj->format('F'); // March
+        
         $current_month = date("Y-m");
         // dd($month);
         if(Auth::User()->role_id == 1){
@@ -58,17 +55,22 @@ class ReportsController extends Controller
         foreach($visits as $visit){
             $visit->report_data = json_decode($visit->report_data);
         }
+
         ksort($report_of_month);
         foreach($report_of_month as $month=>$date)
         {
              ksort($report_of_month[$month]); 
         }
-        $current_month_report = $report_of_month[$current_month];
-        unset($report_of_month[$current_month]);
+        if(isset($report_of_month[$current_month])){
+            $current_month_report = $report_of_month[$current_month];
+            unset($report_of_month[$current_month]);
+        }
+        else 
+        $current_month_report = null;
         // dd($report_of_month);
         return view('reports.index',['reports'=>$reports, 'visits'=>$visits, 
-                                'months'=>$months,'current_month_report'=>$current_month_report,
-                                    'report_of_month'=>$report_of_month]);
+                            'months'=>$months,'current_month_report'=>$current_month_report,
+                            'report_of_month'=>$report_of_month]);
     }
 
     /**
