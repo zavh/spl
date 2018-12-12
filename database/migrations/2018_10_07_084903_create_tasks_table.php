@@ -18,6 +18,7 @@ class CreateTasksTable extends Migration
             $table->string('task_name');
             $table->text('task_description');
             $table->unsignedBigInteger('project_id');
+            $table->unique(['task_name', 'project_id']);
             $table->date('task_deadline');
             $table->integer('weight')->unsigned();
             $table->tinyInteger('completed')->unsigned()->default(0);

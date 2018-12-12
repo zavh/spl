@@ -7,7 +7,7 @@
         <div class="card mb-4 shadow-sm">
           <div class="card-header text-white bg-danger m-0 p-0">
             <span class="my-0 font-weight-normal">Unassigned Projects</span>
-            <span style='position:absolute;right:10px'>
+            <span style='position:absolute;right:10px' class='small'>
             <a href="/projects/create" style='color:white'>Create</a>
             </span>
           </div>
@@ -17,7 +17,7 @@
             @foreach($punalloc as $project)
             <div class="border-bottom">
                 <div class='text-left bg-light border-bottom'>
-                    <span class="mx-2">Cleint: {{$project->client->organization}}</span>
+                    <span class="mx-2">Client: {{$project->client->organization}}</span>
                 </div>
                 <p class='text-left mx-4 mb-0 pb-0'>
                     Project title: <a href="/projects/{{$project->id}}">{{$project->project_name}}</a>

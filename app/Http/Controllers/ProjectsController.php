@@ -17,6 +17,8 @@ class ProjectsController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        //  if (!Auth::check()) 
+        //     return view('partial.sessionexpired');
     }
 
     public function index()
@@ -64,7 +66,6 @@ class ProjectsController extends Controller
                                             'preload'=>'1',
                                             'report_id'=>$report_id,]);
         }
-            
     }
 
     /**
@@ -103,12 +104,10 @@ class ProjectsController extends Controller
                 $report->acceptance = 1;
                 $report->save();
             }
-            //$project_id = $project->id;
+
             $response['status'] = 'success';
             $response['project_id'] = $project->id;
         }
-
-        //return redirect('/projects')->with('success', 'Project Created');
         return response()->json(['response'=>$response]);
     }
 
@@ -148,7 +147,6 @@ class ProjectsController extends Controller
      */
     public function edit($id)
     {
-        //
         $assignment = Project::find($id);
         return view('projects.edit')->with('assignment', $assignment);
     }
@@ -201,8 +199,6 @@ class ProjectsController extends Controller
     public function destroy($id)
     {
         $project = Project::find($id);
-
-        // Check for correct user
         
         $Project->delete();
         return redirect('/projects')->with('success', 'Project Removed');

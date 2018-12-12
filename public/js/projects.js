@@ -58,7 +58,7 @@ function ajaxFunction(instruction, execute_id, divid){
 						if(ctResponse.result.status == 'failed'){
 							errorBagProcessing(ctResponse.result.messages);
 						}
-						else{
+						else if(ctResponse.result.status == 'success'){
 							var pid = ctResponse.result.project_id;
 							ajaxFunction('showTasks', pid , 'taskdiv');
 							var new_alloc = ctResponse.result.new_alloc;
@@ -79,10 +79,14 @@ function ajaxFunction(instruction, execute_id, divid){
 							renderAlloc(new_alloc);
 							renderProjectTimeline(pid);
 						}
-						console.log(etResponse);
 						return;
 					}
 				    ajaxDisplay.innerHTML = ajaxRequest.responseText;
+				}
+				else if(ajaxRequest.readyState == 4 && ajaxRequest.status == 419){
+					var ajaxDisplay = document.getElementById("app");
+					ajaxDisplay.innerHTML = ajaxRequest.responseText;
+					//window.location.href = '/login';
 				}
 	    } 
 

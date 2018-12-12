@@ -33,6 +33,7 @@ class ReportsController extends Controller
         foreach($visits as $visit){
             $visit->report_data = json_decode($visit->report_data);
         }
+        //dd($visits);
         return view('reports.index',['reports'=>$reports, 'visits'=>$visits]);
     }
 

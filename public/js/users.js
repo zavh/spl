@@ -110,9 +110,7 @@ function deactivateUser(user, userid){
 function updateTask(taskid)
 {
 	var checkedstatus = document.getElementById('done-'+taskid);
-	//var today = new Date().toJSON().slice(0,10).replace(/-/g,'/');
 	var submitdate = document.getElementById('done-date-'+taskid).value;
-	// console.log(submitdate);
 
 	if (checkedstatus.checked)
 	{
@@ -120,37 +118,30 @@ function updateTask(taskid)
 		{
 			alert('No date submitted');
 			checkedstatus.checked = false;
-			console.log("checked-blank")
 		}
 		else 
 		{
 			var today = new Date();
-			// console.log(today);
 			var formsubmission = document.getElementById('done-form-'+taskid);
 			var assigneddate = document.getElementById('task_date_assigned').value;
 
 			submit = new Date(submitdate);
 			assigned = new Date(assigneddate);
-			console.log('submit',submit,'assigned',assigned,'today',today);
-			
 
 			if(submit<assigned)
 			{
 				alert('cannot submit before assigned date');
 				checkedstatus.checked = false;
-				console.log(assigneddate+"checked-assigneddate")
 			} 
 			else if (submit>today)
 			{
 				alert('cannot submit after current date');
 				checkedstatus.checked = false;
-				console.log(today+"checked-today")
 			}
 			else
 			{
 				checkedstatus.checked = true;
 				formsubmission.submit();
-				console.log("checked-pass")
 			}
 		}					
 	}

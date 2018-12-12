@@ -13,32 +13,45 @@ use Illuminate\Support\Facades\Auth;
 
 class TasksController extends Controller
 {
+    // public function __construct()
+    // {
+    //     //$this->middleware('auth');
+    // }
     public function index($project_id = null)
     {
-        if($project_id == null){
-            abort(404);
+        if (Auth::check()){
+            if($project_id == null){
+                abort(404);
+            }
+            $tasks = Task::orderBy('task_deadline','ASC')->where('project_id',$project_id)->get();
+            return view('tasks.index', ['tasks'=>$tasks, 'project_id'=>$project_id]);
         }
-        $tasks = Task::orderBy('task_deadline','ASC')->where('project_id',$project_id)->get();
-        return view('tasks.index', ['tasks'=>$tasks, 'project_id'=>$project_id]);
+        else 
+            return view('partial.sessionexpired');
     }
 
     public function create($project_id = null)
     {
-        if($project_id == null){
-            abort(404);    
+        if(Auth::Check()){
+            if($project_id == null){
+                abort(404);    
+            }
+            $users = User::all()->where('active',1);
+            $project = Project::find($project_id);
+            $allocation = $project->allocation;
+            if($allocation>=100)
+            {
+                return redirect('tasks.index')->with('success', 'Allocation limit reached');
+            }
+            return view('tasks.create',['users'=>$users, 'project_id'=>$project_id,'allocation'=>$allocation]);
         }
-        $users = User::all()->where('active',1);
-        $project = Project::find($project_id);
-        $allocation = $project->allocation;
-        if($allocation>=100)
-        {
-            return redirect('tasks.index')->with('success', 'Allocation limit reached');
+        else {
+            return view('partial.sessionexpired');
         }
-        return view('tasks.create',['users'=>$users, 'project_id'=>$project_id,'allocation'=>$allocation]);
     }
 
     public function store(Request $request)
-    {        
+    {   
         $allocation = $request->allocation;
         $weight = $request->get('weight');
         $project = Project::find($request->input('project_id'));
@@ -47,7 +60,7 @@ class TasksController extends Controller
         $project_start = $project->start_date;
 
         $validator = Validator::make($request->all(), [
-            'task_name' => 'required|min:2|max:191',
+            'task_name' => 'required|min:2|max:191|unique:tasks,task_name,NULL,id,project_id,' . $request->input('project_id'),
             'task_description' => 'required|max:300',
             'task_deadline' => ['required', 'date',
                             function($attribute, $value, $fail) use($project_deadline, $project_start){
@@ -86,7 +99,7 @@ class TasksController extends Controller
         $project->save();
 
         $this->addTaskUser($task->id, $request->get('user_id'));
-        $response['result'] = 'success';
+        $response['status'] = 'success';
         $response['project_id'] = $request->input('project_id');
         $response['new_alloc'] = $allocation + $weight;
         return response()->json(['result'=>$response]);
@@ -114,7 +127,6 @@ class TasksController extends Controller
      */
     public function edit($task_id)
     {
-        //
         $users = User::where([['id', '>', '1'],['active','=','1']])->get();
         $task = Task::find($task_id);
         $userarr = array();
@@ -153,7 +165,7 @@ class TasksController extends Controller
         $project_start = $project->start_date;
 
         $validator = Validator::make($request->all(), [
-            'task_name' => 'required|min:2|max:191',
+            'task_name' => 'required|min:2|max:191|unique:tasks,task_name,NULL,id,project_id,' . $request->project_id,
             'task_description' => 'required|max:3000',
             'task_deadline' => ['required', 'date',
                 function($attribute, $value, $fail) use($project_deadline, $project_start){

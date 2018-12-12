@@ -36,16 +36,20 @@
                         <div class="d-flex justify-content-between align-items-center w-100 border-bottom">
                             <strong class="text-dark pl-1 pt-1">Visit Schedules</strong>
                         </div>
+                        @if(count($visits)>0)
                         @foreach($visits as $visit)
                         <div class="row m-0 bg-light border-bottom w-100">
                             <div class="col-md-12 text-primary pl-1 text-secondary">
                                 <strong class='text-primary'>{{$visit->report_data->rc_user_name}}</strong>
                                 Visiting 
                                 <strong class='text-success'>{{$visit->report_data->client_data->organization}}</strong> on
+                                @if(isset($visit->report_data->report_data->visit_date))
                                 <span class='text-danger'>{{$visit->report_data->report_data->visit_date}}</span>
+                                @endif
                             </div>
                         </div>
                         @endforeach
+                        @endif
                     </div>
                 </div>
             </div>
