@@ -373,11 +373,15 @@ class ReportsController extends Controller
 // $whereclause = "AND organisation LIKE %".$r->org."%";
 
             $data = $request->all();
+            // echo '<pre>';
+            //     var_dump($data);
+            // echo '</pre>';
+            // dd($data);
             $whereclause = "";
-            $reportmonthstart = $data->reportmonthstart;
-            $reportmonthend = $data->reportmonthend;
-            $reportorganization = $data->reportorganization;
-            $reportname = $data->reportuser;
+            $reportmonthstart = $data['reportmonthstart'];
+            $reportmonthend = $data['reportmonthend'];
+            $reportorganization = $data['reportorganization'];
+            $reportname = $data['reportuser'];
             
             if($reportmonthstart != "")//has date, may or may not have name and organization
             {

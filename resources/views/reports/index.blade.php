@@ -34,14 +34,14 @@
                                         <div class="input-group input-group-sm">
                                             <strong class="col-md-4">Search by Organization:</strong>
                                             <input type="text" name='reportorganization' id='reportorganization' class="rloinput form-control" value=""
-                                                placeholder="Search Report" aria-label="Report Month" aria-describedby="button-addon2">
+                                                placeholder="Search Report" aria-label="Report Organization" aria-describedby="button-addon2">
                                             <div class="autocomplete"></div>
                                         </div>
 
                                         <div class="input-group input-group-sm">
                                             <strong class="col-md-4">Search by User:</strong>
                                             <input type="text" name='reportuser' id='reportuser' class="rloinput form-control" value=""
-                                                placeholder="Search Report" aria-label="Report Month" aria-describedby="button-addon2">
+                                                placeholder="Search Report" aria-label="Report User" aria-describedby="button-addon2">
                                             <div class="autocomplete"></div>
                                         </div>
 
