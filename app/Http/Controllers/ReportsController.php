@@ -196,9 +196,7 @@ class ReportsController extends Controller
         $report->report_data = json_encode($request->all());
         
         $report->stage = $x;
-        /////////put visit date and organization storage here//////////////
 
-        ///////////////////////////////////////////////////////////////////
         if(isset($request->report_data)){
             $report->visit_date = $request->report_data['visit_date'];
             $report->organization = $request->client_data['organization'];
@@ -208,7 +206,7 @@ class ReportsController extends Controller
         }
         if(isset($request->report_data->client_data)){
             //$report->organization = $request->report_data->client_data['organization'];
-            $report->organization = 'xyz';
+            $report->organization = $request->report_data->client_data['organization'];
         }
         $report->save();
         $result['status'] = 'success';
@@ -354,26 +352,6 @@ class ReportsController extends Controller
         //dd($request);
         if(Auth::Check())
         {
-///////////////////////////search criteria////////////////////////////////////////////////
-
-// $whereclause = '';
-// $r = $request->all();
-// if($r->start_date != '' ){
-// 	if(!isset($r->end_date))
-// 		$end_date = $start_date
-	
-// 	$whereclase = 'date between $start_data and $end_date'
-// }
-// if($r->username != ''){
-// 	$user_id = User::where('name','=', $r->username)->get()->id;
-// 	if($user_id) == NULL
-// 	validtor -> error
-
-// 	else $whereclause .= " AND user_id LIKE %".$r->user_id."%";	
-// }
-
-// $whereclause = "AND organisation LIKE %".$r->org."%";
-
             $data = $request->all();
             // echo '<pre>';
             //     var_dump($data);
@@ -428,12 +406,6 @@ class ReportsController extends Controller
                 }
                 return redirect('reports.index')->withInput()->with('success', 'wrong user id');//nothing has been input
             }
-            
-            // $searchstring = date("Y-m",strtotime($searchstring));
-            //$reports =  DB::table('reports')->where('report_data->report_data->visit_date', $searchstring)->get();
-            // $reports =  DB::table('reports')->where("json_contains(report_data,JSON_QUOTE($searchstring),'$.report_data.visit_date')")->get();
-             //$reports = DB::table('reports')->whereRaw('JSON_CONTAINS(report_data->"$.report_data.visit_date", JSON_QUOTE($searchstring)')->get();
-            // $reports = DB::table('reports')->whereRaw('JSON_CONTAINS(report_data,JSON_QUOTE("'.$searchstring.'"),"$.report_data.visit_date")')->get();
             $reports = DB::table('reports')->whereRaw($whereclause)->get();
 
             foreach($reports as $report){

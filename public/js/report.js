@@ -382,3 +382,13 @@ function vrd(e, form){
     clearErrorFormatting(form.id); // Clear any previous error
     ajaxFunction('finalSubmission', postqstring, 'stage_2');
 }
+
+function findReports(e, form){		
+    e.preventDefault();		      
+    var formdat;		
+ 
+    formdat = getQString(form.id, 'rloinput');		
+    formdat['_token'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');		
+    console.log(JSON.stringify(formdat));		
+    ajaxFunction('findReports', JSON.stringify(formdat) , 'day-wise');		
+}
