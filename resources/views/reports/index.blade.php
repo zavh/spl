@@ -9,17 +9,48 @@
                         <div class="d-flex justify-content-between align-items-center w-100 border-bottom">
                             <strong class="text-dark pl-1 pt-1">List of submitted Reports</strong>
                         </div>
-                        @foreach($reports as $report)
-                        <div class="row m-0 bg-light border-bottom w-100">
-                            <div class="col-md-12 text-primary pl-1 text-secondary">
-                                Report for <strong class='text-primary'>{{$report->report_data->client_data->organization}}</strong>
-                                By <strong>{{$report->report_data->rc_user_name}}</strong>
-                                <div class="d-flex  align-items-center border-top border-success px-2">
-                                <a href="/reports/{{$report->id}}" class='text-primary'>View</a> &nbsp;
-                                <a href="{{route('rtop',['report_id'=>$report->id])}}" class='text-success'>Convert</a> &nbsp;
-                                <a href="javascript:void(0)" class='text-danger'>Reject</a>                      
-                            </div>
+                        <div class="align-items-center text-black-50">
+                            <div class='row'>
+                                <div class="col-md-12">
+                                    <form action="" class='m-0 p-0' autocomplete="off" id="findreports" name='findreports' onsubmit='findReports(event, this)'>
+                                        {{-- <div class="input-group input-group-sm">
+                                            <strong class="col-md-4">Search by Date:</strong>
+                                            <input type="date" name='reportdate' id='reportdate' class="rloinput form-control" value="0"
+                                                placeholder="Search Report" aria-label="Report Month" aria-describedby="button-addon2">
+                                            <div class="autocomplete"></div>
+                                        </div> --}}
 
+                                        <div class="input-group input-group-sm">
+                                            <strong class="col-md-4">Search by Date Range:</strong>
+                                            <input type="date" name='reportmonthstart' id='reportmonthstart' class="rloinput form-control" value=""
+                                                placeholder="Search Report" aria-label="Report Month" aria-describedby="button-addon2">
+                                            <div class="autocomplete"></div>
+                                            <input type="date" name='reportmonthend' id='reportmonthend' class="rloinput form-control" value=""
+                                                placeholder="Search Report" aria-label="Report Month" aria-describedby="button-addon2">
+                                            <div class="autocomplete"></div>
+                                        </div>
+
+                                        <div class="input-group input-group-sm">
+                                            <strong class="col-md-4">Search by Organization:</strong>
+                                            <input type="text" name='reportorganization' id='reportorganization' class="rloinput form-control" value=""
+                                                placeholder="Search Report" aria-label="Report Organization" aria-describedby="button-addon2">
+                                            <div class="autocomplete"></div>
+                                        </div>
+
+                                        <div class="input-group input-group-sm">
+                                            <strong class="col-md-4">Search by User:</strong>
+                                            <input type="text" name='reportuser' id='reportuser' class="rloinput form-control" value=""
+                                                placeholder="Search Report" aria-label="Report User" aria-describedby="button-addon2">
+                                            <div class="autocomplete"></div>
+                                        </div>
+
+                                        <div class="input-group-append">
+                                            <button class="btn btn-secondary btn-sm" type="submit" id="button-addon2">Go</button>
+                                        </div>
+                                        <div class="autocomplete"></div>
+                                    </form>
+                                </div>
+                            </div>
                             </div>                            
                         </div>
                         @endforeach

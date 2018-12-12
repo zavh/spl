@@ -375,11 +375,15 @@ class ReportsController extends Controller
 // $whereclause = "AND organisation LIKE %".$r->org."%";
 
             $data = $request->all();
+            // echo '<pre>';
+            //     var_dump($data);
+            // echo '</pre>';
+            // dd($data);
             $whereclause = "";
-            $reportmonthstart = $data->reportmonthstart;
-            $reportmonthend = $data->reportmonthend;
-            $reportorganization = $data->reportorganization;
-            $reportname = $data->reportuser;
+            $reportmonthstart = $data['reportmonthstart'];
+            $reportmonthend = $data['reportmonthend'];
+            $reportorganization = $data['reportorganization'];
+            $reportname = $data['reportuser'];
             
             if($reportmonthstart != "")//has date, may or may not have name and organization
             {
@@ -387,40 +391,40 @@ class ReportsController extends Controller
                 {
                     $reportmonthend =$reportmonthstart;//no
                 }
-                $whereclause .= "date between ".$reportmonthstart." and".$reportmonthend;//else
+                $whereclause .= " visit_date between ".$reportmonthstart." and ".$reportmonthend;//else
 
                 if($reportname != "")//there is name
                 {
                     $reportid = User::where('name', '=', $reportname)->get()->id;//get id
                     if($reportid != NULL)//is the name valid?
                     {
-                        $whereclause .= "and user_id like %".$reportid."%";//yes
+                        $whereclause .= " and user_id like %".$reportid."%";//yes
                     }
                     else
                     {
                         return redirect('reports.index')->with('success', 'wrong user id');//no
                     }
                 } 
-                $whereclause .= "and organization like %".$reportorganization."%";//add organization
+                $whereclause .= " and organization like %".$reportorganization."%";//add organization
             }
             if($reportmonthstart == "" && $reportname != "")//no date, has name, may or may not have organization
             {
                 $reportid = User::where('name', '=', $reportname)->get()->id;//get id
                 if($reportid != NULL)//is the name valid?
                 {
-                    $whereclause .= "user_id like %".$reportid."%";//yes
+                    $whereclause .= " user_id like %".$reportid."%";//yes
                 }
                 else
                 {
                     return redirect('reports.index')->withInput()->with('success', 'wrong user id');//no
                 }
-                $whereclause .= "and organization like %".$reportorganization."%";//add organization
+                $whereclause .= " and organization like %".$reportorganization."%";//add organization
             }
             if($reportmonthstart =="" && $reportname=="")//no date, no name, only organization
             {
                 if($reportorganization != "")//organization value?
                 {
-                    $whereclause .= "organization like %".$reportorganization."%";//yes
+                    $whereclause .= " organization like %".$reportorganization."%";//yes
                 }
                 return redirect('reports.index')->withInput()->with('success', 'wrong user id');//nothing has been input
             }
