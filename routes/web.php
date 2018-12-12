@@ -59,7 +59,6 @@ Route::get('/report/clientdetails/{report_id?}', 'ReportsController@clientdetail
 Route::get('/reports/stage2/{report_id?}', 'ReportsController@stage2view');
 Route::post('/reports/submit/{report_id?}', 'ReportsController@submit')->name('addclient');
 Route::get('/reports/rtop/{report_id?}', 'ReportsController@rtop')->name('rtop'); //rtop = Report to Project
-Route::post('/reports/listnames', 'ReportsController@search');
 
 Route::get('/project/enquiries/{project_id?}', 'ProjectsController@enquiries');
 Route::get('/project/createclient', 'ProjectsController@createclient');
