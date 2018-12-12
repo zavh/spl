@@ -190,8 +190,24 @@ class ReportsController extends Controller
     {
         $x = $request->stage;
         $report = Report::find($id);
+        
         $report->report_data = json_encode($request->all());
+        
         $report->stage = $x;
+        /////////put visit date and organization storage here//////////////
+
+        ///////////////////////////////////////////////////////////////////
+        if(isset($request->report_data)){
+            $report->visit_date = $request->report_data['visit_date'];
+            $report->organization = $request->client_data['organization'];
+        }
+        else if(isset($request->visit_date)){
+            $report->visit_date = $request->report_data['visit_date'];
+        }
+        if(isset($request->report_data->client_data)){
+            //$report->organization = $request->report_data->client_data['organization'];
+            $report->organization = 'xyz';
+        }
         $report->save();
         $result['status'] = 'success';
         $result['function'] = 'update';
@@ -336,13 +352,83 @@ class ReportsController extends Controller
         //dd($request);
         if(Auth::Check())
         {
-            // dd($request);
-            $searchstring = $request->reportmonth;
-            $searchstring = date("Y-m",strtotime($searchstring));
+///////////////////////////search criteria////////////////////////////////////////////////
+
+// $whereclause = '';
+// $r = $request->all();
+// if($r->start_date != '' ){
+// 	if(!isset($r->end_date))
+// 		$end_date = $start_date
+	
+// 	$whereclase = 'date between $start_data and $end_date'
+// }
+// if($r->username != ''){
+// 	$user_id = User::where('name','=', $r->username)->get()->id;
+// 	if($user_id) == NULL
+// 	validtor -> error
+
+// 	else $whereclause .= " AND user_id LIKE %".$r->user_id."%";	
+// }
+
+// $whereclause = "AND organisation LIKE %".$r->org."%";
+
+            $data = $request->all();
+            $whereclause = "";
+            $reportmonthstart = $data->reportmonthstart;
+            $reportmonthend = $data->reportmonthend;
+            $reportorganization = $data->reportorganization;
+            $reportname = $data->reportuser;
+            
+            if($reportmonthstart != "")//has date, may or may not have name and organization
+            {
+                if($reportmonthend == "")//is there end date?
+                {
+                    $reportmonthend =$reportmonthstart;//no
+                }
+                $whereclause .= "date between ".$reportmonthstart." and".$reportmonthend;//else
+
+                if($reportname != "")//there is name
+                {
+                    $reportid = User::where('name', '=', $reportname)->get()->id;//get id
+                    if($reportid != NULL)//is the name valid?
+                    {
+                        $whereclause .= "and user_id like %".$reportid."%";//yes
+                    }
+                    else
+                    {
+                        return redirect('reports.index')->with('success', 'wrong user id');//no
+                    }
+                } 
+                $whereclause .= "and organization like %".$reportorganization."%";//add organization
+            }
+            if($reportmonthstart == "" && $reportname != "")//no date, has name, may or may not have organization
+            {
+                $reportid = User::where('name', '=', $reportname)->get()->id;//get id
+                if($reportid != NULL)//is the name valid?
+                {
+                    $whereclause .= "user_id like %".$reportid."%";//yes
+                }
+                else
+                {
+                    return redirect('reports.index')->withInput()->with('success', 'wrong user id');//no
+                }
+                $whereclause .= "and organization like %".$reportorganization."%";//add organization
+            }
+            if($reportmonthstart =="" && $reportname=="")//no date, no name, only organization
+            {
+                if($reportorganization != "")//organization value?
+                {
+                    $whereclause .= "organization like %".$reportorganization."%";//yes
+                }
+                return redirect('reports.index')->withInput()->with('success', 'wrong user id');//nothing has been input
+            }
+            
+            // $searchstring = date("Y-m",strtotime($searchstring));
             //$reports =  DB::table('reports')->where('report_data->report_data->visit_date', $searchstring)->get();
             // $reports =  DB::table('reports')->where("json_contains(report_data,JSON_QUOTE($searchstring),'$.report_data.visit_date')")->get();
              //$reports = DB::table('reports')->whereRaw('JSON_CONTAINS(report_data->"$.report_data.visit_date", JSON_QUOTE($searchstring)')->get();
-            $reports = DB::table('reports')->whereRaw('JSON_CONTAINS(report_data,JSON_QUOTE("'.$searchstring.'"),"$.report_data.visit_date")')->get();
+            // $reports = DB::table('reports')->whereRaw('JSON_CONTAINS(report_data,JSON_QUOTE("'.$searchstring.'"),"$.report_data.visit_date")')->get();
+            $reports = DB::table('reports')->whereRaw($whereclause)->get();
 
             foreach($reports as $report){
                 $report->report_data = json_decode($report->report_data);

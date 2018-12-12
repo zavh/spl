@@ -175,6 +175,7 @@ function ajaxFunction(instruction, execute_id, divid){
             }
             ajaxRequest.setRequestHeader("Content-type", "application/json");
             ajaxRequest.send(execute_id);
+            console.log(execute_id);
         }
 		if(instruction == "clientDetails"){
 			ajaxRequest.open("GET", "/report/clientdetails/"+execute_id, true);
@@ -185,6 +186,7 @@ function ajaxFunction(instruction, execute_id, divid){
 
             ajaxRequest.setRequestHeader("Content-type", "application/json");
             ajaxRequest.send(execute_id);
+            console.log(execute_id);
         }
         if(instruction == "findReports"){
 			ajaxRequest.open("POST", "/reports/listnames", true);

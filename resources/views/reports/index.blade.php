@@ -14,14 +14,41 @@
                             <div class='row'>
                                 <div class="col-md-12">
                                     <form action="" class='m-0 p-0' autocomplete="off" id="findreports" name='findreports' onsubmit='findReports(event, this)'>
+                                        {{-- <div class="input-group input-group-sm">
+                                            <strong class="col-md-4">Search by Date:</strong>
+                                            <input type="date" name='reportdate' id='reportdate' class="rloinput form-control" value="0"
+                                                placeholder="Search Report" aria-label="Report Month" aria-describedby="button-addon2">
+                                            <div class="autocomplete"></div>
+                                        </div> --}}
+
                                         <div class="input-group input-group-sm">
-                                            <input type="date" name='reportmonth' id='reportmonth' class="rloinput form-control" 
-                                            placeholder="Search Report" aria-label="Report Month" aria-describedby="button-addon2">
-                                            <div class="input-group-append">
-                                                <button class="btn btn-secondary btn-sm" type="submit" id="button-addon2">Go</button>
-                                            </div>
+                                            <strong class="col-md-4">Search by Date Range:</strong>
+                                            <input type="date" name='reportmonthstart' id='reportmonthstart' class="rloinput form-control" value=""
+                                                placeholder="Search Report" aria-label="Report Month" aria-describedby="button-addon2">
+                                            <div class="autocomplete"></div>
+                                            <input type="date" name='reportmonthend' id='reportmonthend' class="rloinput form-control" value=""
+                                                placeholder="Search Report" aria-label="Report Month" aria-describedby="button-addon2">
                                             <div class="autocomplete"></div>
                                         </div>
+
+                                        <div class="input-group input-group-sm">
+                                            <strong class="col-md-4">Search by Organization:</strong>
+                                            <input type="text" name='reportorganization' id='reportorganization' class="rloinput form-control" value=""
+                                                placeholder="Search Report" aria-label="Report Month" aria-describedby="button-addon2">
+                                            <div class="autocomplete"></div>
+                                        </div>
+
+                                        <div class="input-group input-group-sm">
+                                            <strong class="col-md-4">Search by User:</strong>
+                                            <input type="text" name='reportuser' id='reportuser' class="rloinput form-control" value=""
+                                                placeholder="Search Report" aria-label="Report Month" aria-describedby="button-addon2">
+                                            <div class="autocomplete"></div>
+                                        </div>
+
+                                        <div class="input-group-append">
+                                            <button class="btn btn-secondary btn-sm" type="submit" id="button-addon2">Go</button>
+                                        </div>
+                                        <div class="autocomplete"></div>
                                     </form>
                                 </div>
                             </div>
