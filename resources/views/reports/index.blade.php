@@ -13,12 +13,6 @@
                             <div class='row'>
                                 <div class="col-md-12">
                                     <form action="" class='m-0 p-0' autocomplete="off" id="findreports" name='findreports' onsubmit='findReports(event, this)'>
-                                        {{-- <div class="input-group input-group-sm">
-                                            <strong class="col-md-4">Search by Date:</strong>
-                                            <input type="date" name='reportdate' id='reportdate' class="rloinput form-control" value="0"
-                                                placeholder="Search Report" aria-label="Report Month" aria-describedby="button-addon2">
-                                            <div class="autocomplete"></div>
-                                        </div> --}}
 
                                         <div class="input-group input-group-sm">
                                             <strong class="col-md-4">Search by Date Range:</strong>
@@ -53,7 +47,6 @@
                             </div>
                             </div>                            
                         </div>
-                        @endforeach
                     </div>
                 </div>
             </div>
