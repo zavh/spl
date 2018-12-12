@@ -183,5 +183,6 @@ function findclientNames(e, form){
 	var formdat;
 	formdat = getQString(form.id, 'cnlinput');
 	formdat['_token'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+	console.log(JSON.stringify(formdat));
 	ajaxFunction('findclientNames', JSON.stringify(formdat) , 'display-names');
 }
