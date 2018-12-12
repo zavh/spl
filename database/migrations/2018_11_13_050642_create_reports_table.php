@@ -20,6 +20,8 @@ class CreateReportsTable extends Migration
             $table->tinyInteger('stage');
             $table->tinyInteger('completion')->default(0);
             $table->tinyInteger('acceptance')->default(0);
+            $table->date('visit_date')->nullable();
+            $table->string('organization')->nullable();
             $table->timestamps();
         });
     }
