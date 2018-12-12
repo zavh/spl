@@ -30,10 +30,7 @@ class ReportsController extends Controller
                     'April', 'May', 'June', 
                     'July','August', 'September', 
                     'October', 'November', 'December'];
-        // $now = Carbon::now();
-        // $month = $now->month;
-        // $dateObj   = DateTime::createFromFormat('!m', $now);
-        // $now = $dateObj->format('F'); // March
+        
         $current_month = date("Y-m");
         // dd($month);
         if(Auth::User()->role_id == 1){
