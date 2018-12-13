@@ -344,8 +344,47 @@ class ReportsController extends Controller
 
     public function search(Request $request)
     {
-        $result['status'] = 'failed';
-        $result['data'] = $request->all();
+        $criteria = $request->all();
+        $wc = array();
+         $messages = [
+            'reportmonthstart.required' => 'valid',
+            'reportmonthend.required' => 'valid',
+        ];
+        $validator = Validator::make($criteria, [
+            'reportmonthstart'=>'required|date',
+            'reportmonthend'=>'required|date|after_or_equal:reportmonthstart',],$messages);
+
+        //validating start and end date starts
+        if($validator->errors()->has('reportmonthstart')){
+            $x = $validator->errors()->first('reportmonthstart');
+            if($x != 'valid'){
+                $result['msgs'] = $validator->errors();
+                $result['status'] = 'failed';
+                return response()->json(['result'=>$result]);
+            }
+            else $start = false;
+        }
+        else $start = $criteria['reportmonthstart'];
+        if($validator->errors()->has('reportmonthend')){
+            $x = $validator->errors()->first('reportmonthend');
+            if($x != 'valid'){
+                $result['msgs'] = $validator->errors();
+                $result['status'] = 'failed';
+                return response()->json(['result'=>$result]);
+            }
+            else $end = $start;
+        }
+        else $end = $criteria['reportmonthend'];
+
+        ////validating start and end date ends
+        if($start != false)
+            $wc[count($wc)] = "report_date BETWEEN $start AND $end";
+        if($criteria['reportorganization'] != '')
+            $wc[count($wc)] = "organization LIKE %".$criteria['reportorganization']."%";
+        if($criteria['reportuser'] != '')
+            $wc[count($wc)] = "user_id = ".$criteria['reportuser'];
+        $result['data'] = $wc;
+        $result['status'] = 'success';
         return response()->json(['result'=>$result]);   
     }
 }

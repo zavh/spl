@@ -1,18 +1,20 @@
 var category = [];
-function addProduct(){
-    var cat_count = category.length;
-    var cat_list = document.getElementById('p_cat_list');
-    category[cat_count] = document.getElementById('new_cat').value;
 
-    var catInput = document.createElement("option"); //Creating New Option
-    catInput.value = category[cat_count]; //Giving new Option it's value
+function addCategory(level){
+	var cat_count = category[level].length;
+	console.log(cat_count);
+    // var cat_list = document.getElementById('p_cat_'+level+'_list');
+    // cat[cat_count]['cat_name'] = document.getElementById('p_cat_'+level+'_input').value;
 
-    var option_text = document.createTextNode(category[cat_count]);//Setting the Option's Text
-    catInput.appendChild(option_text);//Adding the text to options node
-    var att = document.createAttribute("selected");
-    catInput.setAttributeNode(att);   
-    cat_list.appendChild(catInput);//adding the Option to Select node
-    addChildCategory();
+    // var catInput = document.createElement("option"); //Creating New Option
+    // catInput.value = cat[cat_count]; //Giving new Option it's value
+
+    // var option_text = document.createTextNode(cat[cat_count]);//Setting the Option's Text
+    // catInput.appendChild(option_text);//Adding the text to options node
+    // var att = document.createAttribute("selected");
+    // catInput.setAttributeNode(att);   
+    // cat_list.appendChild(catInput);//adding the Option to Select node
+    // addChildCategory();
 }
 
 function addChildCategory(){

@@ -23,32 +23,30 @@
                                     <form action="" class='m-0 p-0' autocomplete="off" id="findreports" name='findreports' onsubmit='findReports(event, this)'>
                                         <div class="input-group input-group-sm">
                                             <strong class="col-md-4">Search by Date Range:</strong>
-                                            <input type="date" name='reportmonthstart' id='reportmonthstart' class="rloinput form-control" value=""
-                                                placeholder="Search Report" aria-label="Report Month" aria-describedby="button-addon2">
-                                            <div class="autocomplete"></div>
-                                            <input type="date" name='reportmonthend' id='reportmonthend' class="rloinput form-control" value=""
-                                                placeholder="Search Report" aria-label="Report Month" aria-describedby="button-addon2">
-                                            <div class="autocomplete"></div>
+                                            <input type="date" name='reportmonthstart' id='reportmonthstart' class="rloinput form-control"
+                                                placeholder="Start Date" onchange="dateSearchCriteria(this,1)">
+                                            <input type="date" class="form-control" value="" placeholder="End Date" id='dummyreportmonthend' onchange="dateSearchCriteria(this,0)">
+                                            <input type="hidden" name='reportmonthend' id='reportmonthend' class="rloinput form-control">
                                         </div>
 
                                         <div class="input-group input-group-sm">
                                             <strong class="col-md-4">Search by Organization:</strong>
                                             <input type="text" name='reportorganization' id='reportorganization' class="rloinput form-control" value=""
                                                 placeholder="Search Report" aria-label="Report Organization" aria-describedby="button-addon2">
-                                            <div class="autocomplete"></div>
+                                            
                                         </div>
 
                                         <div class="input-group input-group-sm">
                                             <strong class="col-md-4">Search by User:</strong>
                                             <input type="text" name='reportuser' id='reportuser' class="rloinput form-control" value=""
                                                 placeholder="Search Report" aria-label="Report User" aria-describedby="button-addon2">
-                                            <div class="autocomplete"></div>
+                                            
                                         </div>
 
                                         <div class="input-group-append">
                                             <button class="btn btn-secondary btn-sm" type="submit" id="button-addon2">Go</button>
                                         </div>
-                                        <div class="autocomplete"></div>
+                                        
                                     </form>
                                 </div>
                             </div>
@@ -94,7 +92,7 @@
                                                              {{-- <a href="{{route('rtop',['report_id'=>$report->id])}}" class='text-success'>Convert</a> &nbsp;		
                                                              <a href="javascript:void(0)" class='text-danger'>Reject</a>  --}}		
                                                          </div>		
-                                                         <div class="small ml-4 mr-4 border-bottom text-success">		
+                                                         <div class="ml-4 mr-4 border-bottom text-success">		
                                                              Issue: <span >{{$value[$i]['data']->report_data->meeting_issue}}</span>		
                                                              visited by: <span >{{$value[$i]['data']->rc_user_name}}</span>		
                                                              of organization : <span >{{$value[$i]['data']->client_data->organization}}</span>		

@@ -4,11 +4,11 @@
 {{count($product)}}
 <div class='container-fluid'>
     <div id='product_design'>
-        <input type="text" name='p_cat' id='new_cat'>
-        <a href="javascript:void(0)" onclick="addProduct()">Add a product category</a>
+        <input type="text" name='p_cat_1_input' id='p_cat_1_input'>
+        <a href="javascript:void(0)" onclick="addCategory(0)">Add a product category</a>
     </div>
     <div>
-    <select name="p_cat_list" id="p_cat_list"></select>
+    <select name="p_cat_1_list" id="p_cat_1_list"></select>
     </div>
 </div>
 <div id='subcat'></div>

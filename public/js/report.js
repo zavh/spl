@@ -135,8 +135,9 @@ function ajaxFunction(instruction, execute_id, divid){
                         console.log(rloResponse);
 					//	document.getElementById('day-wise').innerHTML = rloResponse.result.message;
 					}
-					else {
-						document.getElementById('day-wise').innerHTML = rloResponse.result.view;
+					else if(rloResponse.result.status == 'success'){
+                        console.log(rloResponse);
+						//document.getElementById('day-wise').innerHTML = rloResponse.result.view;
 					}
 					return;
 				}
@@ -408,4 +409,22 @@ function findReports(e, form){
     formdat['_token'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');		
     console.log(JSON.stringify(formdat));		
     ajaxFunction('findReports', JSON.stringify(formdat) , 'day-wise');		
+}
+
+function dateSearchCriteria(el, minsetflag){
+    if(!minsetflag){
+        var z = document.getElementById('reportmonthstart').value;
+        if(z == '') 
+        {   
+            alert('No start date defined');
+            el.value = '';
+            return;
+        }
+    }
+    var x = document.getElementById('reportmonthend');
+    var y = document.getElementById('dummyreportmonthend');
+    y.value= el.value;
+    x.value = el.value;
+    if(minsetflag)
+        y.setAttribute("min", el.value);
 }
