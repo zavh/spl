@@ -132,12 +132,12 @@ function ajaxFunction(instruction, execute_id, divid){
                     var rloResponse = JSON.parse(ajaxRequest.responseText);
                     
 					if(rloResponse.result.status == 'failed'){
-                        console.log(rloResponse);
-					//	document.getElementById('day-wise').innerHTML = rloResponse.result.message;
+                        // console.log(rloResponse);
+						document.getElementById('day-wise').innerHTML = rloResponse.result.msgs;
 					}
 					else if(rloResponse.result.status == 'success'){
-                        console.log(rloResponse);
-						//document.getElementById('day-wise').innerHTML = rloResponse.result.view;
+                        // console.log(rloResponse);
+						document.getElementById('day-wise').innerHTML = rloResponse.result.view;
 					}
 					return;
 				}

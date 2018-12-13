@@ -408,15 +408,48 @@ class ReportsController extends Controller
 
         ////validating start and end date ends
         if($start != false)
-            $wc[count($wc)] = "report_date BETWEEN $start AND $end";
+            $wc[count($wc)] = "visit_date BETWEEN '$start' AND '$end'";
 
         if($criteria['reportorganization'] != '')
-            $wc[count($wc)] = "organization LIKE %".$criteria['reportorganization']."%";
+            $wc[count($wc)] = "organization LIKE '%".$criteria['reportorganization']."%'";
 
         $whereclause = implode(' and ',$wc);
         // echo $whereclause;
-        $result['data'] = $whereclause;
-        $result['status'] = 'success';
-        return response()->json(['result'=>$result]);   
+        // $result['data'] = $whereclause;
+        // $result['status'] = 'success';
+        // return response()->json(['result'=>$result]);   
+        echo $whereclause;
+/////////////////////where function implementation///////////////////////
+        $reports = DB::table('reports')->whereRaw($whereclause)->get();
+            if(count($reports)>0){
+
+            foreach($reports as $report){
+                $report->report_data = json_decode($report->report_data);
+                $visit_date[$i] = $report->report_data->report_data->visit_date;
+   //             $key = date("Y-m", strtotime($visit_date[$i]));
+                if(isset($searched_month_report[$visit_date[$i]]))
+                    $j = count($searched_month_report[$visit_date[$i]]);
+                else $j = 0;
+                $searched_month_report[$visit_date[$i]][$j]['data'] = $report->report_data;
+                $searched_month_report[$visit_date[$i]][$j]['id'] = $report->id;
+                $i++; 
+            }
+            //ksort($searched_month_report);
+            foreach($searched_month_report as $month=>$date)
+            {
+                 ksort($searched_month_report[$month]); 
+            }
+
+            // dd($searched_month_report);
+/////////////////////////////////////////under construction////////////////////////////////////
+                //$target = $reports->first()->id;
+            $result['status'] = 'success';
+            $result['data'] = $searched_month_report;
+            $result['view'] =  view('reports.showreportlist', ['current_month_report'=>$searched_month_report])->render();
+                //$result['target'] = $target;
+            // $result1['count'] = count($reports);
+            return response()->json(['result'=>$result]);
+/////////////////////////////////////////under construction////////////////////////////////////
+        }
     }
 }
