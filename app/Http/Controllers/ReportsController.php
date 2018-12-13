@@ -346,13 +346,33 @@ class ReportsController extends Controller
     {
         $criteria = $request->all();
         $wc = array();
+        $whereclause = "";
+        $user = User::where('name','=',$criteria['reportuser'])->get();
+        if(count($user)>0)
+        {
+            $user_id = $user->first()->id;
+        }
+        else
+        {
+            $user_id = 0;
+        }
+        // dd($user);
          $messages = [
             'reportmonthstart.required' => 'valid',
             'reportmonthend.required' => 'valid',
+            'reportuser.required' => 'valid'
         ];
         $validator = Validator::make($criteria, [
             'reportmonthstart'=>'required|date',
-            'reportmonthend'=>'required|date|after_or_equal:reportmonthstart',],$messages);
+            'reportmonthend'=>'required|date|after_or_equal:reportmonthstart',
+            'reportuser'=>['required',
+                function($attribute, $value, $fail) use($user_id){
+                    
+                    if($user_id == 0)
+                        $fail('Invalid user');
+                }
+            ]
+         ],$messages);
 
         //validating start and end date starts
         if($validator->errors()->has('reportmonthstart')){
@@ -376,14 +396,26 @@ class ReportsController extends Controller
         }
         else $end = $criteria['reportmonthend'];
 
+        if($validator->errors()->has('reportuser')){
+            $x = $validator->errors()->first('reportuser');
+            if($x != 'valid'){
+                $result['msgs'] = $validator->errors();
+                $result['status'] = 'failed';
+                return response()->json(['result'=>$result]);
+            }
+        }
+        else $wc[count($wc)] = "user_id = ".$user_id;
+
         ////validating start and end date ends
         if($start != false)
             $wc[count($wc)] = "report_date BETWEEN $start AND $end";
+
         if($criteria['reportorganization'] != '')
             $wc[count($wc)] = "organization LIKE %".$criteria['reportorganization']."%";
-        if($criteria['reportuser'] != '')
-            $wc[count($wc)] = "user_id = ".$criteria['reportuser'];
-        $result['data'] = $wc;
+
+        $whereclause = implode(' and ',$wc);
+        // echo $whereclause;
+        $result['data'] = $whereclause;
         $result['status'] = 'success';
         return response()->json(['result'=>$result]);   
     }
