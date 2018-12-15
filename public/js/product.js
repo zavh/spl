@@ -1,24 +1,29 @@
 var category = [];
 
 function addCategory(level){
-	var cat_count = category[level].length;
-	console.log(cat_count);
-    // var cat_list = document.getElementById('p_cat_'+level+'_list');
-    // cat[cat_count]['cat_name'] = document.getElementById('p_cat_'+level+'_input').value;
+	var cat_count = category.length;
 
-    // var catInput = document.createElement("option"); //Creating New Option
-    // catInput.value = cat[cat_count]; //Giving new Option it's value
+	var cat_list = document.getElementById('p_cat_'+level+'_list');
+	category[cat_count] = {};
+    category[cat_count]['cat_name'] = document.getElementById('p_cat_'+level+'_input').value;
 
-    // var option_text = document.createTextNode(cat[cat_count]);//Setting the Option's Text
-    // catInput.appendChild(option_text);//Adding the text to options node
-    // var att = document.createAttribute("selected");
-    // catInput.setAttributeNode(att);   
-    // cat_list.appendChild(catInput);//adding the Option to Select node
-    // addChildCategory();
+    var catInput = document.createElement("option"); //Creating New Option
+    catInput.value = cat_count; //Giving new Option it's value
+
+    var option_text = document.createTextNode(category[cat_count]['cat_name']);//Setting the Option's Text
+    catInput.appendChild(option_text);//Adding the text to options node
+    var att = document.createAttribute("selected");
+    catInput.setAttributeNode(att);   
+    cat_list.appendChild(catInput);//adding the Option to Select node
+    addChildCategory(cat_count);
 }
 
-function addChildCategory(){
-    ajaxFunction('addChildCategory', '', 'subcat');
+function addChildCategory(index){
+	var formdat = {};
+	formdat['_token'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+	formdat['product'] = category[index];
+
+    ajaxFunction('addChild', JSON.stringify(formdat), 'config');
 }
 
 
@@ -58,18 +63,14 @@ function ajaxFunction(instruction, execute_id, divid){
 					}
 				    ajaxDisplay.innerHTML = ajaxRequest.responseText;
 				}
-				else if(ajaxRequest.readyState == 4 && ajaxRequest.status == 419){
-					var ajaxDisplay = document.getElementById("app");
-					ajaxDisplay.innerHTML = ajaxRequest.responseText;
-				}
+				// else if(ajaxRequest.readyState == 4 && ajaxRequest.status == 419){
+				// 	var ajaxDisplay = document.getElementById("app");
+				// 	ajaxDisplay.innerHTML = ajaxRequest.responseText;
+				// }
 	    } 
 
-		if(instruction == "addChildCategory"){
-			ajaxRequest.open("GET", "/product/addchild", true);
-			ajaxRequest.send();
-		}
-		if(instruction == "newClientValidation"){
-			ajaxRequest.open("POST", "/clients/validateonly/", true);
+		if(instruction == "addChild"){
+			ajaxRequest.open("POST", "/product/addchild", true);
 			ajaxRequest.setRequestHeader("Content-type", "application/json");
 			ajaxRequest.send(execute_id);
 		}

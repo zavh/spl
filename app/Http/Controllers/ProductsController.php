@@ -86,8 +86,9 @@ class ProductsController extends Controller
         //
     }
 
-    public function addchild()
+    public function addchild(Request $request)
     {
-        return view('products.addchild');
+        //dd($request->all());
+        return view('products.addchild',['product'=>$request->product]);
     }
 }
