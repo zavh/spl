@@ -5,17 +5,7 @@
         <!-- Left Side Starts-->
         <div class='col-md-4' id='product_design'>
             <!-- New Category Input Starts -->
-            <div class="form-group row">
-                <div class="input-group input-group-sm col-md-12">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" style="width:150px">Add a new Category</span>
-                    </div>
-                    <input type="text" name='p_cat_1_input' id='p_cat_1_input' class="cpinput form-control">
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="button" onclick="addCategory(1)">Add</button>
-                    </div>
-                </div>
-            </div>
+            @include('products.addcatform',['level'=>1])
             <!-- New Category Input Ends -->
             <!-- Existing Categories Select Options Start-->
             <div class="form-group row">
