@@ -23,10 +23,23 @@
                                     <form action="" class='m-0 p-0' autocomplete="off" id="findreports" name='findreports' onsubmit='findReports(event, this)'>
                                         <div class="input-group input-group-sm">
                                             <strong class="col-md-4">Search by Date Range:</strong>
-                                            <input type="date" name='reportmonthstart' id='reportmonthstart' class="rloinput form-control"
+                                            <div class="input-group input-group-sm row-md-6 col-md-4">
+                                                <input type="date" name='reportmonthstart' id='reportmonthstart' class="rloinput form-control"
                                                 placeholder="Start Date" onchange="dateSearchCriteria(this,1)">
-                                            <input type="date" class="form-control" value="" placeholder="End Date" id='dummyreportmonthend' onchange="dateSearchCriteria(this,0)">
+                                            </div>
+
+                                                <span class="invalid-feedback" role="alert" id="reportmonthstart_error_span">
+                                                    <strong id="reportmonthstart_error"></strong>
+                                                </span>
+
+                                            <div class="input-group input-group-sm row-md-6 col-md-4">
+                                                <input type="date" class="form-control" value="" placeholder="End Date" id='dummyreportmonthend' onchange="dateSearchCriteria(this,0)">
                                             <input type="hidden" name='reportmonthend' id='reportmonthend' class="rloinput form-control">
+                                            </div>
+
+                                                <span class="invalid-feedback" role="alert" id="reportmonthend_error_span">
+                                                    <strong id="reportmonthend_error"></strong>
+                                                </span>
                                         </div>
 
                                         <div class="input-group input-group-sm">
@@ -35,18 +48,27 @@
                                                 placeholder="Search Report" aria-label="Report Organization" aria-describedby="button-addon2">
                                             
                                         </div>
+                                            <span class="invalid-feedback" role="alert" id="reportorganization_error_span">
+                                                <strong id="reportorganization_error"></strong>
+                                            </span>
 
+                                            
                                         <div class="input-group input-group-sm">
                                             <strong class="col-md-4">Search by User:</strong>
                                             <input type="text" name='reportuser' id='reportuser' class="rloinput form-control" value=""
                                                 placeholder="Search Report" aria-label="Report User" aria-describedby="button-addon2">
-                                            
+                                                    
                                         </div>
-
-                                        <div class="input-group-append">
+                                            <span class="invalid-feedback" role="alert" id="reportuser_error_span">
+                                                <strong id="reportuser_error"></strong>
+                                            </span>
+                                       
+                                            <div class="input-group-append">
                                             <button class="btn btn-secondary btn-sm" type="submit" id="button-addon2">Go</button>
                                         </div>
-                                        
+                                        {{-- <span class="invalid-feedback" role="alert" id="noinput_error_span">
+                                            <strong id="noinput_error"></strong>
+                                        </span> --}}
                                     </form>
                                 </div>
                             </div>
@@ -142,3 +164,4 @@
 @endsection
 <script src="{{ asset('js/ajaxformprocess.js') }}"></script>
 <script src="{{ asset('js/report.js') }}"></script>
+<script src="{{ asset('js/ajaxformprocess.js') }}"></script>
