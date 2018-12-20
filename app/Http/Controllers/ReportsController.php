@@ -344,47 +344,145 @@ class ReportsController extends Controller
 
     public function search(Request $request)
     {
+        $searched_month_report = array();
+        $visit_date = array();
+        $i=0;
+        $j=0;
+        $current_month = date("Y-m");
         $criteria = $request->all();
         $wc = array();
+        $whereclause = "";
+        $user = User::where('name','=',$criteria['reportuser'])->get();
+        if(count($user)>0)
+        {
+            $user_id = $user->first()->id;
+        }
+        else
+        {
+            $user_id = 0;
+        }
+        // dd($user);
          $messages = [
             'reportmonthstart.required' => 'valid',
             'reportmonthend.required' => 'valid',
+            'reportuser.required' => 'valid',
+            'reportorganization.required' =>'valid'
         ];
         $validator = Validator::make($criteria, [
             'reportmonthstart'=>'required|date',
-            'reportmonthend'=>'required|date|after_or_equal:reportmonthstart',],$messages);
+            'reportmonthend'=>'required|date|after_or_equal:reportmonthstart',
+            'reportorganization'=>'required',
+            'reportuser'=>['required',
+                function($attribute, $value, $fail) use($user_id){
+                    if($user_id == 0)
+                        $fail('Invalid user');
+                }
+            ]
+         ],$messages);
 
         //validating start and end date starts
         if($validator->errors()->has('reportmonthstart')){
             $x = $validator->errors()->first('reportmonthstart');
+            // error_log("reportmonthstart->".$x);
             if($x != 'valid'){
                 $result['msgs'] = $validator->errors();
                 $result['status'] = 'failed';
                 return response()->json(['result'=>$result]);
             }
-            else $start = false;
+            else {
+                $start = false;
+            }
         }
         else $start = $criteria['reportmonthstart'];
+
         if($validator->errors()->has('reportmonthend')){
             $x = $validator->errors()->first('reportmonthend');
+            // error_log("reportmonthend->".$x);
             if($x != 'valid'){
                 $result['msgs'] = $validator->errors();
                 $result['status'] = 'failed';
                 return response()->json(['result'=>$result]);
             }
-            else $end = $start;
+            else {
+                $end = $start;
+            }
         }
         else $end = $criteria['reportmonthend'];
 
-        ////validating start and end date ends
         if($start != false)
-            $wc[count($wc)] = "report_date BETWEEN $start AND $end";
-        if($criteria['reportorganization'] != '')
-            $wc[count($wc)] = "organization LIKE %".$criteria['reportorganization']."%";
-        if($criteria['reportuser'] != '')
-            $wc[count($wc)] = "user_id = ".$criteria['reportuser'];
-        $result['data'] = $wc;
-        $result['status'] = 'success';
-        return response()->json(['result'=>$result]);   
+            $wc[count($wc)] = "visit_date BETWEEN '$start' AND '$end'";
+
+        //validating users
+        if($validator->errors()->has('reportuser')){
+            $x = $validator->errors()->first('reportuser');
+            // error_log("reportuser->".$x);
+            if($x != 'valid'){
+                $result['msgs'] = $validator->errors();
+                $result['status'] = 'failed';
+                return response()->json(['result'=>$result]);
+            }
+        }
+        else $wc[count($wc)] = "user_id = ".$user_id;
+
+        //validating organization
+        if($validator->errors()->has('reportorganization')){
+            $x = $validator->errors()->first('reportorganization');
+            // error_log("reportorganization->".$x);
+            if($x != 'valid'){
+                $result['msgs'] = $validator->errors();
+                $result['status'] = 'failed';
+                return response()->json(['result'=>$result]);
+            }
+            else unset($x);
+        }
+        else $wc[count($wc)] = "organization LIKE '%".$criteria['reportorganization']."%'";
+
+        // echo "<pre>";
+        // echo count($wc);
+        // // echo $wc[count($wc)];
+        // echo "</pre>";
+        //no imput received
+        if(count($wc) == 0){
+            // $result['msgs'] = $validator->errors();
+            $result['msgs'] = "No input found!";
+            $result['flag'] = 0;
+            $result['status'] = 'failed';
+            return response()->json(['result'=>$result]);
+        }
+
+        $whereclause = implode(' and ',$wc);
+        
+/////////////////////where function implementation///////////////////////
+        $reports = DB::table('reports')->whereRaw($whereclause)->get();
+            if(count($reports)>0){
+
+            foreach($reports as $report){
+                $report->report_data = json_decode($report->report_data);
+                $visit_date[$i] = $report->report_data->report_data->visit_date;
+   //             $key = date("Y-m", strtotime($visit_date[$i]));
+                if(isset($searched_month_report[$visit_date[$i]]))
+                    $j = count($searched_month_report[$visit_date[$i]]);
+                else $j = 0;
+                $searched_month_report[$visit_date[$i]][$j]['data'] = $report->report_data;
+                $searched_month_report[$visit_date[$i]][$j]['id'] = $report->id;
+                $i++; 
+            }
+            //ksort($searched_month_report);
+            foreach($searched_month_report as $month=>$date)
+            {
+                 ksort($searched_month_report[$month]); 
+            }
+}
+            // dd($searched_month_report);
+/////////////////////////////////////////under construction////////////////////////////////////
+                //$target = $reports->first()->id;
+            $result['status'] = 'success';
+            $result['data'] = $searched_month_report;
+            $result['view'] =  view('reports.showreportlist', ['current_month_report'=>$searched_month_report])->render();
+                //$result['target'] = $target;
+            // $result1['count'] = count($reports);
+            return response()->json(['result'=>$result]);
+/////////////////////////////////////////under construction////////////////////////////////////
+        
     }
 }

@@ -132,12 +132,19 @@ function ajaxFunction(instruction, execute_id, divid){
                     var rloResponse = JSON.parse(ajaxRequest.responseText);
                     
 					if(rloResponse.result.status == 'failed'){
-                        console.log(rloResponse);
-					//	document.getElementById('day-wise').innerHTML = rloResponse.result.message;
+                        // document.getElementById('day-wise').innerHTML = rloResponse.result.msgs;
+                        if(rloResponse.result.flag == 0)
+                        {
+                            document.getElementById('reportcurrentAccordion').innerHTML = rloResponse.result.msgs;
+                        }
+                        else{ 
+                            var x = rloResponse.result.msgs;
+                            specialErrorBagProcessing(x);
+                        }
 					}
 					else if(rloResponse.result.status == 'success'){
-                        console.log(rloResponse);
-						//document.getElementById('day-wise').innerHTML = rloResponse.result.view;
+                        // console.log(rloResponse);
+						document.getElementById('day-wise').innerHTML = rloResponse.result.view;
 					}
 					return;
 				}
@@ -191,6 +198,24 @@ function ajaxFunction(instruction, execute_id, divid){
             ajaxRequest.setRequestHeader("Content-type", "application/json");	
 			ajaxRequest.send(execute_id);
 		}
+}
+
+function specialErrorBagProcessing(messages){
+    var span, errmsg, inp, i;
+    for(var k in messages){
+        if(messages[k][0] != 'valid'){
+            if(messages.hasOwnProperty(k)){
+                span = document.getElementById(k+'_error_span');
+                errmsg = document.getElementById(k+'_error');
+                inp = document.getElementById(k);
+                inp.classList.add("is-invalid");
+                span.style.display = 'block';
+                for(i=0;i<messages[k].length;i++){
+                    errmsg.innerHTML += "&#9654;"+messages[k][i]+"&nbsp;";
+                }
+            }
+        }
+    }
 }
 
 function showClientContact(el){
@@ -404,7 +429,7 @@ function vrd(e, form){
 function findReports(e, form){		
     e.preventDefault();		      
     var formdat;		
- 
+    clearErrorFormatting(form.id);
     formdat = getQString(form.id, 'rloinput');		
     formdat['_token'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');		
     console.log(JSON.stringify(formdat));		
@@ -423,7 +448,6 @@ function dateSearchCriteria(el, minsetflag){
     }
     var x = document.getElementById('reportmonthend');
     var y = document.getElementById('dummyreportmonthend');
-    //y.value= el.value;
     x.value = el.value;
     if(minsetflag)
         y.setAttribute("min", el.value);
