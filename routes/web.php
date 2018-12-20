@@ -64,6 +64,7 @@ Route::post('/reports/listnames', 'ReportsController@search');
 Route::get('/project/enquiries/{project_id?}', 'ProjectsController@enquiries');
 Route::get('/project/createclient', 'ProjectsController@createclient');
 Route::get('/project/timeline/{project_id?}', 'ProjectsController@timeline');
+Route::post('/projects/listnames', 'ProjectsController@search');
 
 Route::post('/product/addchild', 'ProductsController@addchild');
 Route::post('/product/addsubcat', 'ProductsController@addsubcat');
