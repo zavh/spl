@@ -89,6 +89,18 @@ class ProductsController extends Controller
     public function addchild(Request $request)
     {
         //dd($request->all());
-        return view('products.addchild',['product'=>$request->product]);
+        $product['name'] = $request->product['name'];
+        $product['level'] = $request->product['level'] + 1;
+        $product['index'] = $request->product['index'];
+        
+        return view('products.addchild',['product'=>$product]);
+    }
+
+    public function addsubcat(Request $request)
+    {
+        //dd($request->all());
+        $level = $request->level;
+        $index = $request->index;
+        return view('products.addcatform',['level'=>$level,'index'=>$index]);
     }
 }
