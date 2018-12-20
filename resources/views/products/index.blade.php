@@ -1,16 +1,20 @@
 @extends('layouts.app')
 @section('content')
-{{$department->name}}
-{{count($product)}}
-<div class='container-fluid'>
-    <div id='product_design'>
-        <input type="text" name='p_cat_1_input' id='p_cat_1_input'>
-        <a href="javascript:void(0)" onclick="addCategory(0)">Add a product category</a>
-    </div>
-    <div>
-    <select name="p_cat_1_list" id="p_cat_1_list"></select>
+<div class="container-fluid">
+    <div class='row'>
+        <!-- Left Side Starts-->
+        <div class='col-md-4 border p-2 m-2' id='product_design'>
+            <!-- New Category Input Starts -->
+            @include('products.addcatform',['level'=>1,'index'=>0])
+            <!-- New Category Input Ends -->
+        </div>
+        <!-- Left Side Ends-->
+        <div class='col-md-8' id='preview'>
+        </div>
     </div>
 </div>
-<div id='subcat'></div>
 @endsection
 <script src="{{ asset('js/product.js') }}" defer></script>
+
+                    
+                    

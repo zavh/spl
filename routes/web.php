@@ -65,7 +65,8 @@ Route::get('/project/enquiries/{project_id?}', 'ProjectsController@enquiries');
 Route::get('/project/createclient', 'ProjectsController@createclient');
 Route::get('/project/timeline/{project_id?}', 'ProjectsController@timeline');
 
-Route::get('/product/addchild', 'ProductsController@addchild');
+Route::post('/product/addchild', 'ProductsController@addchild');
+Route::post('/product/addsubcat', 'ProductsController@addsubcat');
 
 Route::resource('clients','ClientsController');
 Route::resource('projects','ProjectsController');

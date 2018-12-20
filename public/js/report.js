@@ -448,7 +448,6 @@ function dateSearchCriteria(el, minsetflag){
     }
     var x = document.getElementById('reportmonthend');
     var y = document.getElementById('dummyreportmonthend');
-    // y.value= el.value;
     x.value = el.value;
     if(minsetflag)
         y.setAttribute("min", el.value);

@@ -20,12 +20,13 @@
                         <div class="align-items-center text-black-50">
                             <div class='row'>
                                 <div class="col-md-12">
-                                    <form action="" class='m-0 p-0' autocomplete="off" id="findreports" name='findreports' onsubmit='findReports(event, this)'>
-                                        <div class="input-group input-group-sm">
+                                    <form action="" class='m-1 p-1' autocomplete="off" id="findreports" name='findreports' onsubmit='findReports(event, this)'>
+                                        <div class="input-group input-group-sm mb-1">
                                             <strong class="col-md-4">Search by Date Range:</strong>
                                             <div class="input-group input-group-sm row-md-6 col-md-4">
                                                 <input type="date" name='reportmonthstart' id='reportmonthstart' class="rloinput form-control"
                                                 placeholder="Start Date" onchange="dateSearchCriteria(this,1)">
+
                                             </div>
 
                                                 <span class="invalid-feedback" role="alert" id="reportmonthstart_error_span">
