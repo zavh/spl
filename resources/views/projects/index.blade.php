@@ -63,6 +63,7 @@
                 </div>
             
                 <div class='card mb-4 shadow-sm'>
+
                     <!-- Current month reports Starts -->
                         {{-- @if($current_month_report != null) --}}
                         <div class='row' id="day-wise">
@@ -70,6 +71,7 @@
                         </div>
                         {{-- @endif --}}
                     <!-- Current month reports Ends -->
+                    
                     <!-- Report Search Area Starts-->
                     <div class="card mb-4 shadow-sm h-md-250">
                         <div class=" mb-0 bg-white rounded">
