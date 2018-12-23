@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Response;///////////////
 use App\Project;
 use App\Client;
 use App\User;
@@ -18,13 +19,16 @@ class ProjectsController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        //  if (!Auth::check()) 
-        //     return view('partial.sessionexpired');
     }
 
     public function index()
     {
+        $i=0;
+        $searched_project = array();
         $punalloc = Project::where('allocation','<', 100)->get();
+        //////////////////////////////////////////////////////
+        $closedprojects = Project::whereRaw("status = '0' OR completed = 100")->orderBy('id', 'asc')->take(5)->get(); // Put a limit here, limit 5
+        $openprojects = Project::whereRaw("status IS NULL OR (status = 1 AND completed < '100')")->orderBy('id', 'asc')->get();
 
         $breadcrumb[0]['title'] = 'Dashboard';
         $breadcrumb[0]['link'] = '/home';
@@ -33,7 +37,7 @@ class ProjectsController extends Controller
         $breadcrumb[1]['link'] = 'none';
         $breadcrumb[1]['style'] = 'active';
         $projects = Project::where('allocation','=', 100)->get();
-        return view('projects.index', ['projects'=>$projects, 'punalloc'=>$punalloc, 'breadcrumb'=>$breadcrumb]);
+        return view('projects.index', ['projects'=>$projects, 'punalloc'=>$punalloc, 'breadcrumb'=>$breadcrumb,'closed'=>$closedprojects,'open'=>$openprojects]);
     }
 
     /**
@@ -229,8 +233,8 @@ class ProjectsController extends Controller
 ////////////////////////////////////////////////////////////////////////////////////////
     public function search(Request $request)
     {
-        $searched_month_report = array();
-        $visit_date = array();
+        $searched_project = array();
+        $start_date = array();
         $i=0;
         $j=0;
         $current_month = date("Y-m");
@@ -307,7 +311,7 @@ class ProjectsController extends Controller
         else $end = $criteria['projectmonthend'];
 
         if($start != false)
-            $wc[count($wc)] = "deadline BETWEEN '$start' AND '$end'";//do i consider start date or end date, since closed projects, end date seems to make more sense
+            $wc[count($wc)] = "start_date BETWEEN '$start' AND '$end'";
 
         //validating users
         if($validator->errors()->has('projectclient')){
@@ -330,7 +334,8 @@ class ProjectsController extends Controller
                 return response()->json(['result'=>$result]);
             }
         }
-        else $wc[count($wc)] = "managert_id = ".$manager_id;
+        else $wc[count($wc)] = "manager_id = ".$manager_id;
+        $wc[count($wc)] = "state = 1";
 
         if(count($wc) == 0){
             $result['msgs'] = "No input found!";
@@ -342,31 +347,33 @@ class ProjectsController extends Controller
         $whereclause = implode(' and ',$wc);
         
 /////////////////////where function implementation///////////////////////
-        $project = DB::table('projects')->whereRaw($whereclause)->get();//where clause works
-        echo $project;
-//             if(count($project)>0){
+        $projects = DB::table('projects')->whereRaw($whereclause)->get();//where clause works
+        // echo json_encode($projects,JSON_PRETTY_PRINT);
+        if(count($projects)>0)
+        {
+            foreach($projects as $project)
+            {
+                $start_date[$i] = $project->start_date;
+                if(isset($searched_project[$start_date[$i]]))
+                    $j = count($searched_project[$start_date[$i]]);
+                else $j = 0;
+                $searched_project[$start_date[$i]][$j] = $project;
+                $i++; 
+            }
+            // foreach($searched_project as $month=>$date)
+            // {
+            //      ksort($searched_project[$month]); 
+            // }
+            //echo json_encode($searched_project,JSON_PRETTY_PRINT);
+            // echo $projects; 
+        }
 
-//             foreach($project as $report){
-//                 $report->report_data = json_decode($report->report_data);
-//                 $visit_date[$i] = $report->report_data->report_data->visit_date;
-//                 if(isset($searched_month_report[$visit_date[$i]]))
-//                     $j = count($searched_month_report[$visit_date[$i]]);
-//                 else $j = 0;
-//                 $searched_month_report[$visit_date[$i]][$j]['data'] = $report->report_data;
-//                 $searched_month_report[$visit_date[$i]][$j]['id'] = $report->id;
-//                 $i++; 
-//             }
-//             foreach($searched_month_report as $month=>$date)
-//             {
-//                  ksort($searched_month_report[$month]); 
-//             }
-// }
+        $result['status'] = 'success';
+        $result['data'] = $projects;
+        //$result['data'] = $searched_project;
+        $result['view'] =  view('projects.showprojectlist', ['searched_project'=>$projects])->render();
 
-//             $result['status'] = 'success';
-//             $result['data'] = $searched_month_report;
-//             $result['view'] =  view('reports.showreportlist', ['current_month_report'=>$searched_month_report])->render();
-
-//             return response()->json(['result'=>$result]);
+        return response()->json(['result'=>$result]);
         
     }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////

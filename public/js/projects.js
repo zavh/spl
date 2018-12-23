@@ -82,14 +82,15 @@ function ajaxFunction(instruction, execute_id, divid){
 						return;
 					}
 					//////////////////////////////////////////////////////////
-					if(instruction == "findReports"){
+					if(instruction == "findProjects"){
 						var rloResponse = JSON.parse(ajaxRequest.responseText);
 						
 						if(rloResponse.result.status == 'failed'){
 							// document.getElementById('day-wise').innerHTML = rloResponse.result.msgs;
 							if(rloResponse.result.flag == 0)
 							{
-								document.getElementById('reportcurrentAccordion').innerHTML = rloResponse.result.msgs;
+								//document.getElementById('projectcurrentAccordion').innerHTML = rloResponse.result.msgs;
+								console.log(rloResponse);
 							}
 							else{ 
 								var x = rloResponse.result.msgs;
@@ -99,6 +100,7 @@ function ajaxFunction(instruction, execute_id, divid){
 						else if(rloResponse.result.status == 'success'){
 							// console.log(rloResponse);
 							document.getElementById('day-wise').innerHTML = rloResponse.result.view;
+							// console.log(rloResponse);
 						}
 						return;
 					}
