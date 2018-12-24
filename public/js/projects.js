@@ -81,6 +81,30 @@ function ajaxFunction(instruction, execute_id, divid){
 						}
 						return;
 					}
+					//////////////////////////////////////////////////////////
+					if(instruction == "findProjects"){
+						var rloResponse = JSON.parse(ajaxRequest.responseText);
+						
+						if(rloResponse.result.status == 'failed'){
+							// document.getElementById('day-wise').innerHTML = rloResponse.result.msgs;
+							if(rloResponse.result.flag == 0)
+							{
+								//document.getElementById('projectcurrentAccordion').innerHTML = rloResponse.result.msgs;
+								console.log(rloResponse);
+							}
+							else{ 
+								var x = rloResponse.result.msgs;
+								specialErrorBagProcessing(x);
+							}
+						}
+						else if(rloResponse.result.status == 'success'){
+							// console.log(rloResponse);
+							document.getElementById('day-wise').innerHTML = rloResponse.result.view;
+							// console.log(rloResponse);
+						}
+						return;
+					}
+					/////////////////////////////////////////////////////////////
 				    ajaxDisplay.innerHTML = ajaxRequest.responseText;
 				}
 				else if(ajaxRequest.readyState == 4 && ajaxRequest.status == 419){
@@ -147,6 +171,13 @@ function ajaxFunction(instruction, execute_id, divid){
 			ajaxRequest.setRequestHeader("Content-type", "application/json");
 			ajaxRequest.send(execute_id);
 		}
+		////////////////////////////////////////////////
+		if(instruction == "findProjects"){
+			ajaxRequest.open("POST", "/projects/listnames", true);
+            ajaxRequest.setRequestHeader("Content-type", "application/json");	
+			ajaxRequest.send(execute_id);
+		}
+		//////////////////////////////////////////////////////
 }
 
 function getClient(el){
@@ -313,3 +344,31 @@ function renderTaskCount(project_id){
 function renderProjectTimeline(project_id){
 	ajaxFunction('renderTimeline',project_id,'projecttimeline');
 }
+///////////////////////////////////////////////////////////////////////////////
+function findProjects(e, form){		
+    e.preventDefault();		      
+    var formdat;		
+    clearErrorFormatting(form.id);
+    formdat = getQString(form.id, 'ploinput');		
+    formdat['_token'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');		
+    console.log(JSON.stringify(formdat));		
+    ajaxFunction('findProjects', JSON.stringify(formdat) , 'day-wise');		
+}
+
+function dateSearchCriteria(el, minsetflag){
+    if(!minsetflag){
+        var z = document.getElementById('projectmonthstart').value;
+        if(z == '') 
+        {   
+            alert('No start date defined');
+            el.value = '';
+            return;
+        }
+    }
+    var x = document.getElementById('projectmonthend');
+    var y = document.getElementById('dummyprojectmonthend');
+    x.value = el.value;
+    if(minsetflag)
+        y.setAttribute("min", el.value);
+}
+//////////////////////////////////////////////////////////////////////////////////
