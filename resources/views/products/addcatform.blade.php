@@ -35,7 +35,15 @@
             name="p_cat_{{$level}}_list"
             data-level="{{$level}}"
             data-index="{{$index}}"
+            onchange="showCat(this)"
             required>
+            <option value="-1" disabled selected>Select One</option>
+            @isset($subcat)
+            
+                @for($i = 0; $i < count($subcat); $i++)
+                <option value="{{$i}}">{{$subcat[$i]['name']}}</option>
+                @endfor
+            @endisset
         </select>
         <span class="invalid-feedback" role="alert" id="project_name_error_span">
             <strong id="project_name_error">{{ $errors->first('project_name') }}</strong>
@@ -43,5 +51,5 @@
     </div>
 </div>
 <!-- Existing Categories Select Options Ends-->
-<div class="row ml-2" id='category_{{$level}}'>
+<div class="row ml-1" id='category_{{$level}}'>
 </div>

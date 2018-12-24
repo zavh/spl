@@ -92,15 +92,28 @@ class ProductsController extends Controller
         $product['name'] = $request->product['name'];
         $product['level'] = $request->product['level'] + 1;
         $product['index'] = $request->product['index'];
-        
         return view('products.addchild',['product'=>$product]);
     }
 
     public function addsubcat(Request $request)
     {
-        //dd($request->all());
         $level = $request->level;
         $index = $request->index;
-        return view('products.addcatform',['level'=>$level,'index'=>$index]);
+        $subcat = $request->subcat;
+        return view('products.addcatform',['level'=>$level,'index'=>$index, 'subcat'=>$subcat]);
+    }
+
+    public function addparam(Request $request)
+    {
+        //dd($request->all());
+        $level = $request->level;
+        $params = $request->params;
+        $index = 0;
+        return view('products.addparams',['level'=>$level,'index'=>$index, 'params'=>$params]);
+    }
+
+    public function preview($product_json){
+        $product = json_decode($product_json);
+        return view('products.preview',['product'=>$product]);
     }
 }

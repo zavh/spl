@@ -1,11 +1,12 @@
 var root = [];
 
 class Category {
-    constructor(name, level, index, subcategory) {
+    constructor(name, level, index, subcategory, params) {
         this.name = name;
 		this.level = level;
 		this.index = index;
 		this.subcategory = subcategory;
+		this.params = params;
 	}
 }
 
@@ -15,23 +16,25 @@ function initAddCat(el){
 	var index = il.index;
 
 	var cat = addCategory(level, index);
-	if(level>1)
-		traverseIn(level, index, cat);
+	if(level>1){
+		var node = traverseIn(level);
+		node[index] = cat;
+	}
 	else
 		root[index] = cat;
 	
 	el.dataset.index = parseInt(index) + 1;
+	renderPreview();
 }
 
-function traverseIn(level, index, cat){
+function traverseIn(level){
 	var tempEl, node = root;
 	for(i=1;i<level;i++){
 		tempEl = document.getElementById("p_cat_"+i+"_list");
-		nodeIndex = tempEl.selectedIndex;
+		nodeIndex = tempEl.selectedIndex - 1;
 		node = node[nodeIndex].subcategory;
 	}
-	node[index] = cat;
-	console.log(root);
+	return node;
 }
 
 function addCategory(level, index){
@@ -43,7 +46,8 @@ function addCategory(level, index){
 	var newCategoryName = document.getElementById('p_cat_'+level+'_input').value;
 	document.getElementById('p_cat_'+level+'_input').value = '';
 	var newSubCategory = [];
-	let newCategory = new Category(newCategoryName, level, index, newSubCategory);
+	var params = [];
+	let newCategory = new Category(newCategoryName, level, index, newSubCategory, params);
 	/* Node creation complete*/
 
     var catInput = document.createElement("option"); //Creating New Option
@@ -51,7 +55,7 @@ function addCategory(level, index){
     var option_text = document.createTextNode(newCategoryName);//Setting the Option's Text
     catInput.appendChild(option_text);//Adding the text to options node
     var att = document.createAttribute("selected");
-    catInput.setAttributeNode(att);   
+    catInput.setAttributeNode(att);
     cat_list.appendChild(catInput);//adding the Option to Select node
 	addChild(newCategory);
 	return newCategory;
@@ -61,17 +65,28 @@ function addChild(cat){
 	var formdat = {};
 	formdat['_token'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 	formdat['product'] = cat;
-
     ajaxFunction('addChild', JSON.stringify(formdat), 'category_'+cat.level);
 }
 
 function addSubCategory(level, index){
 	var formdat = {};
+	
 	formdat['_token'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 	formdat['level'] = level;
 	formdat['index'] = index;
-
+	formdat['subcat'] = traverseIn(level);
     ajaxFunction('addSubCat', JSON.stringify(formdat), 'config_'+level);
+}
+
+function addParam(level){
+	var cat = traverseIn(level-1);
+	var li = document.getElementById("p_cat_"+(level-1)+"_list").selectedIndex - 1;
+	var formdat = {};
+	formdat['_token'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+	formdat['level'] = level;
+	formdat['params'] = cat[li].params;
+
+    ajaxFunction('addParam', JSON.stringify(formdat), 'config_'+level);
 }
 
 function configSubCat(el){
@@ -81,9 +96,120 @@ function configSubCat(el){
 	var index = x.index;
 	if(el[y].value == 'subcategory')
 		addSubCategory(level, index);
-	
+	if(el[y].value == 'param')
+		addParam(level);
 }
 
+function addParamFields(el){
+	el.dataset.index++;
+	var level = el.dataset.level;
+	var index = el.dataset.index;
+	var selectOptions = {text:'Text', number:'Number', date:'Date', hidden:'Hidden', delete:'Delete This'};
+
+	var lvl1 = createDynEl('div', {class:"form-group row mb-1", id:"p_param_"+level+"_"+index});
+	var lvl2 = createDynEl('div', {class:"input-group input-group-sm col-md-12"});
+	var lvl2c1 = createDynEl('div', {class:"input-group-prepend"});
+	var lvl2c1span = createDynEl('span', {class:"input-group-text", style:"width:120px"});
+	var lvl2c3 = createDynEl('div', {class:"input-group-append input-group-sm"});
+	var lvl2c2 = createDynEl('input', {name:'p_param_'+level+'_input',id:'p_param_'+level+'_'+index+'_input', type:'text',
+									class:"cpinput form-control",'data-level':level, 'data-index':index});
+	var lvl2c3select = prepareSelect(selectOptions, el.dataset.level, el.dataset.index);
+	lvl2c1span = addTextNode(lvl2c1span, 'Parameter Name');
+	lvl2c1.appendChild(lvl2c1span);
+	lvl2c3.appendChild(lvl2c3select);
+	lvl2.appendChild(lvl2c1);
+	lvl2.appendChild(lvl2c2);
+	lvl2.appendChild(lvl2c3);
+	lvl1.appendChild(lvl2);
+
+	document.getElementById("param_config_"+level).appendChild(lvl1);
+}
+
+function prepareSelect(op, level, index){
+	var o;
+	var s = createDynEl("select", {id:"p_param_"+level+"_"+index+"_type", class:"form-control", onchange:"deleteParam(this)", 'data-level':level,'data-index':index});
+	for(var k in op){
+		o = document.createElement("option");
+		o.value = k;
+		o = addTextNode(o, op[k]);
+		s.appendChild(o);
+	}
+	return s;
+}
+
+function createDynEl(type, attval){
+	var el = document.createElement(type);
+	var a;
+	for(var att in attval){
+		a = document.createAttribute(att);
+		a.value = attval[att];
+		el.setAttributeNode(a);
+	}
+	return el;
+}
+
+function addTextNode(el, txt){
+	var tn = document.createTextNode(txt);
+	el.appendChild(tn);
+	return el;
+}
+
+function deleteParam(el){
+	var y = el.selectedIndex;
+	var v = el[y].value;
+	var level = el.dataset.level;
+	var index = el.dataset.index;
+	if(v == 'delete'){
+		var cf = confirm('Confirm Deletion of this Parameter');
+		if(cf){
+			var node = document.getElementById("p_param_"+level+"_"+index);
+			node.remove();
+			registerParamFields(el);
+		}
+	}
+}
+
+function registerParamFields(el){
+	var level = el.dataset.level;
+	var f = document.getElementsByName("p_param_"+level+"_input");
+	var params = [], type, index;
+	if(f.length<1){
+		alert('No Parameters defined');
+		return;
+	}
+	for(i=0;i<f.length;i++){
+		if(f[i].value.trim() == ''){
+			alert('Empty Parameter Name Field');
+			return;
+		}
+		index = f[i].dataset.index;
+		type = document.getElementById('p_param_'+level+'_'+index+'_type');
+		
+		params[i] = {};
+		params[i]['title'] = f[i].value;
+		params[i]['type'] = type[type.selectedIndex].value;
+	}
+	var node = traverseIn(level-1);
+	var li = document.getElementById("p_cat_"+(level-1)+"_list").selectedIndex - 1;
+	node[li].params = params;
+	renderPreview();
+}
+
+function showCat(el){
+	var level = el.dataset.level;
+	var cat = traverseIn(level);
+	var li = document.getElementById("p_cat_"+(level)+"_list").selectedIndex - 1;
+	addChild(cat[li]);
+	if(level == 1)
+		renderPreview();
+}
+
+function renderPreview(){
+	var li = document.getElementById("p_cat_1_list").selectedIndex - 1;
+	console.log(root[li]);
+
+	ajaxFunction('productPreview', JSON.stringify(root[li]), 'preview');
+}
 function ajaxFunction(instruction, execute_id, divid){
 	var ajaxRequest;  // The variable that makes Ajax possible!
 		try{
@@ -136,5 +262,16 @@ function ajaxFunction(instruction, execute_id, divid){
 			ajaxRequest.open("POST", "/product/addsubcat", true);
 			ajaxRequest.setRequestHeader("Content-type", "application/json");
 			ajaxRequest.send(execute_id);
+		}
+
+		if(instruction == "addParam"){
+			ajaxRequest.open("POST", "/product/addparam", true);
+			ajaxRequest.setRequestHeader("Content-type", "application/json");
+			ajaxRequest.send(execute_id);
+		}
+
+		if(instruction == "productPreview"){
+			ajaxRequest.open("GET", "/product/preview/"+execute_id, true);
+			ajaxRequest.send();
 		}
 }
