@@ -97,9 +97,9 @@
                         </div>
                     <!-- Project Dates Area Ends-->
                 </div>
-            </div>
+            {{-- </div> --}}
         <!-- Project Details Column Ends-->
-            <div class='col-md-4'>
+            {{-- <div class='col-md-4'> --}}
                 <div class="p-2 my-1 text-white-50 bg-primary rounded shadow-sm">
                     <div class="lh-100">
                         <h6 class="mb-0 text-white lh-100">Project Status</h6>
