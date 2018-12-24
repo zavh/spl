@@ -97,8 +97,37 @@
                         </div>
                     <!-- Project Dates Area Ends-->
                 </div>
-            </div>
+            {{-- </div> --}}
         <!-- Project Details Column Ends-->
+            {{-- <div class='col-md-4'> --}}
+                <div class="p-2 my-1 text-white-50 bg-primary rounded shadow-sm">
+                    <div class="lh-100">
+                        <h6 class="mb-0 text-white lh-100">Project Status</h6>
+                        <div class="d-flex justify-content-between align-items-center small">
+                            <form method="POST" action="{{route('projects.update', [$project->id])}}"  
+                                                    id="statusCheck" name="statusCheck" class="m-1 p-1">
+                                @csrf 
+                                <input name="_method" type="hidden" value="PUT">
+                                @if ($project->status==0)
+                                    Won: <input type='radio' id="status" name='status' value=1>
+                                    Lost: <input type='radio' id="status" name='status' value=0 checked>
+                                @elseif($project->status==1)
+                                    Won: <input type='radio' id="status" name='status' value=1 checked>
+                                    Lost: <input type='radio' id="status" name='status' value=0>
+                                @else
+                                    Won: <input type='radio' id="status" name='status' value=1>
+                                    Lost: <input type='radio' id="status" name='status' value=0>
+                                @endif
+                                <button type="submit">Update</button>
+                                
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div id='enqdiv' style='max-height:80vh;overflow-x:hidden;overflow-y:auto' class="rounded shadow-sm">
+                    @include('enquiries.index', ['enquiries'=>$project['enquiries']])
+                </div>
+            </div>
         <!-- Enquiry Column Starts-->
             <div class='col-md-4'>
                 <div class="p-2 my-1 text-white-50 bg-primary rounded shadow-sm">
