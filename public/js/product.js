@@ -78,7 +78,7 @@ function addSubCategory(level, index){
     ajaxFunction('addSubCat', JSON.stringify(formdat), 'config_'+level);
 }
 
-function addParam(level){
+function addParam(level, option){
 	var cat = traverseIn(level-1);
 	var li = document.getElementById("p_cat_"+(level-1)+"_list").selectedIndex - 1;
 	var formdat = {};
@@ -86,7 +86,10 @@ function addParam(level){
 	formdat['level'] = level;
 	formdat['params'] = cat[li].params;
 
-    ajaxFunction('addParam', JSON.stringify(formdat), 'config_'+level);
+	if(option == 'params')
+		ajaxFunction('addParam', JSON.stringify(formdat), 'config_'+level);
+	if(option == 'checks')
+    	ajaxFunction('addCheckGroup', JSON.stringify(formdat), 'config_'+level);
 }
 
 function configSubCat(el){
@@ -94,10 +97,14 @@ function configSubCat(el){
 	var y = el.selectedIndex;
 	var level = x.level;
 	var index = x.index;
+
 	if(el[y].value == 'subcategory')
 		addSubCategory(level, index);
 	if(el[y].value == 'param')
-		addParam(level);
+		addParam(level, 'params');
+	if(el[y].value == 'checks'){
+		addParam(level, 'checks');
+	}		
 }
 
 function addParamFields(el){
@@ -266,6 +273,12 @@ function ajaxFunction(instruction, execute_id, divid){
 
 		if(instruction == "addParam"){
 			ajaxRequest.open("POST", "/product/addparam", true);
+			ajaxRequest.setRequestHeader("Content-type", "application/json");
+			ajaxRequest.send(execute_id);
+		}
+
+		if(instruction == "addCheckGroup"){
+			ajaxRequest.open("POST", "/product/addcheckgroup", true);
 			ajaxRequest.setRequestHeader("Content-type", "application/json");
 			ajaxRequest.send(execute_id);
 		}

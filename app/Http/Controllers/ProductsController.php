@@ -105,11 +105,19 @@ class ProductsController extends Controller
 
     public function addparam(Request $request)
     {
-        //dd($request->all());
         $level = $request->level;
         $params = $request->params;
         $index = 0;
         return view('products.addparams',['level'=>$level,'index'=>$index, 'params'=>$params]);
+    }
+
+    public function addcheckgroup(Request $request)
+    {
+        $level = $request->level;
+        $params = $request->params;
+        $index = 0;
+        
+        return view('products.addcheckgroup',['level'=>$level,'index'=>$index, 'params'=>$params]);
     }
 
     public function preview($product_json){

@@ -12,7 +12,7 @@
         </div>
         <!-- Left Side Ends-->
         <div class='col-md-7' id='preview'>
-            <div class="p-2 m-2 w-100">asdaksjd</div>
+            <div class="p-2 m-2 w-100"></div>
         </div>
     </div>
 </div>
