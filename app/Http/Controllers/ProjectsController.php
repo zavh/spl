@@ -165,32 +165,35 @@ class ProjectsController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // dd($request);
         $this->validate($request, [
-            'project_name' => 'required',
-            'client_id' => 'required',
-            'user_id' => 'required',
-            'manager_id' => 'required',
-            'assigned' => 'required',
-            'deadline' => 'required|date',
-            'description' => 'required',
-            'status' => 'required',
-            'state' => 'required'
+            // 'project_name' => 'required',
+            // 'client_id' => 'required',
+            // 'user_id' => 'required',
+            // 'manager_id' => 'required',
+            // 'assigned' => 'required',
+            // 'deadline' => 'required|date',
+            // 'description' => 'required',
+            'status' => 'required'
+            // 'state' => 'required'
         ]);
-
-        //Create Project
+        
+        // Create Project
         $project = Project::find($id);
-        $project->project_name = $request->input('project_name');
-        $project->client_id = $request->input('client_id');
-        $project->user_id = $request->input('user_id');
-        $project->manager_id = $request->input('manager_id');
-        $project->assigned = $request->input('assigned');
-        $project->start_date = $request->input('start_date');
-        $project->deadline = $request->input('deadline');
-        $project->description = $request->input('description');
+        // $project->project_name = $request->input('project_name');
+        // $project->client_id = $request->input('client_id');
+        // $project->user_id = $request->input('user_id');
+        // $project->manager_id = $request->input('manager_id');
+        // $project->assigned = $request->input('assigned');
+        // $project->start_date = $request->input('start_date');
+        // $project->deadline = $request->input('deadline');
+        // $project->description = $request->input('description');
         $project->status = $request->input('status');
-        $project->state = $request->input('state');
+        // $project->state = $request->input('state');
 
         $project->save();
+        // dd($project);
+        
 
         return redirect('/projects'.'/'.$project->id)->with('success', 'Project Updated');
     }
