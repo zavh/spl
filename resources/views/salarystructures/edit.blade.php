@@ -9,7 +9,7 @@
                     {{ __('Edit Salary Structure') }}
                 </div>
                 <div class="card-body pb-0 mb-0">
-                    <form method="POST" action="{{ route('salarystructures.update', [$salarystructure->id]) }}">
+                    <form method="POST" action="{{ route('salarystructures.update', [$salaryinfo->id]) }}">
                         @csrf
                         <input name="_method" type="hidden" value="PUT">
                         <input type="hidden" name='page' value='{{$page}}'>
@@ -83,7 +83,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" style='width:160px'>{{ __('Provident Fund(Company)') }}</span>
                                 </div>
-                                <input id="pf_company" type="text" class="form-control{{ $errors->has('pf_company') ? ' is-invalid' : '' }}" name="pf_company" value="{{ $salarystructure->providentfundcompany }}" required>
+                                <input id="pf_company" type="text" class="form-control{{ $errors->has('pf_company') ? ' is-invalid' : '' }}" name="pf_company" value="{{ $salarystructure->pf_company }}" required>
 
                                 @if ($errors->has('pf_company'))
                                     <span class="invalid-feedback" role="alert">
@@ -99,7 +99,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" style='width:160px'>{{ __('Provident Fund(Self)') }}</span>
                                 </div>
-                                <input id="pf_self" type="text" class="form-control{{ $errors->has('pf_self') ? ' is-invalid' : '' }}" name="pf_self" value="{{ $salarystructure->providentfundself }}" required>
+                                <input id="pf_self" type="text" class="form-control{{ $errors->has('pf_self') ? ' is-invalid' : '' }}" name="pf_self" value="{{ $salarystructure->pf_self }}" required>
 
                                 @if ($errors->has('pf_self'))
                                     <span class="invalid-feedback" role="alert">

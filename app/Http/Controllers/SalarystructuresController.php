@@ -77,12 +77,17 @@ class SalarystructuresController extends Controller
         }
         else {
             $salarystructure = new SalaryStructure;
+            $structure = $request->all();
+            unset($structure['_token']);
+            unset($structure['page']);
+            $structure = json_encode($structure);
+            $salarystructure->structure = $structure;
             $salarystructure->structurename = $request->input('structurename');
-            $salarystructure->houserent = $request->input('houserent');
-            $salarystructure->medicalallowance = $request->input('medicalallowance');
-            $salarystructure->conveyance = $request->input('conveyance');
-            $salarystructure->providentfundcompany = $request->input('pf_company');
-            $salarystructure->providentfundself = $request->input('pf_self');
+            // $salarystructure->houserent = $request->input('houserent');
+            // $salarystructure->medicalallowance = $request->input('medicalallowance');
+            // $salarystructure->conveyance = $request->input('conveyance');
+            // $salarystructure->providentfundcompany = $request->input('pf_company');
+            // $salarystructure->providentfundself = $request->input('pf_self');
             $salarystructure->save();
         }
         if($request->page == null)
@@ -102,7 +107,10 @@ class SalarystructuresController extends Controller
     {
         //
         if(Auth::Check()){ 
-            $salarystructure = SalaryStructure::find($id);
+            $salaryinfo = SalaryStructure::find($id);
+            $salaryid = $salaryinfo->id;
+            // dd($salary);
+            $salarystructure = json_decode($salaryinfo->structure);
             return view('salarystructures.show',['salarystructure'=>$salarystructure]);
         }
         else {
@@ -119,8 +127,12 @@ class SalarystructuresController extends Controller
     public function edit($id,$page=null)
     {
         //
-        $salarystructure = SalaryStructure::find($id);
-        return view('salarystructures.edit',['page'=>$page,'salarystructure'=>$salarystructure]);
+        $salaryinfo = SalaryStructure::find($id);
+        $salaryid = $salaryinfo->id;
+        // dd($salary);
+        $salarystructure = json_decode($salaryinfo->structure);
+        // dd($salarystructure);
+        return view('salarystructures.edit',['page'=>$page,'salaryinfo'=>$salaryinfo,'salarystructure'=>$salarystructure]);
     }
 
     /**
@@ -163,12 +175,17 @@ class SalarystructuresController extends Controller
         }
         else {
             $salarystructure = SalaryStructure::find($id);
+            $structure = $request->all();
+            unset($structure['_token']);
+            unset($structure['page']);
+            $structure = json_encode($structure);
+            $salarystructure->structure = $structure;
             $salarystructure->structurename = $request->input('structurename');
-            $salarystructure->houserent = $request->input('houserent');
-            $salarystructure->medicalallowance = $request->input('medicalallowance');
-            $salarystructure->conveyance = $request->input('conveyance');
-            $salarystructure->providentfundcompany = $request->input('pf_company');
-            $salarystructure->providentfundself = $request->input('pf_self');
+            // $salarystructure->houserent = $request->input('houserent');
+            // $salarystructure->medicalallowance = $request->input('medicalallowance');
+            // $salarystructure->conveyance = $request->input('conveyance');
+            // $salarystructure->providentfundcompany = $request->input('pf_company');
+            // $salarystructure->providentfundself = $request->input('pf_self');
             $salarystructure->save();
         }
         if($request->page == null)

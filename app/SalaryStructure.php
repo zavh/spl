@@ -12,4 +12,5 @@ class SalaryStructure extends Model
     public $primaryKey = 'id';
     // Timestamps
     public $timestamps = true;
+
 }

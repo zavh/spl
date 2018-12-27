@@ -16,6 +16,7 @@ class CreateSalariesTable extends Migration
         Schema::create('salaries', function (Blueprint $table) {
             $table->increments('id');
             $table->float('basic',20,6);
+            $table->integer('user_id')->unsigned();
             $table->timestamps();
         });
     }

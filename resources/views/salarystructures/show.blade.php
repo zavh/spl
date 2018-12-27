@@ -19,10 +19,10 @@
                         Conveyance: {{$salarystructure->conveyance}}
                     </div>
                     <div class="col-md-12">
-                        Provident Fund(Company): {{$salarystructure->providentfundcompany}}
+                        Provident Fund(Company): {{$salarystructure->pf_company}}
                     </div>
                     <div class="col-md-12">
-                        Provident Fund(Self): {{$salarystructure->providentfundself}}
+                        Provident Fund(Self): {{$salarystructure->pf_self}}
                     </div>
                 </div>
                 {{-- <a href="/salarystructures/{{$salarystructure->id}}/edit" class='small'>Edit Salary Structure</a>

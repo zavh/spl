@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use App\Salary;
+use App\SalaryStructure;
+use App\User;
 
 class SalariesController extends Controller
 {
@@ -15,10 +17,40 @@ class SalariesController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
-        //
-        $salaries = Salary::all();
-        return view('salaries.index')->with('salaries', $salaries);
+    {        
+        $users = User::all();
+        $salary = array();
+        $tabheads = array('Basic', 'Name');
+        $flag = 0;
+        foreach($users as $index=>$user)
+        {
+
+            $pid = $user->salaryprofile;
+            $sstructure = SalaryStructure::find($pid);
+
+            $x = Salary::where('user_id',$user->id)->get();
+            foreach($x as $salaries){
+                $salary[$index]['basic'] = $salaries->basic;
+                $salary[$index]['name'] = $salaries->user->name;
+            }
+            
+            if(empty($sstructure)){
+                $salary[$index] = null;
+            }
+            else {
+                $ss = json_decode($sstructure->structure);
+                
+                foreach($ss as $breakdown=>$value){
+                    if($breakdown == 'structurename') continue;
+                    if($flag == 0)
+                        $tabheads[count($tabheads)]=$breakdown;
+                    $salary[$index][$breakdown] = ($salary[$index]['basic'] * $value)/100;
+                }
+                $flag = 1;
+            }
+        }        
+
+       return view('salaries.index',['salaries'=>$salary, 'heads'=>$tabheads]);
     }
 
     /**
@@ -26,10 +58,11 @@ class SalariesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($page=NULL)
     {
         //
-        return view('salaries.create',['page'=>$page]);
+        $users = User::all();
+        return view('salaries.create',['page'=>$page,'users'=> $users]);
     }
 
     /**
@@ -41,6 +74,7 @@ class SalariesController extends Controller
     public function store(Request $request)
     {
         //
+        // dd($request);
         $messages = [
             'basic.required' => 'basic|Required Field',
             'basic.unique' => 'sructurename|Must be unique',
@@ -56,9 +90,10 @@ class SalariesController extends Controller
             return back()->withErrors($validator)->withInput();
         }
         else {
-            $salarystructure = new SalaryStructure;
-            $salarystructure->basic = $request->input('basic');
-            $salarystructure->save();
+            $salary = new Salary;
+            $salary->basic = $request->input('basic');
+            $salary->user_id = $request->input('user_id');
+            $salary->save();
         }
         if($request->page == null)
             return redirect()->route('salaries.index');
@@ -78,7 +113,8 @@ class SalariesController extends Controller
         //
         if(Auth::Check()){ 
             $salaries = Salary::all();
-            return view('salaries.show',['salaries'=>$salaries]);
+            $users = User::all();
+            return view('salaries.show',['salaries'=>$salaries,'users'=> $users]);
         }
         else {
             return view('partial.sessionexpired');
@@ -95,7 +131,8 @@ class SalariesController extends Controller
     {
         //
         $salaries = Salary::find($id);
-        return view('salaries.edit',['page'=>$page,'salaries'=>$salaries]);
+        $user = User::where('id','=',$salaries->user_id)->get();
+        return view('salaries.edit',['page'=>$page,'salaries'=>$salaries,'user'=>$user]);
     }
 
     /**
@@ -108,6 +145,7 @@ class SalariesController extends Controller
     public function update(Request $request, $id)
     {
         //
+        $user = User::where('id','=',$request->user_id)->get();
         $messages = [
             'basic.required' => 'basic|Required Field',
             'basic.unique' => 'sructurename|Must be unique',
@@ -124,8 +162,9 @@ class SalariesController extends Controller
         }
         else {
             $salaries = Salary::find($id);
-            $salarystructure->basic = $request->input('basic');
-            $salarystructure->save();
+            $salaries->basic = $request->input('basic');
+            $salaries->user_id = $request->input('user_id');
+            $salaries->save();
         }
         if($request->page == null)
             return redirect()->route('salaries.index');

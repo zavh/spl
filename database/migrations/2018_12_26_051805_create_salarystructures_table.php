@@ -16,11 +16,12 @@ class CreateSalarystructuresTable extends Migration
         Schema::create('salarystructures', function (Blueprint $table) {
             $table->increments('id');
             $table->string('structurename')->nullable()->default('');
-            $table->float('houserent',6,2)->nullable()->default(0.0);
-            $table->float('medicalallowance',6,2)->nullable()->default(0.0);
-            $table->float('conveyance',6,2)->nullable()->default(0.0);
-            $table->float('providentfundcompany',6,2)->nullable()->default(0.0);
-            $table->float('providentfundself',6,2)->nullable()->default(0.0);
+            $table->json('structure')->nullable()->default('');
+            // $table->float('houserent',6,2)->nullable()->default(0.0);
+            // $table->float('medicalallowance',6,2)->nullable()->default(0.0);
+            // $table->float('conveyance',6,2)->nullable()->default(0.0);
+            // $table->float('providentfundcompany',6,2)->nullable()->default(0.0);
+            // $table->float('providentfundself',6,2)->nullable()->default(0.0);
             $table->timestamps();
         });
     }
