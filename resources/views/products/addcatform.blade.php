@@ -39,7 +39,6 @@
             required>
             <option value="-1" disabled selected>Select One</option>
             @isset($subcat)
-            
                 @for($i = 0; $i < count($subcat); $i++)
                 <option value="{{$i}}">{{$subcat[$i]['name']}}</option>
                 @endfor

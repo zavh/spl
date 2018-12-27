@@ -88,8 +88,15 @@ function addParam(level, option){
 
 	if(option == 'params')
 		ajaxFunction('addParam', JSON.stringify(formdat), 'config_'+level);
-	if(option == 'checks')
-    	ajaxFunction('addCheckGroup', JSON.stringify(formdat), 'config_'+level);
+	
+	if(option == 'checks'){
+		if(cat[li].groups.checks == null)
+			cat[li].groups.checks = [];
+		
+		formdat['data'] = cat[li].groups.checks;
+		formdat['type'] = 'check';
+		ajaxFunction('showAddGroup', JSON.stringify(formdat), 'config_'+level);
+	}
 }
 
 function configSubCat(el){
@@ -217,6 +224,83 @@ function renderPreview(){
 
 	ajaxFunction('productPreview', JSON.stringify(root[li]), 'preview');
 }
+
+function addGroup(el){
+	var type = el.dataset.type;
+	var index = el.dataset.index;
+	var level = el.dataset.level;
+	var grpname = document.getElementById("p_"+type+"_input").value.trim();
+	
+	if(grpname==''){
+		alert("Group Name is empty");
+		return;
+	}
+	else {
+		var node = traverseIn(level-1);
+		var ni = document.getElementById("p_cat_"+(level - 1)+"_list").selectedIndex - 1;
+		var nodegrp = node[ni].groups;
+		var gi = nodegrp.length;
+		console.log(gi);
+		var formdat = {};
+		formdat['_token'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+		formdat['data'] = el.dataset;
+		formdat['name'] = grpname;
+		ajaxFunction('addGroup', JSON.stringify(formdat), type+'_'+level+'_'+index);
+		
+		el.dataset.index++;
+		var ng = createDynEl("div", {id:type+"_"+level+"_"+el.dataset.index, name:type+"_"+level});
+		document.getElementById("group_config").appendChild(ng);
+	}
+}
+
+function addGroupElement(el){
+	var formdat = prepareFormDat(el.dataset);
+	var type = el.dataset.type;
+	var level = el.dataset.level;
+	var index = el.dataset.index;
+	var grpindex = el.dataset.grpindex;
+	ajaxFunction('addGroupEl', JSON.stringify(formdat), type+'_'+level+'_'+index+'_'+grpindex);
+	el.dataset.grpindex++;
+	var ne = createDynEl("div", {id:type+"_"+level+"_"+index+"_"+el.dataset.grpindex, class:"mx-1"});
+	document.getElementById("el_"+type+"_"+level+"_"+index).appendChild(ne);
+}
+
+function registerGroup(el){
+	var level = el.dataset.level;
+	var type = el.dataset.type;
+	var i, y, els, groups = [];
+	var grps = document.getElementsByName(type+"_"+level);
+	var numgrps = grps.length - 1;
+	var node = traverseIn(level - 1);
+	var ni = document.getElementById("p_cat_"+(level - 1)+"_list").selectedIndex - 1;
+	
+	for(i=0;i<numgrps;i++){
+		groups[i] = {};
+		groups[i]['type'] = type;
+		groups[i]['name'] = document.getElementById("grp_name_"+type+"_"+level+"_"+i).value;
+		groups[i]['data'] = [];
+		els = document.getElementsByName("p_param_"+type+"_"+level+"_"+i+"_input");
+		for(y=0;y<els.length;y++){
+			groups[i]['data'][y] = {}
+			groups[i]['data'][y]['name'] = els[y].value;
+		}
+		console.log("Node",node[ni].groups.checks);
+		console.log("New Groups",groups);
+		console.log("Tyle",type);
+		if(type == 'check')
+			node[ni].groups.checks = groups;
+	}
+
+	renderPreview();
+}
+
+function prepareFormDat(dataset){
+	var formdat = {};
+	formdat['_token'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+	formdat['data'] = dataset;
+	return formdat;
+}
+
 function ajaxFunction(instruction, execute_id, divid){
 	var ajaxRequest;  // The variable that makes Ajax possible!
 		try{
@@ -277,14 +361,27 @@ function ajaxFunction(instruction, execute_id, divid){
 			ajaxRequest.send(execute_id);
 		}
 
-		if(instruction == "addCheckGroup"){
-			ajaxRequest.open("POST", "/product/addcheckgroup", true);
+		if(instruction == "showAddGroup"){
+			ajaxRequest.open("POST", "/product/showaddgroup", true);
+			ajaxRequest.setRequestHeader("Content-type", "application/json");
+			ajaxRequest.send(execute_id);
+		}
+
+		if(instruction == "addGroup"){
+			ajaxRequest.open("POST", "/product/addgroup", true);
 			ajaxRequest.setRequestHeader("Content-type", "application/json");
 			ajaxRequest.send(execute_id);
 		}
 
 		if(instruction == "productPreview"){
-			ajaxRequest.open("GET", "/product/preview/"+execute_id, true);
-			ajaxRequest.send();
+			ajaxRequest.open("POST", "/product/preview", true);
+			ajaxRequest.setRequestHeader("Content-type", "application/json");
+			ajaxRequest.send(execute_id);
+		}
+
+		if(instruction == "addGroupEl"){
+			ajaxRequest.open("POST", "/product/addgrpel", true);
+			ajaxRequest.setRequestHeader("Content-type", "application/json");
+			ajaxRequest.send(execute_id);
 		}
 }

@@ -69,8 +69,10 @@ Route::post('/projects/listnames', 'ProjectsController@search');
 Route::post('/product/addchild', 'ProductsController@addchild');
 Route::post('/product/addsubcat', 'ProductsController@addsubcat');
 Route::post('/product/addparam', 'ProductsController@addparam');
-Route::post('/product/addcheckgroup', 'ProductsController@addcheckgroup');
-Route::get('/product/preview/{product_json?}', 'ProductsController@preview');
+Route::post('/product/showaddgroup', 'ProductsController@showaddgroup');
+Route::post('/product/addgroup', 'ProductsController@addgroup');
+Route::post('/product/preview', 'ProductsController@preview');
+Route::post('/product/addgrpel', 'ProductsController@addgrpel');
 
 Route::resource('clients','ClientsController');
 Route::resource('projects','ProjectsController');
