@@ -1,13 +1,12 @@
 var root = [];
 
 class Category {
-    constructor(name, level, index, subcategory, params, groups) {
+    constructor(name, level, index, subcategory, params) {
         this.name = name;
 		this.level = level;
 		this.index = index;
 		this.subcategory = subcategory;
 		this.params = params;
-		this.groups = groups;
 	}
 }
 
@@ -48,8 +47,7 @@ function addCategory(level, index){
 	document.getElementById('p_cat_'+level+'_input').value = '';
 	var newSubCategory = [];
 	var params = [];
-	var groups = {};
-	let newCategory = new Category(newCategoryName, level, index, newSubCategory, params, groups);
+	let newCategory = new Category(newCategoryName, level, index, newSubCategory, params);
 	/* Node creation complete*/
 
     var catInput = document.createElement("option"); //Creating New Option
@@ -86,17 +84,12 @@ function addParam(level, option){
 	var formdat = {};
 	formdat['_token'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 	formdat['level'] = level;
+	formdat['params'] = cat[li].params;
 
-	if(option == 'params'){
-		formdat['params'] = cat[li].params;
+	if(option == 'params')
 		ajaxFunction('addParam', JSON.stringify(formdat), 'config_'+level);
-	}
-	if(option == 'checks'){
-		if(cat[li].groups.checks == null)
-			cat[li].groups.checks = [];
-		formdat['checks'] = cat[li].groups.checks;
-		ajaxFunction('addCheckGroup', JSON.stringify(formdat), 'config_'+level);
-	}
+	if(option == 'checks')
+    	ajaxFunction('addCheckGroup', JSON.stringify(formdat), 'config_'+level);
 }
 
 function configSubCat(el){
@@ -221,10 +214,8 @@ function showCat(el){
 function renderPreview(){
 	var li = document.getElementById("p_cat_1_list").selectedIndex - 1;
 	console.log(root[li]);
-	var formdat = {};
-	formdat['_token'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-	formdat['data'] = root[li];
-	ajaxFunction('productPreview', JSON.stringify(formdat), 'preview');
+
+	ajaxFunction('productPreview', JSON.stringify(root[li]), 'preview');
 }
 function ajaxFunction(instruction, execute_id, divid){
 	var ajaxRequest;  // The variable that makes Ajax possible!
@@ -293,8 +284,7 @@ function ajaxFunction(instruction, execute_id, divid){
 		}
 
 		if(instruction == "productPreview"){
-			ajaxRequest.open("POST", "/product/preview/", true);
-			ajaxRequest.setRequestHeader("Content-type", "application/json");
-			ajaxRequest.send(execute_id);
+			ajaxRequest.open("GET", "/product/preview/"+execute_id, true);
+			ajaxRequest.send();
 		}
 }

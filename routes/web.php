@@ -70,7 +70,7 @@ Route::post('/product/addchild', 'ProductsController@addchild');
 Route::post('/product/addsubcat', 'ProductsController@addsubcat');
 Route::post('/product/addparam', 'ProductsController@addparam');
 Route::post('/product/addcheckgroup', 'ProductsController@addcheckgroup');
-Route::post('/product/preview', 'ProductsController@preview');
+Route::get('/product/preview/{product_json?}', 'ProductsController@preview');
 
 Route::resource('clients','ClientsController');
 Route::resource('projects','ProjectsController');
@@ -83,3 +83,5 @@ Route::resource('designations', 'DesignationsController');
 Route::resource('clientcontacts', 'ClientcontactsController');
 Route::resource('reports', 'ReportsController');
 Route::resource('products','ProductsController');
+Route::resource('salarystructures','SalarystructuresController');
+Route::resource('salaries','SalariesController');

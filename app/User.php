@@ -24,7 +24,11 @@ class User extends Authenticatable
         'address',
         'active',
         'department_id',
-        'designation_id'
+        'designation_id',
+        'salaryprofile',
+        'joindate',
+        'dob',
+        'gender'
     ];
 
     /**

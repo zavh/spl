@@ -114,13 +114,14 @@ class ProductsController extends Controller
     public function addcheckgroup(Request $request)
     {
         $level = $request->level;
-        $checks = $request->checks;
+        $params = $request->params;
+        $index = 0;
         
-        return view('products.addcheckgroup',['level'=>$level, 'checks'=>$checks]);
+        return view('products.addcheckgroup',['level'=>$level,'index'=>$index, 'params'=>$params]);
     }
 
-    public function preview(Request $request){
-        $product = $request->data;
+    public function preview($product_json){
+        $product = json_decode($product_json);
         return view('products.preview',['product'=>$product]);
     }
 }
