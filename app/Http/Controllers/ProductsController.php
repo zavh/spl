@@ -111,14 +111,46 @@ class ProductsController extends Controller
         return view('products.addparams',['level'=>$level,'index'=>$index, 'params'=>$params]);
     }
 
-    public function addcheckgroup(Request $request)
+    public function showaddgroup(Request $request)
     {
+        //dd($request->all());
         $level = $request->level;
-        $checks = $request->checks;
-        
-        return view('products.addcheckgroup',['level'=>$level, 'checks'=>$checks]);
+        $data = $request->data;
+        $type = $request->type;
+        $els = array();
+        for($i=0;$i<count($data);$i++){
+            for($y=0;$y<count($data[$i]['data']);$y++){
+                $els[$i][$y]['level'] = $level;
+                $els[$i][$y]['type'] = $type;
+                $els[$i][$y]['index'] = $i;
+                $els[$i][$y]['grpindex'] = $y;
+                $els[$i][$y]['value'] = $data[$i]['data'][$y]['name'];
+            }
+        }
+        //dd($data);
+        switch ($type) {
+            case "check":
+                return view('products.addgroup',['level'=>$level, 'type'=>$type, 'data'=>$data, 'els'=>$els]);
+                break;
+        }
     }
 
+    public function addgroup(Request $request){
+        //dd($request->all());
+        $level = $request->data['level'];
+        $index = $request->data['index'];
+        $type = $request->data['type'];
+        $name = $request->name;
+        switch ($type) {
+            case "check":
+                return view('products.configgroup',['level'=>$level, 'type'=>$type, 'name'=>$name, 'index'=>$index]);
+                break;
+        }
+    }
+    public function addgrpel(Request $request){
+        $data = $request->data;
+        return view('products.elsnippet',['data'=>$data]);
+    }
     public function preview(Request $request){
         $product = $request->data;
         return view('products.preview',['product'=>$product]);
