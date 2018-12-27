@@ -85,3 +85,5 @@ Route::resource('designations', 'DesignationsController');
 Route::resource('clientcontacts', 'ClientcontactsController');
 Route::resource('reports', 'ReportsController');
 Route::resource('products','ProductsController');
+Route::resource('salarystructures','SalarystructuresController');
+Route::resource('salaries','SalariesController');

@@ -214,6 +214,50 @@
 									</div>
 								</div>
 							<!-- Role Input ends -->
+
+							<!--Salary structure Input starts-->
+							<div class="form-group row" style='margin-top:-10px'>
+									<div class="input-group input-group-sm col-md-12">
+										<div class="input-group-prepend">
+											<span class="input-group-text" style="font-size:12px;width:150px">Salary Structure</span>
+										</div>
+									<select name="salarystructure" id="salarystructure" class="form-control" required>
+									<option value="" disabled>Select One</option>
+									@foreach($salarystructures as $salarystructure)
+										<option value="{{$salarystructure->id}}">{{$salarystructure->structurename}}</option>
+									@endforeach
+									</select>
+								</div>
+							</div>
+							<!--Salary structure Input ends-->
+
+							<!-- DOB Input Starts -->
+							<div class="form-group row">
+								<div class="input-group input-group-sm col-md-12"  style='margin-top:-10px'>
+									<div class="input-group-prepend">
+										<span class="input-group-text" style="width:100px">Date of Birth</span>
+									</div>
+									<input id="dob" type="date" class="form-control" name="dob" value="{{$salarystructure->dob}}"  max="<?php echo date('Y-m-d');?>" required>
+								</div>
+							</div>
+							<!-- DOB Input Ends -->
+
+							<!-- Gender Input Starts -->
+							<div class="form-group row" style='margin-top:-10px'>
+									<div class="input-group input-group-sm col-md-12">
+										<div class="input-group-prepend">
+											<span class="input-group-text" style="font-size:12px;width:150px">Gender</span>
+										</div>
+									<select name="gender" id="gender" class="form-control" required>
+									<option value="" disabled>Select One</option>
+									<option value="m" >Male</option>
+									<option value="f" >Female</option>
+									<option value="o" >Other</option>
+									</select>
+								</div>
+							</div>
+							<!-- Gender Input End -->
+
 							<!-- Deactivation starts -->
 								<div class="form-group row" style='margin-top:-10px'>
 									<div class="input-group input-group-sm col-md-12">

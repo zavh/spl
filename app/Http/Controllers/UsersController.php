@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use App\SalaryStructure;
 use App\Task;
 use App\Client;
 use App\TaskUser;
@@ -37,7 +38,8 @@ class UsersController extends Controller
         $roles = Role::all();
         $departments = Department::all();
         $designations = Designation::all();
-        return view('users.create', ['roles'=>$roles,'departments'=>$departments,'designations'=>$designations]);
+        $salarystructures = SalaryStructure::all();
+        return view('users.create', ['roles'=>$roles,'departments'=>$departments,'designations'=>$designations,'salarystructures'=>$salarystructures]);
     }
 
     public function store(Request $request)
@@ -69,6 +71,7 @@ class UsersController extends Controller
         }
         else{
             if(Auth::Check()){
+                
             $userCreate = User::create([
                 'name' => $request['name'],
                 'email' => $request['email'],
@@ -76,6 +79,10 @@ class UsersController extends Controller
                 'department_id' => $request['department'],
                 'designation_id' => $request['designation'],
                 'active' => '1',
+                'salaryprofile' => $request['salarystructure'],
+                'joindate' => $request['joindate'],
+                'dob' => $request['dob'],
+                'gender' => $request['gender'],
                 'password' => Hash::make($request['password']),
                 ]);
             
@@ -123,7 +130,8 @@ class UsersController extends Controller
                 $roles = DB::table('roles')->get();
                 $departments = Department::all();
                 $designations = Designation::all();
-                return view('users.edit', ['user'=>$user, 'roles'=>$roles, 'departments'=>$departments, 'designations'=>$designations]);
+                $salarystructures = SalaryStructure::all();
+                return view('users.edit', ['user'=>$user, 'roles'=>$roles, 'departments'=>$departments, 'designations'=>$designations,'salarystructures'=>$salarystructures]);
             }
             else return redirect('/home');
         }
@@ -174,6 +182,9 @@ class UsersController extends Controller
         $user->address = $request->input('address');
         $user->designation_id = $request->input('designation');
         $user->department_id = $request->input('department');
+        $user->salaryprofile = $request->input('salarystructure');
+        $user->dob = $request->input('dob');
+        $user->gender = $request->input('gender');
         
         if(Auth::User()->role_id == 1){
             $user->role_id = $request->input('role_id');

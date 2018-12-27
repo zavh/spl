@@ -30,6 +30,10 @@ class CreateUsersTable extends Migration
             $table->smallInteger('designation_id')->default(0);
             $table->smallInteger('department_id')->default(0);
             $table->tinyInteger('active');
+            $table->integer('salaryprofile')->nullable()->default(0);
+            $table->timestamp('joindate')->nullable();
+            $table->timestamp('dob')->nullable();
+            $table->string('gender')->nullable();
         });
     }
 
