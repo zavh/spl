@@ -220,9 +220,9 @@ function showCat(el){
 
 function renderPreview(){
 	var li = document.getElementById("p_cat_1_list").selectedIndex - 1;
-	console.log(root[li]);
+	var formdat = prepareFormDat(root[li]);
 
-	ajaxFunction('productPreview', JSON.stringify(root[li]), 'preview');
+	ajaxFunction('productPreview', JSON.stringify(formdat), 'preview');
 }
 
 function addGroup(el){
