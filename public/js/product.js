@@ -1,12 +1,13 @@
 var root = [];
 
 class Category {
-    constructor(name, level, index, subcategory, params) {
+    constructor(name, level, index, subcategory, params, groups) {
         this.name = name;
 		this.level = level;
 		this.index = index;
 		this.subcategory = subcategory;
 		this.params = params;
+		this.groups = groups;
 	}
 }
 
@@ -47,7 +48,8 @@ function addCategory(level, index){
 	document.getElementById('p_cat_'+level+'_input').value = '';
 	var newSubCategory = [];
 	var params = [];
-	let newCategory = new Category(newCategoryName, level, index, newSubCategory, params);
+	var groups = {};
+	let newCategory = new Category(newCategoryName, level, index, newSubCategory, params, groups);
 	/* Node creation complete*/
 
     var catInput = document.createElement("option"); //Creating New Option
