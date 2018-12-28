@@ -22,20 +22,20 @@ class SalariesController extends Controller
         $salary = array();
         $tabheads = array('Basic', 'Name');
         $flag = 0;
+        $count = 0;
         foreach($users as $index=>$user)
         {
-
             $pid = $user->salaryprofile;
             $sstructure = SalaryStructure::find($pid);
 
             $x = Salary::where('user_id',$user->id)->get();
             foreach($x as $salaries){
-                $salary[$index]['basic'] = $salaries->basic;
-                $salary[$index]['name'] = $salaries->user->name;
+                $salary[$count]['basic'] = $salaries->basic;
+                $salary[$count]['name'] = $salaries->user->name;
             }
             
             if(empty($sstructure)){
-                $salary[$index] = null;
+                $salary[$count] = null;
             }
             else {
                 $ss = json_decode($sstructure->structure);
@@ -44,9 +44,10 @@ class SalariesController extends Controller
                     if($breakdown == 'structurename') continue;
                     if($flag == 0)
                         $tabheads[count($tabheads)]=$breakdown;
-                    $salary[$index][$breakdown] = ($salary[$index]['basic'] * $value)/100;
+                    $salary[$count][$breakdown] = ($salary[$count]['basic'] * $value)/100;
                 }
                 $flag = 1;
+                $count++;
             }
         }        
 

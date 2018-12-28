@@ -141,7 +141,7 @@
                                         <div class="form-group row">
                                             <div class="input-group input-group-sm col-md-12"  style='margin-top:-10px'>
                                                 <div class="input-group-prepend">
-                                                    <span class="input-group-text" style="width:100px">Joining Date</span>
+                                                    <span class="input-group-text" style="font-size:12px;width:150px">Joining Date</span>
                                                 </div>
                                                 <input id="joindate" type="date" class="form-control" name="joindate" value="{{ old('joindate') }}" required>
                                             </div>
@@ -152,7 +152,7 @@
                                         <div class="form-group row">
                                             <div class="input-group input-group-sm col-md-12"  style='margin-top:-10px'>
                                                 <div class="input-group-prepend">
-                                                    <span class="input-group-text" style="width:100px">Date of Birth</span>
+                                                    <span class="input-group-text" style="font-size:12px;width:150px">Date of Birth</span>
                                                 </div>
                                                 <input id="dob" type="date" class="form-control" name="dob" value="{{ old('dob') }}"  max="<?php echo date('Y-m-d');?>" required>
                                             </div>

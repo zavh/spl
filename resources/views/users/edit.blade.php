@@ -224,7 +224,10 @@
 									<select name="salarystructure" id="salarystructure" class="form-control" required>
 									<option value="" disabled>Select One</option>
 									@foreach($salarystructures as $salarystructure)
-										<option value="{{$salarystructure->id}}">{{$salarystructure->structurename}}</option>
+										<option value="{{$salarystructure->id}}"
+											{{ $user->salaryprofile == $salarystructure->id ? 'selected' : ''}}>
+											{{$salarystructure->structurename}}
+										</option>
 									@endforeach
 									</select>
 								</div>
@@ -235,9 +238,9 @@
 							<div class="form-group row">
 								<div class="input-group input-group-sm col-md-12"  style='margin-top:-10px'>
 									<div class="input-group-prepend">
-										<span class="input-group-text" style="width:100px">Date of Birth</span>
+										<span class="input-group-text" style="font-size:12px;width:150px">Date of Birth</span>
 									</div>
-									<input id="dob" type="date" class="form-control" name="dob" value="{{$salarystructure->dob}}"  max="<?php echo date('Y-m-d');?>" required>
+									<input id="dob" type="date" class="form-control" name="dob" value="{{$user->dob}}"  max="<?php echo date('Y-m-d');?>" required>
 								</div>
 							</div>
 							<!-- DOB Input Ends -->
@@ -250,9 +253,9 @@
 										</div>
 									<select name="gender" id="gender" class="form-control" required>
 									<option value="" disabled>Select One</option>
-									<option value="m" >Male</option>
-									<option value="f" >Female</option>
-									<option value="o" >Other</option>
+									<option value="m" {{ $user->gender == "m" ? 'selected':'' }}>Male</option>
+									<option value="f" {{ $user->gender == "f" ? 'selected':'' }}>Female</option>
+									<option value="o" {{ $user->gender == "o" ? 'selected':'' }}>Other</option>
 									</select>
 								</div>
 							</div>
