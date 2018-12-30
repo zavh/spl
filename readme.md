@@ -1,2 +1,2 @@
 # spl
-SPL Sales automation Laravel project
+Enterprise Resource Planning Powered By "LARAVEL"
