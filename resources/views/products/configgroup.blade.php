@@ -10,13 +10,18 @@
                     data-level={{$level}}
                     data-type={{$type}}
                     data-index="{{$index}}"
-                    data-grpindex=0
+                    data-grpindex={{isset($data)?count($data):0}}
                     onclick='addGroupElement(this)'>+</a>
                 <a href="" class="badge badge-pill badge-light border">x</a>
             </span>
         </div>
         <div id="el_{{$type}}_{{$level}}_{{$index}}">
         @isset($data)
+            @for($i = 0; $i < count($data); $i++)
+            <div id="{{$type}}_{{$level}}_{{$index}}_$i" class='mx-1'>
+                @include('products.elsnippet',['data'=>$data[$i]])
+            </div>
+            @endfor
             <div id="{{$type}}_{{$level}}_{{$index}}_{{count($data)}}" class='mx-1'></div>
         @else 
             <div id="{{$type}}_{{$level}}_{{$index}}_0" class='mx-1'></div>

@@ -286,9 +286,7 @@ function registerGroup(el){
 			groups[i]['data'][y] = {}
 			groups[i]['data'][y]['name'] = els[y].value;
 		}
-		console.log("Node",node[ni].groups.checks);
-		console.log("New Groups",groups);
-		console.log("Tyle",type);
+
 		if(type == 'check')
 			node[ni].groups.checks = groups;
 	}
