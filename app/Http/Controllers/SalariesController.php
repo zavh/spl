@@ -92,8 +92,9 @@ class SalariesController extends Controller
         }
         else {
             $salary = new Salary;
-            $salary->basic = $request->input('basic');
             $salary->user_id = $request->input('user_id');
+            $salary->basic = $request->input('basic');
+            
             $salary->save();
         }
         if($request->page == null)

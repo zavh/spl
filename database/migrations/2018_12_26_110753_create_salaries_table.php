@@ -15,8 +15,9 @@ class CreateSalariesTable extends Migration
     {
         Schema::create('salaries', function (Blueprint $table) {
             $table->increments('id');
-            $table->float('basic',20,6);
+            $table->float('basic',20,6)->nullable()->default(0);
             $table->integer('user_id')->unsigned();
+            $table->json('salaryinfo')->nullable()->default("{test:testinput}");
             $table->timestamps();
         });
     }
