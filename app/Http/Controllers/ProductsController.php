@@ -127,12 +127,7 @@ class ProductsController extends Controller
                 $els[$i][$y]['value'] = $data[$i]['data'][$y]['name'];
             }
         }
-        //dd($data);
-        switch ($type) {
-            case "check":
-                return view('products.addgroup',['level'=>$level, 'type'=>$type, 'data'=>$data, 'els'=>$els]);
-                break;
-        }
+        return view('products.addgroup',['level'=>$level, 'type'=>$type, 'data'=>$data, 'els'=>$els]);
     }
 
     public function addgroup(Request $request){
@@ -141,11 +136,7 @@ class ProductsController extends Controller
         $index = $request->data['index'];
         $type = $request->data['type'];
         $name = $request->name;
-        switch ($type) {
-            case "check":
-                return view('products.configgroup',['level'=>$level, 'type'=>$type, 'name'=>$name, 'index'=>$index]);
-                break;
-        }
+        return view('products.configgroup',['level'=>$level, 'type'=>$type, 'name'=>$name, 'index'=>$index]);
     }
     public function addgrpel(Request $request){
         $data = $request->data;
@@ -153,6 +144,14 @@ class ProductsController extends Controller
     }
     public function preview(Request $request){
         $product = $request->data;
+        //dd($product);
+        if(isset($product['groups']['select'])){
+            for($i=0;$i<count($product['groups']['select']);$i++){
+                if(count($product['groups']['select'][$i]['data'])==0)
+                    $product['groups']['select'][$i]['data'][0]['name'] = 'empty';
+
+            }
+        }
         return view('products.preview',['product'=>$product]);
     }
 }

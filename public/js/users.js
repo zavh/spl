@@ -19,10 +19,23 @@ function ajaxFunction(instruction, execute_id, divid){
 		}
 		// Create a function that will receive data sent from the server
 		ajaxRequest.onreadystatechange = function(){
-				if(ajaxRequest.readyState == 4 && ajaxRequest.status == 200){
-				    var ajaxDisplay = document.getElementById(divid);
-				    ajaxDisplay.innerHTML = ajaxRequest.responseText;
+			if(ajaxRequest.readyState == 4 && ajaxRequest.status == 200){
+				if(instruction == "userWithSalary"){
+					var crResponse = JSON.parse(ajaxRequest.responseText);
+					if(crResponse.result.status == 'failed'){
+						errorBagProcessing(crResponse.result.messages);
+						console.log(crResponse);
+					}
+					else console.log(crResponse);
+					return;
 				}
+				var ajaxDisplay = document.getElementById(divid);
+				ajaxDisplay.innerHTML = ajaxRequest.responseText;
+			}
+			else if(ajaxRequest.readyState == 4 && ajaxRequest.status == 419){
+				var ajaxDisplay = document.getElementById("app");
+				ajaxDisplay.innerHTML = ajaxRequest.responseText;
+			}
 	    } 
 
 		if(instruction == "viewuser"){
@@ -36,6 +49,12 @@ function ajaxFunction(instruction, execute_id, divid){
 		if(instruction == "viewuserreports"){
 			ajaxRequest.open("GET", "/user/reports", true);
 			ajaxRequest.send();
+		}
+		if(instruction == "userWithSalary"){
+			ajaxRequest.open("POST", "/users", true);
+			ajaxRequest.setRequestHeader("Content-type", "application/json");
+			ajaxRequest.send(execute_id);
+			console.log(execute_id);
 		}
 }
 
@@ -104,7 +123,6 @@ function deactivateUser(user, userid){
 
 		rDeactivate.submit();
 		
-		console.log(rDeactivate);
 	}
 }
 function updateTask(taskid)
@@ -151,7 +169,7 @@ function updateTask(taskid)
 		{
 			alert('No date submitted');
 			checkedstatus.checked = false;
-			console.log("checked-blank")
+			
 		}
 		else 
 		{
@@ -162,26 +180,36 @@ function updateTask(taskid)
 
 			submit = new Date(submitdate);
 			assigned = new Date(assigneddate);			
-			console.log('submit',submit,'assigned',assigned,'today',today);
 
 			if(submit<assigned)
 			{
 				alert('cannot submit before assigned date');
 				checkedstatus.checked = true;
-				console.log(assigneddate+"unchecked-assigneddate")
 			} 
 			else if (submit>today)
 			{
 				alert('cannot submit after current date');
 				checkedstatus.checked = true;
-				console.log(today+"unchecked-today")
+				
 			}
 			else
 			{
 				checkedstatus.checked = false;
 				formsubmission.submit();
-				console.log("unchecked-assigneddate")
 			}
 		}	
 	}
+}
+
+function withSalary(e, form){
+	e.preventDefault();
+
+	var formdat = {};
+	formdat['salary'] = getQString(form.id, 'salary');
+	formdat['useraccount'] = getQString(form.id, 'useraccount');
+	formdat['_token'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+	clearErrorFormatting(form.id);
+	ajaxFunction('userWithSalary', JSON.stringify(formdat) , '');
+	console.log(formdat);
 }

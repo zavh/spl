@@ -88,16 +88,28 @@ function addParam(level, option){
 	formdat['level'] = level;
 	formdat['params'] = cat[li].params;
 
-	if(option == 'params')
-		ajaxFunction('addParam', JSON.stringify(formdat), 'config_'+level);
+	switch(option){
+		case 'params':
+			ajaxFunction('addParam', JSON.stringify(formdat), 'config_'+level);
+			break;
 	
-	if(option == 'checks'){
-		if(cat[li].groups.checks == null)
-			cat[li].groups.checks = [];
-		
-		formdat['data'] = cat[li].groups.checks;
-		formdat['type'] = 'check';
-		ajaxFunction('showAddGroup', JSON.stringify(formdat), 'config_'+level);
+		case 'checks':
+			if(cat[li].groups.checks == null)
+				cat[li].groups.checks = [];
+
+			formdat['data'] = cat[li].groups.checks;
+			formdat['type'] = 'check';
+			ajaxFunction('showAddGroup', JSON.stringify(formdat), 'config_'+level);
+			break;
+		case 'select':
+			if(cat[li].groups.select == null)
+				cat[li].groups.select = [];
+
+			formdat['data'] = cat[li].groups.select;
+			formdat['type'] = 'select';
+			ajaxFunction('showAddGroup', JSON.stringify(formdat), 'config_'+level);
+			break;
+
 	}
 }
 
@@ -107,20 +119,34 @@ function configSubCat(el){
 	var level = x.level;
 	var index = x.index;
 
-	if(el[y].value == 'subcategory')
-		addSubCategory(level, index);
-	if(el[y].value == 'param')
-		addParam(level, 'params');
-	if(el[y].value == 'checks'){
-		addParam(level, 'checks');
-	}		
+	switch(el[y].value){
+		case 'subcategory':
+			addSubCategory(level, index);
+			break;
+		case 'param':
+			addParam(level, 'params');
+			break;
+		case 'checks':
+			addParam(level, 'checks');
+			break;
+		case 'select':
+			addParam(level, 'select');
+			break;
+	}
 }
 
 function addParamFields(el){
 	el.dataset.index++;
 	var level = el.dataset.level;
 	var index = el.dataset.index;
-	var selectOptions = {text:'Text', number:'Number', date:'Date', hidden:'Hidden', delete:'Delete This'};
+	var selectOptions = {
+		text:'Text', 
+		number:'Number',
+		date:'Date',
+		hidden:'Hidden',
+		password:'Password',
+		email:'Email',
+		delete:'Delete This'};
 
 	var lvl1 = createDynEl('div', {class:"form-group row mb-1", id:"p_param_"+level+"_"+index});
 	var lvl2 = createDynEl('div', {class:"input-group input-group-sm col-md-12"});
@@ -289,8 +315,9 @@ function registerGroup(el){
 
 		if(type == 'check')
 			node[ni].groups.checks = groups;
+		if(type == 'select')
+			node[ni].groups.select = groups;
 	}
-
 	renderPreview();
 }
 

@@ -19,7 +19,9 @@
 <div id='group_config' class='w-100'>
     @for($i = 0; $i < count($data); $i++)
     <div id="{{$type}}_{{$level}}_{{$i}}" name={{$type}}_{{$level}}>
-    @include("products.configgroup",['name'=>$data[$i]['name'], 'type'=>$type, 'level'=>$level, 'index'=>$i, 'data'=>$els[$i]])
+    @isset($els[$i])
+        @include("products.configgroup",['name'=>$data[$i]['name'], 'type'=>$type, 'level'=>$level, 'index'=>$i, 'data'=>$els[$i]])
+    @endisset
     </div>
     @endfor
     <div id="{{$type}}_{{$level}}_{{count($data)}}" name={{$type}}_{{$level}}>

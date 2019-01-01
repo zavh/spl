@@ -35,6 +35,26 @@
                     @endfor
                 @endif
             </div>
+            @if(count($product['groups'])>0)
+            <div class="p-1 m-1" id="{{$product['name']}}_{{$product['level']}}_{{$product['level']}}_params">
+                @isset($product['groups']['select'])
+                    @for($i = 0; $i < count($product['groups']['select']); $i++)
+                        <div class="form-group row mb-1">
+                            <div class="input-group input-group-sm col-md-12">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" style="width:100px">{{$product['groups']['select'][$i]['name']}}</span>
+                                </div>
+                                <select name="{{$product['groups']['select'][$i]['name']}}" id="{{$product['groups']['select'][$i]['name']}}" class="form-control">
+                                @for($j = 0; $j < count($product['groups']['select'][$i]['data']); $j++)
+                                    <option value="{{$j}}">{{$product['groups']['select'][$i]['data'][$j]['name']}}</option>
+                                @endfor
+                                </select>
+                            </div>
+                        </div>
+                    @endfor
+                @endisset
+            </div>
+            @endif
         </div>
     </div>
 </div>

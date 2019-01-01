@@ -32,6 +32,8 @@
                     <option value="number" {{ $params[$i]['type']=='number'?'selected':'' }}>Number</option>
                     <option value="date" {{ $params[$i]['type']=='date'?'selected':'' }}>Date</option>
                     <option value="hidden" {{ $params[$i]['type']=='hidden'?'selected':'' }}>Hidden</option>
+                    <option value="password" {{ $params[$i]['type']=='password'?'selected':'' }}>Password</option>
+                    <option value="email" {{ $params[$i]['type']=='email'?'selected':'' }}>Email</option>
                     <option value="delete">Delete This</option>
                 </select>
             </div>

@@ -17,6 +17,7 @@
                     <option disabled selected>Select One</option>
                     <option value="subcategory">Subcategories</option>
                     <option value="param">Parameters</option>
+                    <option value="select">Select</option>
                     <option value="radios">Radio Options</option>
                     <option value="checks">Checkbox Options</option>
                     <option value="txtarea">Description Box</option>

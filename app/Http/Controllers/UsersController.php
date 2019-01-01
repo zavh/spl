@@ -41,18 +41,13 @@ class UsersController extends Controller
         $salarystructures = SalaryStructure::all();
         return view('users.create', ['roles'=>$roles,'departments'=>$departments,'designations'=>$designations,'salarystructures'=>$salarystructures]);
     }
-
+    
     public function store(Request $request)
     {
-        $messages = [
-            'task_name.required' => 'Please enter the task name',
-            'task_name.min' => 'Task name must be minimum 2 characters',
-            'task_name.max' => 'Task name cannot be more than 191 characters',
-            'task_name.unique' => 'This task name has already been taken'
-        ];
+        $useraccount = $request->useraccount;
 
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|min:2|max:191|unique:users,name',
+        $uavalidator = Validator::make($useraccount, [
+            'name' => 'required|min:3|max:20|unique:users,name',
             'email' => 'required',
             'password' =>['required','string','min:8',
             function($attribute, $value, $fail){
@@ -62,39 +57,55 @@ class UsersController extends Controller
                 if(!$uppercase || !$lowercase || !$number) {
                     $fail('Must contain atleast one Uppercase, one Lowercase and one Numeral.');
                   }
-                }
+                },
             ],
-        ],$messages);
+            'password_confirmation' => 'required|same:password',
+        ]);
 
-        if($validator->fails()){
-            return back()->withErrors($validator)->withInput();
+        if($uavalidator->fails()){
+            $response['status'] = 'failed';
+            $response['messages'] = $uavalidator->errors()->messages();
+            return response()->json(['result'=>$response]);
         }
-        else{
-            if(Auth::Check()){
-                
-            $userCreate = User::create([
-                'name' => $request['name'],
-                'email' => $request['email'],
-                'role_id' => $request['role'],
-                'department_id' => $request['department'],
-                'designation_id' => $request['designation'],
-                'active' => '1',
-                'salaryprofile' => $request['salarystructure'],
-                'joindate' => $request['joindate'],
-                'dob' => $request['dob'],
-                'gender' => $request['gender'],
-                'password' => Hash::make($request['password']),
-                ]);
-            
-            if($userCreate){
-                $users = User::all();
-                $me = User::find(Auth::User()->id);
-                $completion = $this->profileCalculation($me);
-                return view('users.index', ['users'=>$users,'me'=>$me,'completion'=>$completion]);
-                }
-            }
+
+        $salary = $request->salary;
+        $svalidator = Validator::make($salary, [
+            'basic' => 'required|numeric',
+            'join_date' => 'required|date',
+            'date_of_birth' => 'required|date',
+            'bank_account_name'=> 'required_if:pay_out_mode,BANK',
+            'bank_account_number'=> 'required_if:pay_out_mode,BANK',
+            'bank_name'=> 'required_if:pay_out_mode,BANK',
+            'bank_branch'=> 'required_if:pay_out_mode,BANK',
+        ]);
+
+        if($svalidator->fails()){
+            $response['status'] = 'failed';
+            $response['messages'] = $svalidator->errors()->messages();
+            $response['data'] = $salary;
+            return response()->json(['result'=>$response]);
         }
+
+        $userCreate = User::create([
+            'name' => $request['name'],
+            'email' => $request['email'],
+            'role_id' => $request['role'],
+            'department_id' => $request['department'],
+            'designation_id' => $request['designation'],
+            'active' => '1',
+            'salaryprofile' => $request['salarystructure'],
+            'joindate' => $request['joindate'],
+            'dob' => $request['dob'],
+            'gender' => $request['gender'],
+            'password' => Hash::make($request['password']),
+            ]);
         
+        if($userCreate){
+            $users = User::all();
+            $me = User::find(Auth::User()->id);
+            $completion = $this->profileCalculation($me);
+            return view('users.index', ['users'=>$users,'me'=>$me,'completion'=>$completion]);
+        }
     }
 
     public function show(User $user)
