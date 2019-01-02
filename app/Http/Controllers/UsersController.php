@@ -182,7 +182,7 @@ class UsersController extends Controller
         // dd($salary);
         
         $user = User::find($id);
-        if (Auth::User()->role_id == 1) 
+        if (Auth::User()->role_id == 1) //admin
         {
             $user->name = $useraccount['name'];
             $user->email = $useraccount['email'];
@@ -232,7 +232,7 @@ class UsersController extends Controller
             $response['type'] = 'admin';
             return response()->json(['result'=>$response]);
         } 
-        else 
+        else //regular user
         {
             $user->name = $useraccount['name'];
             $user->email = $useraccount['email'];

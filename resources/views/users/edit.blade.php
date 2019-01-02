@@ -37,7 +37,7 @@
                                         
                                         <div class='row'>
                                             <div class='col-6 m-0 pr-1'> 
-                                                <input type="submit" class="btn btn-outline-primary btn-sm btn-block" value="Create">
+                                                <input type="submit" class="btn btn-outline-primary btn-sm btn-block" value="Edit">
                                             </div>
                                             <div class='col-6 pl-1'> 
                                                 <a href="/users" class="btn btn-outline-dark btn-sm btn-block">Cancel</a>
