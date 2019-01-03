@@ -74,6 +74,10 @@ Route::post('/product/addgroup', 'ProductsController@addgroup');
 Route::post('/product/preview', 'ProductsController@preview');
 Route::post('/product/addgrpel', 'ProductsController@addgrpel');
 
+Route::get('/salarystructures/config', 'SalarystructuresController@config');
+Route::post('/salarystructures/addparam', 'SalarystructuresController@addparam');
+Route::post('/salarystructures/saveconfig', 'SalarystructuresController@saveconfig');
+
 Route::resource('clients','ClientsController');
 Route::resource('projects','ProjectsController');
 Route::resource('enquiries','EnquiriesController');

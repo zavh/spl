@@ -18,9 +18,9 @@ class SalariesController extends Controller
      */
     public function index()
     {        
-        $users = User::all();
+        $users = User::where('active', 1)->get();
         $salary = array();
-        $tabheads = array('Basic', 'Name');
+        $tabheads = array('Employee ID','Basic');
         $flag = 0;
         $count = 0;
         foreach($users as $index=>$user)
@@ -30,8 +30,8 @@ class SalariesController extends Controller
 
             $x = Salary::where('user_id',$user->id)->get();
             foreach($x as $salaries){
-                $salary[$count]['basic'] = $salaries->basic;
                 $salary[$count]['name'] = $salaries->user->name;
+                $salary[$count]['basic'] = $salaries->basic;
             }
             
             if(empty($sstructure)){

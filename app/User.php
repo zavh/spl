@@ -65,4 +65,7 @@ class User extends Authenticatable
     public function salary(){
         return $this->hasOne('App\Salary');
     }
+    public function salarystructure(){
+        return $this->belongsTo('App\SalaryStructure', 'salaryprofile');
+    }
 }

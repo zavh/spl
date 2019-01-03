@@ -180,4 +180,3 @@
 @endsection
 <script src="{{ asset('js/ajaxformprocess.js') }}"></script>
 <script src="{{ asset('js/report.js') }}"></script>
-<script src="{{ asset('js/ajaxformprocess.js') }}"></script>
