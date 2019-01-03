@@ -145,14 +145,31 @@ class UsersController extends Controller
     {   
         if(Auth::Check()){
             if(Auth::User()->role_id == 1 || $user->id == Auth::User()->id){
-                // $users = Users::all();
                 $roles = DB::table('roles')->get();
                 $departments = Department::all();
                 $designations = Designation::all();
                 $salarystructures = SalaryStructure::all();
-                $salary = Salary::where('user_id',$user->id)->get()->first();
-                $salaryinfo = json_decode($salary->salaryinfo);
-                // dd($salaryinfo);
+                if(!isset($user->salary)){
+                    $salary = NULL;
+                    $salaryinfo = array(
+                        "basic"=>"", 
+                        "join_date"=>"",
+                        "tstatus"=>"a",
+                        "end_date"=>"",
+                        "date_of_birth"=>"",
+                        "gender"=>"",
+                        "pay_out_mode"=>"",
+                        "bank_account_name"=>"",
+                        "bank_account_number"=>"",
+                        "bank_name"=>"",
+                        "bank_branch"=>"",
+                    );
+                    $salaryinfo = (object)$salaryinfo;
+                }
+                else {
+                    $salary = $user->salary;
+                    $salaryinfo = json_decode($salary->salaryinfo);
+                }
                 return view('users.edit', ['salary'=>$salary,'salaryinfo'=>$salaryinfo,'user'=>$user, 'roles'=>$roles, 'departments'=>$departments, 'designations'=>$designations,'salarystructures'=>$salarystructures]);
             }
             else return redirect('/home');
@@ -164,7 +181,6 @@ class UsersController extends Controller
     public function update(Request $request, $id)
     {
         $useraccount = $request->useraccount;
-        // dd($useraccount);
         $uavalidator = Validator::make($useraccount, [
             'name' => 'required|min:3|max:20',
             'fname' =>'required|min:2',
@@ -219,15 +235,18 @@ class UsersController extends Controller
             }
     
             $salaryinfo = json_encode($salaryaccount);
-    
-            $salary = Salary::where('user_id',$id)->get()->first();
-            $salary->salaryinfo = $salaryinfo;
-            $salary->save();
-    
-            // if($userCreate || $salaryCreate){
-            //     $response['status'] = 'success';
-            //     return response()->json(['result'=>$response]);
-            // }
+            
+            if(isset($user->salary->id)){
+                $salary = Salary::where('user_id',$id)->get()->first();
+                $salary->salaryinfo = $salaryinfo;
+                $salary->save();
+            }
+            else{
+                $salaryCreate = Salary::create([
+                    'user_id' => $id,
+                    'salaryinfo' => $salaryinfo,
+                    ]);        
+            }
             $response['status'] = 'success';
             $response['type'] = 'admin';
             return response()->json(['result'=>$response]);

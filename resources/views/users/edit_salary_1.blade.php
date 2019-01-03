@@ -39,30 +39,20 @@
                     <!-- Joining Date Input Ends -->
 
                     <!-- Termination Date Input Starts -->
+                    <div class="form-group row" style="margin-top:-10px">
+                        <div class="input-group input-group-sm col-md-12">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" style="font-size:12px;width:150px">Employment Status</span>
+                            </div>
+                            <select name="tstatus" id="tstatus" class="form-control salary" required="">
+                                <option value="a" {{ $salaryinfo->tstatus == 'a'?'selected':'' }} >Active</option>
+                                <option value="r" {{ $salaryinfo->tstatus == 'r'?'selected':'' }}>Resigned</option>
+                                <option value="t" {{ $salaryinfo->tstatus == 't'?'selected':'' }}>Terminated</option>
+                            </select>
+                        </div>
+                    </div>
                     <div class="form-group row">
                         <div class="input-group input-group-sm col-md-12" style='margin-top:-10px'>
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" style="font-size:12px;width:150px">Termination status</span>
-                            </div>
-                            <div class="input-group-prepend">
-                                @if ($salaryinfo->tstatus == 'a')
-                                    Active:<input type='radio' class="form-control salary" id="tstatus" name='tstatus' value='a' checked>
-                                    Resigned:<input type='radio' class="form-control salary" id="tstatus" name='tstatus' value='r'>
-                                    Terminated:<input type='radio' class="form-control salary" id="tstatus" name='tstatus' value='t'>
-                                @elseif($salaryinfo->tstatus == 'r')
-                                    Active:<input type='radio' class="form-control salary" id="tstatus" name='tstatus' value='a'>
-                                    Resigned:<input type='radio' class="form-control salary" id="tstatus" name='tstatus' value='r' checked>
-                                    Terminated:<input type='radio' class="form-control salary" id="tstatus" name='tstatus' value='t'>
-                                @else
-                                    Active:<input type='radio' class="form-control salary" id="tstatus" name='tstatus' value='a'>
-                                    Resigned:<input type='radio' class="form-control salary" id="tstatus" name='tstatus' value='r'>
-                                    Terminated:<input type='radio' class="form-control salary" id="tstatus" name='tstatus' value='t' checked>
-                                @endif
-                            </div>
-                            <span class="invalid-feedback" role="alert" id="tstatus_error_span">
-                                <strong id="tstatus_error"></strong>
-                            </span>
-                                
                             <div class="input-group-prepend">
                                 <span class="input-group-text" style="font-size:12px;width:150px">Termination Date</span>
                             </div>

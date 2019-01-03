@@ -63,7 +63,7 @@
 				<div class="col-5 text-right text-primary ">Role</div>
 				<div class="col-7 text-left text-success pl-0">{{$user->role->role_name}}</div>
 			</div>
-			@if(Auth::User()->role->role_name == 'admin')
+			@if(Auth::User()->role->role_name == 'admin' && isset($user->salarystructure))
 			<div class="row m-0 bg-light text-primary w-100 border-top">
 				<div class="col-5 text-right text-primary ">Salary Profile</div>
 				<div class="col-7 text-left text-success pl-0">{{$user->salarystructure->structurename}}</div>
