@@ -10,6 +10,7 @@ use App\TaskUser;
 use App\Role;
 use App\Department;
 use App\Designation;
+use App\Salary;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -69,6 +70,7 @@ class UsersController extends Controller
         }
 
         $salary = $request->salary;
+        // dd($salary);
         $svalidator = Validator::make($salary, [
             'basic' => 'required|numeric',
             'join_date' => 'required|date',
@@ -77,34 +79,39 @@ class UsersController extends Controller
             'bank_account_number'=> 'required_if:pay_out_mode,BANK',
             'bank_name'=> 'required_if:pay_out_mode,BANK',
             'bank_branch'=> 'required_if:pay_out_mode,BANK',
+            'end_date'=>'required_unless:tstatus,a'
         ]);
 
         if($svalidator->fails()){
             $response['status'] = 'failed';
             $response['messages'] = $svalidator->errors()->messages();
-            $response['data'] = $salary;
             return response()->json(['result'=>$response]);
         }
-
+        // dd($useraccount);
         $userCreate = User::create([
-            'name' => $request['name'],
-            'email' => $request['email'],
-            'role_id' => $request['role'],
-            'department_id' => $request['department'],
-            'designation_id' => $request['designation'],
+            'name' => $useraccount['name'],
+            'email' => $useraccount['email'],
+            'role_id' => $useraccount['role'],
+            'department_id' => $useraccount['department'],
+            'designation_id' => $useraccount['designation'],
             'active' => '1',
-            'salaryprofile' => $request['salarystructure'],
-            'joindate' => $request['joindate'],
-            'dob' => $request['dob'],
-            'gender' => $request['gender'],
-            'password' => Hash::make($request['password']),
+            'salaryprofile' => $useraccount['salarystructure'],
+            'password' => Hash::make($useraccount['password']),
             ]);
-        
-        if($userCreate){
+        $salaryinfo = json_encode($salary);
+        $salaryCreate = Salary::create([
+            'user_id' => $userCreate->id,
+            'salaryinfo' => $salaryinfo,
+            ]);
+
+        if($userCreate || $salaryCreate){
             $users = User::all();
             $me = User::find(Auth::User()->id);
             $completion = $this->profileCalculation($me);
-            return view('users.index', ['users'=>$users,'me'=>$me,'completion'=>$completion]);
+            // return view('users.index', ['users'=>$users,'me'=>$me,'completion'=>$completion]);
+            $response['status'] = 'success';
+            // $response['messages'] = $uavalidator->errors()->messages();
+            return response()->json(['result'=>$response]);
         }
     }
 
@@ -138,11 +145,15 @@ class UsersController extends Controller
     {   
         if(Auth::Check()){
             if(Auth::User()->role_id == 1 || $user->id == Auth::User()->id){
+                // $users = Users::all();
                 $roles = DB::table('roles')->get();
                 $departments = Department::all();
                 $designations = Designation::all();
                 $salarystructures = SalaryStructure::all();
-                return view('users.edit', ['user'=>$user, 'roles'=>$roles, 'departments'=>$departments, 'designations'=>$designations,'salarystructures'=>$salarystructures]);
+                $salary = Salary::where('user_id',$user->id)->get()->first();
+                $salaryinfo = json_decode($salary->salaryinfo);
+                // dd($salaryinfo);
+                return view('users.edit', ['salary'=>$salary,'salaryinfo'=>$salaryinfo,'user'=>$user, 'roles'=>$roles, 'departments'=>$departments, 'designations'=>$designations,'salarystructures'=>$salarystructures]);
             }
             else return redirect('/home');
         }
@@ -152,68 +163,149 @@ class UsersController extends Controller
 
     public function update(Request $request, $id)
     {
-        $messages = [
-            'email.required' => 'Please enter the email',
-            'email.email' => 'Invalid email format',
-            
-            'fname.required' => 'please type the first name',
-            'fname.min' => 'First name must be minimum 2 characters',
-            'fname.max' => 'first name cannot be more than 191 characters',
-            
-            'sname.required' => 'please type the surname',
-            'sname.min' => 'surname must be minimum 2 characters',
-            'sname.max' => 'surname cannot be more than 191 characters',
+        $useraccount = $request->useraccount;
+        // dd($useraccount);
+        $uavalidator = Validator::make($useraccount, [
+            'name' => 'required|min:3|max:20',
+            'fname' =>'required|min:2',
+            'sname' =>'required|min:2',
+            'phone' => 'required|numeric|min:10000000|max:999999999999999',
+            'address'=>'required',
+            'email' =>'required|email'
+        ]);
 
-            'phone.numeric' => 'the phone number must be a number',
-            'phone.min' =>  'phone number must be minimum 2 characters',
-            'phone.max' => 'phone number cannot be more than 15 characters',
-
-            'address.max' => 'Address cannot be more than 100 characters',
-            'address.min' => 'Address cannot be less than 5 characters',
-        ];
-
-        $validator = Validator::make($request->all(), [
-            'name' =>'required|min:2|max:191',
-            'email'=>'required|email',
-            'fname'=>'required|min:2|max:191',
-            'sname'=>'required|min:2|max:191',
-            'phone'=>'numeric|min:1000000|max:999999999999999',
-            'address'=>'max:100|min:5'
-        ],$messages);
-
-        if($validator->fails()){
-            return back()->withErrors($validator)->withInput();
+        if($uavalidator->fails()){
+            $response['status'] = 'failed';
+            $response['messages'] = $uavalidator->errors()->messages();
+            return response()->json(['result'=>$response]);
         }
+        // dd($salary);
+        
         $user = User::find($id);
-        $user->name = $request->input('name');
-        $user->email =  $request->input('email');
-        $user->fname = $request->input('fname');
-        $user->sname = $request->input('sname');
-        $user->phone = $request->input('phone');
-        $user->address = $request->input('address');
-        $user->designation_id = $request->input('designation');
-        $user->department_id = $request->input('department');
-        $user->salaryprofile = $request->input('salarystructure');
-        $user->dob = $request->input('dob');
-        $user->gender = $request->input('gender');
-        
-        if(Auth::User()->role_id == 1){
-            $user->role_id = $request->input('role_id');
-            $user->active = $request->input('active');
+        if (Auth::User()->role_id == 1) //admin
+        {
+            $user->name = $useraccount['name'];
+            $user->email = $useraccount['email'];
+            $user->fname = $useraccount['fname'];
+            $user->sname = $useraccount['sname'];
+            $user->phone = $useraccount['phone'];
+            $user->address = $useraccount['address'];
+            $user->designation_id = $useraccount['designation'];
+            $user->department_id = $useraccount['department'];
+            $user->salaryprofile = $useraccount['salarystructure'];
+            $user->role_id = $useraccount['role'];
+            $user->active = $useraccount['active_status'];
+
+            // dd($user->active);
+            $user->save();
+    
+            $salaryaccount = $request->salary;
+    
+            $svalidator = Validator::make($salaryaccount, [
+                'basic' => 'required|numeric',
+                'join_date' => 'required|date',
+                'date_of_birth' => 'required|date',
+                'bank_account_name'=> 'required_if:pay_out_mode,BANK',
+                'bank_account_number'=> 'required_if:pay_out_mode,BANK',
+                'bank_name'=> 'required_if:pay_out_mode,BANK',
+                'bank_branch'=> 'required_if:pay_out_mode,BANK',
+                'end_date'=>'required_unless:tstatus,a'
+            ]);
+    
+            if($svalidator->fails()){
+                $response['status'] = 'failed';
+                $response['messages'] = $svalidator->errors()->messages();
+                return response()->json(['result'=>$response]);
+            }
+    
+            $salaryinfo = json_encode($salaryaccount);
+    
+            $salary = Salary::where('user_id',$id)->get()->first();
+            $salary->salaryinfo = $salaryinfo;
+            $salary->save();
+    
+            // if($userCreate || $salaryCreate){
+            //     $response['status'] = 'success';
+            //     return response()->json(['result'=>$response]);
+            // }
+            $response['status'] = 'success';
+            $response['type'] = 'admin';
+            return response()->json(['result'=>$response]);
+        } 
+        else //regular user
+        {
+            $user->name = $useraccount['name'];
+            $user->email = $useraccount['email'];
+            $user->fname = $useraccount['fname'];
+            $user->sname = $useraccount['sname'];
+            $user->phone = $useraccount['phone'];
+            $user->address = $useraccount['address'];
+            // dd($user->active);
+            $user->save();
+
+            $response['status'] = 'success';
+            $response['type'] = 'user';
+            return response()->json(['result'=>$response]);
         }
-        else {
-            $user->role_id = Auth::User()->role_id;
-            $user->active = Auth::User()->active;
-        }
-        // dd($user->active);
-        $user->save();
+        
+        // $user->name = $useraccount['name'];
+        // $user->email = $useraccount['email'];
+        // $user->fname = $useraccount['fname'];
+        // $user->sname = $useraccount['sname'];
+        // $user->phone = $useraccount['phone'];
+        // $user->address = $useraccount['address'];
+        // $user->designation_id = $useraccount['designation'];
+        // $user->department_id = $useraccount['department'];
+        // $user->salaryprofile = $useraccount['salarystructure'];
+        
+        // if(Auth::User()->role_id == 1){
+        //     $user->role_id = $useraccount['role'];
+        //     $user->active = $useraccount['active_status'];
+        // }
+        // else {
+        //     $user->role_id = Auth::User()->role_id;
+        //     $user->active = Auth::User()->active;
+        // }
+        // // dd($user->active);
+        // $user->save();
+
+        // $salaryaccount = $request->salary;
+
+        // $svalidator = Validator::make($salaryaccount, [
+        //     'basic' => 'required|numeric',
+        //     'join_date' => 'required|date',
+        //     'date_of_birth' => 'required|date',
+        //     'bank_account_name'=> 'required_if:pay_out_mode,BANK',
+        //     'bank_account_number'=> 'required_if:pay_out_mode,BANK',
+        //     'bank_name'=> 'required_if:pay_out_mode,BANK',
+        //     'bank_branch'=> 'required_if:pay_out_mode,BANK',
+        //     'end_date'=>'required_unless:tstatus,a'
+        // ]);
+
+        // if($svalidator->fails()){
+        //     $response['status'] = 'failed';
+        //     $response['messages'] = $svalidator->errors()->messages();
+        //     return response()->json(['result'=>$response]);
+        // }
+
+        // $salaryinfo = json_encode($salaryaccount);
+
+        // $salary = Salary::where('user_id',$id)->get()->first();
+        // $salary->salaryinfo = $salaryinfo;
+        // $salary->save();
+
+        // // if($userCreate || $salaryCreate){
+        // //     $response['status'] = 'success';
+        // //     return response()->json(['result'=>$response]);
+        // // }
+        // $response['status'] = 'success';
+        // return response()->json(['result'=>$response]);
         
         
-        
-        if(Auth::User()->role_id == 1)
-            return redirect('/users')->with('success', 'User Updated');
-        else 
-        return redirect('/home')->with('success', 'User Updated');
+        // if(Auth::User()->role_id == 1)
+        //     return redirect('/users')->with('success', 'User Updated');
+        // else 
+        // return redirect('/home')->with('success', 'User Updated');
     }
 
     public function destroy(User $user)

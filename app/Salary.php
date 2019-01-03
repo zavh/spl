@@ -13,6 +13,11 @@ class Salary extends Model
     // Timestamps
     public $timestamps = true;
 
+    protected $fillable = [
+        'user_id', 
+        'salaryinfo',
+    ];
+
     public function user(){
         return $this->belongsTo('App\User');
     }

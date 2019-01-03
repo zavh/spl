@@ -28,7 +28,7 @@ class User extends Authenticatable
         'salaryprofile',
         'joindate',
         'dob',
-        'gender'
+        'gender',
     ];
 
     /**

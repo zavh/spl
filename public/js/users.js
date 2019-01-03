@@ -26,7 +26,29 @@ function ajaxFunction(instruction, execute_id, divid){
 						errorBagProcessing(crResponse.result.messages);
 						console.log(crResponse);
 					}
-					else console.log(crResponse);
+					else {
+						console.log(crResponse);
+						location.href = "/users/";
+					}
+					return;
+				}
+				if(instruction == "usereditWithSalary"){
+					var crResponse = JSON.parse(ajaxRequest.responseText);
+					if(crResponse.result.status == 'failed'){
+						errorBagProcessing(crResponse.result.messages);
+						console.log(crResponse);
+					}
+					else {
+						if(crResponse.result.type == 'admin')
+						{
+							console.log(crResponse);
+							location.href = "/users/";
+						}
+						else{
+							location.href = "/home/";
+						}
+						
+					}
 					return;
 				}
 				var ajaxDisplay = document.getElementById(divid);
@@ -52,6 +74,13 @@ function ajaxFunction(instruction, execute_id, divid){
 		}
 		if(instruction == "userWithSalary"){
 			ajaxRequest.open("POST", "/users", true);
+			ajaxRequest.setRequestHeader("Content-type", "application/json");
+			ajaxRequest.send(execute_id);
+			console.log(execute_id);
+		}
+		if(instruction == "usereditWithSalary"){
+			var salary_id = document.getElementById("sal_id").value;
+			ajaxRequest.open("POST", "/users/"+salary_id, true);
 			ajaxRequest.setRequestHeader("Content-type", "application/json");
 			ajaxRequest.send(execute_id);
 			console.log(execute_id);
@@ -211,5 +240,18 @@ function withSalary(e, form){
 
 	clearErrorFormatting(form.id);
 	ajaxFunction('userWithSalary', JSON.stringify(formdat) , '');
+	console.log(formdat);
+}
+function editwithSalary(e, form){
+	e.preventDefault();
+
+	var formdat = {};
+	formdat['_method'] = "PUT";
+	formdat['salary'] = getQString(form.id, 'salary');
+	formdat['useraccount'] = getQString(form.id, 'useraccount');
+	formdat['_token'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+	clearErrorFormatting(form.id);
+	ajaxFunction('usereditWithSalary', JSON.stringify(formdat) , '');
 	console.log(formdat);
 }

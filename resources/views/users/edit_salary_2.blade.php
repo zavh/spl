@@ -17,9 +17,9 @@
                                 <span class="input-group-text" style="font-size:12px;width:150px">Pay Out Mode</span>
                             </div>
                         <select name="pay_out_mode" id="pay_out_mode" class="form-control salary" required>
-                        <option value="" disabled selected>Select One</option>
-                        <option value="CASH" >Cash</option>
-                        <option value="BANK" >Bank</option>
+                        <option value="" disabled>Select One</option>
+                        <option value="CASH" {{$salaryinfo->pay_out_mode == "CASH" ? 'selected' : ''}}>Cash</option>
+                        <option value="BANK" {{$salaryinfo->pay_out_mode == "BANK" ? 'selected' : ''}}>Bank</option>
                         </select>
                     </div>
                 </div>
@@ -30,7 +30,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text" style="font-size:12px;width:150px">Account Name</span>
                         </div>
-                        <input id="bank_account_name" type="text" class="form-control salary" name="bank_account_name" value="">
+                        <input id="bank_account_name" type="text" class="form-control salary" name="bank_account_name" value="{{ $salaryinfo->bank_account_name }}">
                         <span class="invalid-feedback" role="alert" id="bank_account_name_error_span">
                             <strong id="bank_account_name_error"></strong>
                         </span>
@@ -43,7 +43,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text" style="font-size:12px;width:150px">Account Number</span>
                         </div>
-                        <input id="bank_account_number" type="text" class="form-control salary" name="bank_account_number" value="">
+                        <input id="bank_account_number" type="text" class="form-control salary" name="bank_account_number" value="{{ $salaryinfo->bank_account_number }}">
                         <span class="invalid-feedback" role="alert" id="bank_account_number_error_span">
                             <strong id="bank_account_number_error"></strong>
                         </span>
@@ -56,7 +56,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text" style="font-size:12px;width:150px">Bank Name</span>
                         </div>
-                        <input id="bank_name" type="text" class="form-control salary" name="bank_name" value="" >
+                        <input id="bank_name" type="text" class="form-control salary" name="bank_name" value="{{ $salaryinfo->bank_name }}" >
                         <span class="invalid-feedback" role="alert" id="bank_name_error_span">
                             <strong id="bank_name_error"></strong>
                         </span>   
@@ -69,7 +69,7 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text" style="font-size:12px;width:150px">Branch</span>
                         </div>
-                        <input id="bank_branch" type="text" class="form-control salary" name="bank_branch" value="">
+                        <input id="bank_branch" type="text" class="form-control salary" name="bank_branch" value="{{ $salaryinfo->bank_branch }}">
                         <span class="invalid-feedback" role="alert" id="bank_branch_error_span">
                             <strong id="bank_branch_error"></strong>
                         </span>
