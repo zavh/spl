@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class SalaryStructure extends Model
 {
@@ -19,5 +20,13 @@ class SalaryStructure extends Model
 
     public function users(){
         return $this->hasMany('App\User','salaryprofile');
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+        static::addGlobalScope('excfg', function (Builder $builder) {
+            $builder->where('structurename', '<>' ,'config');
+        });
     }
 }

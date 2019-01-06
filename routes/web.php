@@ -78,6 +78,8 @@ Route::get('/salarystructures/config', 'SalarystructuresController@config');
 Route::post('/salarystructures/addparam', 'SalarystructuresController@addparam');
 Route::post('/salarystructures/saveconfig', 'SalarystructuresController@saveconfig');
 
+Route::post('/salaries/upload', 'SalariesController@upload');
+
 Route::resource('clients','ClientsController');
 Route::resource('projects','ProjectsController');
 Route::resource('enquiries','EnquiriesController');

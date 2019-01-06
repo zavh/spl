@@ -7,28 +7,31 @@
                 <div class=" mb-0 bg-white rounded">
                     <div class="media text-muted">
                         <div class="media-body small">
-                            <div class="d-flex justify-content-between align-items-center w-100 border-bottom">
+                            <div class="d-flex justify-content-between align-items-center w-100">
                                 <strong class="text-dark pl-1 pt-1">List of configured Salary</strong>
-                                <a href="/salaries/create" class='small'>Create Salary</a>
+                                <form action="/salaries/upload" method="post" enctype="multipart/form-data" class="m-2">
+                                    @csrf
+                                    Select Monthly Data:
+                                    <input type="file" name="fileToUpload" id="fileToUpload">
+                                    <input type="submit" value="Upload Image" name="submit">
+                                </form>
                             </div>
-                            <strong class="d-inline-block mb-2 text-primary">List of Salary</strong> 
-                            <div class="row m-0 bg-light border-bottom w-100">
-                                <div class="col-md-9 text-primary pl-1 text-success"> 
-                                    <table class='small w-100' > 
-                                    
-                                    @foreach ($heads as $head)
-                                    <th>{{$head}}</th>
+                            <div class="row m-0 bg-light border-bottom">
+                                <table class='small mb-0 text-center table-striped' style="width:100%;overflow:auto"> 
+                                <tr class="table-info">
+                                @foreach ($heads as $head)
+                                <th>{{$head}}</th>
+                                @endforeach
+                                </tr>
+                                
+                                @foreach ($salaries as $index=>$salary)
+                                <tr>
+                                    @foreach ($salary as $breakdown=>$value)
+                                        <td>{{$value}}</td>
                                     @endforeach
-                                    {{-- ////////////Table Headers////////////// --}}
-                                    @foreach ($salaries as $index=>$salary)
-                                    <tr>
-                                        @foreach ($salary as $breakdown=>$value)
-                                            <td>{{$value}}</td>
-                                        @endforeach
-                                    </tr>
-                                    @endforeach
-                                    </table>
-                                </div>                               
+                                </tr>
+                                @endforeach
+                                </table>
                             </div>
                         </div>
                     </div>

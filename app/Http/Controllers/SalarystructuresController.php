@@ -16,7 +16,6 @@ class SalarystructuresController extends Controller
 
     public function index()
     {
-        //
         $structures = SalaryStructure::all();
         return view('salarystructures.index')->with('structures', $structures);
     }
@@ -28,7 +27,7 @@ class SalarystructuresController extends Controller
      */
     public function create()
     {
-        $ss = SalaryStructure::where('structurename','config')->get()->first();
+        $ss = SalaryStructure::withoutGlobalScope('excfg')->where('structurename','config')->get()->first();
         
         return view('salarystructures.create',["config"=>json_decode($ss->structure)]);
     }
@@ -49,11 +48,12 @@ class SalarystructuresController extends Controller
             $structure[$fields['data'][$i]['param_name']] = $fields['data'][$i]['value'];
         }
 
-        //dd($structure);
         $validator = Validator::make($structure, $vlogic);
         
         if($validator->fails()){
-            return back()->withErrors($validator)->withInput();
+            $response['status'] = 'failed';
+            $response['messages'] = $validator->errors()->messages();
+            return response()->json(['result'=>$response]);
         }
         else {
             $salarystructure = new SalaryStructure;
@@ -61,7 +61,8 @@ class SalarystructuresController extends Controller
             $salarystructure->structurename = $fields['structurename'];
             $salarystructure->save();
 
-            echo "success";
+            $response['status'] = 'success';
+            return response()->json(['result'=>$response]);
         }
     }
 
@@ -72,12 +73,17 @@ class SalarystructuresController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show($id)
-    {        
-        $salaryinfo = SalaryStructure::find($id);
-        $salaryid = $salaryinfo->id;
-    
-        $salarystructure = json_decode($salaryinfo->structure);
-        return view('salarystructures.show',['salarystructure'=>$salarystructure, 'id'=>$id, 'name'=>$salaryinfo->structurename]);
+    {    
+        if(Auth::Check()){    
+            $salaryinfo = SalaryStructure::find($id);
+            $salaryid = $salaryinfo->id;
+        
+            $salarystructure = json_decode($salaryinfo->structure);
+            return view('salarystructures.show',['salarystructure'=>$salarystructure, 'id'=>$id, 'name'=>$salaryinfo->structurename]);
+        }
+        else {
+            return view('partial.sessionexpired');
+        }
     }
 
     /**
@@ -86,15 +92,13 @@ class SalarystructuresController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id,$page=null)
+    public function edit($id)
     {
-        //
         $salaryinfo = SalaryStructure::find($id);
-        $salaryid = $salaryinfo->id;
-        // dd($salary);
         $salarystructure = json_decode($salaryinfo->structure);
-        // dd($salarystructure);
-        return view('salarystructures.edit',['page'=>$page,'salaryinfo'=>$salaryinfo,'salarystructure'=>$salarystructure]);
+        $sname = $salaryinfo->structurename;
+    
+        return view('salarystructures.edit',['sname'=>$sname,'sid'=>$id,'salarystructure'=>$salarystructure]);
     }
 
     /**
@@ -106,49 +110,30 @@ class SalarystructuresController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
-        $messages = [
-            'houserent.max' => 'houserent|Maximum 100',
-            'houserent.min' => 'houserent|minimum 0',
+        $fields = $request->all();
+        $salarystructure = SalaryStructure::find($id);
+        if($salarystructure->structurename != $fields['structurename']){
+            $vlogic['structurename'] = 'required|min:3|max:255|unique:salarystructures,structurename';
+        }
+        $structure['structurename'] = $fields['structurename'];
+        for($i=0;$i<count($fields['data']);$i++){
+            $vlogic[$fields['data'][$i]['param_name']] = 'numeric|max:100|min:0';
+            $structure[$fields['data'][$i]['param_name']] = $fields['data'][$i]['value'];
+        }
 
-            'medicalallowance.max' => 'medicalallowance|Maximum 100',
-            'medicalallowance.min' => 'medicalallowance|minimum 0',
-
-            'conveyance.max' => 'conveyance|Maximum 100',
-            'conveyance.min' => 'conveyance|minimum 0',
-
-            'pf_company.max' => 'pf_company|Maximum 100',
-            'pf_company.min' => 'pf_company|minimum 0',
-
-            'pf_self.max' => 'pf_self|Maximum 100',
-            'pf_self.min' => 'pf_self|minimum 0',
-        ];
-
-        $validator = Validator::make($request->all(), [
-            'houserent' => 'numeric|max:100|min:0',
-            'medicalallowance' => 'numeric|max:100|min:0',
-            'conveyance' => 'numeric|max:100|min:0',
-            'pf_company' => 'numeric|max:100|min:0',
-            'pf_self' => 'numeric|max:100|min:0'
-            ],$messages);
+        $validator = Validator::make($structure, $vlogic);
         
         if($validator->fails()){
-            return back()->withErrors($validator)->withInput();
+            $response['status'] = 'failed';
+            $response['messages'] = $validator->errors()->messages();
+            return response()->json(['result'=>$response]);
         }
         else {
-            $salarystructure = SalaryStructure::find($id);
-            $structure = $request->all();
-            unset($structure['_token']);
-            unset($structure['page']);
-            $structure = json_encode($structure);
-            $salarystructure->structure = $structure;
+            $salarystructure->structure = json_encode($fields['data']);;
             $salarystructure->structurename = $request->input('structurename');
             $salarystructure->save();
-        }
-        if($request->page == null)
-            return redirect()->route('salarystructures.index');
-        else{
-            return redirect()->route('salarystructures.index')->with('success', 'Salary Structure Created');
+            $response['status'] = 'success';
+            return response()->json(['result'=>$response]);
         }
     }
 
@@ -164,7 +149,7 @@ class SalarystructuresController extends Controller
     }
 
     public function config(){
-        $ss = SalaryStructure::where('structurename','config')->get();
+        $ss = SalaryStructure::withoutGlobalScope('excfg')->where('structurename','config')->get();
         if(count($ss) == 0){
             $response['status'] = 'failed';
             $response['numfields'] = 0;
@@ -186,7 +171,7 @@ class SalarystructuresController extends Controller
 
     public function saveconfig(Request $request){
         
-        $ss = SalaryStructure::where('structurename','config')->get();
+        $ss = SalaryStructure::withoutGlobalScope('excfg')->where('structurename','config')->get();
         if(count($ss) == 0){
             //creating the config
             $ssCreate = SalaryStructure::create([

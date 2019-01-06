@@ -9,7 +9,7 @@
                     {{ __('Create new Salary Structure') }}
                 </div>
                 <div class="card-body pb-0 mb-0">
-                    <form method="POST" action="{{ route('salarystructures.store') }}" onsubmit="submitStructure(event)">
+                    <form method="POST" action="{{ route('salarystructures.store') }}" onsubmit="submitStructure(event, this)" id="createStructureForm" name="createStructureForm">
                         <div class="form-group row">
                             <div class="input-group input-group-sm col-md-12"  style='margin-top:-10px'>
                                 <div class="input-group-prepend">
@@ -22,12 +22,9 @@
                                     name="structurename"
                                     value=""
                                     required>
-
-                                @if ($errors->has('structurename'))
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first('structurename') }}</strong>
-                                    </span>
-                                @endif
+                                <span class="invalid-feedback" role="alert" id="structurename_error_span">
+                                    <strong id="structurename_error"></strong>
+                                </span>
                             </div>
                         </div>
                         @foreach($config as $index => $field)
@@ -44,12 +41,9 @@
                                     class="form-control{{ $errors->has($field->param_name) ? ' is-invalid' : '' }}" 
                                     value="{{ $field->value }}"
                                     required>
-
-                                @if ($errors->has($field->param_name))
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $errors->first($field->param_name) }}</strong>
-                                    </span>
-                                @endif
+                                <span class="invalid-feedback" role="alert" id="{{$field->param_name}}_error_span">
+                                    <strong id="{{$field->param_name}}_error"></strong>
+                                </span>
                                 <script>
                                 root[{{$index}}] = new Fields("{{$field->param_name}}", "{{$field->param_uf_name}}", 0);
                                 </script>
@@ -71,6 +65,6 @@
         </div>
     </div>
 </div>
-<div id="test">asas</div>
 @endsection
 <script src="{{ asset('js/salarystructure.js') }}"></script>
+<script src="{{ asset('js/ajaxformprocess.js') }}"></script>

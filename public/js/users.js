@@ -76,7 +76,6 @@ function ajaxFunction(instruction, execute_id, divid){
 			ajaxRequest.open("POST", "/users", true);
 			ajaxRequest.setRequestHeader("Content-type", "application/json");
 			ajaxRequest.send(execute_id);
-			console.log(execute_id);
 		}
 		if(instruction == "usereditWithSalary"){
 			var salary_id = document.getElementById("sal_id").value;
