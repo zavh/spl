@@ -60,9 +60,6 @@ class LoginController extends Controller
                 ->first();
         $active = $user['active'];
         
-        // dd($user['name'],$user['email']);
-
-        // dd('id',$id,'pw',$pw,'status',$active);
         if ($user['name'] == NULL || $user['email'] == NULL)
         {
             return redirect('/login')->withInput()->with('success', 'ID Mismatch!');

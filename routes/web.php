@@ -12,8 +12,6 @@
 */
 
 Route::get('/', function () {
-    //return view('welcome');
-    //$url = route('login');
     return redirect()->route('login'); 
 });
 

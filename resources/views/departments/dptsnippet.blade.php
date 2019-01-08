@@ -5,8 +5,8 @@
             @if ( $department['user'] > 0 )
             <a 
                 href="javascript:void(0)"
-                onclick="alert('Cannot delete department')"
-                class='badge badge-secondary padge-pill'>Delete</a>
+                onclick="alert('Users assigned to this Department. Delete request denied.')"
+                class='badge badge-pill btn btn-secondary mx-2'>Delete</a>
             @else
             <a
                 href="javascript:void(0)"

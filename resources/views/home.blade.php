@@ -7,9 +7,8 @@
                         </div>
                     @endif
 
-                    @isset(Auth::user()->role_id)
-                        @if(Auth::user()->role_id == 1)
-							<div class="container">
+
+<div class="container">
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
@@ -42,11 +41,5 @@
         </div>
     </div>
 </div>
-                        @else 
-                            @include('users.dashboard')
-                        @endif
-                    @endisset
-
-
 @endsection
 <script src="{{ asset('js/users.js?version=0.1') }}"></script>
