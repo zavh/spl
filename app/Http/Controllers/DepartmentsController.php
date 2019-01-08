@@ -14,24 +14,47 @@ class DepartmentsController extends Controller
     {
         $this->middleware('auth');
     }
+
     public function index()
     {
-        if(Auth::User()->role_id == 1){
+        if(Auth::User()->role->role_name == 'admin'){
             $departments = Department::all();
-            return view('departments.index')->with('departments', $departments);
+            $dt = array();
+            foreach($departments as $department){
+                $node['id'] = $department->id;
+                $node['name'] = $department->name;
+                $node['user'] = count($department->users);
+                $node['child'] = null;
+                if($department->parent_id == 0){
+                    $dt[$department->id] = $node;
+                }
+                else{
+                    $path = json_decode($department->path, true);
+                    $path = array_slice($path, 1);
+                    $this::traverseIn($path, $dt[$path[0]], $node);
+                }
+            }
+        //    dd($dt);
+            return view('departments.index')->with('departments', $dt);
         }
         else abort(404);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    private function traverseIn($path, &$dt, $node){
+        if(count($path)==1){
+            $dt['child'][$node['id']] = $node;
+        }
+        else{
+            $path = array_slice($path, 1);
+            $pid = $path[0];
+            $this::traverseIn($path, $dt['child'][$pid], $node);
+        }
+    }
     public function create()
     {
-        if(Auth::User()->role_id == 1){
-            return view('departments.create');
+        if(Auth::User()->role->role_name == 'admin'){
+            $departments = Department::all();
+            return view('departments.create',['departments'=>$departments]);
         }
         else abort(404);
     }
@@ -44,51 +67,44 @@ class DepartmentsController extends Controller
      */
     public function store(Request $request)
     {
-        //
-        $messages = [
-            'name.required' => 'Please enter the name',
-            'name.min' => 'Name must be minimum 2 characters',
-            'name.max' => 'Name cannot be more than 191 characters',
-            'name.unique' => 'This name has already been taken'
-        ];
-
         $validator = Validator::make($request->all(), [
             'name' => 'required|min:2|max:191|unique:departments,name'
-        ],$messages);
+        ]);
 
         if($validator->fails()){
             return back()->withErrors($validator)->withInput();
         }
-        // dd($request);
         $department = new Department;
         $department->name = $request->input('name');
+        $department->parent_id = $request->input('parent_id');
+        if($department->parent_id != 0){
+            $pd = Department::find($department->parent_id); //parent department
+            $path = json_decode($pd->path, true);
+            $path[count($path)] = $department->parent_id;
+            $department->path = json_encode($path);
+        }
+        else {
+            $department->path = json_encode(array(0));
+        }
         
         $department->save();
         return redirect('/departments')->with('success', 'Department Created');
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Department  $department
-     * @return \Illuminate\Http\Response
-     */
+    private function findpath($id){
+        $department = Department::find($id);
+    }
     public function show(Department $department)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Department  $department
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
-        if(Auth::User()->role_id == 1){
+        if(Auth::User()->role->role_name == 'admin'){
             $department = Department::find($id);
-            return view('departments.edit',['department'=>$department]);
+            $departments = Department::all();
+            return view('departments.edit',['department'=>$department, 'departments'=>$departments]);
         }
         else abort(404);
     }
@@ -118,6 +134,16 @@ class DepartmentsController extends Controller
           }
           $department = Department::find($id);
           $department->name = $request->input('name');
+          $department->parent_id = $request->input('parent_id');
+          if($department->parent_id != 0){
+            $pd = Department::find($department->parent_id); //parent department
+            $path = json_decode($pd->path, true);
+            $path[count($path)] = $department->parent_id;
+            $department->path = json_encode($path);
+        }
+        else {
+            $department->path = json_encode(array(0));
+        }
 
           $department->save();
           return redirect('/departments')->with('success', 'Department Updated');

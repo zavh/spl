@@ -12,7 +12,9 @@ class DepartmentTableSeeder extends Seeder
     public function run()
     {
         DB::table('departments')->insert([
-            'name' => 'Sales & Marketing (Pumps & Valves)',
+            'parent_id' => 0,
+            'name' => 'Sigma Pumps Limited',
+            'path' => '{"0": "0"}',
         ]);
     }
 }
