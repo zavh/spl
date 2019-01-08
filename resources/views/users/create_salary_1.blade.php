@@ -1,5 +1,5 @@
 <!-- Disbursement Widget Starts -->
-<div class="card mb-4 shadow-sm h-md-250 row-md-6">
+<div class="card mb-3 shadow-sm h-md-250 row-md-6">
     <div class=" mb-0 bg-white rounded">
         <div class="media text-muted">
             <div class="media-body small mb-0">
@@ -39,20 +39,21 @@
                     <!-- Joining Date Input Ends -->
 
                     <!-- Termination Date Input Starts -->
+                    <div class="form-group row" style="margin-top:-10px">
+                        <div class="input-group input-group-sm col-md-12">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" style="font-size:12px;width:150px">Employment Status</span>
+                            </div>
+                            <select name="tstatus" id="tstatus" class="form-control salary" required="">
+                                <option value="a" selected="">Active</option>
+                                <option value="r">Resigned</option>
+                                <option value="t">Terminated</option>
+                            </select>
+                        </div>
+                    </div>
+
                     <div class="form-group row">
-                        <div class="input-group input-group-sm col-md-12" style='margin-top:-10px'>
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" style="font-size:12px;width:150px">Termination status</span>
-                            </div>
-                            <div class="input-group-prepend">
-                                Active:<input type='radio' class="form-control salary" id="tstatus" name='tstatus' value='a' checked>
-                                Resigned:<input type='radio' class="form-control salary" id="tstatus" name='tstatus' value='r'>
-                                Terminated:<input type='radio' class="form-control salary" id="tstatus" name='tstatus' value='t'>
-                            </div>
-                            <span class="invalid-feedback" role="alert" id="tstatus_error_span">
-                                <strong id="tstatus_error"></strong>
-                            </span>
-                                
+                        <div class="input-group input-group-sm col-md-12" style="margin-top:-10px">
                             <div class="input-group-prepend">
                                 <span class="input-group-text" style="font-size:12px;width:150px">Termination Date</span>
                             </div>

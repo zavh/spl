@@ -4,7 +4,7 @@
 <div class="container-fluid">
     <div class="row justify-content-center" >
 		<div class="col-md-10 col-lg-12">
-			<div class="card mb-4 shadow-sm h-md-250">
+			<div class="card mb-0 shadow-sm h-md-250">
 				<div class=" mb-0 bg-white rounded">
 					<div class="media text-muted">
 						<div class="media-body small mb-0">
