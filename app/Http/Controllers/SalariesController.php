@@ -86,6 +86,8 @@ class SalariesController extends Controller
                 $data[$y-1][$heads[$i]] = $tempdat[$i];
             }
         }
+
+        dd($data);
     }
 
     public function destroy($id)

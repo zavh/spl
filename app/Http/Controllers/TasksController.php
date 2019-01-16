@@ -15,9 +15,9 @@ class TasksController extends Controller
 {
     // public function __construct()
     // {
-    //     //$this->middleware('auth');
+    //     $this->middleware('auth');
     // }
-    public function index($project_id = null)
+    public function projecttask($project_id = null)
     {
         if (Auth::check()){
             if($project_id == null){
@@ -30,7 +30,7 @@ class TasksController extends Controller
             return view('partial.sessionexpired');
     }
 
-    public function create($project_id = null)
+    public function projecttaskcreate($project_id = null)
     {
         if(Auth::Check()){
             if($project_id == null){
@@ -164,8 +164,15 @@ class TasksController extends Controller
         $project_deadline = $project->deadline;
         $project_start = $project->start_date;
 
+        $task = Task::find($id);
+        if($task->task_name == $request->task_name){
+            $tv = '';
+        }
+        else {
+            $tv = 'required|min:2|max:191|unique:tasks,task_name,NULL,id,project_id,' . $request->project_id;
+        }
         $validator = Validator::make($request->all(), [
-            'task_name' => 'required|min:2|max:191|unique:tasks,task_name,NULL,id,project_id,' . $request->project_id,
+            'task_name' => $tv,
             'task_description' => 'required|max:3000',
             'task_deadline' => ['required', 'date',
                 function($attribute, $value, $fail) use($project_deadline, $project_start){

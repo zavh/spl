@@ -23,22 +23,19 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::get('/tasks/create/{project_id?}', 'TasksController@create');
-Route::get('/tasks/project/{project_id?}', 'TasksController@index');
-Route::post('/tasks/{project_id?}/edit', 'TasksController@edit');
-Route::post('/tasks/completion/{task_id?}', 'TasksController@completion');
+Route::get('/tasks/create/{project_id?}', 'TasksController@projecttaskcreate')->name('create');
+Route::get('/tasks/project/{project_id?}', 'TasksController@projecttask')->name('taskindex');
+Route::post('/tasks/completion/{task_id?}', 'TasksController@completion')->name('taskcompletion');
+Route::get('/users/completedtasks', 'TasksController@showcompletion')->name('completedtasks');
 
-Route::get('/enquiries/project/{project_id?}', 'EnquiriesController@index');
-Route::get('/enquiries/create/{project_id?}', 'EnquiriesController@create');
-Route::post('/enquiries/{project_id?}/edit', 'EnquiriesController@edit');
-Route::post('/enquiries/store', 'EnquiriesController@store')->name('addenquiries');
-
+Route::get('/enquiries/project/{project_id?}', 'EnquiriesController@projectenq')->name('projectenquiry');
+Route::get('/enquiries/create/{project_id?}', 'EnquiriesController@projectenqcreate')->name('projectenqcreate');
+Route::get('/enquiries/{project_id?}/edit', 'EnquiriesController@projectenqedit')->name('projectenqedit');
 
 Route::post('/users/credentials', 'UsersController@changepass')->name('changepass');
 Route::get('/user/tasks', 'UsersController@tasks')->name('usertasks');
 Route::get('/user/reports', 'UsersController@reports')->name('userreports');
 Route::post('/user/deactivate/{user_id?}', 'UsersController@deactivate');
-Route::get('/users/completedtasks', 'TasksController@showcompletion');
 
 Route::get('/clients/create/{page?}', 'ClientsController@create')->name('createfrom');
 Route::post('/clients/validateonly', 'ClientsController@validateonly')->name('validateclient');
@@ -78,10 +75,16 @@ Route::post('/salarystructures/saveconfig', 'SalarystructuresController@saveconf
 
 Route::post('/salaries/upload', 'SalariesController@upload');
 
+Route::post('/app/addmod', 'AppModuleController@addmod')->name('addModule');
+Route::post('/app/defaultconfig', 'AppModuleController@defaultconfig')->name('appDefaultConfiguration');
+Route::post('/app/changedefaultcfg', 'AppModuleController@changedefaultcfg')->name('changeDefaultCfg');
+Route::post('/app/deptconfig', 'AppModuleController@deptconfig')->name('deptconfig');
+Route::post('/app/changedeptcfg', 'AppModuleController@changedeptcfg')->name('changedeptcfg');
+
 Route::resource('clients','ClientsController');
 Route::resource('projects','ProjectsController');
-Route::resource('enquiries','EnquiriesController');
-Route::resource('tasks','TasksController');
+Route::resource('enquiries','EnquiriesController')->except('create','edit');;
+Route::resource('tasks','TasksController')->except('index','create');
 Route::resource('users', 'UsersController');
 Route::resource('roles', 'RolesController');
 Route::resource('departments', 'DepartmentsController');
@@ -91,3 +94,4 @@ Route::resource('reports', 'ReportsController');
 Route::resource('products','ProductsController');
 Route::resource('salarystructures','SalarystructuresController');
 Route::resource('salaries','SalariesController');
+Route::resource('app','AppModuleController')->only(['index']);

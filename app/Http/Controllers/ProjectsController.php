@@ -28,8 +28,8 @@ class ProjectsController extends Controller
         $punalloc = Project::where('allocation','<', 100)->get();
         //////////////////////////////////////////////////////
         $closedprojects = Project::whereRaw("status = '0' OR completed = 100")->orderBy('id', 'asc')->take(5)->get(); // Put a limit here, limit 5
-        $openprojects = Project::whereRaw("status IS NULL OR (status = 1 AND completed < '100')")->orderBy('id', 'asc')->get();
-
+        $openprojects = Project::whereRaw("status IS NULL OR completed < 100")->orderBy('id', 'asc')->get();
+//dd($openprojects);
         $breadcrumb[0]['title'] = 'Dashboard';
         $breadcrumb[0]['link'] = '/home';
         $breadcrumb[0]['style'] = '';

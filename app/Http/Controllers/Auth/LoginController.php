@@ -68,7 +68,7 @@ class LoginController extends Controller
         {
             return redirect('/login')->withInput()->with('success', 'Wrong Password!');
         }
-        else if($active ==0)
+        else if($active == 0)
         {
             return redirect('/login')->withInput()->with('success', 'Deactivated account, please contact the system adminitrator!');
         }

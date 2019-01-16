@@ -124,9 +124,6 @@
                         </div>
                     </div>
                 </div>
-                <div id='enqdiv' style='max-height:80vh;overflow-x:hidden;overflow-y:auto' class="rounded shadow-sm">
-                    @include('enquiries.index', ['enquiries'=>$project['enquiries']])
-                </div>
             </div>
         <!-- Enquiry Column Starts-->
             <div class='col-md-4'>
@@ -140,7 +137,7 @@
                     </div>
                 </div>
                 <div id='enqdiv' style='max-height:80vh;overflow-x:hidden;overflow-y:auto' class="rounded shadow-sm">
-                    @include('enquiries.index', ['enquiries'=>$project['enquiries']])
+                    @include('enquiries.projectenqindex', ['enquiries'=>$project['enquiries']])
                 </div>
             </div>
         <!-- Enquiry Column Ends-->

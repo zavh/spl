@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateDepartmentsTable extends Migration
+class CreateAppdeafultconfigTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,10 @@ class CreateDepartmentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('departments', function (Blueprint $table) {
+        Schema::create('appdeafultconfig', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedBigInteger('parent_id');
-            $table->json('path');
-            $table->string('name');
-            $table->string('dirname');
-            $table->json('apppermission');
+            $table->json('config');
+            $table->string('name')->unique();
             $table->timestamps();
         });
     }
@@ -31,6 +28,6 @@ class CreateDepartmentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('departments');
+        Schema::dropIfExists('appdeafultconfig');
     }
 }

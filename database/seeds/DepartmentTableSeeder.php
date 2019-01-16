@@ -13,8 +13,10 @@ class DepartmentTableSeeder extends Seeder
     {
         DB::table('departments')->insert([
             'parent_id' => 0,
-            'name' => 'Sigma Pumps Limited',
             'path' => '{"0": "0"}',
+            'name' => 'Application',
+            'dirname' => 'homes',
+            'apppermission' => '{"modname": "all","action": [{"name": "all","func": "all","url": "all"}]}',
         ]);
     }
 }

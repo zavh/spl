@@ -33,36 +33,23 @@
         </div>
     <!-- Unllocated Project Section Ends -->
         <div class="card mb-4 shadow-sm">
-            <div class="card-header">
-                <h4 class="my-0 font-weight-normal">Open Projects</h4>
+            <div class="card-header text-white bg-primary m-0 p-0">
+                <span class="my-0 font-weight-normal">Open Projects</span>
             </div>
-            <div class='card mb-4 shadow-sm'>
-                @if(count($closed)>0)
-                    <div class='row' id="open">
-                        @include('projects.showprojectlist',['searched_project'=>$open])
+
+            <div class="card-body p-0 m-0">
+            @foreach ($open as $i=>$project)
+                <div id='contact-item-{{$i}}'>
+                    <div class="media text-muted" id="heading{{$i}}">
+                        <div class="media-body pb-0 mb-0 small lh-125">
+                            <div class="d-flex justify-content-between align-items-center w-100 border-bottom mb-0 pb-0 pr-2 bg-light">
+                                <a href="/projects/{{$project->id}}" class='mx-2'>{{$project->project_name}}</a>
+                            </div>
+                        </div>
                     </div>
-                @endif
+                </div> 
+            @endforeach
             </div>
-            {{-- <div class="card-body">
-                <h5 class="card-title pricing-card-title">Total Open: <small class="text-muted">{{count($projects)}}</small></h5>
-                <table class='table'>
-                <thead>
-                    <tr>
-                        <th scope="col">Client</th>
-                        <th scope="col">Manager</th>
-                        <th scope="col">View</th>
-                    </tr>
-                <thead>
-                @foreach($projects as $project)
-                    <tr>
-                        <td><a href="/projects/{{$project->id}}">{{$project->project_name}}</a></td>
-                        <td>{{$project->description}}</td>
-                        <td><a href="/projects/{{$project->id}}/edit" class="btn btn-primary">Edit</a></td>
-                    </tr>
-                @endforeach
-                </table>
-                <button type="button" class="btn btn-sm btn-block btn-primary">Show All</button>
-            </div> --}}
         </div>
         <div class="card mb-6 shadow-sm">
             <div class="card-header">

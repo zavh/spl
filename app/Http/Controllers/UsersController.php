@@ -25,7 +25,7 @@ class UsersController extends Controller
 
     public function index()
     {
-        if(Auth::User()->role_id ==1){
+        if(Auth::User()->role_id == 1){
             $users = User::all();
             $me = User::find(Auth::User()->id);
             $completion = $this->profileCalculation($me);
