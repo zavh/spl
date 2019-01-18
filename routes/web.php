@@ -95,4 +95,4 @@ Route::resource('reports', 'ReportsController');
 Route::resource('products','ProductsController');
 Route::resource('salarystructures','SalarystructuresController');
 Route::resource('salaries','SalariesController');
-Route::resource('app','AppModulesController')->only(['index']);
+Route::resource('appmodules','AppModulesController')->only(['index']);

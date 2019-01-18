@@ -37,9 +37,7 @@
                     <!-- Right Side Of Navbar -->
                     @guest
                     @else
-                        
-                            @include('homes.menu')
-
+                        @include('homes.menu')
                     @endguest
                 </div>
             </div>

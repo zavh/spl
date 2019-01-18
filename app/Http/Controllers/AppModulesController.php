@@ -99,6 +99,6 @@ class AppModulesController extends Controller
     public function widget(){
         $ss = SalaryStructure::withoutGlobalScope('excfg')->where('structurename','config')->get();
         $apc = DB::table('appdeafultconfig')->where('name', 'default')->get(); //app permission config
-        dd($apc);
+        dd($ss);
     }
 }
