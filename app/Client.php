@@ -24,4 +24,8 @@ class Client extends Model
     public function clientcontacts(){
         return $this->hasMany('App\Clientcontact');
     }
+
+    public function department(){
+        return $this->belongsTo('App\Department');
+    }
 }

@@ -11,10 +11,10 @@ use DB;
 
 class ClientsController extends Controller
 {
-/*    public function __construct()
+    public function __construct()
     {
         $this->middleware('auth');
-    }*/
+    }
     public function index($target = null)
     {
         if(Auth::Check()){
@@ -25,7 +25,7 @@ class ClientsController extends Controller
             $breadcrumb[1]['link'] = 'none';
             $breadcrumb[1]['style'] = 'active';
 
-            $clients = Client::all()->sortBy('organization');
+            $clients = Client::all()->where('department_id',Auth::User()->department_id)->sortBy('organization');
             $n = $clients->map(function($client){return $client->organization;});
             $orgnames = implode(',',$n->all());
             if($target == null && count($clients)>0)
@@ -97,6 +97,7 @@ class ClientsController extends Controller
             $client->organization = $request->input('organization');
             $client->address = $request->input('address');
             $client->background = $request->input('background');
+            $client->department_id = Auth::User()->department_id;
             $client->save();
 
             $contactCreate = Clientcontact::create([

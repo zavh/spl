@@ -75,11 +75,12 @@ Route::post('/salarystructures/saveconfig', 'SalarystructuresController@saveconf
 
 Route::post('/salaries/upload', 'SalariesController@upload');
 
-Route::post('/app/addmod', 'AppModuleController@addmod')->name('addModule');
-Route::post('/app/defaultconfig', 'AppModuleController@defaultconfig')->name('appDefaultConfiguration');
-Route::post('/app/changedefaultcfg', 'AppModuleController@changedefaultcfg')->name('changeDefaultCfg');
-Route::post('/app/deptconfig', 'AppModuleController@deptconfig')->name('deptconfig');
-Route::post('/app/changedeptcfg', 'AppModuleController@changedeptcfg')->name('changedeptcfg');
+Route::post('/appmodules/addmod', 'AppModulesController@addmod')->name('addModule');
+Route::post('/appmodules/defaultconfig', 'AppModulesController@defaultconfig')->name('appDefaultConfiguration');
+Route::post('/appmodules/changedefaultcfg', 'AppModulesController@changedefaultcfg')->name('changeDefaultCfg');
+Route::post('/appmodules/deptconfig', 'AppModulesController@deptconfig')->name('deptconfig');
+Route::post('/appmodules/changedeptcfg', 'AppModulesController@changedeptcfg')->name('changedeptcfg');
+Route::get('/appmodules/widget', 'AppModulesController@widget');
 
 Route::resource('clients','ClientsController');
 Route::resource('projects','ProjectsController');
@@ -94,4 +95,4 @@ Route::resource('reports', 'ReportsController');
 Route::resource('products','ProductsController');
 Route::resource('salarystructures','SalarystructuresController');
 Route::resource('salaries','SalariesController');
-Route::resource('app','AppModuleController')->only(['index']);
+Route::resource('app','AppModulesController')->only(['index']);

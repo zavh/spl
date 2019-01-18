@@ -4,11 +4,16 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Department;
+use App\SalaryStructure;
 use Illuminate\Support\Facades\DB;
 
-class AppModuleController extends Controller
+class AppModulesController extends Controller
 {
-    
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index()
     {
         $routeCollection = collect(\Route::getRoutes());
@@ -89,5 +94,11 @@ class AppModuleController extends Controller
         $response['result'] = 'success';
         $response['message'] = 'Configuration changed';
         return response()->json(['response'=>$response]);
+    }
+
+    public function widget(){
+        $ss = SalaryStructure::withoutGlobalScope('excfg')->where('structurename','config')->get();
+        $apc = DB::table('appdeafultconfig')->where('name', 'default')->get(); //app permission config
+        dd($apc);
     }
 }

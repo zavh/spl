@@ -199,27 +199,27 @@ function ajaxFunction(instruction, execute_id, divid){
 			ajaxRequest.send();
 		}
 		if(instruction == "addMod"){
-			ajaxRequest.open("POST", "/app/addmod", true);
+			ajaxRequest.open("POST", "/appmodules/addmod", true);
 			ajaxRequest.setRequestHeader("Content-type", "application/json");
 			ajaxRequest.send(execute_id);
         }
         if(instruction == "defaultConfig"){
-			ajaxRequest.open("POST", "/app/defaultconfig", true);
+			ajaxRequest.open("POST", "/appmodules/defaultconfig", true);
 			ajaxRequest.setRequestHeader("Content-type", "application/json");
 			ajaxRequest.send(execute_id);
         }
         if(instruction == "changeDefaultCfg"){
-			ajaxRequest.open("POST", "/app/changedefaultcfg", true);
+			ajaxRequest.open("POST", "/appmodules/changedefaultcfg", true);
 			ajaxRequest.setRequestHeader("Content-type", "application/json");
 			ajaxRequest.send(execute_id);
         }
         if(instruction == "deptConfig"){
-			ajaxRequest.open("POST", "/app/deptconfig", true);
+			ajaxRequest.open("POST", "/appmodules/deptconfig", true);
 			ajaxRequest.setRequestHeader("Content-type", "application/json");
 			ajaxRequest.send(execute_id);
         }
         if(instruction == "changeDeptCfg"){
-			ajaxRequest.open("POST", "/app/changedeptcfg", true);
+			ajaxRequest.open("POST", "/appmodules/changedeptcfg", true);
 			ajaxRequest.setRequestHeader("Content-type", "application/json");
 			ajaxRequest.send(execute_id);
         }

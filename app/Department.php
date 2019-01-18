@@ -23,6 +23,10 @@ class Department extends Model
         return $this->hasOne('App\Product');
     }
 
+    public function clients(){
+        return $this->hasMany('App\Client');
+    }
+
     protected static function boot()
     {
         parent::boot();

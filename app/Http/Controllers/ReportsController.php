@@ -291,6 +291,7 @@ class ReportsController extends Controller
                     'organization' => $client->organization,
                     'address' => $client->address,
                     'background' => $client->background,
+                    'department_id' => Auth::User()->department_id
                     ]);
                     $client->contacts = $this->setReportContacts($client->contacts, $clientCreate->id);
             }
