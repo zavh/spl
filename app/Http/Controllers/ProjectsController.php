@@ -323,9 +323,7 @@ class ProjectsController extends Controller
 
         $whereclause = implode(' and ',$wc);
         
-/////////////////////where function implementation///////////////////////
         $projects = DB::table('projects')->whereRaw($whereclause)->get();//where clause works
-        // echo json_encode($projects,JSON_PRETTY_PRINT);
         if(count($projects)>0)
         {
             foreach($projects as $project)
@@ -337,17 +335,10 @@ class ProjectsController extends Controller
                 $searched_project[$start_date[$i]][$j] = $project;
                 $i++; 
             }
-            // foreach($searched_project as $month=>$date)
-            // {
-            //      ksort($searched_project[$month]); 
-            // }
-            //echo json_encode($searched_project,JSON_PRETTY_PRINT);
-            // echo $projects; 
         }
 
         $result['status'] = 'success';
         $result['data'] = $projects;
-        //$result['data'] = $searched_project;
         $result['view'] =  view('projects.showprojectlist', ['searched_project'=>$projects])->render();
 
         return response()->json(['result'=>$result]);
