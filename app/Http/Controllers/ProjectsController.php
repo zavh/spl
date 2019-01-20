@@ -24,12 +24,11 @@ class ProjectsController extends Controller
     public function index()
     {
         $i=0;
+        $today = date("Y-m-d");
         $searched_project = array();
-        $punalloc = Project::where('allocation','<', 100)->get();
-        //////////////////////////////////////////////////////
-        $closedprojects = Project::whereRaw("status = '0' OR completed = 100")->orderBy('id', 'asc')->take(5)->get(); // Put a limit here, limit 5
-        $openprojects = Project::whereRaw("status IS NULL OR completed < 100")->orderBy('id', 'asc')->get();
-//dd($openprojects);
+        $open = Project::where('status', 0)->where("deadline", ">=", $today)->get();
+        $expired = Project::where("status",0)->where("deadline", "<", $today)->orderBy('id', 'asc')->get();
+        $closedprojects = Project::where("status",">",0)->orderBy('id', 'asc')->take(5)->get();
         $breadcrumb[0]['title'] = 'Dashboard';
         $breadcrumb[0]['link'] = '/home';
         $breadcrumb[0]['style'] = '';
@@ -37,7 +36,7 @@ class ProjectsController extends Controller
         $breadcrumb[1]['link'] = 'none';
         $breadcrumb[1]['style'] = 'active';
         $projects = Project::where('allocation','=', 100)->get();
-        return view('projects.index', ['projects'=>$projects, 'punalloc'=>$punalloc, 'breadcrumb'=>$breadcrumb,'closed'=>$closedprojects,'open'=>$openprojects]);
+        return view('projects.index', ['projects'=>$projects, 'open'=>$open, 'breadcrumb'=>$breadcrumb,'closed'=>$closedprojects,'expired'=>$expired]);
     }
 
     /**
@@ -73,12 +72,6 @@ class ProjectsController extends Controller
         }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -102,6 +95,7 @@ class ProjectsController extends Controller
             $project->contacts = json_encode($request->input('contacts'));
             $project->report_id = $request->input('report_id');;
             $project->allocation = 0;
+            $project->department_id = Auth::User()->department_id;
     
             $project->save();
             if($request->input('report_id')>0){
@@ -125,7 +119,6 @@ class ProjectsController extends Controller
     public function show($id)
     {
         $project = Project::find($id);
-
         foreach($project->enquiries as $index=>$enquiry){
             $project->enquiries[$index]->details = json_decode($enquiry->details);
         }
@@ -167,33 +160,14 @@ class ProjectsController extends Controller
     {
         // dd($request);
         $this->validate($request, [
-            // 'project_name' => 'required',
-            // 'client_id' => 'required',
-            // 'user_id' => 'required',
-            // 'manager_id' => 'required',
-            // 'assigned' => 'required',
-            // 'deadline' => 'required|date',
-            // 'description' => 'required',
             'status' => 'required'
-            // 'state' => 'required'
         ]);
         
-        // Create Project
         $project = Project::find($id);
-        // $project->project_name = $request->input('project_name');
-        // $project->client_id = $request->input('client_id');
-        // $project->user_id = $request->input('user_id');
-        // $project->manager_id = $request->input('manager_id');
-        // $project->assigned = $request->input('assigned');
-        // $project->start_date = $request->input('start_date');
-        // $project->deadline = $request->input('deadline');
-        // $project->description = $request->input('description');
         $project->status = $request->input('status');
-        // $project->state = $request->input('state');
 
         $project->save();
         // dd($project);
-        
 
         return redirect('/projects'.'/'.$project->id)->with('success', 'Project Updated');
     }

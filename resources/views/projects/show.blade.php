@@ -91,40 +91,29 @@
                             <span>Project Start Date</span>
                             <strong> &#8674; {{$project->start_date}}</strong>
                         </div>
-                        <div class="small text-danger mx-2">
+                        <div class="small text-danger mx-2 border-bottom">
                             <span>Deadline</span>
                             <strong> &#8674; {{$project->deadline}}</strong>
                         </div>
-                    <!-- Project Dates Area Ends-->
-                </div>
-            {{-- </div> --}}
-        <!-- Project Details Column Ends-->
-            {{-- <div class='col-md-4'> --}}
-                <div class="p-2 my-1 text-white-50 bg-primary rounded shadow-sm">
-                    <div class="lh-100">
-                        <h6 class="mb-0 text-white lh-100">Project Status</h6>
-                        <div class="d-flex justify-content-between align-items-center small">
-                            <form method="POST" action="{{route('projects.update', [$project->id])}}"  
+                        <div class="small mx-2">
+                        <form method="POST" action="{{route('projects.update', [$project->id])}}"  
                                                     id="statusCheck" name="statusCheck" class="m-1 p-1">
                                 @csrf 
                                 <input name="_method" type="hidden" value="PUT">
-                                @if ($project->status==0)
-                                    Won: <input type='radio' id="status" name='status' value=1>
-                                    Lost: <input type='radio' id="status" name='status' value=0 checked>
-                                @elseif($project->status==1)
-                                    Won: <input type='radio' id="status" name='status' value=1 checked>
-                                    Lost: <input type='radio' id="status" name='status' value=0>
-                                @else
-                                    Won: <input type='radio' id="status" name='status' value=1>
-                                    Lost: <input type='radio' id="status" name='status' value=0>
-                                @endif
-                                <button type="submit">Update</button>
+                                <div class="d-flex justify-content-between align-items-center small">
+                                <span>Open: <input type='radio' id="status" name='status' value=0 {{$project->status == 0? 'checked':''}}></span>
+                                <span>Won: <input type='radio' id="status" name='status' value=2 {{$project->status == 2? 'checked':''}}></span>
+                                <span>Lost: <input type='radio' id="status" name='status' value=1 {{$project->status == 1? 'checked':''}}></span>
                                 
+                                </div>
+                                <button type="submit">Update</button>
                             </form>
                         </div>
-                    </div>
+                    <!-- Project Dates Area Ends-->
                 </div>
             </div>
+        <!-- Project Details Column Ends-->
+            
         <!-- Enquiry Column Starts-->
             <div class='col-md-4'>
                 <div class="p-2 my-1 text-white-50 bg-primary rounded shadow-sm">

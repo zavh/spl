@@ -3,10 +3,10 @@
 @section('content')
 <div class="container-fluid">
     <div class="card-deck text-center">
-    <!-- Unllocated Project Section Starts -->
+    <!-- Open Project Section Starts -->
         <div class="card mb-4 shadow-sm">
-            <div class="card-header text-white bg-danger m-0 p-0">
-                <span class="my-0 font-weight-normal">Unassigned Projects</span>
+            <div class="card-header text-white bg-primary m-0 p-0">
+                <span class="my-0 font-weight-normal">Project Status : Open</span>
                 <span style='position:absolute;right:10px' class='small'>
                 <a href="/projects/create" style='color:white'>Create</a>
                 </span>
@@ -14,7 +14,7 @@
             <!-- Body -->
             <div class="card-body p-0 m-0 small">
 
-                @foreach($punalloc as $project)
+                @foreach($open as $project)
                 <div class="border-bottom">
                     <div class='text-left bg-light border-bottom'>
                         <span class="mx-2">Client: {{$project->client->organization}}</span>
@@ -31,14 +31,15 @@
             </div>
         <!-- Body -->
         </div>
-    <!-- Unllocated Project Section Ends -->
+    <!-- Open Project Section Ends -->
+    <!-- Expired Project Section Starts -->
         <div class="card mb-4 shadow-sm">
-            <div class="card-header text-white bg-primary m-0 p-0">
-                <span class="my-0 font-weight-normal">Open Projects</span>
+            <div class="card-header text-white bg-danger m-0 p-0">
+                <span class="my-0 font-weight-normal">Expired Projects</span>
             </div>
 
             <div class="card-body p-0 m-0">
-            @foreach ($open as $i=>$project)
+            @foreach ($expired as $i=>$project)
                 <div id='contact-item-{{$i}}'>
                     <div class="media text-muted" id="heading{{$i}}">
                         <div class="media-body pb-0 mb-0 small lh-125">
@@ -51,12 +52,13 @@
             @endforeach
             </div>
         </div>
+    <!-- Expired Project Section Ends -->
+    <!-- Closed Project Section Starts -->
         <div class="card mb-6 shadow-sm">
             <div class="card-header">
                 <h4 class="my-0 font-weight-normal">Closed Projects</h4>
             </div>
         
-{{-- //////////////////////////////////////////////////////////////////////////////////////////////////////////////// --}}
             <div class='card mb-4 shadow-sm'>
                 @if(count($closed)>0)
                     <div class='row' id="closed">
@@ -64,9 +66,8 @@
                     </div>
                 @endif
             </div>
-{{-- //////////////////////////////////////////////////////////////////////////////////////////////////////////////// --}}
                 
-                <!-- Report Search Area Starts-->
+            <!-- Report Search Area Starts-->
             <div class="card mb-4 shadow-sm h-md-250">
                 <div class=" mb-0 bg-white rounded">
                     <div class="media text-muted">

@@ -25,7 +25,7 @@ class ClientsController extends Controller
             $breadcrumb[1]['link'] = 'none';
             $breadcrumb[1]['style'] = 'active';
 
-            $clients = Client::all()->where('department_id',Auth::User()->department_id)->sortBy('organization');
+            $clients = Client::all()->sortBy('organization');
             $n = $clients->map(function($client){return $client->organization;});
             $orgnames = implode(',',$n->all());
             if($target == null && count($clients)>0)
