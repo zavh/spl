@@ -221,12 +221,13 @@ class ProjectsController extends Controller
         $start_date = array();
         $i=0;
         $j=0;
-        $current_month = date("Y-m");
-        $criteria = $request->all();
+        if($request['projectmonthstart'] == $request['projectmonthend'])
+            $criteria = $request->except(['_token','projectmonthend']);
+        else $criteria = $request->except('_token');
         $wc = array();
         $whereclause = "";
         
-        $client = Client::where('organization','like','%'.$criteria['projectclient'].'%')->get();
+        $client = Client::where('organization','=',$criteria['projectclient'])->get();
         $manager = User::where('name','=',$criteria['projectmanager'])->get();
         
         if(count($client)>0)
@@ -245,82 +246,37 @@ class ProjectsController extends Controller
         {
             $manager_id = 0;
         }
-         $messages = [
-            'projectmonthstart.required' => 'valid',
-            'projectmonthend.required' => 'valid',
-            'projectclient.required' => 'valid',
-            'projectmanager.required' =>'valid'
-        ];
+
         $validator = Validator::make($criteria, [
-            'projectmonthstart'=>'required|date',
-            'projectmonthend'=>'required|date|after_or_equal:projectmonthstart',
-            'projectclient'=>['required',
+            'projectmonthstart'=>'nullable|date',
+            'projectmonthend'=>'nullable|date|after_or_equal:projectmonthstart',
+            'projectclient'=>['nullable',
                 function($attribute, $value, $fail) use($client_id){
                 if($client_id == 0)
                     $fail('Invalid client');
             }
         ],
-            'projectmanager'=>['required',
+            'projectmanager'=>['nullable',
                 function($attribute, $value, $fail) use($manager_id){
                     if($manager_id == 0)
                         $fail('Invalid manager');
                 }
             ]
-         ],$messages);
+         ]);
 
-        //validating start and end date starts
-        if($validator->errors()->has('projectmonthstart')){
-            $x = $validator->errors()->first('projectmonthstart');
-            if($x != 'valid'){
-                $result['msgs'] = $validator->errors();
-                $result['status'] = 'failed';
-                return response()->json(['result'=>$result]);
-            }
-            else {
-                $start = false;
-            }
+        if($validator->fails()){
+            $result['msgs'] = $validator->errors();
+            $result['status'] = 'failed';
+            return response()->json(['result'=>$result]);
         }
-        else $start = $criteria['projectmonthstart'];
 
-        if($validator->errors()->has('projectmonthend')){
-            $x = $validator->errors()->first('projectmonthend');
-            if($x != 'valid'){
-                $result['msgs'] = $validator->errors();
-                $result['status'] = 'failed';
-                return response()->json(['result'=>$result]);
-            }
-            else {
-                $end = $start;
-            }
-        }
-        else $end = $criteria['projectmonthend'];
+        $start = $request['projectmonthstart'];
+        $end = $request['projectmonthend'];
 
         if($start != false)
             $wc[count($wc)] = "start_date BETWEEN '$start' AND '$end'";
-
-        //validating users
-        if($validator->errors()->has('projectclient')){
-            $x = $validator->errors()->first('projectclient');
-            if($x != 'valid'){
-                $result['msgs'] = $validator->errors();
-                $result['status'] = 'failed';
-                return response()->json(['result'=>$result]);
-            }
-        }
-        else $wc[count($wc)] = "client_id = ".$client_id;
-
-        //validating organization
-        //validating users
-        if($validator->errors()->has('projectmanager')){
-            $x = $validator->errors()->first('projectmanager');
-            if($x != 'valid'){
-                $result['msgs'] = $validator->errors();
-                $result['status'] = 'failed';
-                return response()->json(['result'=>$result]);
-            }
-        }
-        else $wc[count($wc)] = "manager_id = ".$manager_id;
-        $wc[count($wc)] = "state = 1";
+        if($client_id>0)
+            $wc[count($wc)] = "client_id = ".$client_id;
 
         if(count($wc) == 0){
             $result['msgs'] = "No input found!";
@@ -328,26 +284,17 @@ class ProjectsController extends Controller
             $result['status'] = 'failed';
             return response()->json(['result'=>$result]);
         }
-
+        else {
+            $wc[count($wc)] = "status > 0";
+        }
         $whereclause = implode(' and ',$wc);
         
-        $projects = DB::table('projects')->whereRaw($whereclause)->get();
-        if(count($projects)>0)
-        {
-            foreach($projects as $project)
-            {
-                $start_date[$i] = $project->start_date;
-                if(isset($searched_project[$start_date[$i]]))
-                    $j = count($searched_project[$start_date[$i]]);
-                else $j = 0;
-                $searched_project[$start_date[$i]][$j] = $project;
-                $i++; 
-            }
-        }
+        $projects = Project::whereRaw($whereclause)->get();
 
         $result['status'] = 'success';
         $result['data'] = $projects;
-        $result['view'] =  view('projects.showprojectlist', ['searched_project'=>$projects])->render();
+        //$result['whereclause'] = $wc;
+        $result['view'] =  view('projects.projectlist', ['projects'=>$projects,'status'=>'closed'])->render();
 
         return response()->json(['result'=>$result]);
         

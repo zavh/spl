@@ -91,8 +91,6 @@ function ajaxFunction(instruction, execute_id, divid){
 							else{ 
 								var x = rloResponse.result.msgs;
 								errorBagProcessing(x);
-								//console.log(x);
-								//specialErrorBagProcessing(x);
 							}
 						}
 						else if(rloResponse.result.status == 'success'){
@@ -368,8 +366,10 @@ function dateSearchCriteria(el, minsetflag){
     var x = document.getElementById('projectmonthend');
     var y = document.getElementById('dummyprojectmonthend');
     x.value = el.value;
-    if(minsetflag)
-        y.setAttribute("min", el.value);
+    if(minsetflag){
+		y.setAttribute("min", el.value);
+		y.value = el.value;
+	}
 }
 
 function showSearchForm(){

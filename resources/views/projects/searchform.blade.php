@@ -1,24 +1,22 @@
 <form action="" class='m-1 p-1 small' autocomplete="off" id="findreports" name='findreports' onsubmit='findProjects(event, this)'>
-    <div class="input-group input-group-sm mb-1">
-        <strong class="col-md-4">Search by Date:</strong>
-        <div class="input-group input-group-sm row-md-6 col-md-4">
-            <input type="date" name='projectmonthstart' id='projectmonthstart' class="ploinput form-control"
+    <div class="form-group">
+        <label for="formGroupExampleInput">Search by Date</label>
+        <div class="row">
+            <div class="col">
+            <input type="date" name='projectmonthstart' id='projectmonthstart' class="ploinput form-control form-control-sm"
             placeholder="Start Date" onchange="dateSearchCriteria(this,1)">
-
-        </div>
-
             <span class="invalid-feedback" role="alert" id="projectmonthstart_error_span">
                 <strong id="projectmonthstart_error"></strong>
             </span>
-
-        <div class="input-group input-group-sm row-md-6 col-md-4">
-            <input type="date" class="form-control" value="" placeholder="End Date" id='dummyprojectmonthend' onchange="dateSearchCriteria(this,0)">
-        <input type="hidden" name='projectmonthend' id='projectmonthend' class="ploinput form-control">
-        </div>
-
+            </div>
+            <div class="col">
+            <input type="date" class="form-control form-control-sm" value="" placeholder="End Date" id='dummyprojectmonthend' onchange="dateSearchCriteria(this,0)">
+            <input type="hidden" name='projectmonthend' id='projectmonthend' class="ploinput form-control">
             <span class="invalid-feedback" role="alert" id="projectmonthend_error_span">
                 <strong id="projectmonthend_error"></strong>
             </span>
+            </div>
+        </div>
     </div>
 
     <div class="input-group input-group-sm">
