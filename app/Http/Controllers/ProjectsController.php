@@ -207,6 +207,13 @@ class ProjectsController extends Controller
         $x = Project::find($project_id);
         return view('projects.projecttimeline',['project'=>$x]);
     }
+
+    public function searchform(){
+        if(Auth::Check())
+            return view('projects.searchform');
+        else 
+            return view('partial.sessionexpired');
+    }
 ////////////////////////////////////////////////////////////////////////////////////////
     public function search(Request $request)
     {
@@ -218,7 +225,8 @@ class ProjectsController extends Controller
         $criteria = $request->all();
         $wc = array();
         $whereclause = "";
-        $client = Client::where('organization','=',$criteria['projectclient'])->get();
+        
+        $client = Client::where('organization','like','%'.$criteria['projectclient'].'%')->get();
         $manager = User::where('name','=',$criteria['projectmanager'])->get();
         
         if(count($client)>0)
@@ -323,7 +331,7 @@ class ProjectsController extends Controller
 
         $whereclause = implode(' and ',$wc);
         
-        $projects = DB::table('projects')->whereRaw($whereclause)->get();//where clause works
+        $projects = DB::table('projects')->whereRaw($whereclause)->get();
         if(count($projects)>0)
         {
             foreach($projects as $project)

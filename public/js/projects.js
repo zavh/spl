@@ -86,21 +86,17 @@ function ajaxFunction(instruction, execute_id, divid){
 						var rloResponse = JSON.parse(ajaxRequest.responseText);
 						
 						if(rloResponse.result.status == 'failed'){
-							// document.getElementById('day-wise').innerHTML = rloResponse.result.msgs;
 							if(rloResponse.result.flag == 0)
-							{
-								//document.getElementById('projectcurrentAccordion').innerHTML = rloResponse.result.msgs;
 								console.log(rloResponse);
-							}
 							else{ 
 								var x = rloResponse.result.msgs;
-								specialErrorBagProcessing(x);
+								errorBagProcessing(x);
+								//console.log(x);
+								//specialErrorBagProcessing(x);
 							}
 						}
 						else if(rloResponse.result.status == 'success'){
-							// console.log(rloResponse);
-							document.getElementById('day-wise').innerHTML = rloResponse.result.view;
-							// console.log(rloResponse);
+							document.getElementById('searchresult').innerHTML = rloResponse.result.view;
 						}
 						return;
 					}
@@ -148,6 +144,10 @@ function ajaxFunction(instruction, execute_id, divid){
 		}
 		if(instruction == "renderTimeline"){
 			ajaxRequest.open("GET", "/project/timeline/"+execute_id, true);
+			ajaxRequest.send();
+		}
+		if(instruction == "showSearchForm"){
+			ajaxRequest.open("GET", "/project/searchform/"+execute_id, true);
 			ajaxRequest.send();
 		}
 		if(instruction == "newClientValidation"){
@@ -352,7 +352,7 @@ function findProjects(e, form){
     formdat = getQString(form.id, 'ploinput');		
     formdat['_token'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');		
     console.log(JSON.stringify(formdat));		
-    ajaxFunction('findProjects', JSON.stringify(formdat) , 'day-wise');		
+    ajaxFunction('findProjects', JSON.stringify(formdat) , 'searchresult');		
 }
 
 function dateSearchCriteria(el, minsetflag){
@@ -371,4 +371,7 @@ function dateSearchCriteria(el, minsetflag){
     if(minsetflag)
         y.setAttribute("min", el.value);
 }
-//////////////////////////////////////////////////////////////////////////////////
+
+function showSearchForm(){
+	ajaxFunction('showSearchForm', '', 'searchresult');	
+}
