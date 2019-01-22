@@ -4,9 +4,9 @@
 <div class="container-fluid">
     <div class='row'>
         <!-- Open Project Section Starts -->
-        <div class="col-md-4">
+        <div class="col-md-4 mb-2">
             <div class="card shadow-sm">
-                <div class="d-flex justify-content-between align-items-center mb-0 border-bottom bg-primary">
+                <div class="card-header d-flex justify-content-between align-items-center m-0 p-0 border-bottom bg-primary">
                     <span class="mx-2 font-weight-normal text-white">Project Status : Open</span>
                     <span class='mx-2 small'>
                         <a href="/projects/create" class="text-white">Create</a>
@@ -25,7 +25,7 @@
         </div>
         <!-- Open Project Section Ends -->
         <!-- Expired Project Section Starts -->
-        <div class="col-md-4">
+        <div class="col-md-4 mb-2">
             <div class="card shadow-sm">
                 <div class="card-header text-white bg-danger m-0 p-0">
                     <span class="mx-2 font-weight-normal">Project Status : Expired</span>
@@ -43,9 +43,9 @@
         </div>
         <!-- Expired Project Section Ends -->
         <!-- Expired Project Section Starts -->
-        <div class="col-md-4">
+        <div class="col-md-4 mb-2">
             <div class="card shadow-sm">
-                <div class="d-flex justify-content-between align-items-center mb-0 border-bottom bg-success">
+                <div class="card-header d-flex justify-content-between align-items-center m-0 p-0 border-bottom bg-success">
                     <span class="mx-2 font-weight-normal text-white">Project Status : Closed</span>
                     <span class='mx-2 small'>
                         <a href="javascript:void(0)" class="text-white" onclick='showSearchForm()'>Search</a>
@@ -56,7 +56,7 @@
                 @if(count($closed) == 0)
                 <span class='mx-4'>No closed Project found</span>
                 @else
-                <span class='small mx-2'>(Max last 5 project shown)</span>
+                <span class='small mx-2'>(Last 5 projects shown)</span>
                 @include('projects.projectlist',['projects'=>$closed,'status'=>'closed'])
                 @endif
                 </div>

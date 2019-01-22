@@ -106,7 +106,7 @@ function ajaxFunction(instruction, execute_id, divid){
 						var rloResponse = JSON.parse(ajaxRequest.responseText);
 						clients = rloResponse.result.names;
 						cmapping = rloResponse.result.mapping;
-						//autocomplete(execute_id, clients);
+						autocomplete(execute_id, clients);
 						return;
 					}
 					
@@ -190,9 +190,6 @@ function ajaxFunction(instruction, execute_id, divid){
 				ajaxRequest.open("GET", "/project/searchclient", true);
 				ajaxRequest.send();
 			}
-			else{
-    			autocomplete(execute_id, clients);
-			}
 		}
 }
 
@@ -267,7 +264,6 @@ function selectClientContact(el){
 	else {
 		contacts[el.dataset.index]['selected'] = 0;
 	}
-	console.log(contacts);
 }
 
 function createProject(e, form){
@@ -306,7 +302,6 @@ function editTask(e, form){
 	
 	formdat['_token'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 	formdat['_method'] = "PUT";
-	console.log(JSON.stringify(formdat));
 	ajaxFunction('editTask', JSON.stringify(formdat) , 'taskdiv');
 }
 
@@ -316,7 +311,6 @@ function newClientValidation(e, form){
 	var formdat = getQString(form.id, 'form-control');
 
 	formdat['_token'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-	console.log(formdat);
 	//ajaxFunction('editTask', JSON.stringify(formdat) , 'taskdiv');
 }
 
@@ -360,14 +354,23 @@ function renderTaskCount(project_id){
 function renderProjectTimeline(project_id){
 	ajaxFunction('renderTimeline',project_id,'projecttimeline');
 }
-///////////////////////////////////////////////////////////////////////////////
+
 function findProjects(e, form){		
-    e.preventDefault();		      
-    var formdat;		
+	e.preventDefault();
+	
     clearErrorFormatting(form.id);
     formdat = getQString(form.id, 'ploinput');		
-    formdat['_token'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');		
-    console.log(JSON.stringify(formdat));		
+	formdat['_token'] = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+	
+	var projectclient = document.getElementById('projectclient').value;
+	if(projectclient.trim() == '')
+		formdat['client_id'] = 0;
+	else{
+		if (typeof cmapping[projectclient] == 'undefined')
+			formdat['client_id'] = -1;
+		else 
+			formdat['client_id'] = cmapping[projectclient];
+	}
     ajaxFunction('findProjects', JSON.stringify(formdat) , 'searchresult');		
 }
 

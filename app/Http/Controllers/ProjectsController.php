@@ -237,17 +237,10 @@ class ProjectsController extends Controller
         $wc = array();
         $whereclause = "";
         
-        $client = Client::where('organization','=',$criteria['projectclient'])->get();
         $manager = User::where('name','=',$criteria['projectmanager'])->get();
         
-        if(count($client)>0)
-        {
-            $client_id = $client->first()->id;
-        }
-        else
-        {
-            $client_id = 0;
-        }
+        $client_id = $request->client_id;
+
         if(count($manager)>0)
         {
             $manager_id = $manager->first()->id;
@@ -262,7 +255,7 @@ class ProjectsController extends Controller
             'projectmonthend'=>'nullable|date|after_or_equal:projectmonthstart',
             'projectclient'=>['nullable',
                 function($attribute, $value, $fail) use($client_id){
-                if($client_id == 0)
+                if($client_id < 0)
                     $fail('Invalid client');
             }
         ],
