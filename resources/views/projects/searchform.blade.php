@@ -20,11 +20,13 @@
     </div>
 
     <div class="input-group input-group-sm">
-        <strong class="col-md-4">Search by Client:</strong>
+        <strong>Search by Client:</strong>
+        <div class="input-group input-group-sm">
         <input type="text" name='projectclient' id='projectclient' class="ploinput form-control" value=""
-            placeholder="Search Project" aria-label="Project Client" aria-describedby="button-addon2">
-        
+            placeholder="Search Client" aria-label="Project Client" aria-describedby="button-addon2" onkeyup="ajaxFunction('clientSearch', this, '')">
+        </div>
     </div>
+    
         <span class="invalid-feedback" role="alert" id="projectclient_error_span">
             <strong id="projectclient_error"></strong>
         </span>

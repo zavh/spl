@@ -69,3 +69,4 @@
 @endsection
 <script src="{{ asset('js/ajaxformprocess.js') }}"></script>
 <script src="{{ asset('js/projects.js') }}"></script>
+<script src="{{ asset('js/search.js') }}"></script>

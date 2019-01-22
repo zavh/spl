@@ -1,6 +1,9 @@
 var contacts = [];
 var preload = false;
 var preloaded_contacts = [];
+
+var clients = [];
+var cmapping = {};
 function ajaxFunction(instruction, execute_id, divid){
 	var ajaxRequest;  // The variable that makes Ajax possible!
 		try{
@@ -81,7 +84,7 @@ function ajaxFunction(instruction, execute_id, divid){
 						}
 						return;
 					}
-					//////////////////////////////////////////////////////////
+					
 					if(instruction == "findProjects"){
 						var rloResponse = JSON.parse(ajaxRequest.responseText);
 						
@@ -98,7 +101,15 @@ function ajaxFunction(instruction, execute_id, divid){
 						}
 						return;
 					}
-					/////////////////////////////////////////////////////////////
+
+					if(instruction == "clientSearch"){
+						var rloResponse = JSON.parse(ajaxRequest.responseText);
+						clients = rloResponse.result.names;
+						cmapping = rloResponse.result.mapping;
+						//autocomplete(execute_id, clients);
+						return;
+					}
+					
 				    ajaxDisplay.innerHTML = ajaxRequest.responseText;
 				}
 				else if(ajaxRequest.readyState == 4 && ajaxRequest.status == 419){
@@ -169,13 +180,20 @@ function ajaxFunction(instruction, execute_id, divid){
 			ajaxRequest.setRequestHeader("Content-type", "application/json");
 			ajaxRequest.send(execute_id);
 		}
-		////////////////////////////////////////////////
 		if(instruction == "findProjects"){
 			ajaxRequest.open("POST", "/projects/listnames", true);
             ajaxRequest.setRequestHeader("Content-type", "application/json");	
 			ajaxRequest.send(execute_id);
 		}
-		//////////////////////////////////////////////////////
+		if(instruction == "clientSearch"){
+			if(clients.length == 0){
+				ajaxRequest.open("GET", "/project/searchclient", true);
+				ajaxRequest.send();
+			}
+			else{
+    			autocomplete(execute_id, clients);
+			}
+		}
 }
 
 function getClient(el){

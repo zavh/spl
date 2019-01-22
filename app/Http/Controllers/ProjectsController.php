@@ -214,7 +214,17 @@ class ProjectsController extends Controller
         else 
             return view('partial.sessionexpired');
     }
-////////////////////////////////////////////////////////////////////////////////////////
+    public function searchclient(){
+        $clients = Client::all();
+        for($i=0;$i<count($clients);$i++){
+            $names[$i] = $clients[$i]->organization;
+            $mapping[$clients[$i]->organization] = $clients[$i]->id;
+        }
+        $result['names'] = $names;
+        $result['mapping'] = $mapping;
+        return response()->json(['result'=>$result]);
+    }
+
     public function search(Request $request)
     {
         $searched_project = array();
