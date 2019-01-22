@@ -36,7 +36,7 @@ class TasksController extends Controller
             if($project_id == null){
                 abort(404);    
             }
-            $users = User::all()->where('active',1);
+            $users = User::active()->dept()->get();
             $project = Project::find($project_id);
             $allocation = $project->allocation;
             if($allocation>=100)
@@ -127,7 +127,7 @@ class TasksController extends Controller
      */
     public function edit($task_id)
     {
-        $users = User::where([['id', '>', '1'],['active','=','1']])->get();
+        $users = User::active()->dept()->get();
         $task = Task::find($task_id);
         $userarr = array();
         $i = 0;

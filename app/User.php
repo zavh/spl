@@ -5,6 +5,8 @@ namespace App;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class User extends Authenticatable
 {
@@ -67,5 +69,17 @@ class User extends Authenticatable
     }
     public function salarystructure(){
         return $this->belongsTo('App\SalaryStructure', 'salaryprofile');
+    }
+    public function scopeActual($query)
+    {
+        return $query->where('department_id', '<>', 1);
+    }
+    public function scopeDept($query)
+    {
+        return $query->where('department_id',  Auth::User()->department_id);
+    }
+    public function scopeActive($query)
+    {
+        return $query->where('active', 1);
     }
 }

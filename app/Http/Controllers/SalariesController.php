@@ -14,7 +14,7 @@ class SalariesController extends Controller
 
     public function index()
     {        
-        $users = User::where('active', 1)->get();
+        $users = User::actual()->where('active', 1)->get();
         $salary = array();
         $tabheads = array('Employee ID','Basic');
         $flag = 0;

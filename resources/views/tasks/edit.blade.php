@@ -65,7 +65,7 @@
                     <select name="user_id" id="user_id" class="etinput form-control" value="{{ $task->user_id }}" required multiple="multiple">
                     <option disabled value=''>Select One</option>
                     @foreach($users as $user)
-                        <option value="{{$user['detail']->id}}" {{ $user['selected'] }}>{{$user['detail']->name}}</option>
+                        <option value="{{$user['detail']->id}}" {{ $user['selected'] }}>{{$user['detail']->fname}} {{$user['detail']->sname}} - [{{$user['detail']->name}}]</option>
                     @endforeach
                     </select>
 

@@ -25,13 +25,10 @@ class UsersController extends Controller
 
     public function index()
     {
-        if(Auth::User()->role_id == 1){
-            $users = User::all();
-            $me = User::find(Auth::User()->id);
-            $completion = $this->profileCalculation($me);
-            return view('users.index', ['users'=>$users,'me'=>$me, 'completion'=>$completion]);
-        }
-        else abort(404);
+        $users = User::actual()->get();
+        $me = User::find(Auth::User()->id);
+        $completion = $this->profileCalculation($me);
+        return view('users.index', ['users'=>$users,'me'=>$me, 'completion'=>$completion]);
     }
 
     public function create()
