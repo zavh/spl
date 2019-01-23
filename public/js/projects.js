@@ -4,6 +4,10 @@ var preloaded_contacts = [];
 
 var clients = [];
 var cmapping = {};
+
+var users = [];
+var umapping = {};
+
 function ajaxFunction(instruction, execute_id, divid){
 	var ajaxRequest;  // The variable that makes Ajax possible!
 		try{
@@ -109,8 +113,20 @@ function ajaxFunction(instruction, execute_id, divid){
 						autocomplete(execute_id, clients);
 						return;
 					}
-					
-				    ajaxDisplay.innerHTML = ajaxRequest.responseText;
+
+					if(instruction == "userSearch"){
+						var rloResponse = JSON.parse(ajaxRequest.responseText);
+						users = rloResponse.result.names;
+						umapping = rloResponse.result.mapping;
+						autocomplete(execute_id, users);
+						//console.log(execute_id);
+						return;
+					}
+					ajaxDisplay.innerHTML = ajaxRequest.responseText;
+					if(instruction == "showSearchForm"){
+						var pu = document.getElementById("projectmanager"); //pu - project user
+						ajaxFunction('userSearch', pu, '');
+					}
 				}
 				else if(ajaxRequest.readyState == 4 && ajaxRequest.status == 419){
 					var ajaxDisplay = document.getElementById("app");
@@ -188,6 +204,12 @@ function ajaxFunction(instruction, execute_id, divid){
 		if(instruction == "clientSearch"){
 			if(clients.length == 0){
 				ajaxRequest.open("GET", "/project/searchclient", true);
+				ajaxRequest.send();
+			}
+		}
+		if(instruction == "userSearch"){
+			if(users.length == 0){
+				ajaxRequest.open("GET", "/project/searchuser", true);
 				ajaxRequest.send();
 			}
 		}
@@ -394,5 +416,5 @@ function dateSearchCriteria(el, minsetflag){
 }
 
 function showSearchForm(){
-	ajaxFunction('showSearchForm', '', 'searchresult');	
+	ajaxFunction('showSearchForm', '', 'searchresult');
 }

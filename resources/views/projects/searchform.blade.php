@@ -19,28 +19,39 @@
                 </div>
             </div>
         </div>
-
+        <!-- Search By Client Area Starts -->
         <div class="input-group input-group-sm mb-1">
             <label for="projectclient" class='mb-0'>Search by Client</label>
             <div class="input-group input-group-sm">
-            <input type="text" name='projectclient' id='projectclient' class="ploinput form-control" value=""
-                placeholder="Search Client" aria-label="Project Client" aria-describedby="button-addon2" onkeyup="ajaxFunction('clientSearch', this, '')">
+                <input 
+                    type="text"
+                    name='projectclient'
+                    id='projectclient'
+                    class="ploinput form-control"
+                    placeholder="Search Client"
+                    onkeyup="ajaxFunction('clientSearch', this, '')">
             </div>
             <span class="invalid-feedback" role="alert" id="projectclient_error_span">
                 <strong id="projectclient_error"></strong>
             </span>
         </div>
-
+        <!-- Search By Client Area Ends -->
+        <!-- Search By User Area Starts -->
         <div class="input-group input-group-sm">
             <label for="projectclient" class='mb-0'>Search by Project Owner:</label>
             <div class="input-group input-group-sm">
-            <input type="text" name='projectmanager' id='projectmanager' class="ploinput form-control" value=""
-                placeholder="Search User" aria-label="Project Manager" aria-describedby="button-addon2">
+                <input
+                    type="text"
+                    name='projectmanager'
+                    id='projectmanager'
+                    class="ploinput form-control"
+                    placeholder="Search User">
             </div>
             <span class="invalid-feedback" role="alert" id="projectmanager_error_span">
                 <strong id="projectmanager_error"></strong>
             </span>
         </div>
+        <!-- Search By User Area Ends -->
         <button class="btn btn-success btn-block btn-sm mt-2" type="submit" id="button-addon2">Go</button>
     </form>
 </div>

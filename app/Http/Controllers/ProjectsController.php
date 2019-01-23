@@ -224,7 +224,16 @@ class ProjectsController extends Controller
         $result['mapping'] = $mapping;
         return response()->json(['result'=>$result]);
     }
-
+    public function searchuser(){
+        $users = User::active()->dept()->get();
+        for($i=0;$i<count($users);$i++){
+            $names[$i] = $users[$i]->fname." ".$users[$i]->sname;
+            $mapping[$names[$i]] = $users[$i]->id;
+        }
+        $result['names'] = $names;
+        $result['mapping'] = $mapping;
+        return response()->json(['result'=>$result]);
+    }
     public function search(Request $request)
     {
         $searched_project = array();
