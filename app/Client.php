@@ -12,7 +12,7 @@ class Client extends Model
         'organization', 
         'address',
         'background',
-        'deparment_id',
+        'department_id',
     ];
     protected $table = 'clients';
     // Primary Key
@@ -30,6 +30,10 @@ class Client extends Model
 
     public function department(){
         return $this->belongsTo('App\Department');
+    }
+
+    public function reports(){
+        return $this->hasMany('App\Report');
     }
 
     protected static function boot()

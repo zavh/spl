@@ -34,7 +34,6 @@ Route::get('/enquiries/{project_id?}/edit', 'EnquiriesController@projectenqedit'
 
 Route::post('/users/credentials', 'UsersController@changepass')->name('changepass');
 Route::get('/user/tasks', 'UsersController@tasks')->name('usertasks');
-Route::get('/user/reports', 'UsersController@reports')->name('userreports');
 Route::post('/user/deactivate/{user_id?}', 'UsersController@deactivate');
 
 Route::get('/clients/create/{page?}', 'ClientsController@create')->name('createfrom');
@@ -55,6 +54,7 @@ Route::get('/reports/stage2/{report_id?}', 'ReportsController@stage2view');
 Route::post('/reports/submit/{report_id?}', 'ReportsController@submit')->name('addclient');
 Route::get('/reports/rtop/{report_id?}', 'ReportsController@rtop')->name('rtop'); //rtop = Report to Project
 Route::post('/reports/listnames', 'ReportsController@search');
+Route::get('/reports/widget', 'ReportsController@widget');
 
 Route::get('/project/enquiries/{project_id?}', 'ProjectsController@enquiries');
 Route::get('/project/createclient', 'ProjectsController@createclient');

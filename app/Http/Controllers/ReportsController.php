@@ -119,10 +119,12 @@ class ReportsController extends Controller
     {
         if(Auth::Check()){
             $input = $request->all();
-
+            $report_data = json_encode($input);
+            $client_id = $input['client_data']['id'];
             $reportCreate = Report::create([
                 'user_id' => Auth::User()->id,
-                'report_data' => json_encode($input),
+                'report_data' => $report_data,
+                'client_id' => $client_id,
                 'stage' => 1,
                 'completion' => 0,
                 'acceptance' => 0,
@@ -139,12 +141,6 @@ class ReportsController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
         $report = Report::find($id);
@@ -152,15 +148,8 @@ class ReportsController extends Controller
         $report_dates['created'] = date("d-M-Y",strtotime($report->created_at));
         $report_dates['submitted'] = date("d-M-Y",strtotime($report->updated_at));
         return view('reports.show',['report'=>$report_data, 'dates'=>$report_dates]);
-        //dd($report);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
         if(Auth::Check()){
@@ -181,13 +170,6 @@ class ReportsController extends Controller
             return redirect('/login');
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
         $x = $request->stage;
@@ -205,7 +187,6 @@ class ReportsController extends Controller
             $report->visit_date = $request->report_data['visit_date'];
         }
         if(isset($request->report_data->client_data)){
-            //$report->organization = $request->report_data->client_data['organization'];
             $report->organization = $request->report_data->client_data['organization'];
         }
         $report->save();
@@ -279,8 +260,6 @@ class ReportsController extends Controller
             unset($orig_report_data->stage);
             unset($orig_report_data->client_index);
 
-            unset($report_data->_token);
-
             $client = $orig_report_data->client_data;
             unset($client->contactview);
             if(array_key_exists('created_at',$client)){
@@ -291,9 +270,10 @@ class ReportsController extends Controller
                     'organization' => $client->organization,
                     'address' => $client->address,
                     'background' => $client->background,
-                    'department_id' => Auth::User()->department_id
+                    'department_id' => Auth::User()->department_id,
                     ]);
                     $client->contacts = $this->setReportContacts($client->contacts, $clientCreate->id);
+                $report->client_id = $clientCreate->id;
             }
             $orig_report_data->client_data = $client;
             $orig_report_data->report_data = $report_data;
@@ -342,7 +322,22 @@ class ReportsController extends Controller
         }
         return redirect()->route('projects.create')->with(['client_id'=>$client_id, 'contacts'=>$contacts, 'report_id'=>$report_id]);
     }
-
+    public function widget(){
+        $x = User::find(Auth::User()->id)->reports;
+        $complete = array();
+        $incomplete = array();
+        foreach($x as $index=>$report){
+            if($report->completion == 0){
+                $incomplete[$index]['data'] = json_decode($report->report_data);
+                $incomplete[$index]['id'] = $report->id;
+            }
+            else {
+                $complete[$index]['data'] = json_decode($report->report_data);
+                $complete[$index]['id'] = $report->id;
+            }
+        }
+        return view('reports.widget', ['complete'=>$complete, 'incomplete'=>$incomplete]);
+    }
     public function search(Request $request)
     {
         $searched_month_report = array();

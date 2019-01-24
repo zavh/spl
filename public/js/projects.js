@@ -119,7 +119,6 @@ function ajaxFunction(instruction, execute_id, divid){
 						users = rloResponse.result.names;
 						umapping = rloResponse.result.mapping;
 						autocomplete(execute_id, users);
-						//console.log(execute_id);
 						return;
 					}
 					ajaxDisplay.innerHTML = ajaxRequest.responseText;
@@ -131,7 +130,6 @@ function ajaxFunction(instruction, execute_id, divid){
 				else if(ajaxRequest.readyState == 4 && ajaxRequest.status == 419){
 					var ajaxDisplay = document.getElementById("app");
 					ajaxDisplay.innerHTML = ajaxRequest.responseText;
-					//window.location.href = '/login';
 				}
 	    } 
 

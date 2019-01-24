@@ -42,7 +42,7 @@
 									<h6 class='card-header bg-white text-dark' style='border:none'>Visit Date</h6>
 								</div>
 								<div class='col-7' id='visit_date-details'>
-								@isset($report->report_data->visit_date))
+								@isset($report->report_data->visit_date)
                                 {{date("d-M-Y",strtotime($report->report_data->visit_date))}}
 								@endisset
 								</div>

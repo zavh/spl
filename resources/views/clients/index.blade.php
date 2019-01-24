@@ -46,7 +46,6 @@
 										<div class="input-group-append">
 											<button class="btn btn-secondary btn-sm" type="submit" id="button-addon2">Go</button>
 										</div>
-										<div class="autocomplete"></div>
 									</div>
 								</form>
 								<script>

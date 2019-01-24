@@ -395,23 +395,6 @@ class UsersController extends Controller
         }
         return view('users.usertasks', ['tasks'=>$tasks]);
     }
-
-    public function reports(){
-        $x = User::find(Auth::User()->id)->reports;
-        $complete = array();
-        $incomplete = array();
-        foreach($x as $index=>$report){
-            if($report->completion == 0){
-                $incomplete[$index]['data'] = json_decode($report->report_data);
-                $incomplete[$index]['id'] = $report->id;
-            }
-            else {
-                $complete[$index]['data'] = json_decode($report->report_data);
-                $complete[$index]['id'] = $report->id;
-            }
-        }
-        return view('users.userreports', ['complete'=>$complete, 'incomplete'=>$incomplete]);
-    }
     
     public function deactivate($id)
     {

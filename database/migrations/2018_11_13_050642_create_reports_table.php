@@ -16,6 +16,7 @@ class CreateReportsTable extends Migration
         Schema::create('reports', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('user_id');
+            $table->unsignedInteger('client_id');
             $table->json('report_data');
             $table->tinyInteger('stage');
             $table->tinyInteger('completion')->default(0);
