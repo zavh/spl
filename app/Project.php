@@ -46,6 +46,10 @@ class Project extends Model
         return $this->hasMany('App\Task');
     }
 
+    public function report(){
+        return $this->belongsTo('App\Report');
+    }
+
     public function department(){
         return $this->belongsTo('App\Department');
     }

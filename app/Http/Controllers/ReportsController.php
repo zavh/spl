@@ -144,10 +144,16 @@ class ReportsController extends Controller
     public function show($id)
     {
         $report = Report::find($id);
+        if($report->project)
+            $ids['project'] = $report->project->id;
+        else 
+            $ids['project'] = NULL;
+        $ids['report'] = $id;
+        
         $report_data = json_decode($report->report_data);
         $report_dates['created'] = date("d-M-Y",strtotime($report->created_at));
         $report_dates['submitted'] = date("d-M-Y",strtotime($report->updated_at));
-        return view('reports.show',['report'=>$report_data, 'dates'=>$report_dates]);
+        return view('reports.show',['report'=>$report_data, 'dates'=>$report_dates , 'ids'=>$ids]);
     }
 
     public function edit($id)

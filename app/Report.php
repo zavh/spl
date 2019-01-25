@@ -22,5 +22,8 @@ class Report extends Model
     }
     public function client(){
         return $this->belongsTo('App\Client');
+    }
+    public function project(){
+        return $this->hasOne('App\Project');
     }    
 }

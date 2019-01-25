@@ -120,8 +120,13 @@
                     <div class="lh-100">
                         <h6 class="mb-0 text-white lh-100">Enquiries</h6>
                         <div class="d-flex justify-content-between align-items-center small">
-                            <span> Number of Enquiries: {{count($project['enquiries'])}} </span>
+                            <span> Number of Enquiries: {{count($project['enquiries'])}}</span>
+                            <span>
+                            @if($project->report_id > 0)
+                            <a href="/reports/{{$project->report_id}}" class='text-white small mx-2'>Visit Report</a>
+                            @endif
                             <a href="/enquiries/create/{{$project->id}}" class='text-white small'>Add</a>
+                            </span>
                         </div>
                     </div>
                 </div>
