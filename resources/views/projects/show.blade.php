@@ -146,10 +146,15 @@
                             @else
                                 Total number of tasks: <span id='taskcount'>{{count($project->tasks)}}</span>
                             @endif 
-                        </span>                        
+                        </span>
+                            <span>
+                            <a href="/quotations/project/{{$project->id}} " class="text-white small mx-2">
+                                Create Quotation
+                            </a>                                            
                             <a href="javascript:void(0)" class="text-white small" onclick="ajaxFunction('showAddTask', '{{ $project->id }}' , 'taskdiv')">
                                 Add Task
                             </a>
+                            </span>
                     </div>
                 </div>
                 <div id='taskdiv'>

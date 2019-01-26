@@ -85,6 +85,8 @@ Route::post('/appmodules/deptconfig', 'AppModulesController@deptconfig')->name('
 Route::post('/appmodules/changedeptcfg', 'AppModulesController@changedeptcfg')->name('changedeptcfg');
 Route::get('/appmodules/widget', 'AppModulesController@widget');
 
+Route::get('/quotations/project/{project_id?}', 'QuotationsController@pqcreate')->name('pqcreate');
+
 Route::resource('clients','ClientsController');
 Route::resource('projects','ProjectsController');
 Route::resource('enquiries','EnquiriesController')->except('create','edit');;
@@ -99,3 +101,4 @@ Route::resource('products','ProductsController');
 Route::resource('salarystructures','SalarystructuresController');
 Route::resource('salaries','SalariesController');
 Route::resource('appmodules','AppModulesController')->only(['index']);
+Route::resource('quotations','QuotationsController')->except('create');
