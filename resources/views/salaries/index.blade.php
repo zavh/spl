@@ -14,6 +14,7 @@
                                     Select Monthly Data:
                                     <input type="file" name="fileToUpload" id="fileToUpload">
                                     <input type="submit" value="Upload Image" name="submit">
+                                    {{-- <input type="button" value="Regenerate" action="{{ route('salaries.regenerate') }}" name="Regenerate"> --}}
                                 </form>
                             </div>
                             <div class="row m-0 bg-light border-bottom">

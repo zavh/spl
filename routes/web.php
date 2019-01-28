@@ -79,6 +79,7 @@ Route::post('/salarystructures/addparam', 'SalarystructuresController@addparam')
 Route::post('/salarystructures/saveconfig', 'SalarystructuresController@saveconfig');
 
 Route::post('/salaries/upload', 'SalariesController@upload');
+Route::post('/salaries/regenerate', 'SalariesController@regenerate');
 Route::get('/salaries/taxtable/{user_id?}', 'SalariesController@taxtable');
 
 Route::resource('clients','ClientsController');

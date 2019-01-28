@@ -68,10 +68,10 @@
                                         <td class="text-center">Bonus</td>
                                         <td class="text-center">{{$response['bonus']}}</td>
                                         <td class="text-center">x</td>
-                                        <td class="text-center">1</td>{{-- check how to put in, hardcode or calculate --}}
-                                        <td class="text-center">{{$response['bonus']}}</td>
+                                        <td class="text-center">2</td>{{-- check how to put in, hardcode or calculate --}}
+                                        <td class="text-center">{{$response['bonus']*2}}</td>
                                         <td class="text-center">-</td>
-                                        <td class="text-center">{{$response['bonus']}}</td>
+                                        <td class="text-center">{{$response['bonus']*2}}</td>
                                     </tr>
                                     <tr>
                                         <td class="text-center">Extra</td>
