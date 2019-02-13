@@ -115,8 +115,11 @@ class LoansController extends Controller
     public function edit($id)
     {
         //
-        $users = User::all();
-        return view('loans.create');
+        $loan = Loan::find($id);
+        // $uid = $loan->salary->user_id;
+        // $user = User::find($uid);
+        // dd($user);
+        return view('loans.edit', ['loan'=>$loan]);
     }
 
     /**
@@ -129,6 +132,44 @@ class LoansController extends Controller
     public function update(Request $request, $id)
     {
         //
+        if(Auth::check()){
+            // $messages = [
+            //     'role_name.required' => 'Please enter the role name',
+            //     'role_name.min' => 'role name must be minimum 2 characters',
+            //     'role_name.max' => 'role name cannot be more than 191 characters',
+            //     'role_name.unique' =>'role name has already been taken',
+
+            //     'role_description.required' => 'Please enter the email',
+            //     'role_description.max' => 'role description cannot be more than 3000 characters'
+            // ];
+
+            // $validator = Validator::make($request->all(), [
+            //     'role_name' =>'required|min:2|max:191|unique:roles,role_name',
+            //     'role_description'=>'required|max:3000'
+            // ],$messages);
+
+            // if($validator->fails()){
+            //     return back()->withErrors($validator)->withInput();
+            //     //$abc = back()->withErrors($validator)->withInput();
+            //     //dd($abc);
+            // }
+            $loan = Loan::find($id);
+            
+            $sid = $loan->salary->id;
+
+            $loan->salary_id = $sid;
+            $loan->loan_name =  $request->input('loan_name');
+            $loan->amount =  $request->input('amount');
+            $loan->start_date =  $request->input('start_date');
+            $loan->end_date =  $request->input('end_date');
+            $loan->installments =  $request->input('installments');
+            $loan->loan_type =  $request->input('loan_type');
+            $loan->interest =  $request->input('interest');
+
+            $loan->save();
+
+            return redirect('/loans')->with('success', 'Loan Edited');
+        }
     }
 
     /**
@@ -140,5 +181,12 @@ class LoansController extends Controller
     public function destroy($id)
     {
         //
+        $loan = Loan::find($id);
+        // dd($department);
+        if($loan->delete())
+        {
+            return redirect('/loans')->with('success', 'Loan Deleted');
+        }
+        return back()->withInput()->with('error', 'Loan could not be deleted');
     }
 }

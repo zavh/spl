@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 use App\Salary;
 use App\SalaryStructure;
+use App\Loan;
 use Carbon\Carbon;
 // use App\SalaryStructure;
 use App\User;
@@ -20,7 +21,9 @@ class SalariesController extends Controller
     private $yearly_tds = 0;
 
     public function index()
-    { 
+    {
+        // $user_id = 4;
+        // $this->loanfinder($user_id);
         $data = $this::calculation(0);
         return view('salaries.index',['salaries'=>$data['salaries'],'heads'=>$data['heads']]);
         
@@ -220,6 +223,8 @@ class SalariesController extends Controller
             $salary[$count]['basic'] = $si->basic;
             $salary[$count]['join_date'] = $si->join_date;
 
+            
+
             if(strtotime(date("Y-m-01"))<strtotime($si->join_date))
                 continue;
 
@@ -235,20 +240,25 @@ class SalariesController extends Controller
                     $salary[$count][$breakdown->param_name] = ($salary[$count]['basic'] * $breakdown->value)/100;
                     $profile[$breakdown->param_name] = $breakdown->value;
                 }
+
+                $sp = $this->salaryProfile($si,$profile, 0,$user, 0,0,0);
+                $gross_salary = $sp['response_without_addons']['grossSalary']/12;
+                $gross_total = $sp['response_without_addons']['grossTotal']/12;
+                $tds = $sp['response_without_addons']['finalTax']/12;
+
+                $total_loan = $this->loantotal($user->id);
+
+                $salary[$count]['loan'] = (float)$total_loan;
+
                 $salary[$count]['bonus'] = 0;
                
-                $salary[$count]['gross_salary'] = $salary[$count]['basic']+
-                                                $salary[$count]['house_rent']+
-                                                $salary[$count]['medical_allowance']+
-                                                $salary[$count]['conveyance']+
-                                                $salary[$count]['extra'];
+                $salary[$count]['gross_salary'] = $gross_salary;
                 $tabheads['gross_salary'] = "Gross Salary";
                 
-                $salary[$count]['gross_total'] = $salary[$count]['gross_salary']+
-                                                $salary[$count]['pf_company'];
+                $salary[$count]['gross_total'] = $gross_total;
                 $tabheads['gross_total'] = "Gross Total";
 
-                $salary[$count]['tds'] = ceil(($this->salaryProfile($si,$profile, 0,$user,$salary[$count]['bonus'],$salary[$count]['bonus'],$salary[$count]['bonus'])['finalTax'])/12);
+                $salary[$count]['tds'] = $tds;
 
                 $salary[$count]['deduction_total'] = $salary[$count]['hire_purchase']+
                                                     $salary[$count]['loan']+
@@ -366,7 +376,11 @@ class SalariesController extends Controller
                 
                 $salarydata['hire_purchase'] = (float)$update['Hire Purchase'];
                 $salarydata['fooding'] = (float)$update['Fooding'];
-                $salarydata['loan'] = (float)$update['Loan'];
+                $user_id = User::where('name', $salarydata['name'])->get()->first()->id;
+
+                $total_loan = $this->loantotal($user_id);
+
+                $salarydata['loan'] = (float)$total_loan;
                 $salarydata['bonus'] = (float)$update['Bonus'];
                 $salarydata['extra'] = (float)$update['Extra'];
                 $salarydata['less'] = (float)$update['Less'];
@@ -382,7 +396,7 @@ class SalariesController extends Controller
 
                 $dataarray_tds = $salarydata;
 
-                $user_id = User::where('name', $dataarray_tds['name'])->get()->first()->id;
+                
                 $salary_info = json_decode((Salary::where('user_id',$user_id)->get()->first()->salaryinfo),true);
                 $dataarray['gender'] = $salary_info['gender'];
                 $dataarray['dob'] = $salary_info['date_of_birth'];
@@ -398,11 +412,17 @@ class SalariesController extends Controller
                 // $dataarray['extra'] = $dataarray_tds['extra'];
                 // $dataarray['less'] = $dataarray_tds['less'];
                 
-                $response = $this::yearly_generation($dataarray,$dataarray_tds['bonus'],$dataarray_tds['extra'],$dataarray_tds['less']);
-
+                $sp = $this::yearly_generation($dataarray,$dataarray_tds['bonus'],$dataarray_tds['extra'],$dataarray_tds['less']);
+                // dd($user_id, $total_loan);
+                
+                $dataarray_tds['gross_salary'] = $sp['response_without_addons']['grossSalary'];
+                $dataarray_tds['gross_total'] = $sp['response_without_addons']['grossTotal'];
+                $dataarray_tds['tds'] = $sp['response_without_addons']['finalTax']/12 + $sp['addons_tax'];
+                $dataarray_tds['loan'] = $total_loan;
+                // dd($dataarray_tds);
                 // $Salarydata['tds'] = (float)($response['finalTax']/12);
 
-                // DB::table('salary_'.$lastmonth)->whereRaw($query)->update(['salarydata'=> json_encode($salarydata)]);
+                DB::table('salary_'.$lastmonth)->whereRaw($query)->update(['salarydata'=> json_encode($dataarray_tds)]);
                 
             }
             //////////////////////////regenerating the table////////////////////////////////////////////    
@@ -515,6 +535,7 @@ class SalariesController extends Controller
         );
         if($flag == 0){ //called from index
             $response = $this::yearly_generation($dataarray,$bonus,$extra,$less);//caled from index, no input for bonus, extra, less so, 0 values
+            // dd($response);
             return $response;
         }
         // else if($flag == 1){ //called from taxtable
@@ -681,16 +702,16 @@ class SalariesController extends Controller
         {
             $TDS = 0;
         }
-        echo "<pre>".
-                    "Final tax -> ".$finalTax.
-                    " Accumulatedtax ->".$accumulated_tax.
-                    " TDS ->".$TDS.
-                    " join date ->".$joindate.
-                    " end date ->".$enddate.
-                    " bonus tax ->".$bonus_tax.
-                    " extra tax ->".$extra_tax.
-                    " less tax ->".$less_tax.       
-            "</pre>";
+        // echo "<pre>".
+        //             "Final tax -> ".$finalTax.
+        //             " Accumulatedtax ->".$accumulated_tax.
+        //             " TDS ->".$TDS.
+        //             " join date ->".$joindate.
+        //             " end date ->".$enddate.
+        //             " bonus tax ->".$bonus_tax.
+        //             " extra tax ->".$extra_tax.
+        //             " less tax ->".$less_tax.       
+        //     "</pre>";
         for ($i = $passed; $i < 12; $i++) 
         {
             $yearly_income[$i]["TDS"] = (float)$TDS + $bonus_tax +$extra_tax + $less_tax;
@@ -927,7 +948,7 @@ class SalariesController extends Controller
 
         if($end_date >= $lastmonth_start && $end_date <= $lastmonth_end)
         {
-            echo "if trigerred";
+            // echo "if trigerred";
             $user = User::find($user_id);
             $user->active = 0;
             $user->save();
@@ -939,7 +960,7 @@ class SalariesController extends Controller
         }
         else
         {
-            echo "else trigerred";
+            // echo "else trigerred";
             $cysd = $this->cumulative_yearly_generator($yearly_income);//cumulative yearly salary data
             // dd($yearly_income, $cysd);
 
@@ -966,6 +987,13 @@ class SalariesController extends Controller
             $less_tax = $tax_without_less - $tax_with_less;//less is subtracted
             $response['response_with_less'] = $response_with_less['taxData'];
             $response['less_tax'] = $less_tax;
+
+            $tax_without_addons = $response_without_addons['taxData']['finalTax'];
+            $response_with_addons['taxData'] = $this->income_tax_calculation($cysd,$gender,$age,$bonus,$extra,$less);//returning final tax and relevent info
+            $tax_with_addons = $response_with_addons['taxData']['finalTax'];
+            $addons_tax = $tax_with_addons - $tax_without_addons;//less is subtracted
+            $response['response_with_addons'] = $response_with_addons['taxData'];
+            $response['addons_tax'] = $addons_tax;
             
             $yearly_income = $this->TDS_generation($yearly_income,$response,$number_of_months_remaining,$number_of_months_passed,$jd,$td);
         }
@@ -980,7 +1008,7 @@ class SalariesController extends Controller
         {            
             $this->yearly_income_table_data_entry($user_id,$user_name,$yearly_income,$year);
         }
-        // dd($response);
+        return $response;
     }
 
     private function income_tax_calculation($cysd,$gender,$age,$bonus,$extra,$less)
@@ -1076,5 +1104,30 @@ class SalariesController extends Controller
         // dd($response);
         return $response;
 
+    }
+
+    private function loantotal($user_id)
+    {
+        $salary = Salary::where('user_id',$user_id)->get()->first();
+        $salary_id = $salary->id;
+        $loans = Loan::where('salary_id',$salary_id)->get()->all();
+        // dd($loans);
+        $total_loan = 0;
+        foreach($loans as $loan)
+        {
+            $lmstart = Carbon::now()->subMonth()->startOfMonth();
+            $lmend = Carbon::now()->subMonth()->endOfMonth();
+            $startdate = Carbon::parse($loan->start_date);
+            $enddate = Carbon::parse($loan->end_date);
+            if( ($startdate>$lmstart && $startdate<$lmend) || ($startdate<$lmstart) )
+            {
+                if( ($enddate>$lmstart && $enddate<$lmend) || ($enddate>$lmend) )
+                {
+                    $monthly_loan = $loan->amount/$loan->installments;
+                    $total_loan += $monthly_loan; 
+                }
+            }
+        }
+        return $total_loan;
     }
 }
