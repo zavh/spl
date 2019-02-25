@@ -21,5 +21,8 @@ class Salary extends Model
     public function user(){
         return $this->belongsTo('App\User');
     }
+    public function loans(){
+        return $this->hasMany('App\Loan');
+    }
 
 }

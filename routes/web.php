@@ -77,6 +77,8 @@ Route::post('/salarystructures/addparam', 'SalarystructuresController@addparam')
 Route::post('/salarystructures/saveconfig', 'SalarystructuresController@saveconfig');
 
 Route::post('/salaries/upload', 'SalariesController@upload');
+Route::post('/salaries/regenerate', 'SalariesController@regenerate');
+Route::get('/salaries/taxtable/{user_id?}', 'SalariesController@taxtable');
 
 Route::post('/appmodules/addmod', 'AppModulesController@addmod')->name('addModule');
 Route::post('/appmodules/defaultconfig', 'AppModulesController@defaultconfig')->name('appDefaultConfiguration');
@@ -100,5 +102,7 @@ Route::resource('reports', 'ReportsController');
 Route::resource('products','ProductsController');
 Route::resource('salarystructures','SalarystructuresController');
 Route::resource('salaries','SalariesController');
+Route::resource('loans','LoansController');
 Route::resource('appmodules','AppModulesController')->only(['index']);
 Route::resource('quotations','QuotationsController')->except('create');
+
