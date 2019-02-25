@@ -16,8 +16,10 @@
         </div>
     </div>
 </div>
+<div id='react'></div>
 @endsection
 <script src="{{ asset('js/product.js') }}" defer></script>
+<script src="{{ asset('js/components/Home.js') }}" defer></script>
 
                     
                     
