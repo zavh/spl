@@ -9,14 +9,19 @@
                     <span id="client-list-{{$client->id}}">{{$client->organization}}</span>
                         <span class="badge badge-pill badge-warning" title="Number of Projects">
                             <small>
-                                {{count($client->projects)}}
+                                Projects : {{count($client->projects)}}
+                            </small>
+                        </span>
+                        <span class="badge badge-pill badge-warning" title="Number of Projects">
+                            <small>
+                                Visits : {{count($client->reports)}}
                             </small>
                         </span>
                 </a>
             </div>
             <div class="col-md-12 col-lg-3 col-sm-12">
             <small>
-                @if(count($client->projects) == 0)
+                @if(count($client->projects) == 0 && count($client->reports) == 0)
                     <a 
                         href="javascript:void(0)" 
                         class='text-danger' 

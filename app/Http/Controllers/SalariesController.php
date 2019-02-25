@@ -205,6 +205,7 @@ class SalariesController extends Controller
     {
         $users = User::where('active','1')->get()->all();
         $count = 0;
+
         $salary = array();
         $tabheads = array('Employee ID','Basic', 'Date of Joining');
         $flag = 0;

@@ -74,9 +74,7 @@
                 <select name="user_id" id="user_id" class="ctinput form-control{{ $errors->has('user_id') ? ' is-invalid' : '' }}" required multiple="multiple">
                     <option disabled selected>Select One
                     @foreach($users as $user)
-                        @if($user->name != 'admin')
-                            <option value="{{$user->id}}">{{$user->name}}</option>
-                        @endif
+                        <option value="{{$user->id}}">{{$user->fname}} {{$user->sname}} - [{{$user->name}}]</option>
                     @endforeach
                     </select>
 

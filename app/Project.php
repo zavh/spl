@@ -3,6 +3,8 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class Project extends Model
 {
@@ -12,9 +14,11 @@ class Project extends Model
         'manager_id',
         'assigned', 
         'deadline',
-        'description', 
+        'description',
+        'department_id',
         'status', 
         'state',
+        'ref',
         'allocation'
     ];
     //
@@ -41,5 +45,21 @@ class Project extends Model
 
     public function tasks(){
         return $this->hasMany('App\Task');
+    }
+
+    public function report(){
+        return $this->belongsTo('App\Report');
+    }
+
+    public function department(){
+        return $this->belongsTo('App\Department');
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+        static::addGlobalScope('deptproj', function (Builder $builder) {
+                $builder->where('department_id', Auth::User()->department_id);
+        });
     }
 }

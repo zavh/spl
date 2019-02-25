@@ -42,18 +42,17 @@
                                 <div class="col-md-12">
 								<form action="" class='m-0 p-0' autocomplete="off" id="findclientnames" name='findclientnames' onsubmit='findclientNames(event, this)'>
 									<div class="input-group input-group-sm">
-										<input type="text" name='clientname' id='clientname' class="cnlinput form-control" placeholder="Search Client" aria-label="Recipient's username" aria-describedby="button-addon2">
+										<input type="text" name='clientname' id='clientname' class="cnlinput form-control" placeholder="Search Client" aria-label="Client Name" aria-describedby="button-addon2">
 										<div class="input-group-append">
 											<button class="btn btn-secondary btn-sm" type="submit" id="button-addon2">Go</button>
 										</div>
-										<div class="autocomplete"></div>
 									</div>
 								</form>
 								<script>
 									var x = '{{$names}}' ;
 									var names = x.split(',');
 									var inp = document.getElementById("clientname");
-									autocomplete(document.getElementById("clientname"), names);
+									autocomplete(inp, names);
 								</script>
                             </div>
                             </div>

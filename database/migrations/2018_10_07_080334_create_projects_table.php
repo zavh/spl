@@ -21,11 +21,12 @@ class CreateProjectsTable extends Migration
             $table->integer('user_id');
             $table->date('start_date');
             $table->date('deadline');
+            $table->unsignedInteger('department_id');
             $table->integer('report_id')->unsigned()->nullable()->default(0);
-            $table->tinyInteger('status')->nullable();
-            $table->tinyInteger('state')->nullable();
+            $table->tinyInteger('status')->default(0);
             $table->integer('allocation')->default(0);
             $table->tinyInteger('completed')->unsigned()->default(0);
+            $table->string('ref')->nullable();
             $table->timestamps();
         });
     }

@@ -14,10 +14,16 @@ class Report extends Model
         'phone', 
         'acceptance',
         'organization',		
-        'visit_date'
+        'visit_date',
+        'client_id'
     ];
     public function user(){
         return $this->belongsTo('App\User');
     }
-    
+    public function client(){
+        return $this->belongsTo('App\Client');
+    }
+    public function project(){
+        return $this->hasOne('App\Project');
+    }    
 }

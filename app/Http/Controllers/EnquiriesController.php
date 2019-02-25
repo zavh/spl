@@ -17,7 +17,14 @@ class EnquiriesController extends Controller
     {
         $this->middleware('auth');
     }
-    public function index($project_id=null)
+    public function index(){
+        $enquiries = Enquiry::all();
+        for($i=0;$i<count($enquiries);$i++){
+            $enquiries[$i]['details'] = json_decode($enquiries[$i]['details']);
+        }
+        return view('enquiries.index')->with('enquiries',$enquiries);
+    }
+    public function projectenq($project_id=null)
     {
         if($project_id == null)
             abort(404);
@@ -27,10 +34,10 @@ class EnquiriesController extends Controller
         for($i=0;$i<count($enquiries);$i++){
             $enquiries[$i]['details'] = json_decode($enquiries[$i]['details']);
         }
-        return view('enquiries.index')->with('enquiries',$enquiries);
+        return view('projectenqindex.index')->with('enquiries',$enquiries);
     }
 
-    public function create($project_id=null)
+    public function projectenqcreate($project_id=null)
     {
         if($project_id == null)
             abort(404);
@@ -85,7 +92,7 @@ class EnquiriesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function projectenqedit($id)
     {
         $enquiry = Enquiry::find($id);
         $x = $enquiry->details;

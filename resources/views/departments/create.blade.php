@@ -15,6 +15,19 @@
                         <div class="form-group row">
                             <div class="input-group input-group-sm col-md-12"  style='margin-top:-10px'>
                                 <div class="input-group-prepend">
+                                    <span class="input-group-text">{{ __('Parent Department') }}</span>
+                                </div>
+                                <select name="parent_id" id="parent_id" class="form-control">
+                                <option value="0" selected>Sigma Group</option>
+                                @foreach($departments as $department)
+                                <option value="{{$department->id}}">{{$department->name}}</option>
+                                @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="input-group input-group-sm col-md-12"  style='margin-top:-10px'>
+                                <div class="input-group-prepend">
                                     <span class="input-group-text">{{ __('Name') }}</span>
                                 </div>
                                 <input id="organization" type="text" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" name="name" value="{{ old('name') }}" required>
@@ -27,14 +40,14 @@
                             </div>
                         </div>
                         <!-- Organization Name Input Ends -->
-                    
-                        <div class='row d-flex justify-content-center'> 
-                            <button type="submit" class="btn btn-primary btn-block btn-sm">
-                                {{ __('Create') }}
-                            </button>
-                            <a href="/departments" class="btn btn-primary btn-block btn-sm">Cancel</a>
+                        <div class="form-group row mt-2">
+                            <div class="input-group input-group-sm col-md-6">
+                                <input type="submit" class="btn btn-outline-primary btn-sm btn-block" value="Create New">
+                            </div>
+                            <div class="input-group input-group-sm col-md-6">
+                            <a href="/departments" class="btn btn-outline-secondary btn-sm btn-block">Cancel</a>
+                            </div>
                         </div>
-
                     </form>
                 </div>
             </div>

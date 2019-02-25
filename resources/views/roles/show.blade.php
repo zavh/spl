@@ -1,4 +1,4 @@
-
+<div class="card flex-md-row mb-4 shadow-sm h-md-250">
     <main role="main" class="container-fluid">
         <div class="bg-dark text-white text-left">
             <div class='row'> 
@@ -39,3 +39,4 @@
             </div>
         </div>
     </main>
+</div>

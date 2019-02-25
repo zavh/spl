@@ -68,10 +68,7 @@ function ajaxFunction(instruction, execute_id, divid){
 			ajaxRequest.open("GET", "/user/tasks", true);
 			ajaxRequest.send();
 		}
-		if(instruction == "viewuserreports"){
-			ajaxRequest.open("GET", "/user/reports", true);
-			ajaxRequest.send();
-		}
+
 		if(instruction == "userWithSalary"){
 			ajaxRequest.open("POST", "/users", true);
 			ajaxRequest.setRequestHeader("Content-type", "application/json");

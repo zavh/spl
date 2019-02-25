@@ -11,10 +11,10 @@ use DB;
 
 class ClientsController extends Controller
 {
-/*    public function __construct()
+    public function __construct()
     {
         $this->middleware('auth');
-    }*/
+    }
     public function index($target = null)
     {
         if(Auth::Check()){
@@ -97,6 +97,7 @@ class ClientsController extends Controller
             $client->organization = $request->input('organization');
             $client->address = $request->input('address');
             $client->background = $request->input('background');
+            $client->department_id = Auth::User()->department_id;
             $client->save();
 
             $contactCreate = Clientcontact::create([

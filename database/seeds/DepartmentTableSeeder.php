@@ -12,7 +12,11 @@ class DepartmentTableSeeder extends Seeder
     public function run()
     {
         DB::table('departments')->insert([
-            'name' => 'Sales & Marketing (Pumps & Valves)',
+            'parent_id' => 0,
+            'path' => '{"0": "0"}',
+            'name' => 'Application',
+            'dirname' => 'homes',
+            'apppermission' => '{"modname": "all","action": [{"name": "all","func": "all","url": "all"}]}',
         ]);
     }
 }

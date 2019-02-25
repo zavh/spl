@@ -20,11 +20,10 @@
                                         @csrf
                                         <input name="_method" type="hidden" value="PUT">
                                         <input type="hidden" name="sal_id" id="sal_id" value="{{$user->id}}" class="useraccount">
-                                       
                                         <div class='row'>
                                             <div class='col-md-4 m-0'> 
                                                 @include("users.edit_account")
-                                            </div> 
+                                            </div>
                                             @if(Auth::User()->role_id == 1)
                                                 <div class='col-md-4'> 
                                                     @include("users.edit_salary_1")

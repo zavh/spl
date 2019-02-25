@@ -7,8 +7,16 @@
 				<div class=" mb-0 bg-white rounded">
 					<div class="media text-muted">
 						<div class="media-body small mb-2">
-							<div class="d-flex justify-content-center w-100 border-bottom pt-2 text-dark">
-                                <h5 style='text-decoration:underline'>VISIT REPORT</h5>
+							<div class="d-flex justify-content-between w-100 border-bottom mt-2">
+								<span></span>
+                                <h5 style='text-decoration:underline' class='text-center text-dark'>VISIT REPORT</h5>
+								<span class='mr-3'>
+								@if($ids['project'] != NULL)
+								<a href="/projects/{{$ids['project']}}">Already Converted</a>
+								@else
+								<a href="/reports/rtop/{{$ids['report']}}">Convert To Project</a>
+								@endif
+								</span>
 							</div>
 							<!-- Reported Detail Section Starts-->
 							<div class="m-0 pl-4 border-bottom">
@@ -42,7 +50,7 @@
 									<h6 class='card-header bg-white text-dark' style='border:none'>Visit Date</h6>
 								</div>
 								<div class='col-7' id='visit_date-details'>
-								@isset($report->report_data->visit_date))
+								@isset($report->report_data->visit_date)
                                 {{date("d-M-Y",strtotime($report->report_data->visit_date))}}
 								@endisset
 								</div>

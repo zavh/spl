@@ -25,13 +25,10 @@ class UsersController extends Controller
 
     public function index()
     {
-        if(Auth::User()->role_id ==1){
-            $users = User::all();
-            $me = User::find(Auth::User()->id);
-            $completion = $this->profileCalculation($me);
-            return view('users.index', ['users'=>$users,'me'=>$me, 'completion'=>$completion]);
-        }
-        else abort(404);
+        $users = User::actual()->get();
+        $me = User::find(Auth::User()->id);
+        $completion = $this->profileCalculation($me);
+        return view('users.index', ['users'=>$users,'me'=>$me, 'completion'=>$completion]);
     }
 
     public function create()
@@ -397,23 +394,6 @@ class UsersController extends Controller
             $task['project_name'] = Task::find($task->id)->project->project_name;
         }
         return view('users.usertasks', ['tasks'=>$tasks]);
-    }
-
-    public function reports(){
-        $x = User::find(Auth::User()->id)->reports;
-        $complete = array();
-        $incomplete = array();
-        foreach($x as $index=>$report){
-            if($report->completion == 0){
-                $incomplete[$index]['data'] = json_decode($report->report_data);
-                $incomplete[$index]['id'] = $report->id;
-            }
-            else {
-                $complete[$index]['data'] = json_decode($report->report_data);
-                $complete[$index]['id'] = $report->id;
-            }
-        }
-        return view('users.userreports', ['complete'=>$complete, 'incomplete'=>$incomplete]);
     }
     
     public function deactivate($id)

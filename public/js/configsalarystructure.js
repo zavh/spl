@@ -70,7 +70,7 @@ function paramAction(el){
     
     switch(command){
         case 'delete':
-            var y = confirm("CUTION : "+paramufname+" will be deleted");
+            var y = confirm("CAUTION : "+paramufname+" will be deleted");
             if(y){
                 root[index].deleted = true;
                 document.getElementById("param_"+index).remove();
