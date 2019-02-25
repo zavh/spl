@@ -18,6 +18,7 @@ class Project extends Model
         'department_id',
         'status', 
         'state',
+        'ref',
         'allocation'
     ];
     //

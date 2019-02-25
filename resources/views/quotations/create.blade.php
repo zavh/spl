@@ -1,6 +1,17 @@
+<style type="text/css">
+@font-face {
+    font-family: Bahamas;
+    src: url('/fonts/bahamas.ttf');
+}
+</style>
 @extends('layouts.app')
 @section('content')
 <div class='container-fluid'>
+    <div class="row m-4">
+        <div class="d-flex justify-content-between align-items-center">
+        <h1 style="font-family:Bahamas">{{strtoupper($project->department->name)}}</h1>
+        </div>
+    </div>
     <div class="row m-4">
     <!-- Left Hand Side Headers Start -->
         <div class='col-md-9'>
@@ -8,7 +19,7 @@
             Date : {{date("m-d-Y")}}
             </div>
             <div class="d-flex justify-content-between align-items-center my-4">
-                <span>Ref : {{date("m-d-Y")}}</span>
+                <span>Ref : {{$project->ref}}</span>
             </div>
             <div class="d-flex justify-content-between align-items-center">
                 <strong>{{$project->client->organization}}</strong>

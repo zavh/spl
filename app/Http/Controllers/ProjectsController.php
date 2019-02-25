@@ -86,6 +86,7 @@ class ProjectsController extends Controller
             $response['messages'] = $validator->errors()->messages();
         }
         else {
+            $dept = Auth::User()->department_id;
             $project = new Project;
             $project->project_name = $request->input('project_name');
             $project->client_id = $request->input('client_id');
@@ -95,8 +96,10 @@ class ProjectsController extends Controller
             $project->contacts = json_encode($request->input('contacts'));
             $project->report_id = $request->input('report_id');;
             $project->allocation = 0;
-            $project->department_id = Auth::User()->department_id;
+            $project->department_id = $dept;
     
+            $project->save();
+            $project->ref = $this::getProjectRef($project->id, $dept);
             $project->save();
             if($request->input('report_id')>0){
                 $report = Report::find($request->input('report_id'));
@@ -110,12 +113,12 @@ class ProjectsController extends Controller
         return response()->json(['response'=>$response]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    private function getProjectRef($projid, $deptid){
+        $projref = str_pad(dechex($projid), 8, "0", STR_PAD_LEFT);
+        $deptref = str_pad($deptid, 3, "0", STR_PAD_LEFT);
+        return $deptref.".".$projref;
+    }
+
     public function show($id)
     {
         $project = Project::find($id);
