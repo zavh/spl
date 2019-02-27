@@ -17,7 +17,7 @@ class CreateSalariesTable extends Migration
             $table->increments('id');
             $table->float('basic',20,6)->nullable()->default(0);
             $table->integer('user_id')->unsigned();
-            $table->json('salaryinfo')->nullable()->default("{test:testinput}");
+            $table->json('salaryinfo')->nullable();
             $table->timestamps();
         });
     }

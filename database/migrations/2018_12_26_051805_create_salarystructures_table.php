@@ -16,7 +16,7 @@ class CreateSalarystructuresTable extends Migration
         Schema::create('salarystructures', function (Blueprint $table) {
             $table->increments('id');
             $table->string('structurename')->nullable()->default('');
-            $table->json('structure')->nullable()->default('');
+            $table->json('structure')->nullable();
             $table->timestamps();
         });
     }

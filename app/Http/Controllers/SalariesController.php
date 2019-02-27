@@ -22,9 +22,8 @@ class SalariesController extends Controller
 
     public function index()
     {
-        // $user_id = 4;
-        // $this->loanfinder($user_id);
         $data = $this::calculation(0);
+        dd($data);
         return view('salaries.index',['salaries'=>$data['salaries'],'heads'=>$data['heads']]);
         
     }
@@ -81,8 +80,7 @@ class SalariesController extends Controller
 
     private function salaryupdate_generator($lastmonth)
     {
-        $sp = 0;
-        $salaryprofile_updated = SalaryStructure::all()->all();
+        $salaryprofile_updated = SalaryStructure::all();
         Schema::connection('mysql')->create('salaryupdate_'.$lastmonth, function($table)
         {
             $table->increments('id');
@@ -93,13 +91,10 @@ class SalariesController extends Controller
         });
         foreach($salaryprofile_updated as $spupdate)
         {
-            $sp_update_date[$sp]['structureid'] =  $spupdate->id;
-            $sp_update_date[$sp]['name'] = $spupdate->structurename;
-            $sp_update_date[$sp]['update'] = $spupdate->updated_at;
             DB::table('salaryupdate_'.$lastmonth)->insert([
-                'structureid' => $sp_update_date[$sp]['structureid'],
-                'name' => $sp_update_date[$sp]['name'],
-                'update' => $sp_update_date[$sp]['update']
+                'structureid' => $spupdate->id,
+                'name' => $spupdate->structurename,
+                'update' => $spupdate->updated_at
             ]);
         } 
     }
@@ -107,10 +102,9 @@ class SalariesController extends Controller
     {
         DB::table('salaryupdate_'.$lastmonth)->truncate(); //truncate table
 
-        $refreshprofiles = SalaryStructure::all()->all();
+        $refreshprofiles = SalaryStructure::all();
         $refreshtable = array();
         $x = 0;
-        $i = 0;
         foreach($refreshprofiles as $spupdate)  //reinsert updated data
         {
             $refreshtable[$x]['structureid'] =  $spupdate->id;
@@ -129,7 +123,7 @@ class SalariesController extends Controller
         {
             $table->increments('id');
             $table->integer('user_id')->nullable()->default(0);
-            $table->json('salarydata')->nullable()->default('');
+            $table->json('salarydata')->nullable();
             $table->float('fraction',3,2)->nullable()->default(0.00);
             $table->timestamps();
         });
@@ -203,7 +197,7 @@ class SalariesController extends Controller
 
     private function initial_salary_generator()
     {
-        $users = User::where('active','1')->get()->all();
+        $users = User::where('active','1')->actual()->get()->all();
         $count = 0;
 
         $salary = array();
@@ -264,8 +258,7 @@ class SalariesController extends Controller
                 $salary[$count]['deduction_total'] = $salary[$count]['hire_purchase']+
                                                     $salary[$count]['loan']+
                                                     $salary[$count]['less']+
-                                                    $salary[$count]['tds']+
-                                                    $salary[$count]['fooding'];
+                                                    $salary[$count]['tds'];
                 $tabheads['deduction_total'] = "Deduction Total";
 
                 $salary[$count]['net_salary'] = $salary[$count]['gross_salary']-
@@ -281,7 +274,7 @@ class SalariesController extends Controller
 
     private function tabhead_generation()
     {
-        $users = User::where('active', 1)->get();
+        $users = User::where('active', 1)->actual()->get();
         $count = 0;
         $salary = array();
         $tabheads = array('Employee ID','Basic','Date of Joining');
@@ -439,7 +432,7 @@ class SalariesController extends Controller
     private function calculation($bonus_flag)
     {   
         $count = 0;
-        $salary = array();   
+        $salary = array();
         $flag = 0;
         $sp_update_date=array();
         $sp=0;
@@ -615,7 +608,7 @@ class SalariesController extends Controller
             $table->increments('id');
             $table->integer('user_id')->nullable()->default(0);
             $table->string('user_name')->nullable()->default('');
-            $table->json('yearly_income')->nullable()->default('');
+            $table->json('yearly_income')->nullable();
             $table->timestamps();
         });
     }
