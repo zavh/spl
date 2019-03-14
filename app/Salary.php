@@ -24,5 +24,9 @@ class Salary extends Model
     public function loans(){
         return $this->hasMany('App\Loan');
     }
-
+    
+    public function scopeActivesalary($query)
+    {
+        return $query->where('salaryinfo->tstatus', 'a');
+    }
 }

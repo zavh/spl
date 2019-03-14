@@ -7,12 +7,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Response;///////////////
-use App\Project;
-use App\Client;
 use App\User;
-use App\Enquiry;
-use App\Report;
 use App\Loan;
+use App\Department;
 use App\Salary;
 use DB;
 
@@ -25,10 +22,7 @@ class LoansController extends Controller
      */
     public function index()
     {
-        //
-        $users = User::all();
-        // $loans = Loan::all();
-        return view('loans.index', ['users'=>$users]);
+        return view('loans.index');
     }
 
     /**
@@ -50,48 +44,62 @@ class LoansController extends Controller
      */
     public function store(Request $request)
     {
-        //
-        if(Auth::check()){
-            // $messages = [
-            //     'role_name.required' => 'Please enter the role name',
-            //     'role_name.min' => 'role name must be minimum 2 characters',
-            //     'role_name.max' => 'role name cannot be more than 191 characters',
-            //     'role_name.unique' =>'role name has already been taken',
+        $validator = Validator::make($request->all(), [
+            'salary_id' => [
+                'required',
+                'integer',
+                function ($attribute, $value, $fail) {
+                    if ($value < 1) {
+                        $fail('An employee has not been selected');
+                    }
+                }],
+            'amount'=>'required|numeric',
+            'loan_name'=>'required|max:32',
+            'start_date'=>'required|date',
+            'tenure'=>'required|integer',
+            'interest'=>'required|numeric',
+            'loan_type' => [
+                'required',
+                function ($attribute, $value, $fail) {
+                    if ($value == "0") {
+                        $fail('A loan type has not been selected');
+                    }
+                }],
+        ]);
 
-            //     'role_description.required' => 'Please enter the email',
-            //     'role_description.max' => 'role description cannot be more than 3000 characters'
-            // ];
-
-            // $validator = Validator::make($request->all(), [
-            //     'role_name' =>'required|min:2|max:191|unique:roles,role_name',
-            //     'role_description'=>'required|max:3000'
-            // ],$messages);
-
-            // if($validator->fails()){
-            //     return back()->withErrors($validator)->withInput();
-            //     //$abc = back()->withErrors($validator)->withInput();
-            //     //dd($abc);
-            // }
-            $loan = new loan;
-            $username = $request->username;
-            $user = User::where('name',$username)->get()->first();
-            $uid = $user->id;
-            $salary = Salary::where('user_id',$uid)->get()->first();
-            $sid = $salary->id;
-            
-            $loan->salary_id = $sid;
-            $loan->loan_name =  $request->input('loan_name');
-            $loan->amount =  $request->input('amount');
-            $loan->start_date =  $request->input('start_date');
-            $loan->end_date =  $request->input('end_date');
-            $loan->installments =  $request->input('installments');
-            $loan->loan_type =  $request->input('loan_type');
-            $loan->interest =  $request->input('interest');
-
-            $loan->save();
-
-            return redirect('/loans')->with('success', 'New Loan Created');
+        if($validator->fails()){
+            $response['status'] = 'failed';
+            $response['errors'] = $validator->errors()->messages();
         }
+        else{
+            $tenure = $request->tenure;
+            $start_date = date("Y-m-01", strtotime($request->start_date));
+            $end_date = date("Y-m-t", strtotime("+$tenure months",strtotime($start_date)));
+
+            $loanCreate = Loan::create([
+                'salary_id' => $request->salary_id,
+                'loan_name' => $request->loan_name,
+                'amount' => $request->amount,
+                'start_date' => $start_date,
+                'end_date' => $end_date,
+                'loan_type' => $request->loan_type,
+                'interest' => $request->interest,
+                'tenure' => $tenure,
+                ]);
+
+            $response['status'] = 'success';
+            $response['loan']['name'] = $loanCreate->salary->user->name." - ".$loanCreate->salary->user->fname." ".$loanCreate->salary->user->sname;
+            $response['loan']['id'] = $loanCreate->id;
+            $response['loan']['params']['Loan Title'] = $loanCreate->loan_name;
+            $response['loan']['params']['Amount'] = $loanCreate->amount;
+            $response['loan']['params']['Start Date'] = $loanCreate->start_date;
+            $response['loan']['params']['End Date'] = $loanCreate->end_date;
+            $response['loan']['params']['Tenure'] = $loanCreate->tenure;
+            $response['loan']['params']['Interest'] = $loanCreate->interest;
+            $response['loan']['params']['Lone Type'] = $loanCreate->loan_type;
+            
+        }
+        return response()->json($response);
     }
 
     /**
@@ -114,12 +122,12 @@ class LoansController extends Controller
      */
     public function edit($id)
     {
-        //
+        
         $loan = Loan::find($id);
-        // $uid = $loan->salary->user_id;
-        // $user = User::find($uid);
-        // dd($user);
-        return view('loans.edit', ['loan'=>$loan]);
+        $response['department'] = $loan->salary->user->department->name;
+        $response['name'] = "Employee ID : ".$loan->salary->user->name." | Employee Name : ".$loan->salary->user->fname." ".$loan->salary->user->sname;
+        $response['data'] = $loan;
+        return response()->json($response);
     }
 
     /**
@@ -131,45 +139,43 @@ class LoansController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
-        if(Auth::check()){
-            // $messages = [
-            //     'role_name.required' => 'Please enter the role name',
-            //     'role_name.min' => 'role name must be minimum 2 characters',
-            //     'role_name.max' => 'role name cannot be more than 191 characters',
-            //     'role_name.unique' =>'role name has already been taken',
+        $validator = Validator::make($request->all(), [
+            'amount'=>'required|numeric',
+            'loan_name'=>'required|max:32',
+            'start_date'=>'required|date',
+            'tenure'=>'required|integer',
+            'interest'=>'required|numeric',
+            'loan_type' => [
+                'required',
+                function ($attribute, $value, $fail) {
+                    if ($value == "0") {
+                        $fail('A loan type has not been selected');
+                    }
+                }],
+        ]);
 
-            //     'role_description.required' => 'Please enter the email',
-            //     'role_description.max' => 'role description cannot be more than 3000 characters'
-            // ];
-
-            // $validator = Validator::make($request->all(), [
-            //     'role_name' =>'required|min:2|max:191|unique:roles,role_name',
-            //     'role_description'=>'required|max:3000'
-            // ],$messages);
-
-            // if($validator->fails()){
-            //     return back()->withErrors($validator)->withInput();
-            //     //$abc = back()->withErrors($validator)->withInput();
-            //     //dd($abc);
-            // }
-            $loan = Loan::find($id);
-            
-            $sid = $loan->salary->id;
-
-            $loan->salary_id = $sid;
-            $loan->loan_name =  $request->input('loan_name');
-            $loan->amount =  $request->input('amount');
-            $loan->start_date =  $request->input('start_date');
-            $loan->end_date =  $request->input('end_date');
-            $loan->installments =  $request->input('installments');
-            $loan->loan_type =  $request->input('loan_type');
-            $loan->interest =  $request->input('interest');
-
-            $loan->save();
-
-            return redirect('/loans')->with('success', 'Loan Edited');
+        if($validator->fails()){
+            $response['status'] = 'failed';
+            $response['errors'] = $validator->errors()->messages();
         }
+        else{
+            $tenure = $request->tenure;
+            $start_date = date("Y-m-01", strtotime($request->start_date));
+            $end_date = date("Y-m-t", strtotime("+$tenure months",strtotime($start_date)));
+
+            $loan = Loan::find($id);
+            $loan->loan_name =  $request->loan_name;
+            $loan->amount =  $request->amount;
+            $loan->start_date =  $start_date;
+            $loan->end_date =  $end_date;
+            $loan->tenure =  $request->tenure;
+            $loan->loan_type =  $request->loan_type;
+            $loan->interest =  $request->interest;
+            $loan->save();
+            $response['status'] = 'success';
+            $response['loan'] = $request->all();
+        }
+        return response()->json($response);
     }
 
     /**
@@ -188,5 +194,22 @@ class LoansController extends Controller
             return redirect('/loans')->with('success', 'Loan Deleted');
         }
         return back()->withInput()->with('error', 'Loan could not be deleted');
+    }
+
+    public function active(){
+        $loans = Loan::where('end_date', ">", date("Y-m-d") )->get();
+        $response = [];
+        for($i=0;$i<count($loans);$i++){
+            $response[$i]['name'] = $loans[$i]->salary->user->name." - ".$loans[$i]->salary->user->fname." ".$loans[$i]->salary->user->sname;;
+            $response[$i]['id'] = $loans[$i]->id;
+            $response[$i]['params']['Loan Title'] = $loans[$i]->loan_name;
+            $response[$i]['params']['Amount'] = $loans[$i]->amount;
+            $response[$i]['params']['Start Date'] = $loans[$i]->start_date;
+            $response[$i]['params']['End Date'] = $loans[$i]->end_date;
+            $response[$i]['params']['Tenure'] = $loans[$i]->tenure;
+            $response[$i]['params']['Interest Rate'] = $loans[$i]->interest;
+            $response[$i]['params']['Loan Type'] = $loans[$i]->loan_type;
+        }
+        return response()->json($response);
     }
 }

@@ -133,4 +133,19 @@ class DepartmentsController extends Controller
             return redirect('/departments')->with('success', 'Designation Deleted');
         return back()->withInput()->with('error', 'Designation could not be deleted');
     }
+
+    public function getDepartments(){
+        $departments = Department::all();
+        return response()->json(['departments'=>$departments]);
+    }
+
+    public function getUsers($id){
+        $department = Department::find($id);
+        foreach($department->users as $index=>$user){
+            $users[$index]['username'] = $user->name;
+            $users[$index]['name'] = $user->fname.' '.$user->sname;
+            $users[$index]['sid'] = $user->salary->id;
+        }
+        return response()->json(['users'=>$users]);
+    }
 }

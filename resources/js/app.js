@@ -12,5 +12,9 @@ require('./bootstrap');
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
-
-require('./components/Home');
+let t = window.location.href.split('/');
+let target = t[t.length - 1];
+if(target == 'loans'){
+    require('./components/loans/index');
+}
+    

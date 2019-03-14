@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+
 @foreach($enquiries as $index=>$enquiry)
 @if($index > 0)
 <div class="mt-1 p-2 bg-dark">

@@ -82,4 +82,5 @@ class User extends Authenticatable
     {
         return $query->where('active', 1);
     }
+
 }

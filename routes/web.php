@@ -88,6 +88,10 @@ Route::post('/appmodules/changedeptcfg', 'AppModulesController@changedeptcfg')->
 Route::get('/appmodules/widget', 'AppModulesController@widget');
 
 Route::get('/quotations/project/{project_id?}', 'QuotationsController@pqcreate')->name('pqcreate');
+Route::get('/departments/getall', 'DepartmentsController@getDepartments');
+Route::get('/departments/users/{id}', 'DepartmentsController@getUsers');
+
+Route::get('/loans/active', 'LoansController@active');
 
 Route::resource('clients','ClientsController');
 Route::resource('projects','ProjectsController');
@@ -105,4 +109,3 @@ Route::resource('salaries','SalariesController');
 Route::resource('loans','LoansController');
 Route::resource('appmodules','AppModulesController')->only(['index']);
 Route::resource('quotations','QuotationsController')->except('create');
-

@@ -16,9 +16,10 @@ class Loan extends Model
     protected $fillable = [
         'salary_id',
         'amount',
+        'loan_name',
         'start_date',
         'end_date',
-        'installments',
+        'tenure',
         'loan_type',
         'interest'
     ];

@@ -24,7 +24,7 @@ class SalariesController extends Controller
     {
         $data = $this::calculation(0);
         dd($data);
-        return view('salaries.index',['salaries'=>$data['salaries'],'heads'=>$data['heads']]);
+        //return view('salaries.index',['salaries'=>$data['salaries'],'heads'=>$data['heads']]);
         
     }
 
@@ -310,32 +310,33 @@ class SalariesController extends Controller
 
     private function salary_extraction_from_lastmonth_table($lastmonth)
     {
-        $salarydata = DB::table('salary_'.$lastmonth)->get()->all();
-        $salary = array();
-        $i = 0;
-        foreach($salarydata as $sal)
-        {
-            $salary[$i] = json_decode($sal->salarydata,true);
-            $i++;
+        $t = explode('_', $lastmonth);
+        $month = $t[0]; $year=$t[1];
+        if($month < 7)
+            $db_table = 'yearly_income_'.($year - 1).'_'.$year;
+        else 
+            $db_table = 'yearly_income_'.($year).'_'.($year - 1);
+        
+        $salarydata = DB::table($db_table)->get()->all();
+
+        $target = abs(12-$month-5);
+        foreach($salarydata as $index=>$salarydatum){
+            $d = json_decode($salarydatum->yearly_income, true);
+            //$salary[$index] = $d[$target];
+            $user = User::find($salarydatum->user_id);
+            $salary[$index]['Employee ID'] =  $user->name;
+            $salary[$index]['Basic'] =  $d[$target]['basicSalary'];
+            $salary[$index]['Date of Joining'] =  json_decode($user->salary->salaryinfo)->join_date;
+            $salary[$index]['House Rent'] =  $d[$target]['houseRent'];
+            $salary[$index]['Conveyance'] =  $d[$target]['conveyance'];
+            $salary[$index]['Medical Allowance'] =  $d[$target]['medicalAllowance'];
+            $salary[$index]['PF Self'] =  $d[$target]['pfCompany'];
+            $salary[$index]['PF Company'] =  $d[$target]['pfCompany'];
+            $salary[$index]['Bonus'] =  $d[$target]['bonus'];
         }
+
         return $salary;
     }
-
-    // public function taxtable($id)
-    // {
-    //     $user = User::find($id);
-
-    //     $si = json_decode($user->salary->salaryinfo);
-    //     $sstructure = $user->salarystructure;
-    //     $ss = json_decode($sstructure->structure);
-        
-    //     foreach($ss as $breakdown){
-    //         $profile[$breakdown->param_name] = $breakdown->value;
-    //     }
-    //     $r = $this::salaryProfile($si,$profile, 1,$user);//response
-
-    //     return view('salaries.taxtable',['response'=>$r['tds'],'dataarray'=>$r['da']]);
-    // }
 
     public function upload(Request $request)
     {
