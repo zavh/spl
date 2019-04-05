@@ -13,8 +13,9 @@ export default class LoanSPA extends Component {
         this.loanModified = this.loanModified.bind(this);
     }
     getLoans(){
-        axios.get('/loans/active')
-            .then((response)=>this.setState({
+        axios.get('/loans/active')            
+            .then(
+                (response)=>this.setState({
                 activeloans:[...response.data]
             })
         );
