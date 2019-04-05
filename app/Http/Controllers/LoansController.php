@@ -12,14 +12,15 @@ use App\Loan;
 use App\Department;
 use App\Salary;
 use DB;
+use Carbon\Carbon;
 
 class LoansController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index()
     {
         return view('loans.index');
@@ -202,14 +203,31 @@ class LoansController extends Controller
         for($i=0;$i<count($loans);$i++){
             $response[$i]['name'] = $loans[$i]->salary->user->name." - ".$loans[$i]->salary->user->fname." ".$loans[$i]->salary->user->sname;;
             $response[$i]['id'] = $loans[$i]->id;
-            $response[$i]['params']['Loan Title'] = $loans[$i]->loan_name;
-            $response[$i]['params']['Amount'] = $loans[$i]->amount;
-            $response[$i]['params']['Start Date'] = $loans[$i]->start_date;
-            $response[$i]['params']['End Date'] = $loans[$i]->end_date;
-            $response[$i]['params']['Tenure'] = $loans[$i]->tenure;
-            $response[$i]['params']['Interest Rate'] = $loans[$i]->interest;
-            $response[$i]['params']['Loan Type'] = $loans[$i]->loan_type;
+            $response[$i]['params'] = array();
+            $response[$i]['params'] = $this->loanStatus($loans[$i], $response[$i]['params']);
         }
         return response()->json($response);
+    }
+
+    private function loanStatus($loan, $status){
+        $to = Carbon::createFromFormat('Y-m-d', date('Y-m-01',strtotime($loan->start_date)));
+        $from = Carbon::createFromFormat('Y-m-d', date('Y-m-01'));
+
+        $months_passed = $to->diffInMonths($from);
+        $status['Loan Title'] = $loan->loan_name;
+        $status['Loan Type'] = $loan->loan_type;
+        $status['Interest Rate'] = $loan->interest;
+        $status['Amount'] = $loan->amount;
+        $status['Tenure'] = $loan->tenure;
+        $status['Monthly Installment Amount'] = round($loan->amount/$loan->tenure, 2);
+        $status['Start Date'] = $loan->start_date;
+        $status['End Date'] = $loan->end_date;
+        $status['Installments Paid'] = $months_passed;
+        $status['Installments Remaining'] = $loan->tenure - $months_passed;
+        $status['Paid Amount'] = $months_passed * $status['Monthly Installment Amount'];
+        $status['Remaining Amount'] = $loan->amount - $status['Paid Amount'];
+
+
+        return $status;
     }
 }

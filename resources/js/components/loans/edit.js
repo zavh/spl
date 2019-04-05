@@ -139,7 +139,7 @@ export default class LoanEdit extends Component {
                     <Input onChange={this.handleTenuChange} value={this.state.tenure}     name='tenure'     type='number' labelSize='90px' label='Tenure'      errors={this.state.errors.tenure}/>
                     <Input onChange={this.handleIntrChange} value={this.state.interest}   name='interest'   type='text' labelSize='90px' label='Interest Rate' errors={this.state.errors.interest}/>
                     <LoanType onChange={this.handleLtpeChange} name='loan_type' selected={this.state.loan_type} labelSize='90px' errors={this.state.errors.loan_type} />
-                    <Submit submitLabel='Save Champagne' cancelLabel='Cancel Edit' onCancel={this.handleCancel}/>
+                    <Submit submitLabel='Save' cancelLabel='Cancel Edit' onCancel={this.handleCancel}/>
                 </form>
           </div>
         );
