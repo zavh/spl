@@ -22,8 +22,9 @@ class SalariesController extends Controller
 
     public function index()
     {
-        $data = $this::calculation(0);
-        dd($data);
+        return view('salaries.query');
+     //   $data = $this::calculation(0);
+     //   dd($data);
         //return view('salaries.index',['salaries'=>$data['salaries'],'heads'=>$data['heads']]);
         
     }
@@ -1124,5 +1125,11 @@ class SalariesController extends Controller
             }
         }
         return $total_loan;
+    }
+
+    public function dbcheck(){
+        $response['status'] = 'success';
+        $response['activity'] = 'checking db';
+        return response()->json($response);
     }
 }

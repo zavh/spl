@@ -79,6 +79,7 @@ Route::post('/salarystructures/saveconfig', 'SalarystructuresController@saveconf
 Route::post('/salaries/upload', 'SalariesController@upload');
 Route::post('/salaries/regenerate', 'SalariesController@regenerate');
 Route::get('/salaries/taxtable/{user_id?}', 'SalariesController@taxtable');
+Route::get('/salaries/dbcheck', 'SalariesController@dbcheck');
 
 Route::post('/appmodules/addmod', 'AppModulesController@addmod')->name('addModule');
 Route::post('/appmodules/defaultconfig', 'AppModulesController@defaultconfig')->name('appDefaultConfiguration');

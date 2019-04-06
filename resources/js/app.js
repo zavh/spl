@@ -17,4 +17,7 @@ let target = t[t.length - 1];
 if(target == 'loans'){
     require('./components/loans/index');
 }
+if(target == 'salaries'){
+    require('./components/salaries/index');
+}
     
