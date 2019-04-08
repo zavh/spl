@@ -59103,7 +59103,7 @@ var MainPanel = function (_Component) {
         key: 'componentDidMount',
         value: function componentDidMount() {
             __WEBPACK_IMPORTED_MODULE_1_axios___default.a.get('/salaries/dbcheck').then(function (response) {
-                console.log(response);
+                console.log(response.data);
             });
         }
     }, {
@@ -59112,7 +59112,7 @@ var MainPanel = function (_Component) {
             return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 'div',
                 null,
-                'What do you need?'
+                'DB Check'
             );
         }
     }]);

@@ -22,61 +22,7 @@ class SalariesController extends Controller
 
     public function index()
     {
-        return view('salaries.query');
-     //   $data = $this::calculation(0);
-     //   dd($data);
-        //return view('salaries.index',['salaries'=>$data['salaries'],'heads'=>$data['heads']]);
-        
-    }
-
-    private function mapping($date)
-    {
-        $month = strtotime($date);
-        $month = date('m', $month);
-        $n = $month;
-        //////////date calc/////////////////////////////////////////////////////////
-        switch ($n) {
-            case "7":
-                $mapped_month = 12;
-                break;
-            case "8":
-                $mapped_month = 11;
-                break;
-            case "9":
-                $mapped_month = 10;
-                break;
-            case "10":
-                $mapped_month = 9;
-                break;
-            case "11":
-                $mapped_month = 8;
-                break;
-            case "12":
-                $mapped_month = 7;
-                break;
-            case "1":
-                $mapped_month = 6;
-                break;
-            case "2":
-                $mapped_month = 5;
-                break;
-            case "3":
-                $mapped_month = 4;
-                break;
-            case "4":
-                $mapped_month = 3;
-                break;
-            case "5":
-                $mapped_month = 2;
-                break;
-            case "6":
-                $mapped_month = 1;
-                break;         
-            default:
-                $mapped_month = "error";
-                break;
-        } 
-        return $mapped_month;
+        return view('salaries.query');        
     }
 
     private function salaryupdate_generator($lastmonth)
@@ -191,86 +137,117 @@ class SalariesController extends Controller
         }
         // dd($fraction);
     }
-    private function update_salary()
-    {
-        #insert code here ....
-    }
 
-    private function initial_salary_generator()
-    {
-        $users = User::where('active','1')->actual()->get()->all();
-        $count = 0;
-
-        $salary = array();
-        $tabheads = array('Employee ID','Basic', 'Date of Joining');
-        $flag = 0;
-        $fraction = array();
-
-        $lastmonth = Carbon::now()->subMonth()->startOfMonth();
-
-        foreach($users as $index=>$user)
-        {
-            $sstructure = $user->salarystructure;
-
-            $x = $user->salary;
-            $salary[$count]['name'] = $x->user->name;
-            $si = json_decode($x->salaryinfo);
-
-            $salary[$count]['basic'] = $si->basic;
-            $salary[$count]['join_date'] = $si->join_date;
-
-            
-
-            if(strtotime(date("Y-m-01"))<strtotime($si->join_date))
-                continue;
-
-            if(empty($sstructure)){
-                $salary[$count] = null;
+    public function dbcheck($year = null){
+        if($year == null){
+            $today = date("Y-m-d");
+            if($today > date("Y-07-31")){
+                $fromYear = date("Y") + 0;
+                $toYear = date("Y") + 1;
             }
-            else 
-            {
-                $ss = json_decode($sstructure->structure);
-                foreach($ss as $breakdown){
-                    if($flag == 0)
-                        $tabheads[count($tabheads)]=$breakdown->param_uf_name;
-                    $salary[$count][$breakdown->param_name] = ($salary[$count]['basic'] * $breakdown->value)/100;
-                    $profile[$breakdown->param_name] = $breakdown->value;
-                }
-
-                $sp = $this->salaryProfile($si,$profile, 0,$user, 0,0,0);
-                $gross_salary = $sp['response_without_addons']['grossSalary']/12;
-                $gross_total = $sp['response_without_addons']['grossTotal']/12;
-                $tds = $sp['response_without_addons']['finalTax']/12;
-
-                $total_loan = $this->loantotal($user->id);
-
-                $salary[$count]['loan'] = (float)$total_loan;
-
-                $salary[$count]['bonus'] = 0;
-               
-                $salary[$count]['gross_salary'] = $gross_salary;
-                $tabheads['gross_salary'] = "Gross Salary";
-                
-                $salary[$count]['gross_total'] = $gross_total;
-                $tabheads['gross_total'] = "Gross Total";
-
-                $salary[$count]['tds'] = $tds;
-
-                $salary[$count]['deduction_total'] = $salary[$count]['hire_purchase']+
-                                                    $salary[$count]['loan']+
-                                                    $salary[$count]['less']+
-                                                    $salary[$count]['tds'];
-                $tabheads['deduction_total'] = "Deduction Total";
-
-                $salary[$count]['net_salary'] = $salary[$count]['gross_salary']-
-                                                    $salary[$count]['deduction_total'];
-                $tabheads['net_salary'] = "Net Salary";
-                $flag = 1;
-                $count++;
+            else{
+                $fromYear = date("Y") - 1;
+                $toYear = date("Y") + 0;
             }
         }
-        $data = ['salary'=>$salary, 'heads'=>$tabheads, "fraction"=>$fraction];
+        else {
+            $fromYear = $year + 0;
+            $toYear = $year + 1;
+        }
+        if(Schema::hasTable('salary_'.$fromYear."_".$toYear)){
+            $response['status'] = 'success';
+            $response['fromYear'] = $fromYear;
+            $response['toYear'] = $toYear;
+        }
+        else {
+            $response['all'] = $this->initial_salary_generator("$fromYear-07-01", "$toYear-06-30");
+        }
+        
+        return response()->json($response);
+    }
+
+    private function initial_salary_generator($fromYear, $toYear)
+    {
+        $users = User::actual()->get();
+        $data = array();
+        foreach($users as $index=>$user){
+            $data[$index] = $this->yearly_generator($user, $fromYear, $toYear);
+            $data[$index] = $this->income_tax_calculation($data[$index]);
+        }
         return $data;
+    }
+
+    private function yearly_generator($user, $fromYear, $toYear){
+        
+        $structure = json_decode($user->salarystructure->structure);
+        $profile = json_decode($user->salary->salaryinfo);
+
+        $response['structure'] = $structure;
+        $response['profile'] = $profile;
+        $loans = Loan::active()->where('salary_id', $user->salary->id)->get();
+
+        $from = Carbon::parse($fromYear);
+        $to = Carbon::parse($toYear);
+        $join_date = Carbon::parse($profile->join_date);
+
+        /****** The Great Do While Loop Starts ******/
+        $count = 0;
+        do{
+            $basic = $profile->basic;
+            $fraction = $this->fraction_generator($profile, $from->copy(), $join_date->copy());
+            $response['salary'][$count]['fraction'] = $fraction;
+            $response['salary'][$count]['month'] = $from->copy()->toDateString();
+            $response['salary'][$count]['basic'] = (float)$basic;
+            
+            for($i=0;$i<count($structure);$i++){
+                $response['salary'][$count][$structure[$i]->param_name] = $basic * ( $structure[$i]->value / 100 )* $fraction;
+            }
+            if(count($loans) > 0)
+                $response['salary'][$count]['loan'] = $this->loan_manager($loans, $from->copy());
+            $count++;
+            $from = $from->addMonth();
+        }while($from < $to);
+        /****** The Great Do While Loop Ends ******/
+        return $response;
+    }
+
+    private function loan_manager($loans, $target_month){
+        $target_month = $target_month->endOfMonth();
+        $loanarr = array();
+        $loansum = 0;
+        for($i=0;$i<count($loans);$i++){
+            $expiry = Carbon::parse($loans[$i]->end_date);
+            if($expiry->gt($target_month->copy()->startOfMonth()) && $expiry->lt($target_month->copy()->endOfMonth()))
+                $inBetween = true;
+            else $inBetween = false;
+            if($expiry->gte($target_month) || $inBetween){
+                $loanarr[count($loanarr)] = $loans[$i];
+                $loansum += $loans[$i]->amount/$loans[$i]->tenure;
+            }
+        }
+        $userloans['sum'] = $loansum;
+        $userloans['loans'] = $loanarr;
+        return $userloans;
+    }
+
+    private function fraction_generator($profile, $from, $join_date){
+        $daysInMonth = $from->daysInMonth;
+        $deduction = 0;
+        if($join_date->copy()->gte($from->copy()->startOfMonth()) && $join_date->copy()->lte($from->copy()->endOfMonth())){
+            $deduction = $join_date->day - 1;
+        }
+        else if($join_date->copy()->gt($from))
+            return 0;
+
+        if($profile->end_date != null ){
+            $end_date = Carbon::parse($profile->end_date);
+            if($end_date->copy()->gte($from->copy()->startOfMonth()) && $end_date->copy()->lte($from->copy()->endOfMonth())){
+                $deduction += ($daysInMonth - $end_date->day);
+            }
+            else if($end_date->copy()->lt($from))
+                return 0;
+        }
+        return ($daysInMonth - $deduction)/$daysInMonth;
     }
 
     private function tabhead_generation()
@@ -307,36 +284,6 @@ class SalariesController extends Controller
             }
         }
         return $tabheads;
-    }
-
-    private function salary_extraction_from_lastmonth_table($lastmonth)
-    {
-        $t = explode('_', $lastmonth);
-        $month = $t[0]; $year=$t[1];
-        if($month < 7)
-            $db_table = 'yearly_income_'.($year - 1).'_'.$year;
-        else 
-            $db_table = 'yearly_income_'.($year).'_'.($year - 1);
-        
-        $salarydata = DB::table($db_table)->get()->all();
-
-        $target = abs(12-$month-5);
-        foreach($salarydata as $index=>$salarydatum){
-            $d = json_decode($salarydatum->yearly_income, true);
-            //$salary[$index] = $d[$target];
-            $user = User::find($salarydatum->user_id);
-            $salary[$index]['Employee ID'] =  $user->name;
-            $salary[$index]['Basic'] =  $d[$target]['basicSalary'];
-            $salary[$index]['Date of Joining'] =  json_decode($user->salary->salaryinfo)->join_date;
-            $salary[$index]['House Rent'] =  $d[$target]['houseRent'];
-            $salary[$index]['Conveyance'] =  $d[$target]['conveyance'];
-            $salary[$index]['Medical Allowance'] =  $d[$target]['medicalAllowance'];
-            $salary[$index]['PF Self'] =  $d[$target]['pfCompany'];
-            $salary[$index]['PF Company'] =  $d[$target]['pfCompany'];
-            $salary[$index]['Bonus'] =  $d[$target]['bonus'];
-        }
-
-        return $salary;
     }
 
     public function upload(Request $request)
@@ -404,9 +351,7 @@ class SalariesController extends Controller
                 $dataarray['perc_medical'] = (float)(100 * ($dataarray_tds['medical_allowance']/$dataarray_tds['basic']));
                 $dataarray['perc_houserent'] = (float)(100 * ($dataarray_tds['house_rent']/$dataarray_tds['basic']));
                 $dataarray['perc_pfcomp'] = (float)(100 * ($dataarray_tds['pf_company']/$dataarray_tds['basic']));
-                // $dataarray['bonus'] = $dataarray_tds['bonus'];
-                // $dataarray['extra'] = $dataarray_tds['extra'];
-                // $dataarray['less'] = $dataarray_tds['less'];
+
                 
                 $sp = $this::yearly_generation($dataarray,$dataarray_tds['bonus'],$dataarray_tds['extra'],$dataarray_tds['less']);
                 // dd($user_id, $total_loan);
@@ -415,8 +360,6 @@ class SalariesController extends Controller
                 $dataarray_tds['gross_total'] = $sp['response_without_addons']['grossTotal'];
                 $dataarray_tds['tds'] = $sp['response_without_addons']['finalTax']/12 + $sp['addons_tax'];
                 $dataarray_tds['loan'] = $total_loan;
-                // dd($dataarray_tds);
-                // $Salarydata['tds'] = (float)($response['finalTax']/12);
 
                 DB::table('salary_'.$lastmonth)->whereRaw($query)->update(['salarydata'=> json_encode($dataarray_tds)]);
                 
@@ -429,116 +372,6 @@ class SalariesController extends Controller
             // return back();   
         }      
 
-    }
-
-    private function calculation($bonus_flag)
-    {   
-        $count = 0;
-        $salary = array();
-        $flag = 0;
-        $sp_update_date=array();
-        $sp=0;
-        $lastmonth_month = Carbon::now()->subMonth()->month;
-        $lastmonth_year = Carbon::now()->subMonth()->year;
-        $lastmonth = $lastmonth_month."_".$lastmonth_year;
-
-        $salarystructure_update_flag = 0;
-
-        ################# Salary Profile Check Strts #################
-        //generates the monthly table that checks if salarystructures have been updated and updates it
-        if(!Schema::hasTable('salaryupdate_'.$lastmonth))
-        {
-            echo "no temp table                 ";
-            $this->salaryupdate_generator($lastmonth); 
-        }
-        else
-        {
-            echo "temp table found                 ";
-            $salaryprofile_current =  DB::table('salaryupdate_'.$lastmonth)->get()->all();
-            $c1 = count($salaryprofile_current); //total number of profiles in temp table
-            $c2 = SalaryStructure::count();//total number of profiles in profiles table
-            
-            if($c1==$c2)//no new profiles added
-            {
-                echo "no new profiles                 ";
-                foreach($salaryprofile_current as $sp)
-                {
-                    $id1 = $sp->structureid;
-                    $d1 = $sp->update;
-                    $ssd1 = SalaryStructure::find($id1)->updated_at;
-                    $ssd1 = $ssd1->toDateTimeString();
-                    if($d1 != $ssd1) //updated later
-                    {
-                        echo "date updated                 ";
-                        $salarystructure_update_flag = 1;
-                        $this->salary_updater($lastmonth); //function updates the table that checks the last update of the salarystructure table
-                    }
-                    else
-                    {
-                        echo "date not updated                 ";
-                    }
-                }
-            }
-            else //profile updated
-            {
-                echo "new profile added                 ";
-                $salarystructure_update_flag = 1;
-                $this->salary_updater($lastmonth);//function updates the table that checks the last update of the salarystructure table
-            }
-        }
-        ################# Salary Profile Check Ends #################
-        
-        if (!Schema::hasTable('salary_'.$lastmonth) || $salarystructure_update_flag == 1)//this part will recalculate the table
-        {      
-            if (Schema::hasTable('salary_'.$lastmonth)){
-                Schema::drop('salary_'.$lastmonth);//drop the table first, it needs to be recalculated
-            }
-            echo "update required, needs recalculation                 ";
-            
-            $this->salary_generator($lastmonth);//generates the table for the salary_lastmonth
-            $data = $this->initial_salary_generator();//freshly calculates the salaries of the LAST month
-            $salary =$data['salary'];
-            $tabheads = $data['heads'];
-            $fraction = $data['fraction'];
-            if($fraction != 0)
-            {
-                $this->store_salary($salary,$lastmonth);//inserts the salary in the freshly generated table
-            }
-        }
-        else//this will generate the table from the salary_month table
-        { 
-            echo "update not required, just displaying                     "; 
-            $tabheads = $this->tabhead_generation();//generates the tabheads from salarystructure
-            $salary = $this->salary_extraction_from_lastmonth_table($lastmonth);//extracts the salary from lastmonth and puts in array  
-                         
-        }
-    $data = ['salaries'=>$salary,'heads'=>$tabheads];
-    return $data;
-    }
-
-    private function salaryProfile($user, $ss, $flag, $userdata,$bonus,$extra,$less)
-    {
-        $ss = (object)$ss;
-        $dataarray = array(
-            "gender"=>$user->gender,
-            "dob"=>$user->date_of_birth,
-            "user"=>$userdata,
-            "basicSalary"=>$user->basic,
-            "perc_conveyance"=>$ss->conveyance,
-            "perc_medical"=>$ss->medical_allowance, 
-            "perc_houserent"=>$ss->house_rent,
-            "perc_pfcomp"=>$ss->pf_company
-        );
-        if($flag == 0){ //called from index
-            $response = $this::yearly_generation($dataarray,$bonus,$extra,$less);//caled from index, no input for bonus, extra, less so, 0 values
-            // dd($response);
-            return $response;
-        }
-        // else if($flag == 1){ //called from taxtable
-        //     $response['tds'] = $this::yearly_generation($dataarray,$dataarray['bonus'],$dataarray['extra'],$dataarray['less']);//taxtable will change, 0 values for now
-        //     $response['da'] = $dataarray;
-        //     return $response;
-        // }
     }
 
     private function TDS($TaxableSalary,$gender,$age)
@@ -571,13 +404,11 @@ class SalariesController extends Controller
                     $tax[$i] = 0;
                     $slabamount[$i] = 0;
                 }
-                    
             }
              
             else if($i < (count($slabperc)-1)){
                     if($slab[$i]<$taxableIncome) {
-                        $tax[$i] = $slabperc[$i]*$slab[$i]/100;
-                         
+                        $tax[$i] = $slabperc[$i]*$slab[$i]/100;        
                         $taxableIncome -= $slab[$i];
                         $slabamount[$i] = $slab[$i];
                     }
@@ -605,7 +436,7 @@ class SalariesController extends Controller
     {
         $x = 0;
         $y2 = (string)((int)$year + 1);
-        Schema::connection('mysql')->create('yearly_income_'.$year.'_'.$y2, function($table)
+        Schema::connection('sqlite')->create('yearly_income_'.$year.'_'.$y2, function($table)
         {
             $table->increments('id');
             $table->integer('user_id')->nullable()->default(0);
@@ -640,393 +471,43 @@ class SalariesController extends Controller
         ]);
     }
 
-    private function yearly_income_data_extractor($year,$id)
+
+    private function income_tax_calculation($ysd)
     {
-        $x = 0;
-        $y2 = (string)((int)$year + 1);
-        $yearlydata = DB::table('yearly_income_'.$year.'_'.$y2)->where('user_id',$id)->get();
-        return json_decode($yearlydata[0]->yearly_income,true);
-    }
-
-    private function cumulative_yearly_generator($yearly_income)
-    {
-        $cysd = array(
-            "basicSalary"=>0,
-            "houseRent"=>0,
-            "medicalAllowance"=>0,
-            "conveyance"=>0,
-            "pfCompany"=>0,
-            // "extra"=>0,
-            // "bonus"=>0      
-            );//cumulative yearly salary data
-        // dd($yearly_income);
-        for ($i=0; $i < 12; $i++) 
-        { 
-            $cysd["basicSalary"] += (float)$yearly_income[$i]['basicSalary'] ;
-            $cysd["houseRent"] += (float)$yearly_income[$i]['houseRent'];
-            $cysd["medicalAllowance"] += (float)$yearly_income[$i]['medicalAllowance'];
-            $cysd["conveyance"] += (float)$yearly_income[$i]['conveyance'];
-            $cysd["pfCompany"] += (float)$yearly_income[$i]['pfCompany'];
-            // $cysd["extra"] = (float)$yearly_income[$i]['extra'];
-            // $cysd["bonus"] = (float)$yearly_income[$i]['bonus'] * 2;
-            // $cysd["bonus"] = 0;
- 
-        }
-        return $cysd;
-        // dd($cysd);
-    }
-
-    private function TDS_generation($yearly_income,$response,$number_of_months_remaining,$number_of_months_passed,$joindate,$enddate)
-    {
-        $remaining = $number_of_months_remaining;
-        $passed = $number_of_months_passed;
-        $finalTax = $response['response_without_addons']['finalTax'];
-        $bonus_tax = $response['bonus_tax'];
-        $extra_tax = $response['extra_tax'];
-        $less_tax = $response['less_tax'];
-
-        $accumulated_tax = 0;
-        for ($i=0; $i < $passed; $i++) { 
-            $accumulated_tax += $yearly_income[$i]["TDS"]; 
+        $cysd['basicSalary'] = 0;
+        $cysd['houseRent'] = 0;
+        $cysd['conveyance'] = 0;
+        $cysd['medicalAllowance'] = 0;
+        $cysd['bonus'] = 0;
+        $cysd['extra'] = 0;
+        $cysd['less'] = 0;
+        $cysd['medicalAllowance'] = 0;
+        $cysd['pfCompany'] = 0;
+        $gender = $ysd['profile']->gender;
+        $age = Carbon::parse($ysd['profile']->date_of_birth)->age;
+        for($i=0;$i<count($ysd['salary']);$i++){
+            $cysd['basicSalary'] += $ysd['salary'][$i]['basic'];
+            $cysd['houseRent'] += $ysd['salary'][$i]['house_rent'];
+            $cysd['conveyance'] += $ysd['salary'][$i]['conveyance'];
+            $cysd['medicalAllowance'] += $ysd['salary'][$i]['medical_allowance'];
+            $cysd['pfCompany'] += $ysd['salary'][$i]['pf_company'];
         }
 
-        if($remaining != 0)
-        {
-            $TDS = (float)(($finalTax - $accumulated_tax)/$remaining);
-        }
-        else
-        {
-            $TDS = 0;
-        }
-        // echo "<pre>".
-        //             "Final tax -> ".$finalTax.
-        //             " Accumulatedtax ->".$accumulated_tax.
-        //             " TDS ->".$TDS.
-        //             " join date ->".$joindate.
-        //             " end date ->".$enddate.
-        //             " bonus tax ->".$bonus_tax.
-        //             " extra tax ->".$extra_tax.
-        //             " less tax ->".$less_tax.       
-        //     "</pre>";
-        for ($i = $passed; $i < 12; $i++) 
-        {
-            $yearly_income[$i]["TDS"] = (float)$TDS + $bonus_tax +$extra_tax + $less_tax;
-            $bonus_tax = $extra_tax = $less_tax = 0;
-            $yearly_income[$i]["bonus"] = $yearly_income[$i]["extra"] = $yearly_income[$i]["less"] = 0;
-        }
-       
-        return $yearly_income;
-        // dd($finalTax,$accumulated_tax,$remaining);
-    }
-
-    private function fraction_calculation($sal)
-    {
-        $joindate = Carbon::parse($sal->join_date);
-
-        $join_fraction = (float)0.00;
-        $end_fraction = (float)0.00;
-
-        $lastmonth_start = Carbon::now()->subMonth()->startOfMonth();
-        $lastmonth_end = Carbon::now()->subMonth()->endOfMonth();
-
-        $joindate_d = $joindate->day;
-            
-        if($joindate >= $lastmonth_start && $joindate <= $lastmonth_end)//joined sometime duing last month, can be first or last day
-        {
-            $join_fraction = (float)((($lastmonth_start->daysInMonth-$joindate_d)+1)/$lastmonth_start->daysInMonth);
-            // echo "Join ->".$join_fraction;
-        }
-        if($joindate > $lastmonth_end)//hasnt joined yet
-        {
-            $join_fraction = (float)0;
-            // echo "Join ->".$join_fraction;
-        }
-        if($joindate < $lastmonth_start)//joined before last month starts
-        {
-            $join_fraction = (float)1;
-            // echo "Join ->".$join_fraction;
-        }
-        
-        if ($sal->end_date == null)//not terminated, no need to consider end date
-        {
-            $end_fraction = (float)0;
-            // echo "end ->".$end_fraction;//not terminated
-        }
-        else
-        {
-            $enddate = Carbon::parse($sal->end_date);       
-            $enddate_d = $enddate->day;
-
-            if($enddate >= $lastmonth_start && $enddate <= $lastmonth_end)//both join and end date in last month
-            {
-                $end_fraction = (float)((($lastmonth_start->daysInMonth-$enddate_d))/$lastmonth_start->daysInMonth);
-                // echo "end ->".$end_fraction;
-            }
-            if($enddate < $lastmonth_start)//hasnt joined yet
-            {
-                $end_fraction = (float)0;
-                // echo "end ->".$end_fraction;
-            }
-            if($enddate > $lastmonth_end)//joined before last month starts
-            {
-                $end_fraction = (float)0;
-                // echo "end ->".$end_fraction;
-            }
-            if($enddate < $lastmonth_start && $joindate < $lastmonth_start)
-            {
-                $join_fraction = (float)0;
-                // echo "Join ->".$join_fraction;
-                $end_fraction = (float)0;
-                // echo "end ->".$end_fraction;
-            }
-        }
-
-        $fraction = $join_fraction-$end_fraction;
-        
-        return $fraction;
-    }
-
-    private function yearly_generation($dataarray,$bonus_manual,$extra,$less)
-    { 
-        // echo "I was called";
-        $year = Carbon::now()->year;
-
-        $gender = $dataarray['gender'];
-        $response['gender'] = $gender;
-
-        $age = Carbon::parse($dataarray['dob'])->age;
-        $response['age'] = $age;
-
-        $basicSalary = $dataarray['basicSalary'];//monthly
-        $response['basicSalary'] = $basicSalary;
-
-        $conveyance = (float)($basicSalary * ($dataarray['perc_conveyance']/100));//monthly
-        $response['conveyance'] = $conveyance;
-
-        $medicalAllowance = (float)($basicSalary * ($dataarray['perc_medical']/100));
-        $response['medicalAllowance'] = $medicalAllowance;
-
-        $houseRent = (float)($basicSalary * ($dataarray['perc_houserent']/100));
-        $response['houseRent'] = (float)($houseRent);
-
-        if($bonus_manual > 0)
-        {
-            $bonus = $bonus_manual;
-        }
-        else
-        {
-            $bonus = 0;            
-        }
-        $response['bonus'] = (float)$bonus;
-
-        $response['extra'] = (float)$extra;
-
-        $response['less'] = (float)$less;
-
-
-        $pfCompany = (float)($basicSalary * ($dataarray['perc_pfcomp']/100));
-        $response['pfCompany'] = $pfCompany;
-
-        $user = $dataarray['user'];
-        $response['user'] = $user;
-
-        
-
-        $x = $user->salary;
-        $sal = json_decode($x->salaryinfo);
-        // dd($x);
-        // var_dump($sal);
-
-        $jd = Carbon::parse($sal->join_date);
-        if($sal->end_date != null)
-        {
-            $td = Carbon::parse($sal->end_date);
-        }
-        else
-        {
-            $td = "null";
-        }
-        
-        
-        $fraction = $this->fraction_calculation($sal);
-        
-        //Started and ended last month
-        // if($enddate_y == $lastmonth_e_y && $enddate_m == $lastmonth_e_m && ($enddate_d - $joindate_d)<$lastmonth_start->daysInMonth)
-        // {
-        //     $join_fraction = (float)((($lastmonth_start->daysInMonth-$joindate_d)+1)/$lastmonth_start->daysInMonth);
-        //     $end_fraction = (float)((($lastmonth_start->daysInMonth-$enddate_d))/$lastmonth_start->daysInMonth);
-        // }
-
-        $user_id = $user->id;
-        $user_name = $user->name;
-        $year = Carbon::now()->submonth()->year;
-        
-        $current_date = Carbon::now()->submonth()->format('Y-m-d');
-        $number_of_months_remaining = $this->mapping($current_date);
-        $response['number_of_months_remaining'] = $number_of_months_remaining;
-
-        $number_of_months_passed = 12-$number_of_months_remaining;
-        $response['number_of_months_passed'] = $number_of_months_passed;
-        $x = 0;
-
-
-        if($number_of_months_remaining <7){
-            $year = $year - 1;
-        }
-        $y2 = (string)((int)$year + 1);
-
-        // $this->yearly_income_table_generator($year);//generates yearly table if not exists
-        if (!Schema::hasTable('yearly_income_'.$year.'_'.$y2))//no table, generate
-        {
-            $this->yearly_income_table_generator($year);//generates yearly table if not exists
-        }
-        // else if($number_of_months_remaining == 12)//has table, regenerate
-        // {
-        //     Schema::drop('yearly_income_'.$year.'_'.$y2);
-        //     $this->yearly_income_table_generator($year);//generates yearly table if not exists
-        // }
-
-        $index = 12 - $number_of_months_remaining;
-
-        if($index > 0)
-        {
-            $dbdata = DB::table('yearly_income_'.$year.'_'.$y2)->where('user_id',$user->id)->get()->all();
-            // dd(json_decode($dbdata->yearly_income));  
-            if(count($dbdata)>0)//user exists
-            {
-                $yearly_income = json_decode($dbdata[0]->yearly_income,true);
-                             
-            }
-            else
-            {
-                for($i=0;$i<12;$i++)
-                {
-                    $yearly_income[$i]["basicSalary"] = 0;
-                    $yearly_income[$i]["houseRent"] = 0;
-                    $yearly_income[$i]["medicalAllowance"] = 0;
-                    $yearly_income[$i]["conveyance"] = 0;
-                    $yearly_income[$i]["pfCompany"] = 0;
-                    $yearly_income[$i]["bonus"] = 0;
-                    $yearly_income[$i]["extra"] = 0;
-                    $yearly_income[$i]["less"] = 0;
-                    $yearly_income[$i]["month"]  = '';
-                    $yearly_income[$i]["fraction"] = 0;  
-                    $yearly_income[$i]["TDS"] = 0;
-                }
-            }
-        }
-        $end_date = Carbon::parse($sal->end_date);
-        $lastmonth_start = Carbon::now()->subMonth()->startOfMonth();
-        $lastmonth_end = Carbon::now()->subMonth()->endOfMonth();
-        for ($i = $index; $i < 12; $i++) 
-        {
-            $yearly_income[$i]["basicSalary"] = (float)$basicSalary * $fraction;
-            $yearly_income[$i]["houseRent"] = (float)$houseRent * $fraction;
-            $yearly_income[$i]["medicalAllowance"] = (float)$medicalAllowance * $fraction;
-            $yearly_income[$i]["conveyance"] = (float)$conveyance * $fraction;
-            $yearly_income[$i]["pfCompany"] = (float)$pfCompany * $fraction;
-            $yearly_income[$i]["bonus"] = (float)$bonus;
-            $yearly_income[$i]["extra"] = (float)$extra;
-            $yearly_income[$i]['less'] = (float)$less;
-            $yearly_income[$i]["month"]  = Carbon::now()->subMonth()->month;
-            $yearly_income[$i]["fraction"] = $fraction;
-            // echo "<pre>fraction for ".$user->name." = ".$fraction."</pre>";
-            if($sal->end_date != null  && (($end_date < $lastmonth_start) || ($end_date >= $lastmonth_start && $end_date <= $lastmonth_end)))
-            {
-                $fraction = (float)0;//ternminated within or before last month
-            }
-            else if ($sal->end_date == null  || ($end_date > $lastmonth_end) )
-            {
-                $fraction = (float)1;
-            }
-            // $bonus = $extra = $less = 0;
-        }
-
-        if($end_date >= $lastmonth_start && $end_date <= $lastmonth_end)
-        {
-            // echo "if trigerred";
-            $user = User::find($user_id);
-            $user->active = 0;
-            $user->save();
-            $salarydata = Salary::where('user_id',$user->id)->get()->first();
-            $sl = json_decode($salarydata->salaryinfo);
-            $sl->tstatus = "t";
-            $sl = json_encode($salarydata->salaryinfo);
-            $salarydata->save();
-        }
-        else
-        {
-            // echo "else trigerred";
-            $cysd = $this->cumulative_yearly_generator($yearly_income);//cumulative yearly salary data
-            // dd($yearly_income, $cysd);
-
-            $response_without_addons['taxData'] = $this->income_tax_calculation($cysd,$gender,$age,0,0,0);//returning final tax and relevent info
-            $response['response_without_addons'] = $response_without_addons['taxData'];
-
-            $tax_without_bonus = $response_without_addons['taxData']['finalTax'];
-            $response_with_bonus['taxData'] = $this->income_tax_calculation($cysd,$gender,$age,$bonus,0,0);//returning final tax and relevent info
-            $tax_with_bonus = $response_with_bonus['taxData']['finalTax'];
-            $bonus_tax = $tax_with_bonus - $tax_without_bonus;
-            $response['response_with_bonus'] = $response_with_bonus['taxData'];
-            $response['bonus_tax'] = $bonus_tax;
-
-            $tax_without_extra = $response_without_addons['taxData']['finalTax'];
-            $response_with_extra['taxData'] = $this->income_tax_calculation($cysd,$gender,$age,0,$extra,0);//returning final tax and relevent info
-            $tax_with_extra = $response_with_extra['taxData']['finalTax'];
-            $extra_tax = $tax_with_extra - $tax_without_extra;
-            $response['response_with_extra'] = $response_with_extra['taxData'];
-            $response['extra_tax'] = $extra_tax;
-
-            $tax_without_less = $response_without_addons['taxData']['finalTax'];
-            $response_with_less['taxData'] = $this->income_tax_calculation($cysd,$gender,$age,0,0,$less);//returning final tax and relevent info
-            $tax_with_less = $response_with_less['taxData']['finalTax'];
-            $less_tax = $tax_without_less - $tax_with_less;//less is subtracted
-            $response['response_with_less'] = $response_with_less['taxData'];
-            $response['less_tax'] = $less_tax;
-
-            $tax_without_addons = $response_without_addons['taxData']['finalTax'];
-            $response_with_addons['taxData'] = $this->income_tax_calculation($cysd,$gender,$age,$bonus,$extra,$less);//returning final tax and relevent info
-            $tax_with_addons = $response_with_addons['taxData']['finalTax'];
-            $addons_tax = $tax_with_addons - $tax_without_addons;//less is subtracted
-            $response['response_with_addons'] = $response_with_addons['taxData'];
-            $response['addons_tax'] = $addons_tax;
-            
-            $yearly_income = $this->TDS_generation($yearly_income,$response,$number_of_months_remaining,$number_of_months_passed,$jd,$td);
-        }
-
-        $count = DB::table('yearly_income_'.$year.'_'.$y2)->where('user_id',$user->id)->get();
-
-        if(count($count)>0)
-        {
-            $this->yearly_income_table_data_update($user_id,$user_name,$yearly_income,$year,$index);
-        }
-        else
-        {            
-            $this->yearly_income_table_data_entry($user_id,$user_name,$yearly_income,$year);
-        }
-        return $response;
-    }
-
-    private function income_tax_calculation($cysd,$gender,$age,$bonus,$extra,$less)
-    {
         $basicSalary = $cysd['basicSalary'];
-        $response['basicSalary'] = $basicSalary;
-
         $houseRent = $cysd['houseRent'];
-        $response['houseRent'] = $houseRent;
-
         $conveyance = $cysd['conveyance'];
-        $response['conveyance'] = $conveyance;
-
         $medicalAllowance = $cysd['medicalAllowance'];
-        $response['medicalAllowance'] = $medicalAllowance;
+        $bonus = $cysd['bonus'];
+        $extra = $cysd['extra'];
+        $less = $cysd['less'];
 
+        $response['basicSalary'] = $basicSalary;
+        $response['houseRent'] = $houseRent;
+        $response['conveyance'] = $conveyance;
+        $response['medicalAllowance'] = $medicalAllowance;
         $response['bonus'] = $bonus;
         $response['extra'] = $extra;
         $response['less'] = $less;
-
-        // $extra = $cysd['extra'];
-        // $response['extra'] = $extra;
 
         $grossSalary = $cysd['basicSalary'] + $cysd['houseRent'] + $cysd['conveyance'] + $cysd['medicalAllowance'] + $bonus + $extra;
         $response['grossSalary'] = $grossSalary;
@@ -1037,7 +518,6 @@ class SalariesController extends Controller
         $houseRentExempted = 300000;
         $response['houseRentExempted'] = $houseRentExempted;
 
-        // $HouseRentTR = $houseRent*12;
         $HouseRentTR = $cysd['houseRent'];
         if(($HouseRentTR-$houseRentExempted)>=0)$HouseRentTR=$HouseRentTR-$houseRentExempted; else $HouseRentTR=0;
         $response['HouseRentTaxRemaining'] = $HouseRentTR;
@@ -1045,7 +525,6 @@ class SalariesController extends Controller
         $conveyanceExempted = 30000;
         $response['conveyanceExempted'] = $conveyanceExempted;
 
-        // $conveyanceTR = $conveyance*12;
         $conveyanceTR = $cysd['conveyance'];
         if(($conveyanceTR-$conveyanceExempted)>=0)$conveyanceTR=$conveyanceTR-$conveyanceExempted; else $conveyanceTR=0;
         $response['conveyanceTaxRemaining'] = $conveyanceTR;
@@ -1053,7 +532,6 @@ class SalariesController extends Controller
         $medicalExempted = 120000;
         $response['medicalExempted'] = $medicalExempted;
 
-        // $medicalTR = $medicalAllowance*12;
         $medicalTR = $cysd['medicalAllowance'];
         if(($medicalTR-$medicalExempted)>=0)$medicalTR=$medicalTR-$medicalExempted; else $medicalTR=0;
         $response['medicalTaxRemaining'] = $medicalTR;
@@ -1096,40 +574,6 @@ class SalariesController extends Controller
             $response['TIRebate'] = 0;
             $response['finalTax'] = 0;
         }
-
-        // dd($response);
         return $response;
-
-    }
-
-    private function loantotal($user_id)
-    {
-        $salary = Salary::where('user_id',$user_id)->get()->first();
-        $salary_id = $salary->id;
-        $loans = Loan::where('salary_id',$salary_id)->get()->all();
-        // dd($loans);
-        $total_loan = 0;
-        foreach($loans as $loan)
-        {
-            $lmstart = Carbon::now()->subMonth()->startOfMonth();
-            $lmend = Carbon::now()->subMonth()->endOfMonth();
-            $startdate = Carbon::parse($loan->start_date);
-            $enddate = Carbon::parse($loan->end_date);
-            if( ($startdate>$lmstart && $startdate<$lmend) || ($startdate<$lmstart) )
-            {
-                if( ($enddate>$lmstart && $enddate<$lmend) || ($enddate>$lmend) )
-                {
-                    $monthly_loan = $loan->amount/$loan->installments;
-                    $total_loan += $monthly_loan; 
-                }
-            }
-        }
-        return $total_loan;
-    }
-
-    public function dbcheck(){
-        $response['status'] = 'success';
-        $response['activity'] = 'checking db';
-        return response()->json($response);
     }
 }

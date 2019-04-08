@@ -23,6 +23,7 @@ class CreateLoansTable extends Migration
             $table->integer('tenure');//installment count
             $table->string('loan_type');//type of loan, option left for many different types
             $table->float('interest',5,2)->nullable()->default(0);
+            $table->tinyInteger('active')->default(1);
             $table->timestamps();
         });
     }

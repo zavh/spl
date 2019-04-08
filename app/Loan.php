@@ -21,10 +21,16 @@ class Loan extends Model
         'end_date',
         'tenure',
         'loan_type',
-        'interest'
+        'interest',
+        'active',
     ];
 
     public function salary(){
         return $this->belongsTo('App\Salary');
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('active', 1);
     }
 }
