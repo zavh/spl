@@ -25,162 +25,139 @@ class SalariesController extends Controller
         return view('salaries.query');        
     }
 
-    private function salaryupdate_generator($lastmonth)
-    {
-        $salaryprofile_updated = SalaryStructure::all();
-        Schema::connection('mysql')->create('salaryupdate_'.$lastmonth, function($table)
-        {
-            $table->increments('id');
-            $table->integer('structureid')->nullable()->default(0);
-            $table->string('name')->nullable()->default('');
-            $table->dateTime('update')->nullable();
-            $table->timestamps();
-        });
-        foreach($salaryprofile_updated as $spupdate)
-        {
-            DB::table('salaryupdate_'.$lastmonth)->insert([
-                'structureid' => $spupdate->id,
-                'name' => $spupdate->structurename,
-                'update' => $spupdate->updated_at
-            ]);
-        } 
-    }
-    private function salary_updater($lastmonth)
-    {
-        DB::table('salaryupdate_'.$lastmonth)->truncate(); //truncate table
-
-        $refreshprofiles = SalaryStructure::all();
-        $refreshtable = array();
-        $x = 0;
-        foreach($refreshprofiles as $spupdate)  //reinsert updated data
-        {
-            $refreshtable[$x]['structureid'] =  $spupdate->id;
-            $refreshtable[$x]['name'] = $spupdate->structurename;
-            $refreshtable[$x]['update'] = $spupdate->updated_at;
-            DB::table('salaryupdate_'.$lastmonth)->insert([
-                'structureid' => $refreshtable[$x]['structureid'],
-                'name' => $refreshtable[$x]['name'],
-                'update' => $refreshtable[$x]['update']
-            ]);
-        }
-    }
-    private function salary_generator($lastmonth)
-    {
-        Schema::connection('mysql')->create('salary_'.$lastmonth, function($table)
-        {
-            $table->increments('id');
-            $table->integer('user_id')->nullable()->default(0);
-            $table->json('salarydata')->nullable();
-            $table->float('fraction',3,2)->nullable()->default(0.00);
-            $table->timestamps();
-        });
-    }
-
-    private function store_salary($salary,$lastmonth)
-    {
-        $salarydata = array();
-        $r = array();
-        $taxable_income = array();
-        $monthly_taxable_income = array();
-        $tax_paid = array();
-        $i = 0;
-        
-        $lastmonth_month = Carbon::now()->subMonth()->month; //last month
-        $lastmonth_year = Carbon::now()->subMonth()->year;
-
-        $_month = Carbon::now()->subMonth()->subMonth()->month;//last to last month
-        $_year = Carbon::now()->subMonth()->subMonth()->year;
-        $_month_year = $_month."_".$_year;
-        $lastmonth_start = Carbon::now()->subMonth()->startOfMonth();
-        // dd($salary);
-
-        foreach ($salary as $sal) 
-        {   
-            // $si = (object)$sal;
-
-            $joindate = $sal['join_date'];
-            $joindate_m = Carbon::parse($joindate)->month;
-            $lastmonth_m = Carbon::parse($lastmonth_start)->month;
-            
-            $joindate_y = Carbon::parse($joindate)->year;
-            $lastmonth_y = Carbon::parse($lastmonth_start)->year;
-
-            $joindate_d = Carbon::parse($joindate)->day;
-            $lastmonth_d = Carbon::parse($lastmonth_start)->day;
-
-            
-
-            if($joindate_y == $lastmonth_y && $joindate_m == $lastmonth_m && $joindate_d > $lastmonth_d)//joined after previous month starts
-            {
-                $fraction[$i] = (float)($joindate_d/$lastmonth_start->daysInMonth);
-            }
-            else if($joindate_y > $lastmonth_y || ($joindate_y == $lastmonth_y && $joindate_m > $lastmonth_m) )
-            {
-                continue; //future date
-            }
-            else
-            {
-                $fraction[$i] = 1;
-            }
-            // dd($d,$joindate_y,$joindate_m,$joindate_d,$lastmonth_y,$lastmonth_m,$lastmonth_d);
-
-            $userinfo[$i] = User::where('name','=',$sal['name'])->get()->all();
-            $id[$i] = $userinfo[$i][0]->id;
-            $salarydata[$i] = json_encode($sal);
-
-            DB::table('salary_'.$lastmonth)->insert([
-                'user_id' => $id[$i],
-                'salarydata' => $salarydata[$i],
-                'fraction'=> $fraction[$i]
-            ]);
-            $i++;
-        }
-        // dd($fraction);
-    }
-
     public function dbcheck($year = null){
+        //First determine the current payscale year. This will help to determine valid user input
+        $today = date("Y-m-d");
+        if($today > date("Y-07-31")){
+            $currentFromYear = date("Y") + 0;
+            $currentToYear = date("Y") + 1;
+        }
+        else{
+            $currentFromYear = date("Y") - 1;
+            $currentToYear = date("Y") + 0;
+        }
+        //Determining default or user input
         if($year == null){
-            $today = date("Y-m-d");
-            if($today > date("Y-07-31")){
-                $fromYear = date("Y") + 0;
-                $toYear = date("Y") + 1;
-            }
-            else{
-                $fromYear = date("Y") - 1;
-                $toYear = date("Y") + 0;
-            }
+            $fromYear = $currentFromYear;
+            $toYear = $currentToYear;
+            $thisMonth = date('n') - 1; // No date selected, default view, gives salary for last month, hence -1
         }
         else {
-            $fromYear = $year + 0;
-            $toYear = $year + 1;
+            $targetPeriod = explode('-', $year);
+            $fromYear = $targetPeriod[0] + 0;
+            $toYear = $targetPeriod[0] + 1;
+
+            $thisMonth = $targetPeriod[1];
         }
+
+        if($thisMonth > 6 ){
+            $month = 7 - $thisMonth;
+        }
+        else {
+            $month = 5 + $thisMonth;
+        }
+
         if(Schema::hasTable('salary_'.$fromYear."_".$toYear)){
-            $response['status'] = 'success';
-            $response['fromYear'] = $fromYear;
-            $response['toYear'] = $toYear;
+            // This is going to fetch tables from db and then process the presentation
         }
         else {
-            $response['all'] = $this->initial_salary_generator("$fromYear-07-01", "$toYear-06-30");
+            if($fromYear != $currentFromYear){
+                $response['status'] = 'fail';
+                $response['year'] = $fromYear;
+                $response['month'] = $month;
+                $response['message'] = 'Fresh generation of salaries from previous or future year will be misleading. A lot of factors may have/will be changed, ex: basic, salary structure, tax information. Hence this is prohibited';
+                return $response;
+            }
+            else {
+                $db = $this->initial_salary_generator("$fromYear-07-01", "$toYear-06-30");
+                $response = $this->presentation($db['salaries'], $year, $month);
+                $response['status'] = 'success';
+                $response['year'] = $fromYear;
+                $response['month'] = $month;
+                // save this $db into database 
+                // call yearly_income_table_generator and yearly_income_table_data_entry
+                // then send this reponse to prepare presentation
+
+                return response()->json($db['salaries']);
+                // return response()->json($response);
+            }
         }
-        
-        return response()->json($response);
     }
 
+    private function presentation($d, $year, $month){
+        $response['tabheads'] = $this->tabhead_generation();
+        for($i=0;$i<count($d);$i++){
+            $response['data'][$i]['employee_id'] = $d[$i]['profile']->employee_id;
+            $response['data'][$i]['name'] = $d[$i]['profile']->name;
+            $response['data'][$i]['join_date'] = $d[$i]['profile']->join_date;
+            $response['data'][$i]['basic'] = $d[$i]['profile']->basic;
+            $response['data'][$i]['house_rent'] = $d[$i]['salary'][$month]['house_rent'];
+            $response['data'][$i]['conveyance'] = $d[$i]['salary'][$month]['conveyance'];
+            $response['data'][$i]['medical_allowance'] = $d[$i]['salary'][$month]['medical_allowance'];
+            $response['data'][$i]['pf_self'] = $d[$i]['salary'][$month]['pf_self'];
+            $response['data'][$i]['pf_company'] = $d[$i]['salary'][$month]['pf_company'];
+            $response['data'][$i]['bonus'] = $d[$i]['salary'][$month]['bonus'];
+            if(is_array($d[$i]['salary'][$month]['loan']))
+                $response['data'][$i]['loan'] = $d[$i]['salary'][$month]['loan']['sum'];
+            else 
+                $response['data'][$i]['loan'] = $d[$i]['salary'][$month]['loan'];
+            $response['data'][$i]['extra'] = $d[$i]['salary'][$month]['extra'];
+            $response['data'][$i]['less'] = $d[$i]['salary'][$month]['less'];
+            $response['data'][$i]['fooding'] = $d[$i]['salary'][$month]['fooding'];
+            $response['data'][$i]['monthly_tax'] = $d[$i]['salary'][$month]['monthly_tax'];
+            $response['data'][$i]['deduction_total'] = 
+                        $d[$i]['salary'][$month]['pf_self'] + 
+                        $d[$i]['salary'][$month]['loan']['sum'] +
+                        $d[$i]['salary'][$month]['less'] +
+                        $d[$i]['salary'][$month]['monthly_tax'] +
+                        $response['data'][$i]['fooding']
+                        ;
+            $response['data'][$i]['gross_salary'] = 
+                        $d[$i]['profile']->basic +
+                        $d[$i]['salary'][$month]['house_rent'] +
+                        $d[$i]['salary'][$month]['conveyance'] +
+                        $d[$i]['salary'][$month]['medical_allowance'] +
+                        $d[$i]['salary'][$month]['pf_self'] +
+                        $d[$i]['salary'][$month]['bonus'] +
+                        $d[$i]['salary'][$month]['extra']
+                        ;
+            $response['data'][$i]['gross_total'] = $response['data'][$i]['gross_salary'] + $d[$i]['salary'][$month]['pf_company'];
+            $response['data'][$i]['net_salary'] = $response['data'][$i]['gross_salary'] - $response['data'][$i]['deduction_total'];
+        }
+        return $response;
+    }
     private function initial_salary_generator($fromYear, $toYear)
     {
         $users = User::actual()->get();
         $data = array();
         foreach($users as $index=>$user){
-            $data[$index] = $this->yearly_generator($user, $fromYear, $toYear);
-            $data[$index] = $this->income_tax_calculation($data[$index]);
+            //Step 1: Generate Yearly Salary
+            $data['salaries'][$index] = $this->yearly_generator($user, $fromYear, $toYear);
+            //Step 2: Generate tentative yearly tax
+            $tax_config = $this->income_tax_calculation($data['salaries'][$index]);
+            $data['salaries'][$index]['tax_config'] = $tax_config;
+            //Step 3: Generate monthly tax
+            $data['salaries'][$index] = $this->generate_monthly_tax($data['salaries'][$index], $tax_config['finalTax']);
         }
         return $data;
     }
 
+    private function generate_monthly_tax($s, $yt){ //$s = salary array $yt = yearly tax
+        $tax_remaining = $yt;
+        for($i = 0; $i<count($s['salary']);$i++){
+            $tax = $s['salary'][$i]['fraction']*$tax_remaining/(12-$i);
+            $s['salary'][$i]['monthly_tax'] = $tax;
+            $tax_remaining -= $tax;
+        }
+        return $s;
+    }
     private function yearly_generator($user, $fromYear, $toYear){
         
         $structure = json_decode($user->salarystructure->structure);
         $profile = json_decode($user->salary->salaryinfo);
+        $profile->id = $user->id;
+        $profile->employee_id = $user->name;
+        $profile->name = $user->fname." ".$user->sname;
 
         $response['structure'] = $structure;
         $response['profile'] = $profile;
@@ -252,37 +229,27 @@ class SalariesController extends Controller
 
     private function tabhead_generation()
     {
-        $users = User::where('active', 1)->actual()->get();
-        $count = 0;
-        $salary = array();
-        $tabheads = array('Employee ID','Basic','Date of Joining');
-        $flag = 0;
-        foreach($users as $index=>$user)
-        {
-            $sstructure = $user->salarystructure;
-
-            $x = $user->salary;
-            $salary[$count]['name'] = $x->user->name;
-            $si = json_decode($x->salaryinfo);
-            $salary[$count]['basic'] = $si->basic;
-            
-            if(empty($sstructure)){
-                $salary[$count] = null;
-            }
-            else {
-                $ss = json_decode($sstructure->structure);
-                foreach($ss as $breakdown){
-                    if($flag == 0)
-                        $tabheads[count($tabheads)]=$breakdown->param_uf_name;
-                }
-                $tabheads['gross_salary'] = "Gross Salary";
-                $tabheads['gross_total'] = "Gross Total";
-                $tabheads['deduction_total'] = "Deduction Total";
-                $tabheads['net_salary'] = "Net Salary";
-                $flag = 1;
-                $count++;
-            }
-        }
+        $tabheads = array(
+            'employee_id'=>'Employee ID',
+            'name'=>'Name',
+            'join_data'=> 'Date of Joining',
+            'basic'=>'Basic',
+            'house_rent'=> 'House Rent',
+            'conveyance'=> 'Conveyance',
+            'medical_allowance'=> 'Medical Allowance',
+            'pf_self'=> 'PF Self',
+            'pf_company'=> 'PF Company',
+            'bonus'=> 'Bonus',
+            'loan'=> 'Loan',
+            'extra'=> 'Extra',
+            'less'=> 'Less',
+            'fooding'=>'Fooding',
+            'monthly_tax'=>'Monthly Tax',
+            'deduction_total'=> 'Deduction Total',
+            'gross_salary'=> 'Gross Salary',
+            'gross_total'=> 'Gross Total',
+            'net_salary'=> 'Net Salary'
+        );
         return $tabheads;
     }
 
@@ -392,8 +359,6 @@ class SalariesController extends Controller
         $tax = array();
         $slabamount = array();
 
-        // dd($taxableIncome);
-
         for($i=0;$i<count($slabperc);$i++){
             if($i == (count($slabperc)-1)){
                 if($taxableIncome > 0){
@@ -471,7 +436,6 @@ class SalariesController extends Controller
         ]);
     }
 
-
     private function income_tax_calculation($ysd)
     {
         $cysd['basicSalary'] = 0;
@@ -483,6 +447,7 @@ class SalariesController extends Controller
         $cysd['less'] = 0;
         $cysd['medicalAllowance'] = 0;
         $cysd['pfCompany'] = 0;
+        
         $gender = $ysd['profile']->gender;
         $age = Carbon::parse($ysd['profile']->date_of_birth)->age;
         for($i=0;$i<count($ysd['salary']);$i++){
@@ -493,23 +458,18 @@ class SalariesController extends Controller
             $cysd['pfCompany'] += $ysd['salary'][$i]['pf_company'];
         }
 
-        $basicSalary = $cysd['basicSalary'];
-        $houseRent = $cysd['houseRent'];
-        $conveyance = $cysd['conveyance'];
-        $medicalAllowance = $cysd['medicalAllowance'];
-        $bonus = $cysd['bonus'];
-        $extra = $cysd['extra'];
         $less = $cysd['less'];
 
-        $response['basicSalary'] = $basicSalary;
-        $response['houseRent'] = $houseRent;
-        $response['conveyance'] = $conveyance;
-        $response['medicalAllowance'] = $medicalAllowance;
-        $response['bonus'] = $bonus;
-        $response['extra'] = $extra;
-        $response['less'] = $less;
+        $response['basicSalary'] = $cysd['basicSalary'];
+        $response['houseRent'] = $cysd['houseRent'];
+        $response['conveyance'] = $cysd['conveyance'];
+        $response['medicalAllowance'] = $cysd['medicalAllowance'];
+        $response['bonus'] = $cysd['bonus'];
+        $response['extra'] = $cysd['extra'];
+        $response['less'] = $cysd['less'];
+        
 
-        $grossSalary = $cysd['basicSalary'] + $cysd['houseRent'] + $cysd['conveyance'] + $cysd['medicalAllowance'] + $bonus + $extra;
+        $grossSalary = $cysd['basicSalary'] + $cysd['houseRent'] + $cysd['conveyance'] + $cysd['medicalAllowance'] + $cysd['bonus'] + $cysd['extra'];
         $response['grossSalary'] = $grossSalary;
 
         $grossTotal = $grossSalary +$cysd['pfCompany'];
@@ -536,7 +496,7 @@ class SalariesController extends Controller
         if(($medicalTR-$medicalExempted)>=0)$medicalTR=$medicalTR-$medicalExempted; else $medicalTR=0;
         $response['medicalTaxRemaining'] = $medicalTR;
 
-        $taxableFields = $HouseRentTR + $conveyanceTR + $medicalTR + $cysd['pfCompany'] + $bonus + $extra - $less;//not including extra yet
+        $taxableFields = $HouseRentTR + $conveyanceTR + $medicalTR + $cysd['pfCompany'] + $cysd['bonus'] + $cysd['extra'] - $less;//not including extra yet
         $response['taxableFields'] = $taxableFields;
 
         $TaxableSalary = $cysd['basicSalary'] + $taxableFields;
