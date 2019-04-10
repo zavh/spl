@@ -59055,12 +59055,8 @@ var SalarySPA = function (_Component) {
         value: function render() {
             return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 'div',
-                { className: 'container' },
-                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                    'div',
-                    { className: 'row justify-content-between' },
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__mainPanel__["a" /* default */], null)
-                )
+                { className: 'container-fluid' },
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__mainPanel__["a" /* default */], null)
             );
         }
     }]);
@@ -59079,6 +59075,7 @@ var SalarySPA = function (_Component) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_axios__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_axios__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__commons_FileUpload__ = __webpack_require__(68);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -59090,29 +59087,99 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 
 
+
 var MainPanel = function (_Component) {
     _inherits(MainPanel, _Component);
 
-    function MainPanel() {
+    function MainPanel(props) {
         _classCallCheck(this, MainPanel);
 
-        return _possibleConstructorReturn(this, (MainPanel.__proto__ || Object.getPrototypeOf(MainPanel)).apply(this, arguments));
+        var _this = _possibleConstructorReturn(this, (MainPanel.__proto__ || Object.getPrototypeOf(MainPanel)).call(this, props));
+
+        _this.state = {
+            tabheads: {},
+            salaryrow: [],
+            status: '',
+            message: ''
+        };
+        return _this;
     }
 
     _createClass(MainPanel, [{
         key: 'componentDidMount',
         value: function componentDidMount() {
+            var _this2 = this;
+
             __WEBPACK_IMPORTED_MODULE_1_axios___default.a.get('/salaries/dbcheck').then(function (response) {
-                console.log(response.data);
+                console.log(response);
+                status = response.data.status;
+                _this2.setState({ status: status });
+                if (status === 'success') {
+                    _this2.setState({
+                        tabheads: response.data.tabheads,
+                        salaryrow: response.data.data
+                    });
+                } else if (status === 'fail') {
+                    _this2.setState({ message: response.data.message });
+                }
+            }).catch(function (error) {
+                console.log(error);
             });
+            ;
         }
     }, {
         key: 'render',
         value: function render() {
-            return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            var _this3 = this;
+
+            if (this.state.status === 'success') {
+                return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'div',
+                    null,
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__commons_FileUpload__["a" /* default */], null),
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        'table',
+                        { className: 'table table-sm table-bordered table-striped small' },
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            'tbody',
+                            null,
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                'tr',
+                                null,
+                                Object.keys(this.state.tabheads).map(function (key, index) {
+                                    return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                        'th',
+                                        { key: index },
+                                        _this3.state.tabheads[key]
+                                    );
+                                })
+                            ),
+                            this.state.salaryrow.map(function (e, i) {
+                                return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                    'tr',
+                                    { key: i },
+                                    Object.keys(e).map(function (key, index) {
+                                        return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                            'td',
+                                            { key: index },
+                                            e[key]
+                                        );
+                                    })
+                                );
+                            })
+                        )
+                    )
+                );
+            } else if (this.state.status === 'fail') {
+                return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'div',
+                    null,
+                    this.state.message
+                );
+            } else return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 'div',
                 null,
-                'DB Check'
+                'Loading Data'
             );
         }
     }]);
@@ -59127,6 +59194,108 @@ var MainPanel = function (_Component) {
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 64 */,
+/* 65 */,
+/* 66 */,
+/* 67 */,
+/* 68 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_axios__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_axios__);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+
+
+
+var FileUploadComponent = function (_Component) {
+  _inherits(FileUploadComponent, _Component);
+
+  function FileUploadComponent(props) {
+    _classCallCheck(this, FileUploadComponent);
+
+    var _this = _possibleConstructorReturn(this, (FileUploadComponent.__proto__ || Object.getPrototypeOf(FileUploadComponent)).call(this, props));
+
+    _this.state = {
+      monthconfig: ''
+    };
+    _this.onFormSubmit = _this.onFormSubmit.bind(_this);
+    _this.onChange = _this.onChange.bind(_this);
+    _this.fileUpload = _this.fileUpload.bind(_this);
+    return _this;
+  }
+
+  _createClass(FileUploadComponent, [{
+    key: 'onFormSubmit',
+    value: function onFormSubmit(e) {
+      e.preventDefault();
+      this.fileUpload();
+    }
+  }, {
+    key: 'onChange',
+    value: function onChange(e) {
+      var files = e.target.files || e.dataTransfer.files;
+      if (!files.length) return;
+      this.createFile(files[0]);
+    }
+  }, {
+    key: 'createFile',
+    value: function createFile(file) {
+      var _this2 = this;
+
+      var reader = new FileReader();
+      reader.onload = function (e) {
+        _this2.setState({
+          monthconfig: e.target.result
+        });
+      };
+      reader.readAsText(file);
+    }
+  }, {
+    key: 'fileUpload',
+    value: function fileUpload() {
+      var url = '/salaries/upload';
+      var formData = { fileToUpload: this.state.monthconfig };
+      __WEBPACK_IMPORTED_MODULE_1_axios___default.a.post(url, formData).then(function (response) {
+        return console.log(response);
+      });
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+        'form',
+        { onSubmit: this.onFormSubmit },
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+          'h4',
+          null,
+          'Upload Monthly Data'
+        ),
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { type: 'file', onChange: this.onChange }),
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+          'button',
+          { type: 'submit' },
+          'Upload'
+        )
+      );
+    }
+  }]);
+
+  return FileUploadComponent;
+}(__WEBPACK_IMPORTED_MODULE_0_react__["Component"]);
+
+/* harmony default export */ __webpack_exports__["a"] = (FileUploadComponent);
 
 /***/ })
 /******/ ]);

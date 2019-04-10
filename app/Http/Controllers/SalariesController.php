@@ -40,18 +40,25 @@ class SalariesController extends Controller
         if($year == null){
             $fromYear = $currentFromYear;
             $toYear = $currentToYear;
-            $thisMonth = date('n') - 1; // No date selected, default view, gives salary for last month, hence -1
+            $year = Carbon::parse($today)->subMonth()->format("Y-n");
+            $thisMonth = Carbon::parse($today)->subMonth()->format("n");
         }
         else {
             $targetPeriod = explode('-', $year);
-            $fromYear = $targetPeriod[0] + 0;
-            $toYear = $targetPeriod[0] + 1;
-
             $thisMonth = $targetPeriod[1];
+            if($thisMonth > 6){
+                $fromYear = $targetPeriod[0] + 0;
+                $toYear = $targetPeriod[0] + 1;
+            }
+            else{
+                $fromYear = $targetPeriod[0] - 1;
+                $toYear = $targetPeriod[0] + 0;
+            }
+
         }
 
         if($thisMonth > 6 ){
-            $month = 7 - $thisMonth;
+            $month = $thisMonth - 7;
         }
         else {
             $month = 5 + $thisMonth;
@@ -73,20 +80,23 @@ class SalariesController extends Controller
                 $response = $this->presentation($db['salaries'], $year, $month);
                 $response['status'] = 'success';
                 $response['year'] = $fromYear;
-                $response['month'] = $month;
+                $response['target_month'] = $year;
                 // save this $db into database 
                 // call yearly_income_table_generator and yearly_income_table_data_entry
                 // then send this reponse to prepare presentation
 
-                return response()->json($db['salaries']);
-                // return response()->json($response);
+                // return response()->json($db['salaries']);
+                return response()->json($response);
             }
         }
     }
 
     private function presentation($d, $year, $month){
         $response['tabheads'] = $this->tabhead_generation();
+        $t = explode('-',$year);
+        $target_month = Carbon::create($t[0],$t[1]+1, 1, 0, 0, 0, 'Asia/Dhaka');
         for($i=0;$i<count($d);$i++){
+            if(Carbon::parse($d[$i]['profile']->join_date)->gt($target_month)) continue;
             $response['data'][$i]['employee_id'] = $d[$i]['profile']->employee_id;
             $response['data'][$i]['name'] = $d[$i]['profile']->name;
             $response['data'][$i]['join_date'] = $d[$i]['profile']->join_date;
@@ -98,22 +108,23 @@ class SalariesController extends Controller
             $response['data'][$i]['pf_company'] = $d[$i]['salary'][$month]['pf_company'];
             $response['data'][$i]['bonus'] = $d[$i]['salary'][$month]['bonus'];
             if(is_array($d[$i]['salary'][$month]['loan']))
-                $response['data'][$i]['loan'] = $d[$i]['salary'][$month]['loan']['sum'];
+                $response['data'][$i]['loan'] = number_format($d[$i]['salary'][$month]['loan']['sum'],2);
             else 
                 $response['data'][$i]['loan'] = $d[$i]['salary'][$month]['loan'];
             $response['data'][$i]['extra'] = $d[$i]['salary'][$month]['extra'];
             $response['data'][$i]['less'] = $d[$i]['salary'][$month]['less'];
             $response['data'][$i]['fooding'] = $d[$i]['salary'][$month]['fooding'];
-            $response['data'][$i]['monthly_tax'] = $d[$i]['salary'][$month]['monthly_tax'];
-            $response['data'][$i]['deduction_total'] = 
+            $response['data'][$i]['monthly_tax'] = number_format($d[$i]['salary'][$month]['monthly_tax'], 2);
+            $deduction_total = 
                         $d[$i]['salary'][$month]['pf_self'] + 
                         $d[$i]['salary'][$month]['loan']['sum'] +
                         $d[$i]['salary'][$month]['less'] +
                         $d[$i]['salary'][$month]['monthly_tax'] +
                         $response['data'][$i]['fooding']
                         ;
-            $response['data'][$i]['gross_salary'] = 
-                        $d[$i]['profile']->basic +
+            $response['data'][$i]['deduction_total'] = number_format($deduction_total, 2);
+            $gross_salary = 
+                        $d[$i]['profile']->basic * $d[$i]['salary'][$month]['fraction'] +
                         $d[$i]['salary'][$month]['house_rent'] +
                         $d[$i]['salary'][$month]['conveyance'] +
                         $d[$i]['salary'][$month]['medical_allowance'] +
@@ -121,8 +132,9 @@ class SalariesController extends Controller
                         $d[$i]['salary'][$month]['bonus'] +
                         $d[$i]['salary'][$month]['extra']
                         ;
-            $response['data'][$i]['gross_total'] = $response['data'][$i]['gross_salary'] + $d[$i]['salary'][$month]['pf_company'];
-            $response['data'][$i]['net_salary'] = $response['data'][$i]['gross_salary'] - $response['data'][$i]['deduction_total'];
+            $response['data'][$i]['gross_salary'] = number_format($gross_salary, 2);
+            $response['data'][$i]['gross_total'] = number_format($gross_salary + $d[$i]['salary'][$month]['pf_company'], 2);
+            $response['data'][$i]['net_salary'] = number_format($gross_salary - $deduction_total,2);
         }
         return $response;
     }
@@ -256,88 +268,91 @@ class SalariesController extends Controller
     public function upload(Request $request)
     {
         $dataarray = array();
-        $uploadedFile = $request->file('fileToUpload');
-        $filename = $uploadedFile->getClientOriginalName();
+        $uploadedFile = $request->fileToUpload;
+        $filename = '_'.time().'.csv';
 
-        $lastmonth_month = Carbon::now()->subMonth()->month;
-        $lastmonth_year = Carbon::now()->subMonth()->year;
-        $lastmonth = $lastmonth_month."_".$lastmonth_year;
+        //$filename = $uploadedFile->getClientOriginalName();
+        // $lastmonth_month = Carbon::now()->subMonth()->month;
+        // $lastmonth_year = Carbon::now()->subMonth()->year;
+        // $lastmonth = $lastmonth_month."_".$lastmonth_year;
 
-        Storage::disk('local')->putFileAs('files', $uploadedFile, $filename);
-        $contents = Storage::get('/files/'.$filename);
-        $lines = explode("\n", $contents);
-        $heads = explode(",", $lines[0]);
-        for($y=1;$y<count($lines);$y++){
-            $tempdat = explode(",", $lines[$y]);
+        //Storage::disk('local')->putFileAs('files', $uploadedFile, $filename);
+        Storage::disk('local')->put($filename, $uploadedFile);
+        return response()->json($request->all());
+        //$contents = Storage::get('/files/'.$filename);
+        // $lines = explode("\n", $contents);
+        // $heads = explode(",", $lines[0]);
+        // for($y=1;$y<count($lines);$y++){
+        //     $tempdat = explode(",", $lines[$y]);
             
-            for($i=0;$i<count($heads);$i++){
-                $data[$y-1][$heads[$i]] = $tempdat[$i];
-            }
-        }
+        //     for($i=0;$i<count($heads);$i++){
+        //         $data[$y-1][$heads[$i]] = $tempdat[$i];
+        //     }
+        // }
         
-        $updates = DB::table('salary_'.$lastmonth)->get()->all();
-        foreach($data as $update)
-        {
-            $query = 'JSON_CONTAINS(`salarydata`, \'{\"name\":\"'.$update['Employee ID'].'\"}\')';
-            $name = DB::table('salary_'.$lastmonth)->whereRaw($query)->get()->first();
-            if(isset($name))
-            {
-                $salarydata = json_decode($name->salarydata,true);
+        // $updates = DB::table('salary_'.$lastmonth)->get()->all();
+        // foreach($data as $update)
+        // {
+        //     $query = 'JSON_CONTAINS(`salarydata`, \'{\"name\":\"'.$update['Employee ID'].'\"}\')';
+        //     $name = DB::table('salary_'.$lastmonth)->whereRaw($query)->get()->first();
+        //     if(isset($name))
+        //     {
+        //         $salarydata = json_decode($name->salarydata,true);
                 
-                $salarydata['hire_purchase'] = (float)$update['Hire Purchase'];
-                $salarydata['fooding'] = (float)$update['Fooding'];
-                $user_id = User::where('name', $salarydata['name'])->get()->first()->id;
+        //         $salarydata['hire_purchase'] = (float)$update['Hire Purchase'];
+        //         $salarydata['fooding'] = (float)$update['Fooding'];
+        //         $user_id = User::where('name', $salarydata['name'])->get()->first()->id;
 
-                $total_loan = $this->loantotal($user_id);
+        //         $total_loan = $this->loantotal($user_id);
 
-                $salarydata['loan'] = (float)$total_loan;
-                $salarydata['bonus'] = (float)$update['Bonus'];
-                $salarydata['extra'] = (float)$update['Extra'];
-                $salarydata['less'] = (float)$update['Less'];
-                $salarydata['deduction_total'] =(float)$salarydata['pf_self'] +
-                                                (float)$salarydata['pf_company'] +
-                                                (float)$update['Hire Purchase'] + 
-                                                (float)$salarydata['tds'] +
-                                                (float)$update['Loan'] + 
-                                                (float)$update['Less'] + 
-                                                (float)$update['Fooding'];
-                $salarydata['net_salary'] = (float)$salarydata['gross_salary']-
-                                                (float)$salarydata['deduction_total'];
+        //         $salarydata['loan'] = (float)$total_loan;
+        //         $salarydata['bonus'] = (float)$update['Bonus'];
+        //         $salarydata['extra'] = (float)$update['Extra'];
+        //         $salarydata['less'] = (float)$update['Less'];
+        //         $salarydata['deduction_total'] =(float)$salarydata['pf_self'] +
+        //                                         (float)$salarydata['pf_company'] +
+        //                                         (float)$update['Hire Purchase'] + 
+        //                                         (float)$salarydata['tds'] +
+        //                                         (float)$update['Loan'] + 
+        //                                         (float)$update['Less'] + 
+        //                                         (float)$update['Fooding'];
+        //         $salarydata['net_salary'] = (float)$salarydata['gross_salary']-
+        //                                         (float)$salarydata['deduction_total'];
 
-                $dataarray_tds = $salarydata;
-
-                
-                $salary_info = json_decode((Salary::where('user_id',$user_id)->get()->first()->salaryinfo),true);
-                $dataarray['gender'] = $salary_info['gender'];
-                $dataarray['dob'] = $salary_info['date_of_birth'];
-                //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                $dataarray['user'] = User::find($user_id);
-                //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                $dataarray['basicSalary'] = $dataarray_tds['basic'];
-                $dataarray['perc_conveyance'] = (float)(100 * ($dataarray_tds['conveyance']/$dataarray_tds['basic']));
-                $dataarray['perc_medical'] = (float)(100 * ($dataarray_tds['medical_allowance']/$dataarray_tds['basic']));
-                $dataarray['perc_houserent'] = (float)(100 * ($dataarray_tds['house_rent']/$dataarray_tds['basic']));
-                $dataarray['perc_pfcomp'] = (float)(100 * ($dataarray_tds['pf_company']/$dataarray_tds['basic']));
+        //         $dataarray_tds = $salarydata;
 
                 
-                $sp = $this::yearly_generation($dataarray,$dataarray_tds['bonus'],$dataarray_tds['extra'],$dataarray_tds['less']);
-                // dd($user_id, $total_loan);
-                
-                $dataarray_tds['gross_salary'] = $sp['response_without_addons']['grossSalary'];
-                $dataarray_tds['gross_total'] = $sp['response_without_addons']['grossTotal'];
-                $dataarray_tds['tds'] = $sp['response_without_addons']['finalTax']/12 + $sp['addons_tax'];
-                $dataarray_tds['loan'] = $total_loan;
+        //         $salary_info = json_decode((Salary::where('user_id',$user_id)->get()->first()->salaryinfo),true);
+        //         $dataarray['gender'] = $salary_info['gender'];
+        //         $dataarray['dob'] = $salary_info['date_of_birth'];
+        //         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //         $dataarray['user'] = User::find($user_id);
+        //         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //         $dataarray['basicSalary'] = $dataarray_tds['basic'];
+        //         $dataarray['perc_conveyance'] = (float)(100 * ($dataarray_tds['conveyance']/$dataarray_tds['basic']));
+        //         $dataarray['perc_medical'] = (float)(100 * ($dataarray_tds['medical_allowance']/$dataarray_tds['basic']));
+        //         $dataarray['perc_houserent'] = (float)(100 * ($dataarray_tds['house_rent']/$dataarray_tds['basic']));
+        //         $dataarray['perc_pfcomp'] = (float)(100 * ($dataarray_tds['pf_company']/$dataarray_tds['basic']));
 
-                DB::table('salary_'.$lastmonth)->whereRaw($query)->update(['salarydata'=> json_encode($dataarray_tds)]);
                 
-            }
-            //////////////////////////regenerating the table////////////////////////////////////////////    
-            $tabheads = $this->tabhead_generation();//generates the tabheads from salarystructure
-            $salary = $this->salary_extraction_from_lastmonth_table($lastmonth);//extracts the salary from lastmonth and puts in array
-            ////////////////////////////////////////////////////////////////////////////////////      
-            return view('salaries.index',['salaries'=>$salary, 'heads'=>$tabheads]); 
-            // return back();   
-        }      
+        //         $sp = $this::yearly_generation($dataarray,$dataarray_tds['bonus'],$dataarray_tds['extra'],$dataarray_tds['less']);
+        //         // dd($user_id, $total_loan);
+                
+        //         $dataarray_tds['gross_salary'] = $sp['response_without_addons']['grossSalary'];
+        //         $dataarray_tds['gross_total'] = $sp['response_without_addons']['grossTotal'];
+        //         $dataarray_tds['tds'] = $sp['response_without_addons']['finalTax']/12 + $sp['addons_tax'];
+        //         $dataarray_tds['loan'] = $total_loan;
+
+        //         DB::table('salary_'.$lastmonth)->whereRaw($query)->update(['salarydata'=> json_encode($dataarray_tds)]);
+                
+        //     }
+        //     //////////////////////////regenerating the table////////////////////////////////////////////    
+        //     $tabheads = $this->tabhead_generation();//generates the tabheads from salarystructure
+        //     $salary = $this->salary_extraction_from_lastmonth_table($lastmonth);//extracts the salary from lastmonth and puts in array
+        //     ////////////////////////////////////////////////////////////////////////////////////      
+        //     return view('salaries.index',['salaries'=>$salary, 'heads'=>$tabheads]); 
+        //     // return back();   
+        //}      
 
     }
 

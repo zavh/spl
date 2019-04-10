@@ -36,10 +36,8 @@ export default class SalarySPA extends Component {
 
     render() {
         return (
-            <div className="container">
-                <div className="row justify-content-between">
+            <div className="container-fluid">
                 <MainPanel />
-                </div>
             </div>
         );
     }
