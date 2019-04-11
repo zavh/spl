@@ -27,22 +27,23 @@ class SalariesController extends Controller
     }
 
     public function dbcheck($year = null){
-        //First determine the current payscale year. This will help to determine valid user input
-        $today = date("Y-m-d");
-        if($today > date("Y-07-31")){
-            $currentFromYear = date("Y") + 0;
-            $currentToYear = date("Y") + 1;
-        }
-        else{
-            $currentFromYear = date("Y") - 1;
-            $currentToYear = date("Y") + 0;
-        }
+
         //Determining default or user input
-        if($year == null){
+        if($year == null){ //Default
+            $today = date("Y-m-d");
+            if($today > date("Y-07-31")){
+                $currentFromYear = date("Y") + 0;
+                $currentToYear = date("Y") + 1;
+            }
+            else{
+                $currentFromYear = date("Y") - 1;
+                $currentToYear = date("Y") + 0;
+            }
+
             $fromYear = $currentFromYear;
             $toYear = $currentToYear;
-            $year = Carbon::parse($today)->subMonth()->format("Y-n");
-            $thisMonth = Carbon::parse($today)->subMonth()->format("n");
+            $year = Carbon::parse($today)->subMonth()->format("Y-n");       //subMonth choses the previous month
+            $thisMonth = Carbon::parse($today)->subMonth()->format("n");    //subMonth choses the previous month
         }
         else {
             $targetPeriod = explode('-', $year);
@@ -57,7 +58,11 @@ class SalariesController extends Controller
             }
 
         }
-
+        // Determine the array index according to month. 
+        // This array index matches with the yearly json data stored in the db
+        // This index determines data of which array element should be shown
+        // July this year (7th month of year) has the array index of 0
+        // and June next year (6th month of year) has the array index of 12 of 
         if($thisMonth > 6 ){
             $month = $thisMonth - 7;
         }
@@ -65,18 +70,13 @@ class SalariesController extends Controller
             $month = 5 + $thisMonth;
         }
         $db_table_name = 'yearly_income_'.$fromYear."_".$toYear;
+
         if(Schema::hasTable($db_table_name)){
             // This is going to fetch tables from db and then process the presentation
             $db = DB::table($db_table_name)->get();
             for($i=0;$i<count($db);$i++){
                 $d[$i] = json_decode($db[$i]->yearly_income);
             }
-            $response = $this->presentation( $d, $year, $month);
-            $response['status'] = 'success';
-            $response['target_month'] = $year;
-
-            // return response()->json($db['salaries']);
-            return response()->json($response);
         }
         else {
             if($fromYear != $currentFromYear){
@@ -97,14 +97,15 @@ class SalariesController extends Controller
                     $this->yearly_income_table_data_entry($d[$i]['profile']->id,$d[$i]['profile']->employee_id,$d[$i],$db_table_name);
                 }
                 // then send this reponse to prepare presentation
-                $response = $this->presentation($d, $year, $month);
-                $response['status'] = 'success';
-                $response['target_month'] = $year;
-
-                // return response()->json($db['salaries']);
-                return response()->json($response);
             }
         }
+        $response = $this->presentation( $d, $year, $month);
+        $response['status'] = 'success';
+        $response['fromYear'] = $fromYear;
+        $response['toYear'] = $toYear;
+        $response['month'] = $thisMonth;
+
+        return response()->json($response);
     }
 
     private function yearly_income_table_generator($table_name)//fix this to start from july instead of january

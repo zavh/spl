@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import FileUpload from '../commons/FileUpload';
+import Input from '../commons/Input';
+import MonthSelect from './monthSelect';
 export default class MainPanel extends Component {
     constructor(props){
         super(props);
@@ -9,7 +11,17 @@ export default class MainPanel extends Component {
             salaryrow:[],
             status:'',
             message:'',
+            fromYear:'',
+            toYear:'',
+            month:'',
+            errors:{
+                year:[],
+            },
         }
+        this.handleMonthChange = this.handleMonthChange.bind(this);
+    }
+    handleMonthChange(month){
+        this.setState({month:month});
     }
     componentDidMount(){
         axios.get('/salaries/dbcheck')
@@ -21,7 +33,10 @@ export default class MainPanel extends Component {
                 if(status === 'success'){
                     this.setState({
                         tabheads : response.data.tabheads,
-                        salaryrow : response.data.data, 
+                        salaryrow : response.data.data,
+                        fromYear : response.data.fromYear,
+                        toYear : response.data.toYear,
+                        month : response.data.month,
                     });
                 }
                 else if(status === 'fail'){
@@ -38,6 +53,9 @@ export default class MainPanel extends Component {
         if(this.state.status === 'success'){
             return(
                 <div>
+                    <Input onChange={this.handleAmntChange} value={this.state.fromYear} name='year' type='number' labelSize='90px' label='Year' errors={this.state.errors.year}/>
+                    <YearNotification fromYear={this.state.fromYear} toYear={this.state.toYear}/>
+                    <MonthSelect fromYear={this.state.fromYear} toYear={this.state.toYear} month={this.state.month} onChange={this.handleMonthChange}/>
                     <FileUpload />
                     <table className='table table-sm table-bordered table-striped small'>
                         <tbody>
@@ -69,4 +87,10 @@ export default class MainPanel extends Component {
             <div>Loading Data</div>
         );
     }
+}
+
+function YearNotification(props){
+    return(
+      <div className='small'>Year {props.fromYear} to {props.toYear} salaries wil be shown</div>
+    ) 
 }

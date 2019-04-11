@@ -62616,6 +62616,8 @@ var SalarySPA = function (_Component) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_axios__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_axios__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__commons_FileUpload__ = __webpack_require__(63);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__commons_Input__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__monthSelect__ = __webpack_require__(70);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -62623,6 +62625,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+
 
 
 
@@ -62640,12 +62644,24 @@ var MainPanel = function (_Component) {
             tabheads: {},
             salaryrow: [],
             status: '',
-            message: ''
+            message: '',
+            fromYear: '',
+            toYear: '',
+            month: '',
+            errors: {
+                year: []
+            }
         };
+        _this.handleMonthChange = _this.handleMonthChange.bind(_this);
         return _this;
     }
 
     _createClass(MainPanel, [{
+        key: 'handleMonthChange',
+        value: function handleMonthChange(month) {
+            this.setState({ month: month });
+        }
+    }, {
         key: 'componentDidMount',
         value: function componentDidMount() {
             var _this2 = this;
@@ -62657,7 +62673,10 @@ var MainPanel = function (_Component) {
                 if (status === 'success') {
                     _this2.setState({
                         tabheads: response.data.tabheads,
-                        salaryrow: response.data.data
+                        salaryrow: response.data.data,
+                        fromYear: response.data.fromYear,
+                        toYear: response.data.toYear,
+                        month: response.data.month
                     });
                 } else if (status === 'fail') {
                     _this2.setState({ message: response.data.message });
@@ -62676,6 +62695,9 @@ var MainPanel = function (_Component) {
                 return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     'div',
                     null,
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__commons_Input__["a" /* default */], { onChange: this.handleAmntChange, value: this.state.fromYear, name: 'year', type: 'number', labelSize: '90px', label: 'Year', errors: this.state.errors.year }),
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(YearNotification, { fromYear: this.state.fromYear, toYear: this.state.toYear }),
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4__monthSelect__["a" /* default */], { fromYear: this.state.fromYear, toYear: this.state.toYear, month: this.state.month, onChange: this.handleMonthChange }),
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__commons_FileUpload__["a" /* default */], null),
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                         'table',
@@ -62728,6 +62750,19 @@ var MainPanel = function (_Component) {
 }(__WEBPACK_IMPORTED_MODULE_0_react__["Component"]);
 
 /* harmony default export */ __webpack_exports__["a"] = (MainPanel);
+
+
+function YearNotification(props) {
+    return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+        'div',
+        { className: 'small' },
+        'Year ',
+        props.fromYear,
+        ' to ',
+        props.toYear,
+        ' salaries wil be shown'
+    );
+}
 
 /***/ }),
 /* 63 */
@@ -62832,6 +62867,132 @@ var FileUploadComponent = function (_Component) {
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 65 */,
+/* 66 */,
+/* 67 */,
+/* 68 */,
+/* 69 */,
+/* 70 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+
+
+var MonthSelect = function (_Component) {
+    _inherits(MonthSelect, _Component);
+
+    function MonthSelect(props) {
+        _classCallCheck(this, MonthSelect);
+
+        var _this = _possibleConstructorReturn(this, (MonthSelect.__proto__ || Object.getPrototypeOf(MonthSelect)).call(this, props));
+
+        _this.handleMonthChange = _this.handleMonthChange.bind(_this);
+        return _this;
+    }
+
+    _createClass(MonthSelect, [{
+        key: 'handleMonthChange',
+        value: function handleMonthChange(e) {
+            this.props.onChange(e.target.value);
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'select',
+                { value: this.props.month, className: 'form-control', onChange: this.handleMonthChange },
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'option',
+                    { value: '7' },
+                    this.props.fromYear,
+                    '-July'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'option',
+                    { value: '8' },
+                    this.props.fromYear,
+                    '-August'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'option',
+                    { value: '9' },
+                    this.props.fromYear,
+                    '-September'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'option',
+                    { value: '10' },
+                    this.props.fromYear,
+                    '-October'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'option',
+                    { value: '11' },
+                    this.props.fromYear,
+                    '-November'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'option',
+                    { value: '12' },
+                    this.props.fromYear,
+                    '-December'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'option',
+                    { value: '1' },
+                    this.props.toYear,
+                    '-January'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'option',
+                    { value: '2' },
+                    this.props.toYear,
+                    '-February'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'option',
+                    { value: '3' },
+                    this.props.toYear,
+                    '-March'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'option',
+                    { value: '4' },
+                    this.props.toYear,
+                    '-April'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'option',
+                    { value: '5' },
+                    this.props.toYear,
+                    '-May'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'option',
+                    { value: '6' },
+                    this.props.toYear,
+                    '-June'
+                )
+            );
+        }
+    }]);
+
+    return MonthSelect;
+}(__WEBPACK_IMPORTED_MODULE_0_react__["Component"]);
+
+/* harmony default export */ __webpack_exports__["a"] = (MonthSelect);
 
 /***/ })
 /******/ ]);
