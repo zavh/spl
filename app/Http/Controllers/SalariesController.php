@@ -67,6 +67,16 @@ class SalariesController extends Controller
         $db_table_name = 'yearly_income_'.$fromYear."_".$toYear;
         if(Schema::hasTable($db_table_name)){
             // This is going to fetch tables from db and then process the presentation
+            $db = DB::table($db_table_name)->get();
+            for($i=0;$i<count($db);$i++){
+                $d[$i] = json_decode($db[$i]->yearly_income);
+            }
+            $response = $this->presentation( $d, $year, $month);
+            $response['status'] = 'success';
+            $response['target_month'] = $year;
+
+            // return response()->json($db['salaries']);
+            return response()->json($response);
         }
         else {
             if($fromYear != $currentFromYear){
@@ -81,10 +91,13 @@ class SalariesController extends Controller
                 // save this $db into database 
                 $db = $this->initial_salary_generator("$fromYear-07-01", "$toYear-06-30");
                 // call yearly_income_table_generator and yearly_income_table_data_entry
-                //$this->yearly_income_table_generator($db_table_name);
-
+                $this->yearly_income_table_generator($db_table_name);
+                $d = $db['salaries'];
+                for($i=0;$i<count($d);$i++){
+                    $this->yearly_income_table_data_entry($d[$i]['profile']->id,$d[$i]['profile']->employee_id,$d[$i],$db_table_name);
+                }
                 // then send this reponse to prepare presentation
-                $response = $this->presentation($db['salaries'], $year, $month);
+                $response = $this->presentation($d, $year, $month);
                 $response['status'] = 'success';
                 $response['target_month'] = $year;
 
@@ -93,6 +106,7 @@ class SalariesController extends Controller
             }
         }
     }
+
     private function yearly_income_table_generator($table_name)//fix this to start from july instead of january
     {
         Schema::connection('mysql')->create($table_name, function($table)
@@ -104,16 +118,7 @@ class SalariesController extends Controller
             $table->timestamps();
         });
     }
-    private function yearly_income_table_data_entry($id,$name,$yearlyProbableSalary,$year)
-    {
-        $x = 0;
-        $y2 = (string)((int)$year + 1);
-        DB::table('yearly_income_'.$year.'_'.$y2)->insert([
-            'user_id' => $id,
-            'user_name' => $name,
-            'yearly_income' => json_encode($yearlyProbableSalary)
-        ]);
-    }
+    
     private function yearly_income_table_data_update($id,$name,$yearlyProbableSalary,$year,$index)
     {
         $x = 0;
@@ -129,53 +134,60 @@ class SalariesController extends Controller
     }
 
     private function presentation($d, $year, $month){
+        $d = json_decode(json_encode($d));
         $response['tabheads'] = $this->tabhead_generation();
         $t = explode('-',$year);
         $target_month = Carbon::create($t[0],$t[1]+1, 1, 0, 0, 0, 'Asia/Dhaka');
         for($i=0;$i<count($d);$i++){
-            if(Carbon::parse($d[$i]['profile']->join_date)->gt($target_month)) continue;
-            $response['data'][$i]['employee_id'] = $d[$i]['profile']->employee_id;
-            $response['data'][$i]['name'] = $d[$i]['profile']->name;
-            $response['data'][$i]['join_date'] = $d[$i]['profile']->join_date;
-            $response['data'][$i]['basic'] = $d[$i]['profile']->basic;
-            $response['data'][$i]['house_rent'] = $d[$i]['salary'][$month]['house_rent'];
-            $response['data'][$i]['conveyance'] = $d[$i]['salary'][$month]['conveyance'];
-            $response['data'][$i]['medical_allowance'] = $d[$i]['salary'][$month]['medical_allowance'];
-            $response['data'][$i]['pf_self'] = $d[$i]['salary'][$month]['pf_self'];
-            $response['data'][$i]['pf_company'] = $d[$i]['salary'][$month]['pf_company'];
-            $response['data'][$i]['bonus'] = $d[$i]['salary'][$month]['bonus'];
-            if(is_array($d[$i]['salary'][$month]['loan']))
-                $response['data'][$i]['loan'] = number_format($d[$i]['salary'][$month]['loan']['sum'],2);
-            else 
-                $response['data'][$i]['loan'] = $d[$i]['salary'][$month]['loan'];
-            $response['data'][$i]['extra'] = $d[$i]['salary'][$month]['extra'];
-            $response['data'][$i]['less'] = $d[$i]['salary'][$month]['less'];
-            $response['data'][$i]['fooding'] = $d[$i]['salary'][$month]['fooding'];
-            $response['data'][$i]['monthly_tax'] = number_format($d[$i]['salary'][$month]['monthly_tax'], 2);
+            if(Carbon::parse($d[$i]->profile->join_date)->gt($target_month)) continue;
+            $response['data'][$i]['employee_id'] = $d[$i]->profile->employee_id;
+            $response['data'][$i]['name'] = $d[$i]->profile->name;
+            $response['data'][$i]['join_date'] = $d[$i]->profile->join_date;
+            $response['data'][$i]['basic'] = $d[$i]->profile->basic;
+            $response['data'][$i]['house_rent'] = $d[$i]->salary[$month]->house_rent;
+            $response['data'][$i]['conveyance'] = $d[$i]->salary[$month]->conveyance;
+            $response['data'][$i]['medical_allowance'] = $d[$i]->salary[$month]->medical_allowance;
+            $response['data'][$i]['pf_self'] = $d[$i]->salary[$month]->pf_self;
+            $response['data'][$i]['pf_company'] = $d[$i]->salary[$month]->pf_company;
+            $response['data'][$i]['bonus'] = $d[$i]->salary[$month]->bonus;
+            if(is_object($d[$i]->salary[$month]->loan)){
+                $total_loan = $d[$i]->salary[$month]->loan->sum;
+                $response['data'][$i]['loan'] = number_format($total_loan,2);
+            }
+            else {
+                $response['data'][$i]['loan'] = 0;
+                $total_loan = 0;
+            }
+                
+            $response['data'][$i]['extra'] = $d[$i]->salary[$month]->extra;
+            $response['data'][$i]['less'] = $d[$i]->salary[$month]->less;
+            $response['data'][$i]['fooding'] = $d[$i]->salary[$month]->fooding;
+            $response['data'][$i]['monthly_tax'] = number_format($d[$i]->salary[$month]->monthly_tax, 2);
+            
             $deduction_total = 
-                        $d[$i]['salary'][$month]['pf_self'] + 
-                        $d[$i]['salary'][$month]['loan']['sum'] +
-                        $d[$i]['salary'][$month]['less'] +
-                        $d[$i]['salary'][$month]['monthly_tax'] +
-                        $response['data'][$i]['fooding']
+                        $d[$i]->salary[$month]->pf_self + 
+                        $total_loan +
+                        $d[$i]->salary[$month]->less +
+                        $d[$i]->salary[$month]->monthly_tax +
+                        $d[$i]->salary[$month]->fooding
                         ;
             $response['data'][$i]['deduction_total'] = number_format($deduction_total, 2);
             $gross_salary = 
-                        $d[$i]['profile']->basic * $d[$i]['salary'][$month]['fraction'] +
-                        $d[$i]['salary'][$month]['house_rent'] +
-                        $d[$i]['salary'][$month]['conveyance'] +
-                        $d[$i]['salary'][$month]['medical_allowance'] +
-                        $d[$i]['salary'][$month]['pf_self'] +
-                        $d[$i]['salary'][$month]['bonus'] +
-                        $d[$i]['salary'][$month]['extra']
+                        $d[$i]->profile->basic * $d[$i]->salary[$month]->fraction +
+                        $d[$i]->salary[$month]->house_rent +
+                        $d[$i]->salary[$month]->conveyance +
+                        $d[$i]->salary[$month]->medical_allowance +
+                        $d[$i]->salary[$month]->pf_self +
+                        $d[$i]->salary[$month]->bonus +
+                        $d[$i]->salary[$month]->extra
                         ;
             $response['data'][$i]['gross_salary'] = number_format($gross_salary, 2);
-            $response['data'][$i]['gross_total'] = number_format($gross_salary + $d[$i]['salary'][$month]['pf_company'], 2);
+            $response['data'][$i]['gross_total'] = number_format($gross_salary + $d[$i]->salary[$month]->pf_company, 2);
             $response['data'][$i]['net_salary'] = number_format($gross_salary - $deduction_total,2);
         }
         return $response;
     }
-    
+
     private function initial_salary_generator($fromYear, $toYear)
     {
         $users = User::actual()->get();

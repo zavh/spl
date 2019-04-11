@@ -1,5 +1,7 @@
 <?php
 namespace App\Http\Traits;
+
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Loan;
 
@@ -246,5 +248,15 @@ trait SalaryGenerator {
             $response['finalTax'] = 0;
         }
         return $response;
+    }
+
+    private function yearly_income_table_data_entry($id,$name,$yearlyProbableSalary,$tablename)
+    {
+        
+        DB::table($tablename)->insert([
+            'user_id' => $id,
+            'user_name' => $name,
+            'yearly_income' => json_encode($yearlyProbableSalary)
+        ]);
     }
 }
