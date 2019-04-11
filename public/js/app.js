@@ -62653,6 +62653,7 @@ var MainPanel = function (_Component) {
             }
         };
         _this.handleMonthChange = _this.handleMonthChange.bind(_this);
+        _this.handleYearChange = _this.handleYearChange.bind(_this);
         return _this;
     }
 
@@ -62660,6 +62661,15 @@ var MainPanel = function (_Component) {
         key: 'handleMonthChange',
         value: function handleMonthChange(month) {
             this.setState({ month: month });
+        }
+    }, {
+        key: 'handleYearChange',
+        value: function handleYearChange(year) {
+            this.setState({
+                fromYear: parseInt(year),
+                toYear: parseInt(year) + 1,
+                month: 7
+            });
         }
     }, {
         key: 'componentDidMount',
@@ -62695,7 +62705,7 @@ var MainPanel = function (_Component) {
                 return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     'div',
                     null,
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__commons_Input__["a" /* default */], { onChange: this.handleAmntChange, value: this.state.fromYear, name: 'year', type: 'number', labelSize: '90px', label: 'Year', errors: this.state.errors.year }),
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__commons_Input__["a" /* default */], { onChange: this.handleYearChange, value: this.state.fromYear, name: 'year', type: 'number', labelSize: '90px', label: 'Year', errors: this.state.errors.year }),
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(YearNotification, { fromYear: this.state.fromYear, toYear: this.state.toYear }),
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4__monthSelect__["a" /* default */], { fromYear: this.state.fromYear, toYear: this.state.toYear, month: this.state.month, onChange: this.handleMonthChange }),
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__commons_FileUpload__["a" /* default */], null),

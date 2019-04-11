@@ -19,9 +19,17 @@ export default class MainPanel extends Component {
             },
         }
         this.handleMonthChange = this.handleMonthChange.bind(this);
+        this.handleYearChange = this.handleYearChange.bind(this);
     }
     handleMonthChange(month){
         this.setState({month:month});
+    }
+    handleYearChange(year){
+        this.setState({
+            fromYear:parseInt(year),
+            toYear:parseInt(year) + 1,
+            month: 7,
+        });
     }
     componentDidMount(){
         axios.get('/salaries/dbcheck')
@@ -53,7 +61,7 @@ export default class MainPanel extends Component {
         if(this.state.status === 'success'){
             return(
                 <div>
-                    <Input onChange={this.handleAmntChange} value={this.state.fromYear} name='year' type='number' labelSize='90px' label='Year' errors={this.state.errors.year}/>
+                    <Input onChange={this.handleYearChange} value={this.state.fromYear} name='year' type='number' labelSize='90px' label='Year' errors={this.state.errors.year}/>
                     <YearNotification fromYear={this.state.fromYear} toYear={this.state.toYear}/>
                     <MonthSelect fromYear={this.state.fromYear} toYear={this.state.toYear} month={this.state.month} onChange={this.handleMonthChange}/>
                     <FileUpload />
