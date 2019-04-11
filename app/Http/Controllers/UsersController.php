@@ -102,12 +102,9 @@ class UsersController extends Controller
             ]);
 
         if($userCreate || $salaryCreate){
-            $users = User::all();
             $me = User::find(Auth::User()->id);
             $completion = $this->profileCalculation($me);
-            // return view('users.index', ['users'=>$users,'me'=>$me,'completion'=>$completion]);
             $response['status'] = 'success';
-            // $response['messages'] = $uavalidator->errors()->messages();
             return response()->json(['result'=>$response]);
         }
     }
@@ -133,8 +130,6 @@ class UsersController extends Controller
         if($user->address != NULL) $completion+=6;
         if($user->designation_id > 0) $completion+=22;
         if($user->department_id > 0) $completion+=22;
-        
-        //$completion = $fname+$lname+$phone+$address+$designation+$department;
 
         return $completion;
     }
