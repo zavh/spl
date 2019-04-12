@@ -28,18 +28,18 @@ class SalariesController extends Controller
 
     public function dbcheck($year = null){
 
+        $today = date("Y-m-d");
+        if($today > date("Y-07-31")){
+            $currentFromYear = date("Y") + 0;
+            $currentToYear = date("Y") + 1;
+        }
+        else{
+            $currentFromYear = date("Y") - 1;
+            $currentToYear = date("Y") + 0;
+        }
+        
         //Determining default or user input
         if($year == null){ //Default
-            $today = date("Y-m-d");
-            if($today > date("Y-07-31")){
-                $currentFromYear = date("Y") + 0;
-                $currentToYear = date("Y") + 1;
-            }
-            else{
-                $currentFromYear = date("Y") - 1;
-                $currentToYear = date("Y") + 0;
-            }
-
             $fromYear = $currentFromYear;
             $toYear = $currentToYear;
             $year = Carbon::parse($today)->subMonth()->format("Y-n");       //subMonth choses the previous month

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import FileUpload from '../commons/FileUpload';
-import Input from '../commons/Input';
 import MonthSelect from './monthSelect';
+
 export default class MainPanel extends Component {
     constructor(props){
         super(props);
@@ -20,16 +20,47 @@ export default class MainPanel extends Component {
         }
         this.handleMonthChange = this.handleMonthChange.bind(this);
         this.handleYearChange = this.handleYearChange.bind(this);
+        this.handleTimelineChange = this.handleTimelineChange.bind(this);
     }
     handleMonthChange(month){
         this.setState({month:month});
     }
-    handleYearChange(year){
+    handleYearChange(e){
         this.setState({
-            fromYear:parseInt(year),
-            toYear:parseInt(year) + 1,
+            fromYear:parseInt(e.target.value),
+            toYear:parseInt(e.target.value) + 1,
             month: 7,
         });
+    }
+    handleTimelineChange(){
+        axios.get(`/salaries/dbcheck/${this.state.fromYear}-${this.state.month}`)
+        .then(
+            (response)=>{
+                console.log(response);
+                status = response.data.status;
+                this.setState({status:status})
+                if(status === 'success'){
+                    this.setState({
+                        tabheads : response.data.tabheads,
+                        salaryrow : response.data.data,
+                        fromYear : response.data.fromYear,
+                        toYear : response.data.toYear,
+                        month : response.data.month,
+                        status:status,
+                    });
+                }
+                else if(status === 'fail'){
+                    this.setState({
+                        message:response.data.message,
+                        status:status,
+                    });
+                }
+            }
+        )
+        .catch(function (error) {
+            console.log(error);
+          });
+        ;
     }
     componentDidMount(){
         axios.get('/salaries/dbcheck')
@@ -45,10 +76,14 @@ export default class MainPanel extends Component {
                         fromYear : response.data.fromYear,
                         toYear : response.data.toYear,
                         month : response.data.month,
+                        status:status,
                     });
                 }
                 else if(status === 'fail'){
-                    this.setState({message:response.data.message});
+                    this.setState({
+                        message:response.data.message,
+                        status:status,
+                    });
                 }
             }
         )
@@ -58,13 +93,10 @@ export default class MainPanel extends Component {
         ;
     }
     render(){
+        var Output;
         if(this.state.status === 'success'){
-            return(
+            Output = 
                 <div>
-                    <Input onChange={this.handleYearChange} value={this.state.fromYear} name='year' type='number' labelSize='90px' label='Year' errors={this.state.errors.year}/>
-                    <YearNotification fromYear={this.state.fromYear} toYear={this.state.toYear}/>
-                    <MonthSelect fromYear={this.state.fromYear} toYear={this.state.toYear} month={this.state.month} onChange={this.handleMonthChange}/>
-                    <FileUpload />
                     <table className='table table-sm table-bordered table-striped small'>
                         <tbody>
                             <tr>
@@ -84,16 +116,35 @@ export default class MainPanel extends Component {
                         </tbody>
                     </table>
                 </div>
-            );
         }
         else if(this.state.status === 'fail'){
-            return(
-                <div>{this.state.message}</div>
-            );
+            Output = <div>{this.state.message}</div>
         }
-        else return(
-            <div>Loading Data</div>
-        );
+        else {
+            Output = <div>Loading Data</div>
+        }
+        
+        return(
+        <div>
+            <div className="form-group row my-1 small">
+                <div className="input-group input-group-sm col-md-8">
+                    <div className="input-group-prepend">
+                        <span className="input-group-text">Choose Year</span>
+                    </div>
+                    <input type='number' className="form-control" onChange={this.handleYearChange} value={this.state.fromYear} />
+                    <div className="input-group-append">
+                        <span className="input-group-text">Choose Month</span>
+                    </div>
+                    <MonthSelect fromYear={this.state.fromYear} toYear={this.state.toYear} month={this.state.month} onChange={this.handleMonthChange}/>
+                    <div className="input-group-append">
+                        <button className="btn btn-outline-success" type="button" onClick={this.handleTimelineChange}>Submit</button>
+                    </div>
+                </div>
+                <FileUpload colsize='4' label='Upload Monthly Data' postype='input-group-prepend' status={this.state.status}/>
+
+            </div>
+            {Output}
+        </div>)
     }
 }
 
@@ -102,3 +153,5 @@ function YearNotification(props){
       <div className='small'>Year {props.fromYear} to {props.toYear} salaries wil be shown</div>
     ) 
 }
+
+

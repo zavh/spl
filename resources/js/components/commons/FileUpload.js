@@ -40,13 +40,23 @@ export default class FileUploadComponent extends Component
   
    render()
    {
+     if(this.props.status == 'success')
       return(
-
-         <form onSubmit={this.onFormSubmit}>
-            <h4>Upload Monthly Data</h4>
-            <input type="file"  onChange={this.onChange} />
-            <button type="submit">Upload</button>
-        </form>
+        <div className={`input-group input-group-sm col-md-${this.props.colsize}`}>
+          <div className={this.props.postype}>
+              <span className="input-group-text">{this.props.label}</span>
+          </div>
+          <div className="custom-file small">
+            <input type="file" className="custom-file-input" onChange = {this.onChange}/>
+            <label className="custom-file-label" htmlFor="inputGroupFile04">Choose file</label>
+          </div>
+          <div className="input-group-append">
+            <button className="btn btn-outline-primary" type="button" onClick={this.onFormSubmit}>Submit</button>
+          </div>
+        </div>
       )
+      else {
+        return null
+      }
    }
 }
