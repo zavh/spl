@@ -7,18 +7,25 @@ export default class SalarySPA extends Component {
         super(props);
         this.state = {
             panel:'Main',
-            employee_id:'',
+            taxcfg:{},
         };
         this.switchToTax = this.switchToTax.bind(this);
+        this.switchToMain = this.switchToMain.bind(this);
     }
     
     componentDidMount(){
     }
 
-    switchToTax(employee_id){
+    switchToTax(tc){
         this.setState({
             panel:'TaxConfig',
-            employee_id:employee_id,
+            taxcfg:tc,
+        });
+    }
+
+    switchToMain(){
+        this.setState({
+            panel:'Main',
         });
     }
 
@@ -32,7 +39,12 @@ export default class SalarySPA extends Component {
         else if(this.state.panel === 'TaxConfig')
             return (
                 <div className="container-fluid">
-                    <TaxConfig employee_id={this.state.employee_id}/>
+                    <TaxConfig 
+                        employee_id={this.state.taxcfg.employee_id}
+                        fromYear={this.state.taxcfg.fromYear}
+                        toYear={this.state.taxcfg.toYear}
+                        panelChange={this.switchToMain}
+                        />
                 </div>
             );
 

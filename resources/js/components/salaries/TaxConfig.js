@@ -1,12 +1,24 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
 export default class TaxConfig extends Component{
+    constructor(props){
+        super(props);
+
+        this.backToMain = this.backToMain.bind(this);
+    }
+    backToMain(){
+        this.props.panelChange();
+    }
     componentDidMount(){
-        console.log(this.props);
+
     }
     render(){
-        return(<div>I Will Return Yearly Tax Configuration For {this.props.employee_id}</div>);
+        return(
+        <div>
+            I Will Return Yearly Tax Configuration For {this.props.employee_id} for the financial year {this.props.fromYear} to {this.props.toYear}
+            <a href='javascript:void(0)' onClick={this.backToMain}>Back</a>
+        </div>
+        );
     }
 }

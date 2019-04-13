@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import FileUpload from './UploadMonthData';
 import MonthSelect from './monthSelect';
-import TaxConfig from './TaxConfig';
-import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 
 export default class MainPanel extends Component {
     constructor(props){
@@ -66,7 +64,12 @@ export default class MainPanel extends Component {
         ;
     }
     showTax(e){
-        this.props.panelChange(e.target.dataset.index);
+        const tc = {
+            employee_id:e.target.dataset.index,
+            fromYear:this.state.fromYear,
+            toYear:this.state.toYear,
+        }
+        this.props.panelChange(tc);
     }
     componentDidMount(){
         axios.get('/salaries/dbcheck')
