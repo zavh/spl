@@ -135,12 +135,12 @@ class SalariesController extends Controller
             $response['data'][$i]['name'] = $d[$i]->profile->name;
             $response['data'][$i]['join_date'] = $d[$i]->profile->join_date;
             $response['data'][$i]['basic'] = $d[$i]->profile->basic;
-            $response['data'][$i]['house_rent'] = $d[$i]->salary[$month]->house_rent;
-            $response['data'][$i]['conveyance'] = $d[$i]->salary[$month]->conveyance;
-            $response['data'][$i]['medical_allowance'] = $d[$i]->salary[$month]->medical_allowance;
-            $response['data'][$i]['pf_self'] = $d[$i]->salary[$month]->pf_self;
-            $response['data'][$i]['pf_company'] = $d[$i]->salary[$month]->pf_company;
-            $response['data'][$i]['bonus'] = $d[$i]->salary[$month]->bonus;
+            $response['data'][$i]['house_rent'] = number_format($d[$i]->salary[$month]->house_rent, 2);
+            $response['data'][$i]['conveyance'] = number_format($d[$i]->salary[$month]->conveyance, 2);
+            $response['data'][$i]['medical_allowance'] = number_format($d[$i]->salary[$month]->medical_allowance, 2);
+            $response['data'][$i]['pf_self'] = number_format($d[$i]->salary[$month]->pf_self, 2);
+            $response['data'][$i]['pf_company'] = number_format($d[$i]->salary[$month]->pf_company, 2);
+            $response['data'][$i]['bonus'] = number_format($d[$i]->salary[$month]->bonus, 2);
             if(is_object($d[$i]->salary[$month]->loan)){
                 $total_loan = $d[$i]->salary[$month]->loan->sum;
                 $response['data'][$i]['loan'] = number_format($total_loan,2);

@@ -174,8 +174,6 @@ trait SalaryGenerator {
             $cysd['less'] += $ysd['salary'][$i]['less'];
         }
 
-        $less = $cysd['less'];
-
         $response['basicSalary'] = $cysd['basicSalary'];
         $response['houseRent'] = $cysd['houseRent'];
         $response['conveyance'] = $cysd['conveyance'];
@@ -212,7 +210,7 @@ trait SalaryGenerator {
         if(($medicalTR-$medicalExempted)>=0)$medicalTR=$medicalTR-$medicalExempted; else $medicalTR=0;
         $response['medicalTaxRemaining'] = $medicalTR;
 
-        $taxableFields = $HouseRentTR + $conveyanceTR + $medicalTR + $cysd['pfCompany'] + $cysd['bonus'] + $cysd['extra'] - $less;//not including extra yet
+        $taxableFields = $HouseRentTR + $conveyanceTR + $medicalTR + $cysd['pfCompany'] + $cysd['bonus'] + $cysd['extra'] - $cysd['less'];//not including extra yet
         $response['taxableFields'] = $taxableFields;
 
         $TaxableSalary = $cysd['basicSalary'] + $taxableFields;

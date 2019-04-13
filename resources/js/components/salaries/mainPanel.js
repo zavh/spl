@@ -97,7 +97,7 @@ export default class MainPanel extends Component {
         if(this.state.status === 'success'){
             Output = 
                 <div>
-                    <table className='table table-sm table-bordered table-striped small'>
+                    <table className='table table-sm table-bordered table-striped small text-right'>
                         <tbody>
                             <tr>
                             { Object.keys(this.state.tabheads).map((key, index)=>{
