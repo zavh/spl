@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import FileUpload from './UploadMonthData';
 import MonthSelect from './monthSelect';
+import TaxConfig from './TaxConfig';
+import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 
 export default class MainPanel extends Component {
     constructor(props){
@@ -21,6 +23,7 @@ export default class MainPanel extends Component {
         this.handleMonthChange = this.handleMonthChange.bind(this);
         this.handleYearChange = this.handleYearChange.bind(this);
         this.handleTimelineChange = this.handleTimelineChange.bind(this);
+        this.showTax = this.showTax.bind(this);
     }
     handleMonthChange(month){
         this.setState({month:month});
@@ -62,6 +65,9 @@ export default class MainPanel extends Component {
           });
         ;
     }
+    showTax(e){
+        this.props.panelChange(e.target.dataset.index);
+    }
     componentDidMount(){
         axios.get('/salaries/dbcheck')
         .then(
@@ -98,7 +104,7 @@ export default class MainPanel extends Component {
             Output = 
                 <div>
                     <table className='table table-sm table-bordered table-striped small text-right'>
-                        <tbody>
+                        <tbody className='small'>
                             <tr>
                             { Object.keys(this.state.tabheads).map((key, index)=>{
                                 return <th key={index}>{this.state.tabheads[key]}</th>
@@ -107,9 +113,13 @@ export default class MainPanel extends Component {
                             {this.state.salaryrow.map((e,i)=>{
                                 return <tr key={i}>
                                     {Object.keys(e).map((key,index)=>{
-                                        return <td key={index}>
-                                            {e[key]}
-                                        </td>
+                                        if(key=='monthly_tax')
+                                            return <td key={index}>
+                                                <a href='javascript:void(0)' onClick={this.showTax} data-index={e.employee_id}>{e[key]}</a>
+                                            </td>
+                                        else return <td key={index}>
+                                                {e[key]}
+                                            </td>
                                     })}
                                 </tr>
                             })}
@@ -125,26 +135,27 @@ export default class MainPanel extends Component {
         }
         
         return(
-        <div>
-            <div className="form-group row my-1 small">
-                <div className="input-group input-group-sm col-md-8">
-                    <div className="input-group-prepend">
-                        <span className="input-group-text">Choose Year</span>
+            <div>
+                <div className="form-group row my-1 small">
+                    <div className="input-group input-group-sm col-md-8">
+                        <div className="input-group-prepend">
+                            <span className="input-group-text">Choose Year</span>
+                        </div>
+                        <input type='number' className="form-control" onChange={this.handleYearChange} value={this.state.fromYear} />
+                        <div className="input-group-append">
+                            <span className="input-group-text">Choose Month</span>
+                        </div>
+                        <MonthSelect fromYear={this.state.fromYear} toYear={this.state.toYear} month={this.state.month} onChange={this.handleMonthChange}/>
+                        <div className="input-group-append">
+                            <button className="btn btn-outline-success" type="button" onClick={this.handleTimelineChange}>Submit</button>
+                        </div>
                     </div>
-                    <input type='number' className="form-control" onChange={this.handleYearChange} value={this.state.fromYear} />
-                    <div className="input-group-append">
-                        <span className="input-group-text">Choose Month</span>
-                    </div>
-                    <MonthSelect fromYear={this.state.fromYear} toYear={this.state.toYear} month={this.state.month} onChange={this.handleMonthChange}/>
-                    <div className="input-group-append">
-                        <button className="btn btn-outline-success" type="button" onClick={this.handleTimelineChange}>Submit</button>
-                    </div>
-                </div>
-                <FileUpload status={this.state.status} fromYear={this.state.fromYear} toYear={this.state.toYear} month={this.state.month}/>
+                    <FileUpload status={this.state.status} fromYear={this.state.fromYear} toYear={this.state.toYear} month={this.state.month}/>
 
+                </div>
+                {Output}
             </div>
-            {Output}
-        </div>)
+        )
     }
 }
 

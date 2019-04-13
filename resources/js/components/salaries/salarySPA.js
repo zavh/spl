@@ -1,44 +1,40 @@
 import React, { Component } from 'react';
 import MainPanel from './mainPanel';
+import TaxConfig from './TaxConfig';
+
 export default class SalarySPA extends Component {
     constructor(props){
         super(props);
         this.state = {
-            activeloans:[],
+            panel:'Main',
+            employee_id:'',
         };
-
-        this.loanArrived = this.loanArrived.bind(this);
-        this.loanModified = this.loanModified.bind(this);
-    }
-    getLoans(){
-        axios.get('/loans/active')            
-            .then(
-                (response)=>this.setState({
-                activeloans:[...response.data]
-            })
-        );
+        this.switchToTax = this.switchToTax.bind(this);
     }
     
     componentDidMount(){
     }
 
-    loanArrived(loan){
-        this.setState(prevState => ({
-            activeloans: [...prevState.activeloans, loan]
-            }));
-    }
-
-    loanModified(loan, index){
-        let activeloans = [...this.state.activeloans];
-        activeloans[index]['params'] = Object.assign({},loan);
-        this.setState(activeloans);
+    switchToTax(employee_id){
+        this.setState({
+            panel:'TaxConfig',
+            employee_id:employee_id,
+        });
     }
 
     render() {
-        return (
-            <div className="container-fluid">
-                <MainPanel />
-            </div>
-        );
+        if(this.state.panel === 'Main')
+            return (
+                    <div className="container-fluid">
+                        <MainPanel panelChange={this.switchToTax}/>
+                    </div>
+            );
+        else if(this.state.panel === 'TaxConfig')
+            return (
+                <div className="container-fluid">
+                    <TaxConfig employee_id={this.state.employee_id}/>
+                </div>
+            );
+
     }
 }

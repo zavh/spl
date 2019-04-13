@@ -7,7 +7,7 @@ export default class FileUploadComponent extends Component
       super(props);
       this.state ={
         monthconfig: '',
-        filename:'Choose File',
+        filename:'Choose Monthly Configuration File',
       }
       this.onFormSubmit = this.onFormSubmit.bind(this);
       this.onChange = this.onChange.bind(this);
@@ -53,7 +53,7 @@ export default class FileUploadComponent extends Component
       return(
         <div className='input-group input-group-sm col-md-4'>
           <div className='input-group-prepend'>
-              <span className="input-group-text">Upload Monthly Configuration file</span>
+              <span className="input-group-text">Upload</span>
           </div>
           <div className="custom-file small">
             <input type="file" className="custom-file-input" onChange = {this.onChange} ref={this.fileInput} />
