@@ -169,6 +169,9 @@ trait SalaryGenerator {
             $cysd['conveyance'] += $ysd['salary'][$i]['conveyance'];
             $cysd['medicalAllowance'] += $ysd['salary'][$i]['medical_allowance'];
             $cysd['pfCompany'] += $ysd['salary'][$i]['pf_company'];
+            $cysd['bonus'] += $ysd['salary'][$i]['bonus'];
+            $cysd['extra'] += $ysd['salary'][$i]['extra'];
+            $cysd['less'] += $ysd['salary'][$i]['less'];
         }
 
         $less = $cysd['less'];

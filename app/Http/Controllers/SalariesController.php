@@ -48,15 +48,8 @@ class SalariesController extends Controller
         else {
             $targetPeriod = explode('-', $year);
             $thisMonth = $targetPeriod[1];
-            if($thisMonth > 6){
-                $fromYear = $targetPeriod[0] + 0;
-                $toYear = $targetPeriod[0] + 1;
-            }
-            else{
-                $fromYear = $targetPeriod[0] - 1;
-                $toYear = $targetPeriod[0] + 0;
-            }
-
+            $fromYear = $targetPeriod[0] + 0;
+            $toYear = $targetPeriod[0] + 1;
         }
         // Determine the array index according to month. 
         // This array index matches with the yearly json data stored in the db
@@ -99,7 +92,7 @@ class SalariesController extends Controller
                 // then send this reponse to prepare presentation
             }
         }
-        $response = $this->presentation( $d, $year, $month);
+        $response = $this->presentation($d, $year, $month);
         $response['status'] = 'success';
         $response['fromYear'] = $fromYear;
         $response['toYear'] = $toYear;
@@ -123,24 +116,18 @@ class SalariesController extends Controller
         });
     }
     
-    private function yearly_income_table_data_update($id,$name,$yearlyProbableSalary,$year,$index)
+    private function yearly_income_table_data_update($name, $table, $updates)
     {
-        $x = 0;
-        $y2 = (string)((int)$year + 1);
-
-        DB::table('yearly_income_'.$year.'_'.$y2)
-        ->where('user_id',$id)
-        ->update([
-            'user_id' => $id,
-            'name' => $name,
-            'yearly_income' => json_encode($yearlyProbableSalary)
-        ]);
+        DB::table($table)
+        ->where('name',$name)
+        ->update($updates);
     }
 
     private function presentation($d, $year, $month){
         $d = json_decode(json_encode($d));
         $response['tabheads'] = $this->tabhead_generation();
         $t = explode('-',$year);
+        if($t[1]<7) $t[0]++;
         $target_month = Carbon::create($t[0],$t[1]+1, 1, 0, 0, 0, 'Asia/Dhaka');
         for($i=0;$i<count($d);$i++){
             if(Carbon::parse($d[$i]->profile->join_date)->gt($target_month)) continue;
@@ -181,7 +168,6 @@ class SalariesController extends Controller
                         $d[$i]->salary[$month]->house_rent +
                         $d[$i]->salary[$month]->conveyance +
                         $d[$i]->salary[$month]->medical_allowance +
-                        $d[$i]->salary[$month]->pf_self +
                         $d[$i]->salary[$month]->bonus +
                         $d[$i]->salary[$month]->extra
                         ;
@@ -234,6 +220,26 @@ class SalariesController extends Controller
         return $tabheads;
     }
 
+    private function taxable_income_changers()
+    {
+        $tabheads = array(
+            'basic'=> 'Basic',
+            'bonus'=> 'Bonus',
+            'extra'=> 'Extra',
+            'less'=> 'Less',
+        );
+        return $tabheads;
+    }
+
+    private function tax_change_preparation($s, $p){
+        $profile = json_decode($p);
+        $ysd['profile'] = (object)[
+            'gender' => $profile->gender,
+            'date_of_birth' => $profile->date_of_birth
+        ];
+        $ysd['salary'] = $s;
+        return $this->income_tax_calculation($ysd);
+    }
     public function upload(Request $request)
     {
         $dataarray = array();
@@ -244,6 +250,8 @@ class SalariesController extends Controller
         $changes = $this->filevalidate($filename);
         if($changes['status'] == 'success'){
             $table = "yearly_income_".$request->fromYear."_".$request->toYear;
+            $tax_changer = $this->taxable_income_changers();
+            $tax_change_flag = false;
             if($request->month >6)
                 $index = $request->month - 7;
             else 
@@ -251,12 +259,36 @@ class SalariesController extends Controller
             
             for($i=0;$i<count($changes);$i++){
                 $e = DB::table($table)->where('name', $changes['data'][$i]['employee_id'])->first();
-                $s = json_decode($e->salary);
-                foreach($changes['data'][$i] as $key=>$value)
-                $s[$index]->$key = floatval($value);
+                $s = json_decode($e->salary, true);
+                foreach($changes['data'][$i] as $key=>$value){
+                    $s[$index][$key] = floatval($value);
+                    if(isset($tax_changer[$key]))
+                        $tax_change_flag = true;
+                }
+                if($tax_change_flag){
+                    $oldtaxconfig = json_decode($e->tax_config);
+                    $newtaxconfig = $this->tax_change_preparation($s, $e->profile);
+                    $taxdiff = $newtaxconfig['Tax'] - $oldtaxconfig->Tax;
+                    $s[$index]['monthly_tax'] += $taxdiff;
+                    $updates = [
+                        'salary' => json_encode($s),
+                        'tax_config' => json_encode($newtaxconfig),
+                    ];
+                    $salaries[$i] = $s[$index];
+                    $tax_change_flag = false;
+                }
+                else {
+                    $updates = [
+                        'salary' => json_encode($s),
+                    ];
+                    $salaries[$i] = $s[$index];
+                }
+
+                $this->yearly_income_table_data_update($changes['data'][$i]['employee_id'], $table, $updates);
                 $salaries[$i] = $s[$index];
             }
             return response()->json($salaries);
+            // return response()->json($changer);
         }
         else {
             return response()->json($changes);
