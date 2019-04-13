@@ -28532,7 +28532,14 @@ var TaxConfig = function (_Component) {
         }
     }, {
         key: 'componentDidMount',
-        value: function componentDidMount() {}
+        value: function componentDidMount() {
+            __WEBPACK_IMPORTED_MODULE_1_axios___default.a.get('/salaries/taxconfig/yearly_income_' + this.props.fromYear + '_' + this.props.toYear + '/' + this.props.employee_id).then(function (response) {
+                console.log(response);
+            }).catch(function (error) {
+                console.log(error);
+            });
+            ;
+        }
     }, {
         key: 'render',
         value: function render() {

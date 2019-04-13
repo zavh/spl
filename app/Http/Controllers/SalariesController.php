@@ -327,4 +327,14 @@ class SalariesController extends Controller
         return $response;
     }
     
+    public function taxconfig($table, $name){
+        $db = DB::table($table)->where('name', $name)->select('salary', 'tax_config')->first();
+        $salary = json_decode($db->salary);
+        $s = new \stdClass;
+        for($i=0;$i<count($salary);$i++){
+            $s->$i = new \stdClass;
+            $s->$i->month = $salary[$i]->month;
+        }
+        return response()->json($s);
+    }
 }

@@ -11,7 +11,16 @@ export default class TaxConfig extends Component{
         this.props.panelChange();
     }
     componentDidMount(){
-
+        axios.get(`/salaries/taxconfig/yearly_income_${this.props.fromYear}_${this.props.toYear}/${this.props.employee_id}`)
+        .then(
+            (response)=>{
+                console.log(response);
+            }
+        )
+        .catch(function (error) {
+            console.log(error);
+          });
+        ;
     }
     render(){
         return(
