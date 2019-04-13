@@ -37,7 +37,12 @@ export default class FileUploadComponent extends Component
     }
     fileUpload(){
       const url = '/salaries/upload';
-      const formData = {fileToUpload: this.state.monthconfig}
+      const formData = {
+          fileToUpload: this.state.monthconfig,
+          fromYear: this.props.fromYear,
+          toYear: this.props.toYear,
+          month: this.props.month
+        }
       axios.post(url, formData)
               .then(response => console.log(response))
     }
@@ -46,9 +51,9 @@ export default class FileUploadComponent extends Component
    {
      if(this.props.status == 'success')
       return(
-        <div className={`input-group input-group-sm col-md-${this.props.colsize}`}>
-          <div className={this.props.postype}>
-              <span className="input-group-text">{this.props.label}</span>
+        <div className='input-group input-group-sm col-md-4'>
+          <div className='input-group-prepend'>
+              <span className="input-group-text">Upload Monthly Configuration file</span>
           </div>
           <div className="custom-file small">
             <input type="file" className="custom-file-input" onChange = {this.onChange} ref={this.fileInput} />

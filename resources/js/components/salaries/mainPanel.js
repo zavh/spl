@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import FileUpload from '../commons/FileUpload';
+import FileUpload from './UploadMonthData';
 import MonthSelect from './monthSelect';
 
 export default class MainPanel extends Component {
@@ -140,7 +140,7 @@ export default class MainPanel extends Component {
                         <button className="btn btn-outline-success" type="button" onClick={this.handleTimelineChange}>Submit</button>
                     </div>
                 </div>
-                <FileUpload colsize='4' label='Upload Monthly Data' postype='input-group-prepend' status={this.state.status}/>
+                <FileUpload status={this.state.status} fromYear={this.state.fromYear} toYear={this.state.toYear} month={this.state.month}/>
 
             </div>
             {Output}

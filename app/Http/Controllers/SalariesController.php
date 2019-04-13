@@ -37,7 +37,7 @@ class SalariesController extends Controller
             $currentFromYear = date("Y") - 1;
             $currentToYear = date("Y") + 0;
         }
-        
+
         //Determining default or user input
         if($year == null){ //Default
             $fromYear = $currentFromYear;
@@ -73,9 +73,10 @@ class SalariesController extends Controller
 
         if(Schema::hasTable($db_table_name)){
             // This is going to fetch tables from db and then process the presentation
-            $db = DB::table($db_table_name)->get();
+            $db = DB::table($db_table_name)->select('profile', 'salary')->get();
             for($i=0;$i<count($db);$i++){
-                $d[$i] = json_decode($db[$i]->yearly_income);
+                $d[$i]['salary'] = json_decode($db[$i]->salary);
+                $d[$i]['profile'] = json_decode($db[$i]->profile);
             }
         }
         else {
@@ -89,10 +90,9 @@ class SalariesController extends Controller
             else {                
                 
                 // save this $db into database 
-                $db = $this->initial_salary_generator("$fromYear-07-01", "$toYear-06-30");
+                $d = $this->initial_salary_generator("$fromYear-07-01", "$toYear-06-30");
                 // call yearly_income_table_generator and yearly_income_table_data_entry
                 $this->yearly_income_table_generator($db_table_name);
-                $d = $db['salaries'];
                 for($i=0;$i<count($d);$i++){
                     $this->yearly_income_table_data_entry($d[$i]['profile']->id,$d[$i]['profile']->employee_id,$d[$i],$db_table_name);
                 }
@@ -114,8 +114,11 @@ class SalariesController extends Controller
         {
             $table->increments('id');
             $table->integer('user_id');
-            $table->string('user_name');
-            $table->json('yearly_income');
+            $table->string('name');
+            $table->json('salary');
+            $table->json('profile');
+            $table->json('structure');
+            $table->json('tax_config');
             $table->timestamps();
         });
     }
@@ -129,7 +132,7 @@ class SalariesController extends Controller
         ->where('user_id',$id)
         ->update([
             'user_id' => $id,
-            'user_name' => $name,
+            'name' => $name,
             'yearly_income' => json_encode($yearlyProbableSalary)
         ]);
     }
@@ -195,12 +198,12 @@ class SalariesController extends Controller
         $data = array();
         foreach($users as $index=>$user){
             //Step 1: Generate Yearly Salary
-            $data['salaries'][$index] = $this->yearly_generator($user, $fromYear, $toYear);
+            $data[$index] = $this->yearly_generator($user, $fromYear, $toYear);
             //Step 2: Generate tentative yearly tax
-            $tax_config = $this->income_tax_calculation($data['salaries'][$index]);
-            $data['salaries'][$index]['tax_config'] = $tax_config;
+            $tax_config = $this->income_tax_calculation($data[$index]);
+            $data[$index]['tax_config'] = $tax_config;
             //Step 3: Generate monthly tax
-            $data['salaries'][$index] = $this->generate_monthly_tax($data['salaries'][$index], $tax_config['finalTax']);
+            $data[$index] = $this->generate_monthly_tax($data[$index], $tax_config['finalTax']);
         }
         return $data;
     }
@@ -237,88 +240,59 @@ class SalariesController extends Controller
         $uploadedFile = $request->fileToUpload;
         $filename = '_'.time().'.csv';
 
-        //$filename = $uploadedFile->getClientOriginalName();
-        // $lastmonth_month = Carbon::now()->subMonth()->month;
-        // $lastmonth_year = Carbon::now()->subMonth()->year;
-        // $lastmonth = $lastmonth_month."_".$lastmonth_year;
-
-        //Storage::disk('local')->putFileAs('files', $uploadedFile, $filename);
         Storage::disk('local')->put($filename, $uploadedFile);
-        return response()->json($request->all());
-        //$contents = Storage::get('/files/'.$filename);
-        // $lines = explode("\n", $contents);
-        // $heads = explode(",", $lines[0]);
-        // for($y=1;$y<count($lines);$y++){
-        //     $tempdat = explode(",", $lines[$y]);
+        $changes = $this->filevalidate($filename);
+        if($changes['status'] == 'success'){
+            $table = "yearly_income_".$request->fromYear."_".$request->toYear;
+            if($request->month >6)
+                $index = $request->month - 7;
+            else 
+            $index = $request->month + 5;
             
-        //     for($i=0;$i<count($heads);$i++){
-        //         $data[$y-1][$heads[$i]] = $tempdat[$i];
-        //     }
-        // }
-        
-        // $updates = DB::table('salary_'.$lastmonth)->get()->all();
-        // foreach($data as $update)
-        // {
-        //     $query = 'JSON_CONTAINS(`salarydata`, \'{\"name\":\"'.$update['Employee ID'].'\"}\')';
-        //     $name = DB::table('salary_'.$lastmonth)->whereRaw($query)->get()->first();
-        //     if(isset($name))
-        //     {
-        //         $salarydata = json_decode($name->salarydata,true);
-                
-        //         $salarydata['hire_purchase'] = (float)$update['Hire Purchase'];
-        //         $salarydata['fooding'] = (float)$update['Fooding'];
-        //         $user_id = User::where('name', $salarydata['name'])->get()->first()->id;
-
-        //         $total_loan = $this->loantotal($user_id);
-
-        //         $salarydata['loan'] = (float)$total_loan;
-        //         $salarydata['bonus'] = (float)$update['Bonus'];
-        //         $salarydata['extra'] = (float)$update['Extra'];
-        //         $salarydata['less'] = (float)$update['Less'];
-        //         $salarydata['deduction_total'] =(float)$salarydata['pf_self'] +
-        //                                         (float)$salarydata['pf_company'] +
-        //                                         (float)$update['Hire Purchase'] + 
-        //                                         (float)$salarydata['tds'] +
-        //                                         (float)$update['Loan'] + 
-        //                                         (float)$update['Less'] + 
-        //                                         (float)$update['Fooding'];
-        //         $salarydata['net_salary'] = (float)$salarydata['gross_salary']-
-        //                                         (float)$salarydata['deduction_total'];
-
-        //         $dataarray_tds = $salarydata;
-
-                
-        //         $salary_info = json_decode((Salary::where('user_id',$user_id)->get()->first()->salaryinfo),true);
-        //         $dataarray['gender'] = $salary_info['gender'];
-        //         $dataarray['dob'] = $salary_info['date_of_birth'];
-        //         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        //         $dataarray['user'] = User::find($user_id);
-        //         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        //         $dataarray['basicSalary'] = $dataarray_tds['basic'];
-        //         $dataarray['perc_conveyance'] = (float)(100 * ($dataarray_tds['conveyance']/$dataarray_tds['basic']));
-        //         $dataarray['perc_medical'] = (float)(100 * ($dataarray_tds['medical_allowance']/$dataarray_tds['basic']));
-        //         $dataarray['perc_houserent'] = (float)(100 * ($dataarray_tds['house_rent']/$dataarray_tds['basic']));
-        //         $dataarray['perc_pfcomp'] = (float)(100 * ($dataarray_tds['pf_company']/$dataarray_tds['basic']));
-
-                
-        //         $sp = $this::yearly_generation($dataarray,$dataarray_tds['bonus'],$dataarray_tds['extra'],$dataarray_tds['less']);
-        //         // dd($user_id, $total_loan);
-                
-        //         $dataarray_tds['gross_salary'] = $sp['response_without_addons']['grossSalary'];
-        //         $dataarray_tds['gross_total'] = $sp['response_without_addons']['grossTotal'];
-        //         $dataarray_tds['tds'] = $sp['response_without_addons']['finalTax']/12 + $sp['addons_tax'];
-        //         $dataarray_tds['loan'] = $total_loan;
-
-        //         DB::table('salary_'.$lastmonth)->whereRaw($query)->update(['salarydata'=> json_encode($dataarray_tds)]);
-                
-        //     }
-        //     //////////////////////////regenerating the table////////////////////////////////////////////    
-        //     $tabheads = $this->tabhead_generation();//generates the tabheads from salarystructure
-        //     $salary = $this->salary_extraction_from_lastmonth_table($lastmonth);//extracts the salary from lastmonth and puts in array
-        //     ////////////////////////////////////////////////////////////////////////////////////      
-        //     return view('salaries.index',['salaries'=>$salary, 'heads'=>$tabheads]); 
-        //     // return back();   
-        //}      
-
+            for($i=0;$i<count($changes);$i++){
+                $e = DB::table($table)->where('name', $changes['data'][$i]['employee_id'])->first();
+                $s = json_decode($e->salary);
+                foreach($changes['data'][$i] as $key=>$value)
+                $s[$index]->$key = floatval($value);
+                $salaries[$i] = $s[$index];
+            }
+            return response()->json($salaries);
+        }
+        else {
+            return response()->json($changes);
+        }
     }
+
+    private function filevalidate($filename){
+        $contents = Storage::disk('local')->get($filename);
+        $lines = explode("\r", $contents);
+        $heads = explode(",", $lines[0]);
+        $allowables = array(
+            'Employee ID'=>'employee_id',
+            'Basic'=>'basic',
+            'Bonus'=>'bonus',
+            'Extra'=> 'extra',
+            'Less'=> 'less',
+            'Fooding'=>'fooding',
+        );
+        foreach($heads as $index=>$head){
+            if(!isset($allowables[$head])){
+                $response['status'] = 'fail';
+                $response['message'] = "$head could not be found. Please check configuration";
+                return $response;
+            }
+            else $heads[$index] = $allowables[$head];
+        }
+        for($y=1;$y<count($lines);$y++){
+            $tempdat = explode(",", $lines[$y]);
+            
+            for($i=0;$i<count($heads);$i++){
+                $data[$y-1][$heads[$i]] = trim($tempdat[$i]);
+            }
+        }
+        $response['status'] = 'success';
+        $response['data'] = $data;
+        return $response;
+    }
+    
 }

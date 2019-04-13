@@ -255,8 +255,11 @@ trait SalaryGenerator {
         
         DB::table($tablename)->insert([
             'user_id' => $id,
-            'user_name' => $name,
-            'yearly_income' => json_encode($yearlyProbableSalary),
+            'name' => $name,
+            'salary' => json_encode($yearlyProbableSalary['salary']),
+            'profile' => json_encode($yearlyProbableSalary['profile']),
+            'structure' => json_encode($yearlyProbableSalary['structure']),
+            'tax_config' => json_encode($yearlyProbableSalary['tax_config']),
             'created_at' => date('Y-m-d H:i:s'),
             'updated_at' => date('Y-m-d H:i:s'),
         ]);
