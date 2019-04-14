@@ -268,7 +268,7 @@ class SalariesController extends Controller
                 if($tax_change_flag){
                     $oldtaxconfig = json_decode($e->tax_config);
                     $newtaxconfig = $this->tax_change_preparation($s, $e->profile);
-                    $taxdiff = $newtaxconfig['Tax'] - $oldtaxconfig->Tax;
+                    $taxdiff = $newtaxconfig['finalTax'] - $oldtaxconfig->finalTax;
                     $s[$index]['monthly_tax'] += $taxdiff;
                     $updates = [
                         'salary' => json_encode($s),
@@ -331,10 +331,46 @@ class SalariesController extends Controller
         $db = DB::table($table)->where('name', $name)->select('salary', 'tax_config')->first();
         $salary = json_decode($db->salary);
         $s = new \stdClass;
+        //$s->monthdata = new \stdClass;
+        $s->totaldata = new \stdClass;
+        $s->totaldata->basic = 0;
+        $s->totaldata->house_rent = 0;
+        $s->totaldata->conveyance = 0;
+        $s->totaldata->medical_allowance = 0;
+        $s->totaldata->pf_company = 0;
+        $s->totaldata->bonus = 0;
+        $s->totaldata->extra = 0;
+        $s->totaldata->less = 0;
+        $s->totaldata->tax = 0;
         for($i=0;$i<count($salary);$i++){
-            $s->$i = new \stdClass;
-            $s->$i->month = $salary[$i]->month;
+            $s->monthdata[$i] = new \stdClass;
+            $s->monthdata[$i]->month = Carbon::parse($salary[$i]->month)->format("M-Y");
+            $s->monthdata[$i]->basic = $this->cf($salary[$i]->basic * $salary[$i]->fraction);
+            $s->monthdata[$i]->house_rent = $this->cf($salary[$i]->house_rent);
+            $s->monthdata[$i]->conveyance = $this->cf($salary[$i]->conveyance);
+            $s->monthdata[$i]->medical_allowance = $this->cf($salary[$i]->medical_allowance);
+            $s->monthdata[$i]->pf_company = $this->cf($salary[$i]->pf_company);
+            $s->monthdata[$i]->bonus = $this->cf($salary[$i]->bonus);
+            $s->monthdata[$i]->extra = $this->cf($salary[$i]->extra);
+            $s->monthdata[$i]->less = $this->cf($salary[$i]->less);
+            $s->monthdata[$i]->tax = $this->cf($salary[$i]->monthly_tax);
+            
+            $s->totaldata->basic += $salary[$i]->basic * $salary[$i]->fraction;
+            $s->totaldata->house_rent += $salary[$i]->house_rent;
+            $s->totaldata->conveyance += $salary[$i]->conveyance;
+            $s->totaldata->medical_allowance += $salary[$i]->medical_allowance;
+            $s->totaldata->pf_company += $salary[$i]->pf_company;
+            $s->totaldata->bonus += $salary[$i]->bonus;
+            $s->totaldata->extra += $salary[$i]->extra;
+            $s->totaldata->less += $salary[$i]->less;
+            $s->totaldata->tax += $salary[$i]->monthly_tax;
+        }
+        foreach($s->totaldata as $key=>$value){
+            $s->totaldata->$key = $this->cf($value);
         }
         return response()->json($s);
+    }
+    private function cf($value){
+        return number_format($value, 2);
     }
 }

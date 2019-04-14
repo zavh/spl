@@ -25816,6 +25816,8 @@ exports.unstable_unsubscribe = unstable_unsubscribe;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__create__ = __webpack_require__(38);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__xrud__ = __webpack_require__(41);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_axios__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_axios__);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
@@ -25825,6 +25827,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
 
 
 
@@ -25852,7 +25855,7 @@ var LoanSPA = function (_Component) {
         value: function getLoans() {
             var _this2 = this;
 
-            axios.get('/loans/active').then(function (response) {
+            __WEBPACK_IMPORTED_MODULE_3_axios___default.a.get('/loans/active').then(function (response) {
                 return _this2.setState({
                     activeloans: [].concat(_toConsumableArray(response.data))
                 });
@@ -26132,6 +26135,8 @@ var Create = function (_Component) {
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_axios__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_axios__);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
@@ -26141,6 +26146,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
 
 
 
@@ -26164,7 +26170,7 @@ var Departments = function (_Component) {
         value: function getDepartments() {
             var _this2 = this;
 
-            axios.get('/departments/getall').then(function (response) {
+            __WEBPACK_IMPORTED_MODULE_1_axios___default.a.get('/departments/getall').then(function (response) {
                 return _this2.setState({
                     departments: [].concat(_toConsumableArray(response.data.departments))
                 });
@@ -26561,6 +26567,8 @@ var Accordion = function (_Component) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__commons_submit__ = __webpack_require__(14);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__loantype__ = __webpack_require__(16);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__commons_Readonly__ = __webpack_require__(44);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_axios__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_axios__);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -26568,6 +26576,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
 
 
 
@@ -26618,7 +26627,7 @@ var LoanEdit = function (_Component) {
         value: function getLoan() {
             var _this2 = this;
 
-            axios.get('/loans/' + this.props.id + '/edit').then(function (response) {
+            __WEBPACK_IMPORTED_MODULE_5_axios___default.a.get('/loans/' + this.props.id + '/edit').then(function (response) {
                 return _this2.setState({
                     user: response.data.name,
                     department: response.data.department,
@@ -26674,7 +26683,7 @@ var LoanEdit = function (_Component) {
             e.preventDefault();
             if (this.state.editErrorState) this.clearErrorBag();
             var status = 'success';
-            axios.put('/loans/' + this.props.id, {
+            __WEBPACK_IMPORTED_MODULE_5_axios___default.a.put('/loans/' + this.props.id, {
                 loan_name: this.state.loan_name,
                 amount: this.state.amount,
                 start_date: this.state.start_date,
@@ -28521,6 +28530,10 @@ var TaxConfig = function (_Component) {
 
         var _this = _possibleConstructorReturn(this, (TaxConfig.__proto__ || Object.getPrototypeOf(TaxConfig)).call(this, props));
 
+        _this.state = {
+            monthdata: [],
+            totaldata: {}
+        };
         _this.backToMain = _this.backToMain.bind(_this);
         return _this;
     }
@@ -28533,8 +28546,13 @@ var TaxConfig = function (_Component) {
     }, {
         key: 'componentDidMount',
         value: function componentDidMount() {
+            var _this2 = this;
+
             __WEBPACK_IMPORTED_MODULE_1_axios___default.a.get('/salaries/taxconfig/yearly_income_' + this.props.fromYear + '_' + this.props.toYear + '/' + this.props.employee_id).then(function (response) {
-                console.log(response);
+                return _this2.setState({
+                    monthdata: response.data.monthdata,
+                    totaldata: response.data.totaldata
+                });
             }).catch(function (error) {
                 console.log(error);
             });
@@ -28543,15 +28561,105 @@ var TaxConfig = function (_Component) {
     }, {
         key: 'render',
         value: function render() {
+            var _this3 = this;
+
             return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 'div',
                 null,
-                'I Will Return Yearly Tax Configuration For ',
-                this.props.employee_id,
-                ' for the financial year ',
-                this.props.fromYear,
-                ' to ',
-                this.props.toYear,
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'table',
+                    { className: 'table table-sm table-bordered table-striped small text-right table-dark' },
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        'tbody',
+                        { className: 'small' },
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            'tr',
+                            { className: 'bg-primary' },
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                'th',
+                                null,
+                                'Month'
+                            ),
+                            ' ',
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                'th',
+                                null,
+                                'Basic'
+                            ),
+                            ' ',
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                'th',
+                                null,
+                                'House Rent'
+                            ),
+                            ' ',
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                'th',
+                                null,
+                                'Conveyance'
+                            ),
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                'th',
+                                null,
+                                'Medical Allowance'
+                            ),
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                'th',
+                                null,
+                                'PF Company'
+                            ),
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                'th',
+                                null,
+                                'Bonus'
+                            ),
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                'th',
+                                null,
+                                'Extra'
+                            ),
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                'th',
+                                null,
+                                'Less'
+                            ),
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                'th',
+                                null,
+                                'Tax'
+                            )
+                        ),
+                        this.state.monthdata.map(function (md, index) {
+                            return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                'tr',
+                                { key: index },
+                                Object.keys(md).map(function (key, count) {
+                                    return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                        'td',
+                                        null,
+                                        md[key]
+                                    );
+                                })
+                            );
+                        }),
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            'tr',
+                            { className: 'bg-info text-white' },
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                'th',
+                                null,
+                                'Total : '
+                            ),
+                            Object.keys(this.state.totaldata).map(function (td, i) {
+                                return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                    'th',
+                                    { key: i },
+                                    _this3.state.totaldata[td]
+                                );
+                            })
+                        )
+                    )
+                ),
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     'a',
                     { href: 'javascript:void(0)', onClick: this.backToMain },

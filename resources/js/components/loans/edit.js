@@ -3,6 +3,7 @@ import Input from '../commons/Input';
 import Submit from '../commons/submit';
 import LoanType from './loantype';
 import Readonly from '../commons/Readonly';
+import axios from 'axios';
 
 export default class LoanEdit extends Component {
     constructor(props){

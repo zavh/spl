@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Create from './create';
 import Modify from './xrud';
-
+import axios from 'axios';
 export default class LoanSPA extends Component {
     constructor(props){
         super(props);
