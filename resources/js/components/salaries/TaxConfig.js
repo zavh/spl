@@ -30,13 +30,13 @@ export default class TaxConfig extends Component{
         <div>
             <table className='table table-sm table-bordered table-striped small text-right table-dark'>
                 <tbody className='small'>
-                <tr className='bg-primary'><th>Month</th> <th>Basic</th> <th>House Rent</th> <th>Conveyance</th><th>Medical Allowance</th><th>PF Company</th><th>Bonus</th><th>Extra</th><th>Less</th><th>Tax</th></tr>
+                <tr className='bg-primary'><th>Month</th><th>Basic</th><th>House Rent</th><th>Conveyance</th><th>Medical Allowance</th><th>PF Company</th><th>Bonus</th><th>Extra</th><th>Less</th><th>Tax</th></tr>
                 {this.state.monthdata.map((md,index)=>{
                     return(
                         <tr key={index}>
                             {Object.keys(md).map((key,count)=>{
                                 return(
-                                    <td>
+                                    <td key={count}>
                                         {md[key]}
                                     </td>
                                 )

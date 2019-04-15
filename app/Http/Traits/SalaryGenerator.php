@@ -95,53 +95,64 @@ trait SalaryGenerator {
 
     private function TDS($TaxableSalary,$gender,$age)
     {
-        $a = 0;
         
-        if( $gender=='m' && $age<65)
-        {
-            $a = 250000;
+        $firstSlab['f'] = array();
+        $firstSlab['f']['age'] = 'any';
+        $firstSlab['f']['slab'][$firstSlab['f']['age']] = 300000;
+        $firstSlab['m'] = array();
+        $firstSlab['m']['age'] = 65;
+        $firstSlab['m']['slab'][$firstSlab['m']['age']-1] = 250000;
+        $firstSlab['m']['slab'][$firstSlab['m']['age']] = 300000;
+
+        $a = 0;
+        if($firstSlab[$gender]['age'] == 'any')
+            $a = $firstSlab[$gender]['slab']['any'];
+        else {
+            foreach($firstSlab[$gender]['slab'] as $slabage=>$value){
+                if($age <= $slabage){
+                    $a = $firstSlab[$gender]['slab'][$slabage];
+                    break;
+                }
+            }
         }
-        elseif($gender == 'f' || $age>=65)
-        {
-            $a = 300000;
-        }
+
         $taxableIncome = $TaxableSalary;
         $slab = array($a, 400000, 500000, 600000, 3000000);
         $slabperc = array(0, 10,15,20,25,30);
         $tax = array();
         $slabamount = array();
 
-        for($i=0;$i<count($slabperc);$i++){
-            if($i == (count($slabperc)-1)){
-                if($taxableIncome > 0){
-                    $tax[$i] = $tax[$i]=$slabperc[$i]*$taxableIncome/100;
-                    $slabamount[$i] = $taxableIncome;
-                }
-                else {
-                    $tax[$i] = 0;
-                    $slabamount[$i] = 0;
-                }
-            }
+        // for($i=0;$i<count($slabperc);$i++){
+        //     if($i == (count($slabperc)-1)){
+        //         if($taxableIncome > 0){
+        //             $tax[$i] = $tax[$i]=$slabperc[$i]*$taxableIncome/100;
+        //             $slabamount[$i] = $taxableIncome;
+        //         }
+        //         else {
+        //             $tax[$i] = 0;
+        //             $slabamount[$i] = 0;
+        //         }
+        //     }
              
-            else if($i < (count($slabperc)-1)){
-                    if($slab[$i]<$taxableIncome) {
-                        $tax[$i] = $slabperc[$i]*$slab[$i]/100;        
-                        $taxableIncome -= $slab[$i];
-                        $slabamount[$i] = $slab[$i];
-                    }
-                    else{
-                        if($taxableIncome == 0 ){
-                            $tax[$i]=0;
-                            $slabamount[$i] = 0;
-                        }
-                        else{
-                            $tax[$i]=$slabperc[$i]*$taxableIncome/100;
-                            $slabamount[$i] = $taxableIncome;
-                            $taxableIncome = 0;
-                        }
-                    }
-            }
-        }
+        //     else if($i < (count($slabperc)-1)){
+        //             if($slab[$i]<$taxableIncome) {
+        //                 $tax[$i] = $slabperc[$i]*$slab[$i]/100;        
+        //                 $taxableIncome -= $slab[$i];
+        //                 $slabamount[$i] = $slab[$i];
+        //             }
+        //             else{
+        //                 if($taxableIncome == 0 ){
+        //                     $tax[$i]=0;
+        //                     $slabamount[$i] = 0;
+        //                 }
+        //                 else{
+        //                     $tax[$i]=$slabperc[$i]*$taxableIncome/100;
+        //                     $slabamount[$i] = $taxableIncome;
+        //                     $taxableIncome = 0;
+        //                 }
+        //             }
+        //     }
+        // }
         $response['slabwisetax'] = $tax;
         $response['slab'] = $slab;
         $response['slabamount'] = $slabamount;
@@ -237,7 +248,7 @@ trait SalaryGenerator {
             $finalTax = $Tax - $TIRebate;
             $response['finalTax'] = $finalTax;
         }
-        else if($Tax>0 &&$Tax<=5000) 
+        else if($Tax>0 && $Tax<=5000) 
         {
             $finalTax = 5000;
             $response['finalTax'] = $finalTax;

@@ -28580,19 +28580,16 @@ var TaxConfig = function (_Component) {
                                 null,
                                 'Month'
                             ),
-                            ' ',
                             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                                 'th',
                                 null,
                                 'Basic'
                             ),
-                            ' ',
                             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                                 'th',
                                 null,
                                 'House Rent'
                             ),
-                            ' ',
                             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                                 'th',
                                 null,
@@ -28636,7 +28633,7 @@ var TaxConfig = function (_Component) {
                                 Object.keys(md).map(function (key, count) {
                                     return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                                         'td',
-                                        null,
+                                        { key: count },
                                         md[key]
                                     );
                                 })
