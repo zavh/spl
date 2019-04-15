@@ -1,4 +1,4 @@
-import { ADD_ARTICLE, REMOVE_ARTICLE, EDIT_ARTICLE, ADD_USERS, GET_PIS, EDIT_PI } from "../constants/action-types";
+import { ADD_ARTICLE, REMOVE_ARTICLE, EDIT_ARTICLE, ADD_USERS, SET_MAIN_PANEL } from "../constants/action-types";
 
 
 export function addArticle(payload) {
@@ -17,10 +17,6 @@ export function addUsers(payload) {
   return { type: ADD_USERS, payload };
 };
 
-export function getPis(payload) {
-    return { type: GET_PIS, payload };
-  };
-
-export function editPi(payload) {
-  return { type: EDIT_PI, payload };
+export function setMainPanel(payload) {
+  return { type: SET_MAIN_PANEL, payload };
 };

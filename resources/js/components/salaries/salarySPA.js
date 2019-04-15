@@ -1,10 +1,21 @@
 import React, { Component } from 'react';
 import MainPanel from './mainPanel';
 import TaxConfig from './TaxConfig';
-import { Provider } from 'react-redux';
-import store from './redux/store/index';
+import { connect } from "react-redux";
+import { setMainPanel } from "./redux/actions/index";
 
-export default class SalarySPA extends Component {
+function mapStateToProps (state)
+{
+  return { mainPanel: state.mainPanel };
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        setMainPanel: panel=> dispatch(setMainPanel(panel))
+    };
+}
+
+class ConnectedSalarySPA extends Component {
     constructor(props){
         super(props);
         this.state = {
@@ -16,6 +27,11 @@ export default class SalarySPA extends Component {
     }
     
     componentDidMount(){
+        if(this.props.mainPanel === undefined){
+
+            this.props.setMainPanel('Main');
+        }
+            
     }
 
     switchToTax(tc){
@@ -32,27 +48,27 @@ export default class SalarySPA extends Component {
     }
 
     render() {
-        if(this.state.panel === 'Main')
+        if(this.props.mainPanel === 'Main')
             return (
-                <Provider store={store}>
-                    <div className="container-fluid">
-                        <MainPanel panelChange={this.switchToTax}/>
-                    </div>
-                </Provider>
+                <div className="container-fluid">
+                    <MainPanel panelChange={this.switchToTax}/>
+                </div>
             );
         else if(this.state.panel === 'TaxConfig')
             return (
-                <Provider store={store}>
-                    <div className="container-fluid">
-                        <TaxConfig 
-                            employee_id={this.state.taxcfg.employee_id}
-                            fromYear={this.state.taxcfg.fromYear}
-                            toYear={this.state.taxcfg.toYear}
-                            panelChange={this.switchToMain}
-                            />
-                    </div>
-                </Provider>
+                <div className="container-fluid">
+                    <TaxConfig 
+                        employee_id={this.state.taxcfg.employee_id}
+                        fromYear={this.state.taxcfg.fromYear}
+                        toYear={this.state.taxcfg.toYear}
+                        panelChange={this.switchToMain}
+                        />
+                </div> 
             );
+        else return <div>Loading</div>
 
     }
 }
+
+const SalarySPA = connect(mapStateToProps, mapDispatchToProps)(ConnectedSalarySPA);
+export default SalarySPA;

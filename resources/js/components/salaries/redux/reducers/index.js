@@ -1,4 +1,4 @@
-import { ADD_ARTICLE, REMOVE_ARTICLE, EDIT_ARTICLE, ADD_USERS, GET_PIS, EDIT_PI } from "../constants/action-types";
+import { ADD_ARTICLE, REMOVE_ARTICLE, EDIT_ARTICLE, SET_MAIN_PANEL, GET_PIS, EDIT_PI } from "../constants/action-types";
 const initialState = {
   session: {}
 };
@@ -25,9 +25,9 @@ function rootReducer(state = initialState, action) {
       articles: articles
     });
   }
-  if (action.type === ADD_USERS){
+  if (action.type === SET_MAIN_PANEL){
     return Object.assign({}, state, {
-      users: action.payload
+      mainPanel: action.payload
     });
   }
   if (action.type === GET_PIS){

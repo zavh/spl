@@ -27864,6 +27864,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_react_dom__ = __webpack_require__(6);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_react_dom___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_react_dom__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__salarySPA__ = __webpack_require__(55);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_react_redux__ = __webpack_require__(76);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__redux_store_index__ = __webpack_require__(99);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -27871,6 +27873,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+
 
 
 
@@ -27888,7 +27892,11 @@ var Salaries = function (_Component) {
     _createClass(Salaries, [{
         key: 'render',
         value: function render() {
-            return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__salarySPA__["a" /* default */], null);
+            return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                __WEBPACK_IMPORTED_MODULE_3_react_redux__["a" /* Provider */],
+                { store: __WEBPACK_IMPORTED_MODULE_4__redux_store_index__["a" /* default */] },
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__salarySPA__["a" /* default */], null)
+            );
         }
     }]);
 
@@ -27912,7 +27920,7 @@ if (document.getElementById('react')) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__mainPanel__ = __webpack_require__(56);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__TaxConfig__ = __webpack_require__(59);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_react_redux__ = __webpack_require__(76);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__redux_store_index__ = __webpack_require__(99);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__redux_actions_index__ = __webpack_require__(102);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -27927,13 +27935,25 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 
 
-var SalarySPA = function (_Component) {
-    _inherits(SalarySPA, _Component);
+function mapStateToProps(state) {
+    return { mainPanel: state.mainPanel };
+}
 
-    function SalarySPA(props) {
-        _classCallCheck(this, SalarySPA);
+function mapDispatchToProps(dispatch) {
+    return {
+        setMainPanel: function setMainPanel(panel) {
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__redux_actions_index__["a" /* setMainPanel */])(panel));
+        }
+    };
+}
 
-        var _this = _possibleConstructorReturn(this, (SalarySPA.__proto__ || Object.getPrototypeOf(SalarySPA)).call(this, props));
+var ConnectedSalarySPA = function (_Component) {
+    _inherits(ConnectedSalarySPA, _Component);
+
+    function ConnectedSalarySPA(props) {
+        _classCallCheck(this, ConnectedSalarySPA);
+
+        var _this = _possibleConstructorReturn(this, (ConnectedSalarySPA.__proto__ || Object.getPrototypeOf(ConnectedSalarySPA)).call(this, props));
 
         _this.state = {
             panel: 'Main',
@@ -27944,9 +27964,14 @@ var SalarySPA = function (_Component) {
         return _this;
     }
 
-    _createClass(SalarySPA, [{
+    _createClass(ConnectedSalarySPA, [{
         key: 'componentDidMount',
-        value: function componentDidMount() {}
+        value: function componentDidMount() {
+            if (this.props.mainPanel === undefined) {
+
+                this.props.setMainPanel('Main');
+            }
+        }
     }, {
         key: 'switchToTax',
         value: function switchToTax(tc) {
@@ -27965,34 +27990,31 @@ var SalarySPA = function (_Component) {
     }, {
         key: 'render',
         value: function render() {
-            if (this.state.panel === 'Main') return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                __WEBPACK_IMPORTED_MODULE_3_react_redux__["a" /* Provider */],
-                { store: __WEBPACK_IMPORTED_MODULE_4__redux_store_index__["a" /* default */] },
-                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                    'div',
-                    { className: 'container-fluid' },
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__mainPanel__["a" /* default */], { panelChange: this.switchToTax })
-                )
+            if (this.props.mainPanel === 'Main') return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'div',
+                { className: 'container-fluid' },
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__mainPanel__["a" /* default */], { panelChange: this.switchToTax })
             );else if (this.state.panel === 'TaxConfig') return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                __WEBPACK_IMPORTED_MODULE_3_react_redux__["a" /* Provider */],
-                { store: __WEBPACK_IMPORTED_MODULE_4__redux_store_index__["a" /* default */] },
-                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                    'div',
-                    { className: 'container-fluid' },
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__TaxConfig__["a" /* default */], {
-                        employee_id: this.state.taxcfg.employee_id,
-                        fromYear: this.state.taxcfg.fromYear,
-                        toYear: this.state.taxcfg.toYear,
-                        panelChange: this.switchToMain
-                    })
-                )
+                'div',
+                { className: 'container-fluid' },
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__TaxConfig__["a" /* default */], {
+                    employee_id: this.state.taxcfg.employee_id,
+                    fromYear: this.state.taxcfg.fromYear,
+                    toYear: this.state.taxcfg.toYear,
+                    panelChange: this.switchToMain
+                })
+            );else return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'div',
+                null,
+                'Loading'
             );
         }
     }]);
 
-    return SalarySPA;
+    return ConnectedSalarySPA;
 }(__WEBPACK_IMPORTED_MODULE_0_react__["Component"]);
 
+var SalarySPA = Object(__WEBPACK_IMPORTED_MODULE_3_react_redux__["b" /* connect */])(mapStateToProps, mapDispatchToProps)(ConnectedSalarySPA);
 /* harmony default export */ __webpack_exports__["a"] = (SalarySPA);
 
 /***/ }),
@@ -29400,7 +29422,7 @@ function warning(message) {
 /* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_0__components_Provider__["a"]; });
 /* unused harmony reexport connectAdvanced */
 /* unused harmony reexport ReactReduxContext */
-/* unused harmony reexport connect */
+/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return __WEBPACK_IMPORTED_MODULE_3__connect_connect__["a"]; });
 /* unused harmony reexport batch */
 
 
@@ -30775,7 +30797,7 @@ function createConnect(_temp) {
     }, extraOptions));
   };
 }
-/* unused harmony default export */ var _unused_webpack_default_export = (createConnect());
+/* harmony default export */ __webpack_exports__["a"] = (createConnect());
 
 /***/ }),
 /* 87 */
@@ -31848,17 +31870,17 @@ function rootReducer() {
       articles: articles
     });
   }
-  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["b" /* ADD_USERS */]) {
+  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["g" /* SET_MAIN_PANEL */]) {
     return Object.assign({}, state, {
-      users: action.payload
+      mainPanel: action.payload
     });
   }
-  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["e" /* GET_PIS */]) {
+  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["GET_PIS"]) {
     return Object.assign({}, state, {
       pis: action.payload
     });
   }
-  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["d" /* EDIT_PI */]) {
+  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["EDIT_PI"]) {
     var pis = [].concat(_toConsumableArray(state.pis));
     pis[action.payload.index]['cus_id'] = action.payload.cus_id;
     pis[action.payload.index]['customer_id'] = action.payload.customer_id;
@@ -31882,14 +31904,45 @@ function rootReducer() {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return REMOVE_ARTICLE; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return EDIT_ARTICLE; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return ADD_USERS; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return GET_PIS; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return EDIT_PI; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return SET_MAIN_PANEL; });
 var ADD_ARTICLE = "ADD_ARTICLE";
 var REMOVE_ARTICLE = "REMOVE_ARTICLE";
 var EDIT_ARTICLE = "EDIT_ARTICLE";
 var ADD_USERS = "ADD_USERS";
-var GET_PIS = "GET_PIS";
-var EDIT_PI = "EDIT_PI";
+var SET_MAIN_PANEL = "SET_MAIN_PANEL";
+
+/***/ }),
+/* 102 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* unused harmony export addArticle */
+/* unused harmony export removeArticle */
+/* unused harmony export editArticle */
+/* unused harmony export addUsers */
+/* harmony export (immutable) */ __webpack_exports__["a"] = setMainPanel;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__constants_action_types__ = __webpack_require__(101);
+
+
+function addArticle(payload) {
+  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["a" /* ADD_ARTICLE */], payload: payload };
+};
+
+function removeArticle(payload) {
+  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["f" /* REMOVE_ARTICLE */], payload: payload };
+};
+
+function editArticle(payload) {
+  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["c" /* EDIT_ARTICLE */], payload: payload };
+};
+
+function addUsers(payload) {
+  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["b" /* ADD_USERS */], payload: payload };
+};
+
+function setMainPanel(payload) {
+  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["g" /* SET_MAIN_PANEL */], payload: payload };
+};
 
 /***/ })
 /******/ ]);
