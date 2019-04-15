@@ -118,41 +118,41 @@ trait SalaryGenerator {
 
         $taxableIncome = $TaxableSalary;
         $slab = array($a, 400000, 500000, 600000, 3000000);
-        $slabperc = array(0, 10,15,20,25,30);
+        $slabperc = array(0,10,15,20,25,30);
         $tax = array();
         $slabamount = array();
 
-        // for($i=0;$i<count($slabperc);$i++){
-        //     if($i == (count($slabperc)-1)){
-        //         if($taxableIncome > 0){
-        //             $tax[$i] = $tax[$i]=$slabperc[$i]*$taxableIncome/100;
-        //             $slabamount[$i] = $taxableIncome;
-        //         }
-        //         else {
-        //             $tax[$i] = 0;
-        //             $slabamount[$i] = 0;
-        //         }
-        //     }
+        for($i=0;$i<count($slabperc);$i++){
+            if($i == (count($slabperc)-1)){
+                if($taxableIncome > 0){
+                    $tax[$i]=$slabperc[$i]*$taxableIncome/100;
+                    $slabamount[$i] = $taxableIncome;
+                }
+                else {
+                    $tax[$i] = 0;
+                    $slabamount[$i] = 0;
+                }
+            }
              
-        //     else if($i < (count($slabperc)-1)){
-        //             if($slab[$i]<$taxableIncome) {
-        //                 $tax[$i] = $slabperc[$i]*$slab[$i]/100;        
-        //                 $taxableIncome -= $slab[$i];
-        //                 $slabamount[$i] = $slab[$i];
-        //             }
-        //             else{
-        //                 if($taxableIncome == 0 ){
-        //                     $tax[$i]=0;
-        //                     $slabamount[$i] = 0;
-        //                 }
-        //                 else{
-        //                     $tax[$i]=$slabperc[$i]*$taxableIncome/100;
-        //                     $slabamount[$i] = $taxableIncome;
-        //                     $taxableIncome = 0;
-        //                 }
-        //             }
-        //     }
-        // }
+            else if($i < (count($slabperc)-1)){
+                if($slab[$i]<$taxableIncome) {
+                    $tax[$i] = $slabperc[$i]*$slab[$i]/100;        
+                    $taxableIncome -= $slab[$i];
+                    $slabamount[$i] = $slab[$i];
+                }
+                else{
+                    if($taxableIncome == 0 ){
+                        $tax[$i]=0;
+                        $slabamount[$i] = 0;
+                    }
+                    else{
+                        $tax[$i]=$slabperc[$i]*$taxableIncome/100;
+                        $slabamount[$i] = $taxableIncome;
+                        $taxableIncome = 0;
+                    }
+                }
+            }
+        }
         $response['slabwisetax'] = $tax;
         $response['slab'] = $slab;
         $response['slabamount'] = $slabamount;
@@ -185,58 +185,60 @@ trait SalaryGenerator {
             $cysd['less'] += $ysd['salary'][$i]['less'];
         }
 
-        $response['basicSalary'] = $cysd['basicSalary'];
-        $response['houseRent'] = $cysd['houseRent'];
+        $response['basic'] = $cysd['basicSalary'];
+        $response['house_rent'] = $cysd['houseRent'];
         $response['conveyance'] = $cysd['conveyance'];
-        $response['medicalAllowance'] = $cysd['medicalAllowance'];
+        $response['medical_allowance'] = $cysd['medicalAllowance'];
         $response['bonus'] = $cysd['bonus'];
         $response['extra'] = $cysd['extra'];
         $response['less'] = $cysd['less'];
         
 
         $grossSalary = $cysd['basicSalary'] + $cysd['houseRent'] + $cysd['conveyance'] + $cysd['medicalAllowance'] + $cysd['bonus'] + $cysd['extra'];
-        $response['grossSalary'] = $grossSalary;
+        $response['gross_salary'] = $grossSalary;
 
         $grossTotal = $grossSalary +$cysd['pfCompany'];
-        $response['grossTotal'] = $grossTotal;
+        $response['gross_total'] = $grossTotal;
 
         $houseRentExempted = 300000;
-        $response['houseRentExempted'] = $houseRentExempted;
+        $response['house_rent_exempted'] = $houseRentExempted;
 
         $HouseRentTR = $cysd['houseRent'];
         if(($HouseRentTR-$houseRentExempted)>=0)$HouseRentTR=$HouseRentTR-$houseRentExempted; else $HouseRentTR=0;
-        $response['HouseRentTaxRemaining'] = $HouseRentTR;
+        $response['house_rent_tax_remaining'] = $HouseRentTR;
         
         $conveyanceExempted = 30000;
-        $response['conveyanceExempted'] = $conveyanceExempted;
+        $response['conveyance_exempted'] = $conveyanceExempted;
 
         $conveyanceTR = $cysd['conveyance'];
         if(($conveyanceTR-$conveyanceExempted)>=0)$conveyanceTR=$conveyanceTR-$conveyanceExempted; else $conveyanceTR=0;
-        $response['conveyanceTaxRemaining'] = $conveyanceTR;
+        $response['conveyance_tax_remaining'] = $conveyanceTR;
 
         $medicalExempted = 120000;
-        $response['medicalExempted'] = $medicalExempted;
+        $response['medical_allowance_exempted'] = $medicalExempted;
 
         $medicalTR = $cysd['medicalAllowance'];
         if(($medicalTR-$medicalExempted)>=0)$medicalTR=$medicalTR-$medicalExempted; else $medicalTR=0;
-        $response['medicalTaxRemaining'] = $medicalTR;
+        $response['medical_allowance_tax_remaining'] = $medicalTR;
 
-        $taxableFields = $HouseRentTR + $conveyanceTR + $medicalTR + $cysd['pfCompany'] + $cysd['bonus'] + $cysd['extra'] - $cysd['less'];//not including extra yet
-        $response['taxableFields'] = $taxableFields;
+        $response['pf_company'] = $cysd['pfCompany'];
+
+        $taxableFields = $HouseRentTR + $conveyanceTR + $medicalTR + $cysd['pfCompany'] + $cysd['bonus'] + $cysd['extra'] - $cysd['less'];
+        $response['taxable_fields'] = $taxableFields;
 
         $TaxableSalary = $cysd['basicSalary'] + $taxableFields;
-        $response['TaxableSalary'] = $TaxableSalary;
+        $response['taxable_salary'] = $TaxableSalary;
 
         $info = $this->TDS($TaxableSalary,$gender,$age);
 
         $tax = $info['slabwisetax'];
         
-        $response['slabwisetax'] = $info['slabwisetax'];
+        $response['slabwise_tax'] = $info['slabwisetax'];
         $response['slab'] = $info['slab'];
-        $response['slabamount'] = $info['slabamount'];
+        $response['slab_amount'] = $info['slabamount'];
 
         $Tax = array_sum($tax);
-        $response['Tax'] = $Tax;
+        $response['tax'] = $Tax;
 
         if($Tax > 5000)
         {

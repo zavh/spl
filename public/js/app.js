@@ -28549,10 +28549,11 @@ var TaxConfig = function (_Component) {
             var _this2 = this;
 
             __WEBPACK_IMPORTED_MODULE_1_axios___default.a.get('/salaries/taxconfig/yearly_income_' + this.props.fromYear + '_' + this.props.toYear + '/' + this.props.employee_id).then(function (response) {
-                return _this2.setState({
+                _this2.setState({
                     monthdata: response.data.monthdata,
                     totaldata: response.data.totaldata
                 });
+                console.log(response);
             }).catch(function (error) {
                 console.log(error);
             });
@@ -28561,102 +28562,10 @@ var TaxConfig = function (_Component) {
     }, {
         key: 'render',
         value: function render() {
-            var _this3 = this;
-
             return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 'div',
                 null,
-                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                    'table',
-                    { className: 'table table-sm table-bordered table-striped small text-right table-dark' },
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                        'tbody',
-                        { className: 'small' },
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                            'tr',
-                            { className: 'bg-primary' },
-                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                'th',
-                                null,
-                                'Month'
-                            ),
-                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                'th',
-                                null,
-                                'Basic'
-                            ),
-                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                'th',
-                                null,
-                                'House Rent'
-                            ),
-                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                'th',
-                                null,
-                                'Conveyance'
-                            ),
-                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                'th',
-                                null,
-                                'Medical Allowance'
-                            ),
-                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                'th',
-                                null,
-                                'PF Company'
-                            ),
-                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                'th',
-                                null,
-                                'Bonus'
-                            ),
-                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                'th',
-                                null,
-                                'Extra'
-                            ),
-                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                'th',
-                                null,
-                                'Less'
-                            ),
-                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                'th',
-                                null,
-                                'Tax'
-                            )
-                        ),
-                        this.state.monthdata.map(function (md, index) {
-                            return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                'tr',
-                                { key: index },
-                                Object.keys(md).map(function (key, count) {
-                                    return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                        'td',
-                                        { key: count },
-                                        md[key]
-                                    );
-                                })
-                            );
-                        }),
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                            'tr',
-                            { className: 'bg-info text-white' },
-                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                'th',
-                                null,
-                                'Total : '
-                            ),
-                            Object.keys(this.state.totaldata).map(function (td, i) {
-                                return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                    'th',
-                                    { key: i },
-                                    _this3.state.totaldata[td]
-                                );
-                            })
-                        )
-                    )
-                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(SalaryTable, { monthdata: this.state.monthdata, totaldata: this.state.totaldata }),
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     'a',
                     { href: 'javascript:void(0)', onClick: this.backToMain },
@@ -28670,6 +28579,101 @@ var TaxConfig = function (_Component) {
 }(__WEBPACK_IMPORTED_MODULE_0_react__["Component"]);
 
 /* harmony default export */ __webpack_exports__["a"] = (TaxConfig);
+
+
+function SalaryTable(props) {
+    return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+        'table',
+        { className: 'table table-sm table-bordered table-striped small text-right table-dark' },
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'tbody',
+            { className: 'small' },
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'tr',
+                { className: 'bg-primary' },
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'th',
+                    null,
+                    'Month'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'th',
+                    null,
+                    'Basic'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'th',
+                    null,
+                    'House Rent'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'th',
+                    null,
+                    'Conveyance'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'th',
+                    null,
+                    'Medical Allowance'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'th',
+                    null,
+                    'PF Company'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'th',
+                    null,
+                    'Bonus'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'th',
+                    null,
+                    'Extra'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'th',
+                    null,
+                    'Less'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'th',
+                    null,
+                    'Tax'
+                )
+            ),
+            props.monthdata.map(function (md, index) {
+                return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'tr',
+                    { key: index },
+                    Object.keys(md).map(function (key, count) {
+                        return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            'td',
+                            { key: count },
+                            md[key]
+                        );
+                    })
+                );
+            }),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'tr',
+                { className: 'bg-info text-white' },
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'th',
+                    null,
+                    'Total : '
+                ),
+                Object.keys(props.totaldata).map(function (td, i) {
+                    return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        'th',
+                        { key: i },
+                        props.totaldata[td]
+                    );
+                })
+            )
+        )
+    );
+}
 
 /***/ }),
 /* 70 */,

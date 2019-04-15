@@ -3,14 +3,16 @@ namespace App\Http\Presentations;
 use Carbon\Carbon;
 
 class TaxConfig{
-    public $salary;
+    private $salary;
+    private $tax_config;
     public $summary;
     
-    function __construct($ys){
+    function __construct($ys, $tc){
         $this->salary = $ys; //ys = yearly salary, object collection of individual months
+        $this->tax_config = $tc;
     }
 
-    function summary(){
+    public function summary(){
         $totaldata = $this->initTotal();
         $monthdata = array();
         $salary = $this->salary;
@@ -42,6 +44,7 @@ class TaxConfig{
         $summary = new \stdClass;
         $summary->totaldata = $totaldata;
         $summary->monthdata = $monthdata;
+        $summary->taxable = $this->getTaxableIncomeTable($totaldata, $this->tax_config);
         $this->summary = $summary;
         return $this->summary;
     }
@@ -59,6 +62,21 @@ class TaxConfig{
         $totaldata->tax = 0;
 
         return $totaldata;
+    }
+
+    private function getTaxableIncomeTable($total, $taxconfig){
+        $taxableIncome = array();
+        foreach($total as $key=>$value){
+            if($key == 'tax') continue;
+            $taxableIncome[$key]['actual']=$taxconfig[$key];
+            if(isset($taxconfig[$key.'_exempted']))
+                $taxableIncome[$key]['exempted']=$taxconfig[$key.'_exempted'];
+            else 
+                $taxableIncome[$key]['exempted']=0;
+            $taxable = $taxableIncome[$key]['actual']-$taxableIncome[$key]['exempted'];
+            ($taxable<0 ? $taxableIncome[$key]['taxable']=0:$taxableIncome[$key]['taxable']=$taxable);
+        }
+        return $taxableIncome;
     }
 
     private function cf($value){

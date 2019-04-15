@@ -256,9 +256,9 @@ class SalariesController extends Controller
             if($request->month >6)
                 $index = $request->month - 7;
             else 
-            $index = $request->month + 5;
+                $index = $request->month + 5;
             
-            for($i=0;$i<count($changes);$i++){
+            for($i=0;$i<count($changes['data']);$i++){
                 $e = DB::table($table)->where('name', $changes['data'][$i]['employee_id'])->first();
                 $s = json_decode($e->salary, true);
                 foreach($changes['data'][$i] as $key=>$value){
@@ -288,8 +288,8 @@ class SalariesController extends Controller
                 $this->yearly_income_table_data_update($changes['data'][$i]['employee_id'], $table, $updates);
                 $salaries[$i] = $s[$index];
             }
-            return response()->json($salaries);
-            // return response()->json($changer);
+            // return response()->json($salaries);
+            return response()->json($changes);
         }
         else {
             return response()->json($changes);
@@ -332,7 +332,8 @@ class SalariesController extends Controller
         $db = DB::table($table)->where('name', $name)->select('salary', 'tax_config')->first();
         
         $salary = json_decode($db->salary);
-        $s = new TaxConfig($salary);
+        $tax_config = json_decode($db->tax_config, true);
+        $s = new TaxConfig($salary, $tax_config);
         return response()->json($s->summary());
     }
 }
