@@ -156,6 +156,7 @@ trait SalaryGenerator {
         $response['slabwisetax'] = $tax;
         $response['slab'] = $slab;
         $response['slabamount'] = $slabamount;
+        $response['slabperc'] = $slabperc;
 
         return $response;
     }
@@ -224,7 +225,6 @@ trait SalaryGenerator {
         $response['pf_company'] = $cysd['pfCompany'];
 
         $taxableFields = $HouseRentTR + $conveyanceTR + $medicalTR + $cysd['pfCompany'] + $cysd['bonus'] + $cysd['extra'] - $cysd['less'];
-        $response['taxable_fields'] = $taxableFields;
 
         $TaxableSalary = $cysd['basicSalary'] + $taxableFields;
         $response['taxable_salary'] = $TaxableSalary;
@@ -233,12 +233,10 @@ trait SalaryGenerator {
 
         $tax = $info['slabwisetax'];
         
-        $response['slabwise_tax'] = $info['slabwisetax'];
-        $response['slab'] = $info['slab'];
-        $response['slab_amount'] = $info['slabamount'];
+        $response['slabinfo'] = $info;
 
         $Tax = array_sum($tax);
-        $response['tax'] = $Tax;
+        $response['taxbeforeinv'] = $Tax;
 
         if($Tax > 5000)
         {

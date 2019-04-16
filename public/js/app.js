@@ -28591,7 +28591,14 @@ var ConnectedTaxConfig = function (_Component) {
 
         _this.state = {
             monthdata: [],
-            totaldata: {}
+            totaldata: {},
+            taxable: {},
+            taxable_salary: 0,
+            slabinfo: [],
+            taxbeforeinv: 0,
+            MaxInvestment: 0,
+            TIRebate: 0,
+            finalTax: 0
         };
         _this.backToMain = _this.backToMain.bind(_this);
         return _this;
@@ -28610,7 +28617,14 @@ var ConnectedTaxConfig = function (_Component) {
             __WEBPACK_IMPORTED_MODULE_1_axios___default.a.get('/salaries/taxconfig/yearly_income_' + this.props.timeline.fromYear + '_' + this.props.timeline.toYear + '/' + this.props.targetEmployee.employee_id).then(function (response) {
                 _this2.setState({
                     monthdata: response.data.monthdata,
-                    totaldata: response.data.totaldata
+                    totaldata: response.data.totaldata,
+                    taxable: response.data.taxable,
+                    taxable_salary: response.data.taxable_salary,
+                    slabinfo: response.data.slabinfo,
+                    taxbeforeinv: response.data.taxbeforeinv,
+                    MaxInvestment: response.data.MaxInvestment,
+                    TIRebate: response.data.TIRebate,
+                    finalTax: response.data.finalTax
                 });
                 console.log(response);
             }).catch(function (error) {
@@ -28623,8 +28637,29 @@ var ConnectedTaxConfig = function (_Component) {
         value: function render() {
             return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 'div',
-                null,
-                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(SalaryTable, { monthdata: this.state.monthdata, totaldata: this.state.totaldata }),
+                { className: 'container-fluid' },
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'div',
+                    { className: 'row' },
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        'div',
+                        { className: 'col-md-6' },
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(SalaryTable, { monthdata: this.state.monthdata, totaldata: this.state.totaldata })
+                    ),
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        'div',
+                        { className: 'col-md-6' },
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(TaxableTable, { taxable: this.state.taxable, tabheads: this.props.tabheads, taxable_salary: this.state.taxable_salary }),
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(SlabTable, {
+                            slabinfo: this.state.slabinfo,
+                            taxbeforeinv: this.state.taxbeforeinv,
+                            taxable_salary: this.state.taxable_salary,
+                            MaxInvestment: this.state.MaxInvestment,
+                            TIRebate: this.state.TIRebate,
+                            finalTax: this.state.finalTax
+                        })
+                    )
+                ),
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     'a',
                     { href: 'javascript:void(0)', onClick: this.backToMain },
@@ -28731,6 +28766,214 @@ function SalaryTable(props) {
     );
 }
 
+function TaxableTable(props) {
+    return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+        'table',
+        { className: 'table table-sm table-bordered table-striped small text-right table-dark' },
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'tbody',
+            { className: 'small' },
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'tr',
+                null,
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'th',
+                    null,
+                    'Heads of Income'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'th',
+                    null,
+                    'Actual'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'th',
+                    null,
+                    'Exempted'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'th',
+                    null,
+                    'Taxable Income'
+                )
+            ),
+            Object.keys(props.taxable).map(function (key, index) {
+                return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'tr',
+                    { key: index },
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        'td',
+                        null,
+                        props.tabheads[key]
+                    ),
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        'td',
+                        null,
+                        props.taxable[key]['actual']
+                    ),
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        'td',
+                        null,
+                        props.taxable[key]['exempted']
+                    ),
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        'td',
+                        null,
+                        props.taxable[key]['taxable']
+                    )
+                );
+            }),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'tr',
+                null,
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'th',
+                    { colSpan: 3 },
+                    'Total Taxable Income'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'td',
+                    null,
+                    props.taxable_salary
+                )
+            )
+        )
+    );
+}
+
+function SlabTable(props) {
+    return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+        'table',
+        { className: 'table table-sm table-bordered table-striped small text-right table-dark text-center' },
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'tbody',
+            { className: 'small' },
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'tr',
+                null,
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'th',
+                    { colSpan: 5 },
+                    'Tax Calculatioin'
+                )
+            ),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'tr',
+                null,
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'th',
+                    null,
+                    'Slab Tier'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'th',
+                    null,
+                    'Slab Amount'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'th',
+                    null,
+                    'Slab Percentage'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'th',
+                    null,
+                    'Taxable Amount'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'th',
+                    null,
+                    'Tax'
+                )
+            ),
+            props.slabinfo.map(function (slab, index) {
+                return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'tr',
+                    { key: index },
+                    slab.map(function (info, c) {
+                        return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            'td',
+                            { key: c },
+                            info
+                        );
+                    })
+                );
+            }),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'tr',
+                null,
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'th',
+                    { colSpan: 3 },
+                    'Total'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'td',
+                    null,
+                    props.taxable_salary
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'td',
+                    null,
+                    props.taxbeforeinv
+                )
+            ),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'tr',
+                null,
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'th',
+                    { colSpan: 3 },
+                    'Maximum Investment Required ( 25% of ',
+                    props.taxable_salary,
+                    ' )'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'td',
+                    null,
+                    props.MaxInvestment
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('td', null)
+            ),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'tr',
+                null,
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'th',
+                    { colSpan: 3 },
+                    'Tax Rebate on Investment ( 15% of ',
+                    props.MaxInvestment,
+                    ')'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'td',
+                    null,
+                    '( - )'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'td',
+                    null,
+                    props.TIRebate
+                )
+            ),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'tr',
+                null,
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'th',
+                    { colSpan: 3 },
+                    'Final Tax'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('td', null),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'td',
+                    null,
+                    props.finalTax
+                )
+            )
+        )
+    );
+}
 var TaxConfig = Object(__WEBPACK_IMPORTED_MODULE_2_react_redux__["b" /* connect */])(mapStateToProps, mapDispatchToProps)(ConnectedTaxConfig);
 /* harmony default export */ __webpack_exports__["a"] = (TaxConfig);
 
