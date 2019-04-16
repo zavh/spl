@@ -2,16 +2,22 @@ import React, { Component } from 'react';
 import MainPanel from './mainPanel';
 import TaxConfig from './TaxConfig';
 import { connect } from "react-redux";
-import { setMainPanel } from "./redux/actions/index";
+import { setMainPanel, setPayYear, setTabHeads, setSalaryRows} from "./redux/actions/index";
+import axios from 'axios';
 
 function mapStateToProps (state)
 {
-  return { mainPanel: state.mainPanel };
+  return { 
+      mainPanel: state.mainPanel,
+     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        setMainPanel: panel=> dispatch(setMainPanel(panel))
+        setMainPanel: panel=> dispatch(setMainPanel(panel)),
+        setPayYear: timeline=> dispatch(setPayYear(timeline)),
+        setTabHeads: tabheads=> dispatch(setTabHeads(tabheads)),
+        setSalaryRows: salaryrows=> dispatch(setSalaryRows(salaryrows)),
     };
 }
 
@@ -19,8 +25,8 @@ class ConnectedSalarySPA extends Component {
     constructor(props){
         super(props);
         this.state = {
-            panel:'Main',
             taxcfg:{},
+            status:''
         };
         this.switchToTax = this.switchToTax.bind(this);
         this.switchToMain = this.switchToMain.bind(this);
@@ -28,9 +34,28 @@ class ConnectedSalarySPA extends Component {
     
     componentDidMount(){
         if(this.props.mainPanel === undefined){
-
             this.props.setMainPanel('Main');
         }
+
+        axios.get('/salaries/dbcheck')
+        .then(
+            (response)=>{
+                console.log(response);
+                const timeline = {
+                    fromYear: response.data.fromYear,
+                    toYear: response.data.toYear,
+                    month : response.data.month,
+                }
+                this.props.setPayYear(timeline);
+                this.props.setTabHeads(response.data.tabheads);
+                this.props.setSalaryRows(response.data.data);
+
+                this.setState({status:'success'});
+            }
+        )
+        .catch(function (error) {
+            console.log(error);
+          });
             
     }
 
@@ -48,13 +73,18 @@ class ConnectedSalarySPA extends Component {
     }
 
     render() {
-        if(this.props.mainPanel === 'Main')
+        if(this.props.mainPanel === 'Main'){
+            if(this.state.status == 'success')
             return (
                 <div className="container-fluid">
-                    <MainPanel panelChange={this.switchToTax}/>
+                    <MainPanel status={this.state.status}/>
                 </div>
             );
-        else if(this.state.panel === 'TaxConfig')
+            else 
+                return <div>Loading</div>
+        }
+
+        else if(this.props.mainPanel === 'TaxConfig')
             return (
                 <div className="container-fluid">
                     <TaxConfig 

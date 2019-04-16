@@ -27921,6 +27921,8 @@ if (document.getElementById('react')) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__TaxConfig__ = __webpack_require__(59);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_react_redux__ = __webpack_require__(76);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__redux_actions_index__ = __webpack_require__(102);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_axios__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_axios__);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -27935,14 +27937,26 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 
 
+
 function mapStateToProps(state) {
-    return { mainPanel: state.mainPanel };
+    return {
+        mainPanel: state.mainPanel
+    };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
         setMainPanel: function setMainPanel(panel) {
-            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__redux_actions_index__["a" /* setMainPanel */])(panel));
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__redux_actions_index__["b" /* setMainPanel */])(panel));
+        },
+        setPayYear: function setPayYear(timeline) {
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__redux_actions_index__["c" /* setPayYear */])(timeline));
+        },
+        setTabHeads: function setTabHeads(tabheads) {
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__redux_actions_index__["e" /* setTabHeads */])(tabheads));
+        },
+        setSalaryRows: function setSalaryRows(salaryrows) {
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__redux_actions_index__["d" /* setSalaryRows */])(salaryrows));
         }
     };
 }
@@ -27956,8 +27970,8 @@ var ConnectedSalarySPA = function (_Component) {
         var _this = _possibleConstructorReturn(this, (ConnectedSalarySPA.__proto__ || Object.getPrototypeOf(ConnectedSalarySPA)).call(this, props));
 
         _this.state = {
-            panel: 'Main',
-            taxcfg: {}
+            taxcfg: {},
+            status: ''
         };
         _this.switchToTax = _this.switchToTax.bind(_this);
         _this.switchToMain = _this.switchToMain.bind(_this);
@@ -27967,10 +27981,27 @@ var ConnectedSalarySPA = function (_Component) {
     _createClass(ConnectedSalarySPA, [{
         key: 'componentDidMount',
         value: function componentDidMount() {
-            if (this.props.mainPanel === undefined) {
+            var _this2 = this;
 
+            if (this.props.mainPanel === undefined) {
                 this.props.setMainPanel('Main');
             }
+
+            __WEBPACK_IMPORTED_MODULE_5_axios___default.a.get('/salaries/dbcheck').then(function (response) {
+                console.log(response);
+                var timeline = {
+                    fromYear: response.data.fromYear,
+                    toYear: response.data.toYear,
+                    month: response.data.month
+                };
+                _this2.props.setPayYear(timeline);
+                _this2.props.setTabHeads(response.data.tabheads);
+                _this2.props.setSalaryRows(response.data.data);
+
+                _this2.setState({ status: 'success' });
+            }).catch(function (error) {
+                console.log(error);
+            });
         }
     }, {
         key: 'switchToTax',
@@ -27990,11 +28021,17 @@ var ConnectedSalarySPA = function (_Component) {
     }, {
         key: 'render',
         value: function render() {
-            if (this.props.mainPanel === 'Main') return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                'div',
-                { className: 'container-fluid' },
-                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__mainPanel__["a" /* default */], { panelChange: this.switchToTax })
-            );else if (this.state.panel === 'TaxConfig') return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            if (this.props.mainPanel === 'Main') {
+                if (this.state.status == 'success') return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'div',
+                    { className: 'container-fluid' },
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__mainPanel__["a" /* default */], { status: this.state.status })
+                );else return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'div',
+                    null,
+                    'Loading'
+                );
+            } else if (this.props.mainPanel === 'TaxConfig') return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 'div',
                 { className: 'container-fluid' },
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__TaxConfig__["a" /* default */], {
@@ -28028,6 +28065,8 @@ var SalarySPA = Object(__WEBPACK_IMPORTED_MODULE_3_react_redux__["b" /* connect 
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_axios__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__UploadMonthData__ = __webpack_require__(57);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__monthSelect__ = __webpack_require__(58);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_react_redux__ = __webpack_require__(76);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__redux_actions_index__ = __webpack_require__(102);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -28041,22 +28080,44 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 
 
-var MainPanel = function (_Component) {
-    _inherits(MainPanel, _Component);
 
-    function MainPanel(props) {
-        _classCallCheck(this, MainPanel);
 
-        var _this = _possibleConstructorReturn(this, (MainPanel.__proto__ || Object.getPrototypeOf(MainPanel)).call(this, props));
+function mapStateToProps(state) {
+    return {
+        tabheads: state.tabheads,
+        salaryrows: state.salaryrows,
+        timeline: state.timeline
+    };
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        setMainPanel: function setMainPanel(panel) {
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_5__redux_actions_index__["b" /* setMainPanel */])(panel));
+        },
+        setEmployee: function setEmployee(employee) {
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_5__redux_actions_index__["a" /* setEmployee */])(employee));
+        },
+        setPayYear: function setPayYear(timeline) {
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_5__redux_actions_index__["c" /* setPayYear */])(timeline));
+        },
+        setSalaryRows: function setSalaryRows(salaryrows) {
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_5__redux_actions_index__["d" /* setSalaryRows */])(salaryrows));
+        }
+    };
+}
+
+var ConnectedMainPanel = function (_Component) {
+    _inherits(ConnectedMainPanel, _Component);
+
+    function ConnectedMainPanel(props) {
+        _classCallCheck(this, ConnectedMainPanel);
+
+        var _this = _possibleConstructorReturn(this, (ConnectedMainPanel.__proto__ || Object.getPrototypeOf(ConnectedMainPanel)).call(this, props));
 
         _this.state = {
-            tabheads: {},
-            salaryrow: [],
-            status: '',
+            status: 'success',
             message: '',
-            fromYear: '',
-            toYear: '',
-            month: '',
             errors: {
                 year: []
             }
@@ -28068,42 +28129,45 @@ var MainPanel = function (_Component) {
         return _this;
     }
 
-    _createClass(MainPanel, [{
+    _createClass(ConnectedMainPanel, [{
         key: 'handleMonthChange',
         value: function handleMonthChange(month) {
-            this.setState({ month: month });
+            var timeline = {
+                fromYear: this.props.timeline.fromYear,
+                toYear: this.props.timeline.toYear,
+                month: parseInt(month)
+            };
+            this.props.setPayYear(timeline);
         }
     }, {
         key: 'handleYearChange',
         value: function handleYearChange(e) {
-            this.setState({
+            var timeline = {
                 fromYear: parseInt(e.target.value),
                 toYear: parseInt(e.target.value) + 1,
                 month: 7
-            });
+            };
+            this.props.setPayYear(timeline);
         }
     }, {
         key: 'handleTimelineChange',
         value: function handleTimelineChange() {
             var _this2 = this;
 
-            __WEBPACK_IMPORTED_MODULE_1_axios___default.a.get('/salaries/dbcheck/' + this.state.fromYear + '-' + this.state.month).then(function (response) {
+            __WEBPACK_IMPORTED_MODULE_1_axios___default.a.get('/salaries/dbcheck/' + this.props.timeline.fromYear + '-' + this.props.timeline.month).then(function (response) {
                 console.log(response);
                 status = response.data.status;
                 _this2.setState({ status: status });
                 if (status === 'success') {
-                    _this2.setState({
-                        tabheads: response.data.tabheads,
-                        salaryrow: response.data.data,
-                        fromYear: response.data.fromYear,
-                        toYear: response.data.toYear,
-                        month: response.data.month,
-                        status: status
-                    });
+                    // let rows = [], i=0;
+
+                    // for(i=0;i<response.data.data.length;i++)
+                    //     rows[i] = response.data.data[i];
+                    //     console.log(rows);
+                    _this2.props.setSalaryRows(response.data.data);
                 } else if (status === 'fail') {
                     _this2.setState({
-                        message: response.data.message,
-                        status: status
+                        message: response.data.message
                     });
                 }
             }).catch(function (error) {
@@ -28115,45 +28179,22 @@ var MainPanel = function (_Component) {
         key: 'showTax',
         value: function showTax(e) {
             var tc = {
-                employee_id: e.target.dataset.index,
-                fromYear: this.state.fromYear,
-                toYear: this.state.toYear
+                employee_id: e.target.dataset.index
             };
-            this.props.panelChange(tc);
+            this.props.setEmployee(tc);
+            this.props.setMainPanel("TaxConfig");
         }
     }, {
         key: 'componentDidMount',
         value: function componentDidMount() {
-            var _this3 = this;
-
-            __WEBPACK_IMPORTED_MODULE_1_axios___default.a.get('/salaries/dbcheck').then(function (response) {
-                console.log(response);
-                status = response.data.status;
-                _this3.setState({ status: status });
-                if (status === 'success') {
-                    _this3.setState({
-                        tabheads: response.data.tabheads,
-                        salaryrow: response.data.data,
-                        fromYear: response.data.fromYear,
-                        toYear: response.data.toYear,
-                        month: response.data.month,
-                        status: status
-                    });
-                } else if (status === 'fail') {
-                    _this3.setState({
-                        message: response.data.message,
-                        status: status
-                    });
-                }
-            }).catch(function (error) {
-                console.log(error);
+            this.setState({
+                status: this.props.status
             });
-            ;
         }
     }, {
         key: 'render',
         value: function render() {
-            var _this4 = this;
+            var _this3 = this;
 
             var Output;
             if (this.state.status === 'success') {
@@ -28169,15 +28210,15 @@ var MainPanel = function (_Component) {
                             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                                 'tr',
                                 null,
-                                Object.keys(this.state.tabheads).map(function (key, index) {
+                                Object.keys(this.props.tabheads).map(function (key, index) {
                                     return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                                         'th',
                                         { key: index },
-                                        _this4.state.tabheads[key]
+                                        _this3.props.tabheads[key]
                                     );
                                 })
                             ),
-                            this.state.salaryrow.map(function (e, i) {
+                            this.props.salaryrows.map(function (e, i) {
                                 return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                                     'tr',
                                     { key: i },
@@ -28187,7 +28228,7 @@ var MainPanel = function (_Component) {
                                             { key: index },
                                             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                                                 'a',
-                                                { href: 'javascript:void(0)', onClick: _this4.showTax, 'data-index': e.employee_id },
+                                                { href: 'javascript:void(0)', onClick: _this3.showTax, 'data-index': e.employee_id },
                                                 e[key]
                                             )
                                         );else return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
@@ -28233,7 +28274,7 @@ var MainPanel = function (_Component) {
                                 'Choose Year'
                             )
                         ),
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { type: 'number', className: 'form-control', onChange: this.handleYearChange, value: this.state.fromYear }),
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { type: 'number', className: 'form-control', onChange: this.handleYearChange, value: this.props.timeline.fromYear }),
                         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                             'div',
                             { className: 'input-group-append' },
@@ -28243,7 +28284,7 @@ var MainPanel = function (_Component) {
                                 'Choose Month'
                             )
                         ),
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__monthSelect__["a" /* default */], { fromYear: this.state.fromYear, toYear: this.state.toYear, month: this.state.month, onChange: this.handleMonthChange }),
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__monthSelect__["a" /* default */], { fromYear: this.props.timeline.fromYear, toYear: this.props.timeline.toYear, month: this.props.timeline.month, onChange: this.handleMonthChange }),
                         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                             'div',
                             { className: 'input-group-append' },
@@ -28254,18 +28295,15 @@ var MainPanel = function (_Component) {
                             )
                         )
                     ),
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__UploadMonthData__["a" /* default */], { status: this.state.status, fromYear: this.state.fromYear, toYear: this.state.toYear, month: this.state.month })
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__UploadMonthData__["a" /* default */], { status: this.state.status, fromYear: this.props.timeline.fromYear, toYear: this.props.timeline.toYear, month: this.props.timeline.month })
                 ),
                 Output
             );
         }
     }]);
 
-    return MainPanel;
+    return ConnectedMainPanel;
 }(__WEBPACK_IMPORTED_MODULE_0_react__["Component"]);
-
-/* harmony default export */ __webpack_exports__["a"] = (MainPanel);
-
 
 function YearNotification(props) {
     return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
@@ -28278,6 +28316,9 @@ function YearNotification(props) {
         ' salaries wil be shown'
     );
 }
+
+var MainPanel = Object(__WEBPACK_IMPORTED_MODULE_4_react_redux__["b" /* connect */])(mapStateToProps, mapDispatchToProps)(ConnectedMainPanel);
+/* harmony default export */ __webpack_exports__["a"] = (MainPanel);
 
 /***/ }),
 /* 57 */
@@ -31839,8 +31880,6 @@ var store = Object(__WEBPACK_IMPORTED_MODULE_0_redux__["b" /* createStore */])(_
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__constants_action_types__ = __webpack_require__(101);
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
 
 var initialState = {
   session: {}
@@ -31849,47 +31888,49 @@ function rootReducer() {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
   var action = arguments[1];
 
-  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["a" /* ADD_ARTICLE */]) {
-    return Object.assign({}, state, {
-      articles: state.articles.concat(action.payload)
-    });
-  }
-  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["f" /* REMOVE_ARTICLE */]) {
-    var prunedIDS = state.articles.filter(function (item, index) {
-      if (index !== parseInt(action.payload.id)) return item;
-      return null;
-    });
-    return Object.assign({}, {
-      articles: prunedIDS
-    });
-  }
-  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["c" /* EDIT_ARTICLE */]) {
-    var articles = [].concat(_toConsumableArray(state.articles));
-    articles[action.payload.index]['title'] = 'Edited';
-    return Object.assign({}, {
-      articles: articles
-    });
-  }
-  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["g" /* SET_MAIN_PANEL */]) {
+  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["b" /* SET_MAIN_PANEL */]) {
     return Object.assign({}, state, {
       mainPanel: action.payload
     });
   }
-  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["GET_PIS"]) {
+  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["a" /* SET_EMPLOYEE */]) {
     return Object.assign({}, state, {
-      pis: action.payload
+      targetEmployee: action.payload
     });
   }
-  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["EDIT_PI"]) {
-    var pis = [].concat(_toConsumableArray(state.pis));
-    pis[action.payload.index]['cus_id'] = action.payload.cus_id;
-    pis[action.payload.index]['customer_id'] = action.payload.customer_id;
-    pis[action.payload.index]['owner_name'] = action.payload.owner_name;
-    pis[action.payload.index]['status'] = action.payload.status;
+  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["c" /* SET_PAY_YEAR */]) {
     return Object.assign({}, state, {
-      pis: pis
+      timeline: action.payload
     });
   }
+  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["e" /* SET_TAB_HEADS */]) {
+    return Object.assign({}, state, {
+      tabheads: action.payload
+    });
+  }
+  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["d" /* SET_SALARY_ROWS */]) {
+    var rows = Object.keys(action.payload).map(function (key) {
+      return action.payload[key];
+    });
+    return Object.assign({}, state, {
+      salaryrows: rows
+    });
+  }
+  // if (action.type === GET_PIS){
+  //   return Object.assign({}, state, {
+  //     pis: action.payload
+  //   });
+  // }
+  // if (action.type === EDIT_PI) {
+  //   let pis = [...state.pis];
+  //   pis[action.payload.index]['cus_id'] = action.payload.cus_id;
+  //   pis[action.payload.index]['customer_id'] = action.payload.customer_id;
+  //   pis[action.payload.index]['owner_name'] = action.payload.owner_name;
+  //   pis[action.payload.index]['status'] = action.payload.status;
+  //   return Object.assign({}, state, {
+  //     pis: pis
+  //   });
+  // }
 
   return state;
 }
@@ -31900,16 +31941,24 @@ function rootReducer() {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ADD_ARTICLE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return REMOVE_ARTICLE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return EDIT_ARTICLE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return ADD_USERS; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return SET_MAIN_PANEL; });
+/* unused harmony export ADD_ARTICLE */
+/* unused harmony export REMOVE_ARTICLE */
+/* unused harmony export EDIT_ARTICLE */
+/* unused harmony export ADD_USERS */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return SET_MAIN_PANEL; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return SET_EMPLOYEE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return SET_PAY_YEAR; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return SET_TAB_HEADS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return SET_SALARY_ROWS; });
 var ADD_ARTICLE = "ADD_ARTICLE";
 var REMOVE_ARTICLE = "REMOVE_ARTICLE";
 var EDIT_ARTICLE = "EDIT_ARTICLE";
 var ADD_USERS = "ADD_USERS";
 var SET_MAIN_PANEL = "SET_MAIN_PANEL";
+var SET_EMPLOYEE = "SET_EMPLOYEE";
+var SET_PAY_YEAR = "SET_PAY_YEAR";
+var SET_TAB_HEADS = "SET_TAB_HEADS";
+var SET_SALARY_ROWS = "SET_SALARY_ROWS";
 
 /***/ }),
 /* 102 */
@@ -31919,29 +31968,44 @@ var SET_MAIN_PANEL = "SET_MAIN_PANEL";
 /* unused harmony export addArticle */
 /* unused harmony export removeArticle */
 /* unused harmony export editArticle */
-/* unused harmony export addUsers */
-/* harmony export (immutable) */ __webpack_exports__["a"] = setMainPanel;
+/* harmony export (immutable) */ __webpack_exports__["a"] = setEmployee;
+/* harmony export (immutable) */ __webpack_exports__["b"] = setMainPanel;
+/* harmony export (immutable) */ __webpack_exports__["c"] = setPayYear;
+/* harmony export (immutable) */ __webpack_exports__["e"] = setTabHeads;
+/* harmony export (immutable) */ __webpack_exports__["d"] = setSalaryRows;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__constants_action_types__ = __webpack_require__(101);
 
 
 function addArticle(payload) {
-  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["a" /* ADD_ARTICLE */], payload: payload };
+  return { type: ADD_ARTICLE, payload: payload };
 };
 
 function removeArticle(payload) {
-  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["f" /* REMOVE_ARTICLE */], payload: payload };
+  return { type: REMOVE_ARTICLE, payload: payload };
 };
 
 function editArticle(payload) {
-  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["c" /* EDIT_ARTICLE */], payload: payload };
+  return { type: EDIT_ARTICLE, payload: payload };
 };
 
-function addUsers(payload) {
-  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["b" /* ADD_USERS */], payload: payload };
+function setEmployee(payload) {
+  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["a" /* SET_EMPLOYEE */], payload: payload };
 };
 
 function setMainPanel(payload) {
-  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["g" /* SET_MAIN_PANEL */], payload: payload };
+  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["b" /* SET_MAIN_PANEL */], payload: payload };
+};
+
+function setPayYear(payload) {
+  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["c" /* SET_PAY_YEAR */], payload: payload };
+};
+
+function setTabHeads(payload) {
+  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["e" /* SET_TAB_HEADS */], payload: payload };
+};
+
+function setSalaryRows(payload) {
+  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["d" /* SET_SALARY_ROWS */], payload: payload };
 };
 
 /***/ })

@@ -2,18 +2,32 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import FileUpload from './UploadMonthData';
 import MonthSelect from './monthSelect';
+import { connect } from "react-redux";
+import { setMainPanel, setEmployee, setPayYear, setSalaryRows } from "./redux/actions/index";
 
-export default class MainPanel extends Component {
+function mapStateToProps (state)
+{
+  return { 
+      tabheads: state.tabheads,
+      salaryrows: state.salaryrows,
+      timeline: state.timeline,
+    };
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        setMainPanel: panel=> dispatch(setMainPanel(panel)),
+        setEmployee: employee=> dispatch(setEmployee(employee)),
+        setPayYear: timeline=> dispatch(setPayYear(timeline)),
+        setSalaryRows: salaryrows=> dispatch(setSalaryRows(salaryrows)),
+    };
+}
+class ConnectedMainPanel extends Component {
     constructor(props){
         super(props);
         this.state = {
-            tabheads:{},
-            salaryrow:[],
-            status:'',
+            status:'success',
             message:'',
-            fromYear:'',
-            toYear:'',
-            month:'',
             errors:{
                 year:[],
             },
@@ -23,37 +37,43 @@ export default class MainPanel extends Component {
         this.handleTimelineChange = this.handleTimelineChange.bind(this);
         this.showTax = this.showTax.bind(this);
     }
+
     handleMonthChange(month){
-        this.setState({month:month});
+        let timeline = {
+            fromYear:this.props.timeline.fromYear,
+            toYear:this.props.timeline.toYear,
+            month: parseInt(month),
+        };
+        this.props.setPayYear(timeline);
     }
+
     handleYearChange(e){
-        this.setState({
+        let timeline = {
             fromYear:parseInt(e.target.value),
             toYear:parseInt(e.target.value) + 1,
             month: 7,
-        });
+        };
+        this.props.setPayYear(timeline);
     }
+
     handleTimelineChange(){
-        axios.get(`/salaries/dbcheck/${this.state.fromYear}-${this.state.month}`)
+        axios.get(`/salaries/dbcheck/${this.props.timeline.fromYear}-${this.props.timeline.month}`)
         .then(
             (response)=>{
                 console.log(response);
                 status = response.data.status;
                 this.setState({status:status})
                 if(status === 'success'){
-                    this.setState({
-                        tabheads : response.data.tabheads,
-                        salaryrow : response.data.data,
-                        fromYear : response.data.fromYear,
-                        toYear : response.data.toYear,
-                        month : response.data.month,
-                        status:status,
-                    });
+                    // let rows = [], i=0;
+                    
+                    // for(i=0;i<response.data.data.length;i++)
+                    //     rows[i] = response.data.data[i];
+                    //     console.log(rows);
+                    this.props.setSalaryRows(response.data.data);
                 }
                 else if(status === 'fail'){
                     this.setState({
                         message:response.data.message,
-                        status:status,
                     });
                 }
             }
@@ -66,40 +86,14 @@ export default class MainPanel extends Component {
     showTax(e){
         const tc = {
             employee_id:e.target.dataset.index,
-            fromYear:this.state.fromYear,
-            toYear:this.state.toYear,
         }
-        this.props.panelChange(tc);
+        this.props.setEmployee(tc);
+        this.props.setMainPanel("TaxConfig");
     }
     componentDidMount(){
-        axios.get('/salaries/dbcheck')
-        .then(
-            (response)=>{
-                console.log(response);
-                status = response.data.status;
-                this.setState({status:status})
-                if(status === 'success'){
-                    this.setState({
-                        tabheads : response.data.tabheads,
-                        salaryrow : response.data.data,
-                        fromYear : response.data.fromYear,
-                        toYear : response.data.toYear,
-                        month : response.data.month,
-                        status:status,
-                    });
-                }
-                else if(status === 'fail'){
-                    this.setState({
-                        message:response.data.message,
-                        status:status,
-                    });
-                }
-            }
-        )
-        .catch(function (error) {
-            console.log(error);
-          });
-        ;
+        this.setState({
+            status:this.props.status,
+        });
     }
     render(){
         var Output;
@@ -109,11 +103,11 @@ export default class MainPanel extends Component {
                     <table className='table table-sm table-bordered table-striped small text-right'>
                         <tbody className='small'>
                             <tr>
-                            { Object.keys(this.state.tabheads).map((key, index)=>{
-                                return <th key={index}>{this.state.tabheads[key]}</th>
+                            { Object.keys(this.props.tabheads).map((key, index)=>{
+                                return <th key={index}>{this.props.tabheads[key]}</th>
                             })}
                             </tr>
-                            {this.state.salaryrow.map((e,i)=>{
+                            {this.props.salaryrows.map((e,i)=>{
                                 return <tr key={i}>
                                     {Object.keys(e).map((key,index)=>{
                                         if(key=='monthly_tax')
@@ -144,16 +138,16 @@ export default class MainPanel extends Component {
                         <div className="input-group-prepend">
                             <span className="input-group-text">Choose Year</span>
                         </div>
-                        <input type='number' className="form-control" onChange={this.handleYearChange} value={this.state.fromYear} />
+                        <input type='number' className="form-control" onChange={this.handleYearChange} value={this.props.timeline.fromYear} />
                         <div className="input-group-append">
                             <span className="input-group-text">Choose Month</span>
                         </div>
-                        <MonthSelect fromYear={this.state.fromYear} toYear={this.state.toYear} month={this.state.month} onChange={this.handleMonthChange}/>
+                        <MonthSelect fromYear={this.props.timeline.fromYear} toYear={this.props.timeline.toYear} month={this.props.timeline.month} onChange={this.handleMonthChange}/>
                         <div className="input-group-append">
                             <button className="btn btn-outline-success" type="button" onClick={this.handleTimelineChange}>Submit</button>
                         </div>
                     </div>
-                    <FileUpload status={this.state.status} fromYear={this.state.fromYear} toYear={this.state.toYear} month={this.state.month}/>
+                    <FileUpload status={this.state.status} fromYear={this.props.timeline.fromYear} toYear={this.props.timeline.toYear} month={this.props.timeline.month}/>
 
                 </div>
                 {Output}
@@ -168,4 +162,5 @@ function YearNotification(props){
     ) 
 }
 
-
+const MainPanel = connect(mapStateToProps, mapDispatchToProps)(ConnectedMainPanel);
+export default MainPanel;
