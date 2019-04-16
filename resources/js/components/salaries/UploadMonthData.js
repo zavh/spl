@@ -17,7 +17,8 @@ export default class FileUploadComponent extends Component
     onFormSubmit(e){
       e.preventDefault();
       this.fileUpload();
-      this.setState({filename:'Choose File'})
+      this.setState({filename:'Choose File'});
+      this.props.onFnishing();
     }
     onChange(e) {
       let files = e.target.files || e.dataTransfer.files;
@@ -39,9 +40,9 @@ export default class FileUploadComponent extends Component
       const url = '/salaries/upload';
       const formData = {
           fileToUpload: this.state.monthconfig,
-          fromYear: this.props.fromYear,
-          toYear: this.props.toYear,
-          month: this.props.month
+          fromYear: this.props.timeline.fromYear,
+          toYear: this.props.timeline.toYear,
+          month: this.props.timeline.month
         }
       axios.post(url, formData)
               .then(response => console.log(response))

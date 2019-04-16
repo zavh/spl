@@ -64,11 +64,6 @@ class ConnectedMainPanel extends Component {
                 status = response.data.status;
                 this.setState({status:status})
                 if(status === 'success'){
-                    // let rows = [], i=0;
-                    
-                    // for(i=0;i<response.data.data.length;i++)
-                    //     rows[i] = response.data.data[i];
-                    //     console.log(rows);
                     this.props.setSalaryRows(response.data.data);
                 }
                 else if(status === 'fail'){
@@ -147,7 +142,7 @@ class ConnectedMainPanel extends Component {
                             <button className="btn btn-outline-success" type="button" onClick={this.handleTimelineChange}>Submit</button>
                         </div>
                     </div>
-                    <FileUpload status={this.state.status} fromYear={this.props.timeline.fromYear} toYear={this.props.timeline.toYear} month={this.props.timeline.month}/>
+                    <FileUpload status={this.state.status} timeline={this.props.timeline} onFnishing={this.handleTimelineChange}/>
 
                 </div>
                 {Output}

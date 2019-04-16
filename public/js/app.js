@@ -28159,11 +28159,6 @@ var ConnectedMainPanel = function (_Component) {
                 status = response.data.status;
                 _this2.setState({ status: status });
                 if (status === 'success') {
-                    // let rows = [], i=0;
-
-                    // for(i=0;i<response.data.data.length;i++)
-                    //     rows[i] = response.data.data[i];
-                    //     console.log(rows);
                     _this2.props.setSalaryRows(response.data.data);
                 } else if (status === 'fail') {
                     _this2.setState({
@@ -28295,7 +28290,7 @@ var ConnectedMainPanel = function (_Component) {
                             )
                         )
                     ),
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__UploadMonthData__["a" /* default */], { status: this.state.status, fromYear: this.props.timeline.fromYear, toYear: this.props.timeline.toYear, month: this.props.timeline.month })
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__UploadMonthData__["a" /* default */], { status: this.state.status, timeline: this.props.timeline, onFnishing: this.handleTimelineChange })
                 ),
                 Output
             );
@@ -28365,6 +28360,7 @@ var FileUploadComponent = function (_Component) {
       e.preventDefault();
       this.fileUpload();
       this.setState({ filename: 'Choose File' });
+      this.props.onFnishing();
     }
   }, {
     key: 'onChange',
@@ -28393,9 +28389,9 @@ var FileUploadComponent = function (_Component) {
       var url = '/salaries/upload';
       var formData = {
         fileToUpload: this.state.monthconfig,
-        fromYear: this.props.fromYear,
-        toYear: this.props.toYear,
-        month: this.props.month
+        fromYear: this.props.timeline.fromYear,
+        toYear: this.props.timeline.toYear,
+        month: this.props.timeline.month
       };
       __WEBPACK_IMPORTED_MODULE_1_axios___default.a.post(url, formData).then(function (response) {
         return console.log(response);
