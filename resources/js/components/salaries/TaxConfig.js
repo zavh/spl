@@ -1,7 +1,25 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import { connect } from "react-redux";
+import { setMainPanel} from "./redux/actions/index";
 
-export default class TaxConfig extends Component{
+function mapStateToProps (state)
+{
+  return { 
+      tabheads: state.tabheads,
+      timeline: state.timeline,
+      targetEmployee: state.targetEmployee,
+    };
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        setMainPanel: panel=> dispatch(setMainPanel(panel)),
+    };
+}
+
+
+class ConnectedTaxConfig extends Component{
     constructor(props){
         super(props);
         this.state = {
@@ -11,10 +29,10 @@ export default class TaxConfig extends Component{
         this.backToMain = this.backToMain.bind(this);
     }
     backToMain(){
-        this.props.panelChange();
+        this.props.setMainPanel("Main");
     }
     componentDidMount(){
-        axios.get(`/salaries/taxconfig/yearly_income_${this.props.fromYear}_${this.props.toYear}/${this.props.employee_id}`)
+        axios.get(`/salaries/taxconfig/yearly_income_${this.props.timeline.fromYear}_${this.props.timeline.toYear}/${this.props.targetEmployee.employee_id}`)
             .then((response)=>{
                 this.setState({
                     monthdata:response.data.monthdata,
@@ -66,4 +84,7 @@ function SalaryTable(props){
         </table>
     );
 }
+
+const TaxConfig = connect(mapStateToProps, mapDispatchToProps)(ConnectedTaxConfig);
+export default TaxConfig;
 

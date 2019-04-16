@@ -28,8 +28,6 @@ class ConnectedSalarySPA extends Component {
             taxcfg:{},
             status:''
         };
-        this.switchToTax = this.switchToTax.bind(this);
-        this.switchToMain = this.switchToMain.bind(this);
     }
     
     componentDidMount(){
@@ -59,19 +57,6 @@ class ConnectedSalarySPA extends Component {
             
     }
 
-    switchToTax(tc){
-        this.setState({
-            panel:'TaxConfig',
-            taxcfg:tc,
-        });
-    }
-
-    switchToMain(){
-        this.setState({
-            panel:'Main',
-        });
-    }
-
     render() {
         if(this.props.mainPanel === 'Main'){
             if(this.state.status == 'success')
@@ -87,12 +72,7 @@ class ConnectedSalarySPA extends Component {
         else if(this.props.mainPanel === 'TaxConfig')
             return (
                 <div className="container-fluid">
-                    <TaxConfig 
-                        employee_id={this.state.taxcfg.employee_id}
-                        fromYear={this.state.taxcfg.fromYear}
-                        toYear={this.state.taxcfg.toYear}
-                        panelChange={this.switchToMain}
-                        />
+                    <TaxConfig />
                 </div> 
             );
         else return <div>Loading</div>

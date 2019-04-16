@@ -27973,8 +27973,6 @@ var ConnectedSalarySPA = function (_Component) {
             taxcfg: {},
             status: ''
         };
-        _this.switchToTax = _this.switchToTax.bind(_this);
-        _this.switchToMain = _this.switchToMain.bind(_this);
         return _this;
     }
 
@@ -28004,21 +28002,6 @@ var ConnectedSalarySPA = function (_Component) {
             });
         }
     }, {
-        key: 'switchToTax',
-        value: function switchToTax(tc) {
-            this.setState({
-                panel: 'TaxConfig',
-                taxcfg: tc
-            });
-        }
-    }, {
-        key: 'switchToMain',
-        value: function switchToMain() {
-            this.setState({
-                panel: 'Main'
-            });
-        }
-    }, {
         key: 'render',
         value: function render() {
             if (this.props.mainPanel === 'Main') {
@@ -28034,12 +28017,7 @@ var ConnectedSalarySPA = function (_Component) {
             } else if (this.props.mainPanel === 'TaxConfig') return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 'div',
                 { className: 'container-fluid' },
-                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__TaxConfig__["a" /* default */], {
-                    employee_id: this.state.taxcfg.employee_id,
-                    fromYear: this.state.taxcfg.fromYear,
-                    toYear: this.state.taxcfg.toYear,
-                    panelChange: this.switchToMain
-                })
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__TaxConfig__["a" /* default */], null)
             );else return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 'div',
                 null,
@@ -28572,6 +28550,8 @@ var MonthSelect = function (_Component) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_axios__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_axios__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_react_redux__ = __webpack_require__(76);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__redux_actions_index__ = __webpack_require__(102);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -28583,13 +28563,31 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 
 
-var TaxConfig = function (_Component) {
-    _inherits(TaxConfig, _Component);
 
-    function TaxConfig(props) {
-        _classCallCheck(this, TaxConfig);
 
-        var _this = _possibleConstructorReturn(this, (TaxConfig.__proto__ || Object.getPrototypeOf(TaxConfig)).call(this, props));
+function mapStateToProps(state) {
+    return {
+        tabheads: state.tabheads,
+        timeline: state.timeline,
+        targetEmployee: state.targetEmployee
+    };
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        setMainPanel: function setMainPanel(panel) {
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__redux_actions_index__["b" /* setMainPanel */])(panel));
+        }
+    };
+}
+
+var ConnectedTaxConfig = function (_Component) {
+    _inherits(ConnectedTaxConfig, _Component);
+
+    function ConnectedTaxConfig(props) {
+        _classCallCheck(this, ConnectedTaxConfig);
+
+        var _this = _possibleConstructorReturn(this, (ConnectedTaxConfig.__proto__ || Object.getPrototypeOf(ConnectedTaxConfig)).call(this, props));
 
         _this.state = {
             monthdata: [],
@@ -28599,17 +28597,17 @@ var TaxConfig = function (_Component) {
         return _this;
     }
 
-    _createClass(TaxConfig, [{
+    _createClass(ConnectedTaxConfig, [{
         key: 'backToMain',
         value: function backToMain() {
-            this.props.panelChange();
+            this.props.setMainPanel("Main");
         }
     }, {
         key: 'componentDidMount',
         value: function componentDidMount() {
             var _this2 = this;
 
-            __WEBPACK_IMPORTED_MODULE_1_axios___default.a.get('/salaries/taxconfig/yearly_income_' + this.props.fromYear + '_' + this.props.toYear + '/' + this.props.employee_id).then(function (response) {
+            __WEBPACK_IMPORTED_MODULE_1_axios___default.a.get('/salaries/taxconfig/yearly_income_' + this.props.timeline.fromYear + '_' + this.props.timeline.toYear + '/' + this.props.targetEmployee.employee_id).then(function (response) {
                 _this2.setState({
                     monthdata: response.data.monthdata,
                     totaldata: response.data.totaldata
@@ -28636,11 +28634,8 @@ var TaxConfig = function (_Component) {
         }
     }]);
 
-    return TaxConfig;
+    return ConnectedTaxConfig;
 }(__WEBPACK_IMPORTED_MODULE_0_react__["Component"]);
-
-/* harmony default export */ __webpack_exports__["a"] = (TaxConfig);
-
 
 function SalaryTable(props) {
     return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
@@ -28735,6 +28730,9 @@ function SalaryTable(props) {
         )
     );
 }
+
+var TaxConfig = Object(__WEBPACK_IMPORTED_MODULE_2_react_redux__["b" /* connect */])(mapStateToProps, mapDispatchToProps)(ConnectedTaxConfig);
+/* harmony default export */ __webpack_exports__["a"] = (TaxConfig);
 
 /***/ }),
 /* 60 */
