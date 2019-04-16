@@ -28643,21 +28643,32 @@ var ConnectedTaxConfig = function (_Component) {
                     { className: 'row' },
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                         'div',
-                        { className: 'col-md-6' },
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(SalaryTable, { monthdata: this.state.monthdata, totaldata: this.state.totaldata })
+                        { className: 'col-lg-6 col-md-12 col-sm-12' },
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            'div',
+                            { className: 'my-2' },
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(TaxableTable, {
+                                taxable: this.state.taxable,
+                                tabheads: this.props.tabheads,
+                                taxable_salary: this.state.taxable_salary })
+                        ),
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            'div',
+                            { className: 'my-2' },
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(SlabTable, {
+                                slabinfo: this.state.slabinfo,
+                                taxbeforeinv: this.state.taxbeforeinv,
+                                taxable_salary: this.state.taxable_salary,
+                                MaxInvestment: this.state.MaxInvestment,
+                                TIRebate: this.state.TIRebate,
+                                finalTax: this.state.finalTax
+                            })
+                        )
                     ),
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                         'div',
-                        { className: 'col-md-6' },
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(TaxableTable, { taxable: this.state.taxable, tabheads: this.props.tabheads, taxable_salary: this.state.taxable_salary }),
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(SlabTable, {
-                            slabinfo: this.state.slabinfo,
-                            taxbeforeinv: this.state.taxbeforeinv,
-                            taxable_salary: this.state.taxable_salary,
-                            MaxInvestment: this.state.MaxInvestment,
-                            TIRebate: this.state.TIRebate,
-                            finalTax: this.state.finalTax
-                        })
+                        { className: 'col-lg-6 col-md-12 col-sm-12 my-2' },
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(SalaryTable, { monthdata: this.state.monthdata, totaldata: this.state.totaldata })
                     )
                 ),
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
@@ -28673,9 +28684,10 @@ var ConnectedTaxConfig = function (_Component) {
 }(__WEBPACK_IMPORTED_MODULE_0_react__["Component"]);
 
 function SalaryTable(props) {
+    var tw = { width: '100%' };
     return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
         'table',
-        { className: 'table table-sm table-bordered table-striped small text-right table-dark' },
+        { className: 'table-bordered table-striped small text-center table-dark', style: tw },
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
             'tbody',
             { className: 'small' },
@@ -28767,34 +28779,60 @@ function SalaryTable(props) {
 }
 
 function TaxableTable(props) {
+    var tw = { width: '100%' };
     return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
         'table',
-        { className: 'table table-sm table-bordered table-striped small text-right table-dark' },
+        { className: 'table-bordered table-striped small text-right table-dark', style: tw },
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
             'tbody',
             { className: 'small' },
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'tr',
+                { className: 'bg-warning text-dark text-center' },
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'th',
+                    { colSpan: 4 },
+                    'Taxable Income Summary'
+                )
+            ),
             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 'tr',
                 null,
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     'th',
                     null,
-                    'Heads of Income'
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        'span',
+                        { className: 'mr-2' },
+                        'Heads of Income'
+                    )
                 ),
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     'th',
                     null,
-                    'Actual'
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        'span',
+                        { className: 'mr-2' },
+                        'Actual'
+                    )
                 ),
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     'th',
                     null,
-                    'Exempted'
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        'span',
+                        { className: 'mr-2' },
+                        'Exempted'
+                    )
                 ),
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     'th',
                     null,
-                    'Taxable Income'
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        'span',
+                        { className: 'mr-2' },
+                        'Taxable Income'
+                    )
                 )
             ),
             Object.keys(props.taxable).map(function (key, index) {
@@ -28804,22 +28842,38 @@ function TaxableTable(props) {
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                         'td',
                         null,
-                        props.tabheads[key]
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            'span',
+                            { className: 'mr-2' },
+                            props.tabheads[key]
+                        )
                     ),
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                         'td',
                         null,
-                        props.taxable[key]['actual']
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            'span',
+                            { className: 'mr-2' },
+                            props.taxable[key]['actual']
+                        )
                     ),
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                         'td',
                         null,
-                        props.taxable[key]['exempted']
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            'span',
+                            { className: 'mr-2' },
+                            props.taxable[key]['exempted']
+                        )
                     ),
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                         'td',
                         null,
-                        props.taxable[key]['taxable']
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            'span',
+                            { className: 'mr-2' },
+                            props.taxable[key]['taxable']
+                        )
                     )
                 );
             }),
@@ -28829,12 +28883,20 @@ function TaxableTable(props) {
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     'th',
                     { colSpan: 3 },
-                    'Total Taxable Income'
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        'span',
+                        { className: 'mr-2' },
+                        'Total Taxable Income'
+                    )
                 ),
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     'td',
                     null,
-                    props.taxable_salary
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        'span',
+                        { className: 'mr-2' },
+                        props.taxable_salary
+                    )
                 )
             )
         )
@@ -28842,15 +28904,16 @@ function TaxableTable(props) {
 }
 
 function SlabTable(props) {
+    var tw = { width: '100%' };
     return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
         'table',
-        { className: 'table table-sm table-bordered table-striped small text-right table-dark text-center' },
+        { className: 'table-bordered table-striped small text-right table-dark text-center', style: tw },
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
             'tbody',
             { className: 'small' },
             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 'tr',
-                null,
+                { className: 'bg-success text-dark' },
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     'th',
                     { colSpan: 5 },

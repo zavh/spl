@@ -64,19 +64,26 @@ class ConnectedTaxConfig extends Component{
         return(
         <div className='container-fluid'>
             <div className='row'>
-                <div className="col-md-6">
-                    <SalaryTable monthdata={this.state.monthdata} totaldata={this.state.totaldata}/>
+                <div className="col-lg-6 col-md-12 col-sm-12">
+                    <div className='my-2'>
+                        <TaxableTable 
+                            taxable={this.state.taxable}
+                            tabheads={this.props.tabheads}
+                            taxable_salary={this.state.taxable_salary}/>
+                    </div>
+                    <div className='my-2'>
+                        <SlabTable 
+                            slabinfo={this.state.slabinfo} 
+                            taxbeforeinv={this.state.taxbeforeinv} 
+                            taxable_salary={this.state.taxable_salary}
+                            MaxInvestment={this.state.MaxInvestment}
+                            TIRebate={this.state.TIRebate}
+                            finalTax={this.state.finalTax}
+                            />
+                    </div>
                 </div>
-                <div className="col-md-6">
-                    <TaxableTable taxable={this.state.taxable} tabheads={this.props.tabheads} taxable_salary={this.state.taxable_salary}/>
-                    <SlabTable 
-                        slabinfo={this.state.slabinfo} 
-                        taxbeforeinv={this.state.taxbeforeinv} 
-                        taxable_salary={this.state.taxable_salary}
-                        MaxInvestment={this.state.MaxInvestment}
-                        TIRebate={this.state.TIRebate}
-                        finalTax={this.state.finalTax}
-                        />
+                <div className="col-lg-6 col-md-12 col-sm-12 my-2">
+                    <SalaryTable monthdata={this.state.monthdata} totaldata={this.state.totaldata}/>
                 </div>
             </div>
             <a href='javascript:void(0)' onClick={this.backToMain}>Back</a>
@@ -86,8 +93,9 @@ class ConnectedTaxConfig extends Component{
 }
 
 function SalaryTable(props){
+    const tw = {width:'100%'};
     return(
-        <table className='table table-sm table-bordered table-striped small text-right table-dark'>
+        <table className='table-bordered table-striped small text-center table-dark' style={tw}>
             <tbody className='small'>
                 <tr className='bg-primary'><th>Month</th><th>Basic</th><th>House Rent</th><th>Conveyance</th><th>Medical Allowance</th><th>PF Company</th><th>Bonus</th><th>Extra</th><th>Less</th><th>Tax</th></tr>
                 {props.monthdata.map((md,index)=>{
@@ -115,31 +123,39 @@ function SalaryTable(props){
 }
 
 function TaxableTable(props){
+    const tw = {width:'100%'};
     return(
-        <table className='table table-sm table-bordered table-striped small text-right table-dark'>
+        <table className='table-bordered table-striped small text-right table-dark' style={tw}>
             <tbody className="small">
-                <tr><th>Heads of Income</th><th>Actual</th><th>Exempted</th><th>Taxable Income</th></tr>
+                <tr className='bg-warning text-dark text-center'><th colSpan={4}>Taxable Income Summary</th></tr>
+                <tr>
+                    <th><span className='mr-2'>Heads of Income</span></th>
+                    <th><span className='mr-2'>Actual</span></th>
+                    <th><span className='mr-2'>Exempted</span></th>
+                    <th><span className='mr-2'>Taxable Income</span></th>
+                </tr>
                 {Object.keys(props.taxable).map((key, index)=>{
                     return(
                         <tr key={index}>
-                            <td>{props.tabheads[key]}</td>
-                            <td>{props.taxable[key]['actual']}</td>
-                            <td>{props.taxable[key]['exempted']}</td>
-                            <td>{props.taxable[key]['taxable']}</td>
+                            <td><span className='mr-2'>{props.tabheads[key]}</span></td>
+                            <td><span className='mr-2'>{props.taxable[key]['actual']}</span></td>
+                            <td><span className='mr-2'>{props.taxable[key]['exempted']}</span></td>
+                            <td><span className='mr-2'>{props.taxable[key]['taxable']}</span></td>
                         </tr>
                     )
                 })}
-                <tr><th colSpan={3}>Total Taxable Income</th><td>{props.taxable_salary}</td></tr>
+                <tr><th colSpan={3}><span className='mr-2'>Total Taxable Income</span></th><td><span className='mr-2'>{props.taxable_salary}</span></td></tr>
             </tbody>
         </table>
     );
 }
 
 function SlabTable(props){
+    const tw = {width:'100%'};
     return(
-        <table className='table table-sm table-bordered table-striped small text-right table-dark text-center'>
+        <table className='table-bordered table-striped small text-right table-dark text-center' style={tw}>
             <tbody className="small">
-                <tr><th colSpan={5}>Tax Calculatioin</th></tr>
+                <tr className='bg-success text-dark'><th colSpan={5}>Tax Calculatioin</th></tr>
                 <tr><th>Slab Tier</th><th>Slab Amount</th><th>Slab Percentage</th><th>Taxable Amount</th><th>Tax</th></tr>
                 {props.slabinfo.map((slab, index)=>{
                     return(
