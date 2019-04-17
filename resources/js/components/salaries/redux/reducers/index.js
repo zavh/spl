@@ -4,7 +4,8 @@ import {
   SET_PAY_YEAR, 
   SET_TAB_HEADS, 
   SET_SALARY_ROWS, 
-  SET_REF_TIMELINE } from "../constants/action-types";
+  SET_REF_TIMELINE,
+  SET_INDEXING } from "../constants/action-types";
   
 const initialState = {
   mainPanel: 'Main',
@@ -13,6 +14,7 @@ const initialState = {
   tabheads:{},
   salaryrows:[],
   reftimeline:{},
+  indexing:[],
 };
 function rootReducer(state = initialState, action) {
   if (action.type === SET_MAIN_PANEL){
@@ -46,6 +48,11 @@ function rootReducer(state = initialState, action) {
   if (action.type === SET_REF_TIMELINE){
     return Object.assign({}, state, {
       reftimeline: action.payload
+    });
+  }
+  if (action.type === SET_INDEXING){
+    return Object.assign({}, state, {
+      indexing: action.payload
     });
   }
   // if (action.type === GET_PIS){

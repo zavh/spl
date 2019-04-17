@@ -130,6 +130,7 @@ class SalariesController extends Controller
         $t = explode('-',$year);
         if($t[1]<7) $t[0]++;
         $target_month = Carbon::create($t[0],$t[1]+1, 1, 0, 0, 0, 'Asia/Dhaka');
+        $rc = 0;
         for($i=0;$i<count($d);$i++){
             if(Carbon::parse($d[$i]->profile->join_date)->gt($target_month)) continue;
             $user = User::find($d[$i]->profile->id);
@@ -145,12 +146,24 @@ class SalariesController extends Controller
             $response['data'][$i]['pf_company'] = number_format($d[$i]->salary[$month]->pf_company, 2);
             $response['data'][$i]['bonus'] = number_format($d[$i]->salary[$month]->bonus, 2);
             if(!isset($response['indexing'][$user->department->id])){
-                $response['indexing'][$user->department->id] = array();
-                $response['indexing'][$user->department->id][0] = $i;
+                // $response['indexing'][$user->department->id] = array();
+                $response['indexing'][$user->department->id]['bank'] = array();
+                $response['indexing'][$user->department->id]['cash'] = array();
+                if($salaryinfo->pay_out_mode == 'BANK')
+                    $response['indexing'][$user->department->id]['bank'][0] = $rc++;
+                else
+                    $response['indexing'][$user->department->id]['cash'][0] = $rc++;   
             }
             else {
-                $x = count($response['indexing'][$user->department->id]);
-                $response['indexing'][$user->department->id][$x] = $i;
+                if($salaryinfo->pay_out_mode == 'BANK'){
+                    $x = count($response['indexing'][$user->department->id]['bank']);
+                    $response['indexing'][$user->department->id]['bank'][$x] = $rc++;
+                }
+                else {
+                    $x = count($response['indexing'][$user->department->id]['cash']);
+                    $response['indexing'][$user->department->id]['cash'][$x] = $rc++;
+                }
+
             }
             // if($salaryinfo->pay_out_mode == 'BANK')
             if(is_object($d[$i]->salary[$month]->loan)){

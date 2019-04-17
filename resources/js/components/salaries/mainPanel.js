@@ -4,7 +4,7 @@ import FileUpload from './UploadMonthData';
 import MonthSelect from './monthSelect';
 
 import { connect } from "react-redux";
-import { setMainPanel, setEmployee, setPayYear, setSalaryRows } from "./redux/actions/index";
+import { setMainPanel, setEmployee, setPayYear, setSalaryRows, setIndexing } from "./redux/actions/index";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import SalaryOutput from './SalaryOutput';
 function mapStateToProps (state)
@@ -14,6 +14,7 @@ function mapStateToProps (state)
       salaryrows: state.salaryrows,
       timeline: state.timeline,
       reftimeline: state.reftimeline,
+      indexing: state.indexing,
     };
 }
 
@@ -23,6 +24,7 @@ function mapDispatchToProps(dispatch) {
         setEmployee: employee=> dispatch(setEmployee(employee)),
         setPayYear: timeline=> dispatch(setPayYear(timeline)),
         setSalaryRows: salaryrows=> dispatch(setSalaryRows(salaryrows)),
+        setIndexing: indexing=>dispatch(setIndexing(indexing)),
     };
 }
 class ConnectedMainPanel extends Component {
@@ -38,7 +40,6 @@ class ConnectedMainPanel extends Component {
             modal:false,
             filteredrows:[],
             validtimeline:{},
-            indexing:[],
         }
         this.handleMonthChange = this.handleMonthChange.bind(this);
         this.handleYearChange = this.handleYearChange.bind(this);
@@ -88,8 +89,8 @@ class ConnectedMainPanel extends Component {
                     this.props.setSalaryRows(response.data.data);
                     this.setState({
                         validtimeline:this.props.timeline,
-                        indexing:response.data.indexing,
                     });
+                    this.props.setIndexing(response.data.indexing);
                 }
                 else if(status === 'fail'){
                     // If db table for target month does not exist, set the current timeline same as the last valid timeline
@@ -108,15 +109,19 @@ class ConnectedMainPanel extends Component {
     }
     departmentFilter(value){
         let rows = this.props.salaryrows;
-        let indexing = this.state.indexing[value];
-        let result = [], i;
-        for(i=0;i<indexing.length;i++){
-            result[i] = rows[indexing[i]];
+        let indexing = this.props.indexing[value];
+        let resultb = [], resultc = [], i;
+        for(i=0;i<indexing['bank'].length;i++){
+            resultb[i] = rows[indexing['bank'][i]];
         }
-        this.setState({
-            filteredrows:result,
-        });
-        // console.log(result);
+        for(i=0;i<indexing['cash'].length;i++){
+            resultc[i] = rows[indexing['cash'][i]];
+        }
+        let result = resultb.concat(resultc);
+        // this.setState({
+        //     filteredrows:result,
+        // });
+        console.log(result);
     }
     componentDidMount(){
         this.setState({

@@ -744,11 +744,12 @@ function _objectWithoutPropertiesLoose(source, excluded) {
 /* unused harmony export removeArticle */
 /* unused harmony export editArticle */
 /* harmony export (immutable) */ __webpack_exports__["a"] = setEmployee;
-/* harmony export (immutable) */ __webpack_exports__["b"] = setMainPanel;
-/* harmony export (immutable) */ __webpack_exports__["c"] = setPayYear;
-/* harmony export (immutable) */ __webpack_exports__["f"] = setTabHeads;
-/* harmony export (immutable) */ __webpack_exports__["e"] = setSalaryRows;
-/* harmony export (immutable) */ __webpack_exports__["d"] = setRefTimeline;
+/* harmony export (immutable) */ __webpack_exports__["c"] = setMainPanel;
+/* harmony export (immutable) */ __webpack_exports__["d"] = setPayYear;
+/* harmony export (immutable) */ __webpack_exports__["g"] = setTabHeads;
+/* harmony export (immutable) */ __webpack_exports__["f"] = setSalaryRows;
+/* harmony export (immutable) */ __webpack_exports__["e"] = setRefTimeline;
+/* harmony export (immutable) */ __webpack_exports__["b"] = setIndexing;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__constants_action_types__ = __webpack_require__(32);
 
 
@@ -769,23 +770,27 @@ function setEmployee(payload) {
 };
 
 function setMainPanel(payload) {
-  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["b" /* SET_MAIN_PANEL */], payload: payload };
+  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["c" /* SET_MAIN_PANEL */], payload: payload };
 };
 
 function setPayYear(payload) {
-  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["c" /* SET_PAY_YEAR */], payload: payload };
+  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["d" /* SET_PAY_YEAR */], payload: payload };
 };
 
 function setTabHeads(payload) {
-  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["f" /* SET_TAB_HEADS */], payload: payload };
+  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["g" /* SET_TAB_HEADS */], payload: payload };
 };
 
 function setSalaryRows(payload) {
-  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["e" /* SET_SALARY_ROWS */], payload: payload };
+  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["f" /* SET_SALARY_ROWS */], payload: payload };
 };
 
 function setRefTimeline(payload) {
-  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["d" /* SET_REF_TIMELINE */], payload: payload };
+  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["e" /* SET_REF_TIMELINE */], payload: payload };
+};
+
+function setIndexing(payload) {
+  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["b" /* SET_INDEXING */], payload: payload };
 };
 
 /***/ }),
@@ -2877,12 +2882,13 @@ function warning(message) {
 /* unused harmony export REMOVE_ARTICLE */
 /* unused harmony export EDIT_ARTICLE */
 /* unused harmony export ADD_USERS */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return SET_MAIN_PANEL; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return SET_MAIN_PANEL; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return SET_EMPLOYEE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return SET_PAY_YEAR; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return SET_TAB_HEADS; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return SET_SALARY_ROWS; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return SET_REF_TIMELINE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return SET_PAY_YEAR; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return SET_TAB_HEADS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return SET_SALARY_ROWS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return SET_REF_TIMELINE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return SET_INDEXING; });
 var ADD_ARTICLE = "ADD_ARTICLE";
 var REMOVE_ARTICLE = "REMOVE_ARTICLE";
 var EDIT_ARTICLE = "EDIT_ARTICLE";
@@ -2893,6 +2899,7 @@ var SET_PAY_YEAR = "SET_PAY_YEAR";
 var SET_TAB_HEADS = "SET_TAB_HEADS";
 var SET_SALARY_ROWS = "SET_SALARY_ROWS";
 var SET_REF_TIMELINE = "SET_REF_TIMELINE";
+var SET_INDEXING = "SET_INDEXING";
 
 /***/ }),
 /* 33 */
@@ -29400,19 +29407,22 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         setMainPanel: function setMainPanel(panel) {
-            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__redux_actions_index__["b" /* setMainPanel */])(panel));
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__redux_actions_index__["c" /* setMainPanel */])(panel));
         },
         setPayYear: function setPayYear(timeline) {
-            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__redux_actions_index__["c" /* setPayYear */])(timeline));
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__redux_actions_index__["d" /* setPayYear */])(timeline));
         },
         setRefTimeline: function setRefTimeline(timeline) {
-            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__redux_actions_index__["d" /* setRefTimeline */])(timeline));
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__redux_actions_index__["e" /* setRefTimeline */])(timeline));
         },
         setTabHeads: function setTabHeads(tabheads) {
-            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__redux_actions_index__["f" /* setTabHeads */])(tabheads));
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__redux_actions_index__["g" /* setTabHeads */])(tabheads));
         },
         setSalaryRows: function setSalaryRows(salaryrows) {
-            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__redux_actions_index__["e" /* setSalaryRows */])(salaryrows));
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__redux_actions_index__["f" /* setSalaryRows */])(salaryrows));
+        },
+        setIndexing: function setIndexing(indexing) {
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__redux_actions_index__["b" /* setIndexing */])(indexing));
         }
     };
 }
@@ -29452,6 +29462,7 @@ var ConnectedSalarySPA = function (_Component) {
                 _this2.props.setRefTimeline(timeline);
                 _this2.props.setTabHeads(response.data.tabheads);
                 _this2.props.setSalaryRows(response.data.data);
+                _this2.props.setIndexing(response.data.indexing);
 
                 _this2.setState({ status: 'success' });
             }).catch(function (error) {
@@ -29526,23 +29537,27 @@ function mapStateToProps(state) {
         tabheads: state.tabheads,
         salaryrows: state.salaryrows,
         timeline: state.timeline,
-        reftimeline: state.reftimeline
+        reftimeline: state.reftimeline,
+        indexing: state.indexing
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
         setMainPanel: function setMainPanel(panel) {
-            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_5__redux_actions_index__["b" /* setMainPanel */])(panel));
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_5__redux_actions_index__["c" /* setMainPanel */])(panel));
         },
         setEmployee: function setEmployee(employee) {
             return dispatch(Object(__WEBPACK_IMPORTED_MODULE_5__redux_actions_index__["a" /* setEmployee */])(employee));
         },
         setPayYear: function setPayYear(timeline) {
-            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_5__redux_actions_index__["c" /* setPayYear */])(timeline));
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_5__redux_actions_index__["d" /* setPayYear */])(timeline));
         },
         setSalaryRows: function setSalaryRows(salaryrows) {
-            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_5__redux_actions_index__["e" /* setSalaryRows */])(salaryrows));
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_5__redux_actions_index__["f" /* setSalaryRows */])(salaryrows));
+        },
+        setIndexing: function setIndexing(indexing) {
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_5__redux_actions_index__["b" /* setIndexing */])(indexing));
         }
     };
 }
@@ -29564,8 +29579,7 @@ var ConnectedMainPanel = function (_Component) {
             },
             modal: false,
             filteredrows: [],
-            validtimeline: {},
-            indexing: []
+            validtimeline: {}
         };
         _this.handleMonthChange = _this.handleMonthChange.bind(_this);
         _this.handleYearChange = _this.handleYearChange.bind(_this);
@@ -29624,9 +29638,9 @@ var ConnectedMainPanel = function (_Component) {
                 if (status === 'success') {
                     _this2.props.setSalaryRows(response.data.data);
                     _this2.setState({
-                        validtimeline: _this2.props.timeline,
-                        indexing: response.data.indexing
+                        validtimeline: _this2.props.timeline
                     });
+                    _this2.props.setIndexing(response.data.indexing);
                 } else if (status === 'fail') {
                     // If db table for target month does not exist, set the current timeline same as the last valid timeline
                     _this2.props.setPayYear(_this2.state.validtimeline);
@@ -29644,16 +29658,21 @@ var ConnectedMainPanel = function (_Component) {
         key: 'departmentFilter',
         value: function departmentFilter(value) {
             var rows = this.props.salaryrows;
-            var indexing = this.state.indexing[value];
-            var result = [],
+            var indexing = this.props.indexing[value];
+            var resultb = [],
+                resultc = [],
                 i = void 0;
-            for (i = 0; i < indexing.length; i++) {
-                result[i] = rows[indexing[i]];
+            for (i = 0; i < indexing['bank'].length; i++) {
+                resultb[i] = rows[indexing['bank'][i]];
             }
-            this.setState({
-                filteredrows: result
-            });
-            // console.log(result);
+            for (i = 0; i < indexing['cash'].length; i++) {
+                resultc[i] = rows[indexing['cash'][i]];
+            }
+            var result = resultb.concat(resultc);
+            // this.setState({
+            //     filteredrows:result,
+            // });
+            console.log(result);
         }
     }, {
         key: 'componentDidMount',
@@ -31748,7 +31767,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         setMainPanel: function setMainPanel(panel) {
-            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__redux_actions_index__["b" /* setMainPanel */])(panel));
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__redux_actions_index__["c" /* setMainPanel */])(panel));
         }
     };
 }
@@ -32239,13 +32258,14 @@ var initialState = {
   timeline: {},
   tabheads: {},
   salaryrows: [],
-  reftimeline: {}
+  reftimeline: {},
+  indexing: []
 };
 function rootReducer() {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
   var action = arguments[1];
 
-  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["b" /* SET_MAIN_PANEL */]) {
+  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["c" /* SET_MAIN_PANEL */]) {
     return Object.assign({}, state, {
       mainPanel: action.payload
     });
@@ -32255,17 +32275,17 @@ function rootReducer() {
       targetEmployee: action.payload
     });
   }
-  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["c" /* SET_PAY_YEAR */]) {
+  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["d" /* SET_PAY_YEAR */]) {
     return Object.assign({}, state, {
       timeline: action.payload
     });
   }
-  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["f" /* SET_TAB_HEADS */]) {
+  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["g" /* SET_TAB_HEADS */]) {
     return Object.assign({}, state, {
       tabheads: action.payload
     });
   }
-  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["e" /* SET_SALARY_ROWS */]) {
+  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["f" /* SET_SALARY_ROWS */]) {
     var rows = Object.keys(action.payload).map(function (key) {
       return action.payload[key];
     });
@@ -32273,9 +32293,14 @@ function rootReducer() {
       salaryrows: rows
     });
   }
-  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["d" /* SET_REF_TIMELINE */]) {
+  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["e" /* SET_REF_TIMELINE */]) {
     return Object.assign({}, state, {
       reftimeline: action.payload
+    });
+  }
+  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["b" /* SET_INDEXING */]) {
+    return Object.assign({}, state, {
+      indexing: action.payload
     });
   }
   // if (action.type === GET_PIS){
@@ -46563,7 +46588,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         setMainPanel: function setMainPanel(panel) {
-            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__redux_actions_index__["b" /* setMainPanel */])(panel));
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__redux_actions_index__["c" /* setMainPanel */])(panel));
         },
         setEmployee: function setEmployee(employee) {
             return dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__redux_actions_index__["a" /* setEmployee */])(employee));
@@ -46631,10 +46656,10 @@ var ConnectedSalaryOutput = function (_Component) {
                     { className: 'small' },
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                         'tr',
-                        null,
+                        { className: 'text-center' },
                         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                             'td',
-                            null,
+                            { colSpan: 3 },
                             'Salary Year: ',
                             this.props.timeline.fromYear,
                             ' - ',
@@ -46642,20 +46667,20 @@ var ConnectedSalaryOutput = function (_Component) {
                         ),
                         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                             'td',
-                            null,
+                            { colSpan: 3 },
                             'Month: ',
                             monthtext
                         ),
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('td', { colSpan: 11 }),
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('td', { colSpan: 1 }),
                         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                             'td',
-                            { colSpan: 3 },
-                            'Filter by Department: ',
+                            { colSpan: 6 },
+                            'Filter by Department : ',
                             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__Departments__["a" /* default */], { onChange: this.handleDepartmentChange })
                         ),
                         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                             'td',
-                            { colSpan: 3 },
+                            { colSpan: 6 },
                             'Filter by Payout Method'
                         )
                     ),

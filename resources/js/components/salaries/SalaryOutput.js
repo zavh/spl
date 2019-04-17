@@ -56,12 +56,12 @@ class ConnectedSalaryOutput extends Component {
         return(
             <table className='table table-sm table-bordered table-striped small text-right'>
             <tbody className='small'>
-                <tr>
-                    <td>Salary Year: {this.props.timeline.fromYear} - {this.props.timeline.toYear}</td>
-                    <td>Month: {monthtext}</td>
-                    <td colSpan={11}></td>
-                    <td colSpan={3}>Filter by Department: <Departments onChange={this.handleDepartmentChange}/></td>
-                    <td colSpan={3}>Filter by Payout Method</td>
+                <tr className='text-center'>
+                    <td colSpan={3}>Salary Year: {this.props.timeline.fromYear} - {this.props.timeline.toYear}</td>
+                    <td colSpan={3}>Month: {monthtext}</td>
+                    <td colSpan={1}></td>
+                    <td colSpan={6}>Filter by Department : <Departments onChange={this.handleDepartmentChange}/></td>
+                    <td colSpan={6}>Filter by Payout Method</td>
                 </tr>
                 <tr>
                 { Object.keys(this.props.tabheads).map((key, index)=>{
