@@ -1,4 +1,4 @@
-import {SET_MAIN_PANEL, SET_EMPLOYEE, SET_PAY_YEAR, SET_TAB_HEADS, SET_SALARY_ROWS } from "../constants/action-types";
+import {SET_MAIN_PANEL, SET_EMPLOYEE, SET_PAY_YEAR, SET_TAB_HEADS, SET_SALARY_ROWS, SET_REF_TIMELINE } from "../constants/action-types";
 
 
 export function addArticle(payload) {
@@ -31,4 +31,8 @@ export function setTabHeads(payload) {
 
 export function setSalaryRows(payload) {
   return { type: SET_SALARY_ROWS, payload };
+};
+
+export function setRefTimeline(payload){
+  return { type: SET_REF_TIMELINE, payload};
 };

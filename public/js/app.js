@@ -746,8 +746,9 @@ function _objectWithoutPropertiesLoose(source, excluded) {
 /* harmony export (immutable) */ __webpack_exports__["a"] = setEmployee;
 /* harmony export (immutable) */ __webpack_exports__["b"] = setMainPanel;
 /* harmony export (immutable) */ __webpack_exports__["c"] = setPayYear;
-/* harmony export (immutable) */ __webpack_exports__["e"] = setTabHeads;
-/* harmony export (immutable) */ __webpack_exports__["d"] = setSalaryRows;
+/* harmony export (immutable) */ __webpack_exports__["f"] = setTabHeads;
+/* harmony export (immutable) */ __webpack_exports__["e"] = setSalaryRows;
+/* harmony export (immutable) */ __webpack_exports__["d"] = setRefTimeline;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__constants_action_types__ = __webpack_require__(32);
 
 
@@ -776,11 +777,15 @@ function setPayYear(payload) {
 };
 
 function setTabHeads(payload) {
-  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["e" /* SET_TAB_HEADS */], payload: payload };
+  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["f" /* SET_TAB_HEADS */], payload: payload };
 };
 
 function setSalaryRows(payload) {
-  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["d" /* SET_SALARY_ROWS */], payload: payload };
+  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["e" /* SET_SALARY_ROWS */], payload: payload };
+};
+
+function setRefTimeline(payload) {
+  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["d" /* SET_REF_TIMELINE */], payload: payload };
 };
 
 /***/ }),
@@ -2875,8 +2880,9 @@ function warning(message) {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return SET_MAIN_PANEL; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return SET_EMPLOYEE; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return SET_PAY_YEAR; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return SET_TAB_HEADS; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return SET_SALARY_ROWS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return SET_TAB_HEADS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return SET_SALARY_ROWS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return SET_REF_TIMELINE; });
 var ADD_ARTICLE = "ADD_ARTICLE";
 var REMOVE_ARTICLE = "REMOVE_ARTICLE";
 var EDIT_ARTICLE = "EDIT_ARTICLE";
@@ -2886,6 +2892,7 @@ var SET_EMPLOYEE = "SET_EMPLOYEE";
 var SET_PAY_YEAR = "SET_PAY_YEAR";
 var SET_TAB_HEADS = "SET_TAB_HEADS";
 var SET_SALARY_ROWS = "SET_SALARY_ROWS";
+var SET_REF_TIMELINE = "SET_REF_TIMELINE";
 
 /***/ }),
 /* 33 */
@@ -29398,11 +29405,14 @@ function mapDispatchToProps(dispatch) {
         setPayYear: function setPayYear(timeline) {
             return dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__redux_actions_index__["c" /* setPayYear */])(timeline));
         },
+        setRefTimeline: function setRefTimeline(timeline) {
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__redux_actions_index__["d" /* setRefTimeline */])(timeline));
+        },
         setTabHeads: function setTabHeads(tabheads) {
-            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__redux_actions_index__["e" /* setTabHeads */])(tabheads));
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__redux_actions_index__["f" /* setTabHeads */])(tabheads));
         },
         setSalaryRows: function setSalaryRows(salaryrows) {
-            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__redux_actions_index__["d" /* setSalaryRows */])(salaryrows));
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__redux_actions_index__["e" /* setSalaryRows */])(salaryrows));
         }
     };
 }
@@ -29439,6 +29449,7 @@ var ConnectedSalarySPA = function (_Component) {
                     month: response.data.month
                 };
                 _this2.props.setPayYear(timeline);
+                _this2.props.setRefTimeline(timeline);
                 _this2.props.setTabHeads(response.data.tabheads);
                 _this2.props.setSalaryRows(response.data.data);
 
@@ -29515,7 +29526,8 @@ function mapStateToProps(state) {
     return {
         tabheads: state.tabheads,
         salaryrows: state.salaryrows,
-        timeline: state.timeline
+        timeline: state.timeline,
+        reftimeline: state.reftimeline
     };
 }
 
@@ -29531,7 +29543,7 @@ function mapDispatchToProps(dispatch) {
             return dispatch(Object(__WEBPACK_IMPORTED_MODULE_6__redux_actions_index__["c" /* setPayYear */])(timeline));
         },
         setSalaryRows: function setSalaryRows(salaryrows) {
-            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_6__redux_actions_index__["d" /* setSalaryRows */])(salaryrows));
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_6__redux_actions_index__["e" /* setSalaryRows */])(salaryrows));
         }
     };
 }
@@ -29546,6 +29558,7 @@ var ConnectedMainPanel = function (_Component) {
 
         _this.state = {
             status: 'success',
+            allowupload: true,
             message: '',
             errors: {
                 year: []
@@ -29588,6 +29601,7 @@ var ConnectedMainPanel = function (_Component) {
                 month: 0
             };
             this.props.setPayYear(timeline);
+            timeline.fromYear != this.props.reftimeline.fromYear ? this.setState({ allowupload: false }) : this.setState({ allowupload: true });
         }
     }, {
         key: 'handleTimelineChange',
@@ -29655,7 +29669,7 @@ var ConnectedMainPanel = function (_Component) {
                         ),
                         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__monthSelect__["a" /* default */], { fromYear: this.props.timeline.fromYear, toYear: this.props.timeline.toYear, month: this.props.timeline.month, onChange: this.handleMonthChange })
                     ),
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__UploadMonthData__["a" /* default */], { status: this.state.status, timeline: this.props.timeline, onFnishing: this.handleTimelineChange }),
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__UploadMonthData__["a" /* default */], { status: this.state.allowupload, timeline: this.props.timeline, onFnishing: this.handleTimelineChange }),
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                         'div',
                         { className: 'col-md-2' },
@@ -29803,7 +29817,7 @@ var FileUploadComponent = function (_Component) {
   }, {
     key: 'render',
     value: function render() {
-      if (this.props.status == 'success') return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+      if (this.props.status) return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
         'div',
         { className: 'input-group input-group-sm col-md-4' },
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
@@ -32250,17 +32264,22 @@ function rootReducer() {
       timeline: action.payload
     });
   }
-  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["e" /* SET_TAB_HEADS */]) {
+  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["f" /* SET_TAB_HEADS */]) {
     return Object.assign({}, state, {
       tabheads: action.payload
     });
   }
-  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["d" /* SET_SALARY_ROWS */]) {
+  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["e" /* SET_SALARY_ROWS */]) {
     var rows = Object.keys(action.payload).map(function (key) {
       return action.payload[key];
     });
     return Object.assign({}, state, {
       salaryrows: rows
+    });
+  }
+  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["d" /* SET_REF_TIMELINE */]) {
+    return Object.assign({}, state, {
+      reftimeline: action.payload
     });
   }
   // if (action.type === GET_PIS){

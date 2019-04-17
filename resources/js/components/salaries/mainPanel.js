@@ -13,6 +13,7 @@ function mapStateToProps (state)
       tabheads: state.tabheads,
       salaryrows: state.salaryrows,
       timeline: state.timeline,
+      reftimeline: state.reftimeline,
     };
 }
 
@@ -29,6 +30,7 @@ class ConnectedMainPanel extends Component {
         super(props);
         this.state = {
             status:'success',
+            allowupload:true,
             message:'',
             errors:{
                 year:[],
@@ -65,6 +67,7 @@ class ConnectedMainPanel extends Component {
             month: 0,
         };
         this.props.setPayYear(timeline);
+        (timeline.fromYear != this.props.reftimeline.fromYear)?this.setState({allowupload:false}):this.setState({allowupload:true});
     }
 
     handleTimelineChange(fromYear=this.props.timeline.fromYear, month=this.props.timeline.month){
@@ -111,7 +114,7 @@ class ConnectedMainPanel extends Component {
                         </div>
                         <MonthSelect fromYear={this.props.timeline.fromYear} toYear={this.props.timeline.toYear} month={this.props.timeline.month} onChange={this.handleMonthChange}/>
                     </div>
-                    <FileUpload status={this.state.status} timeline={this.props.timeline} onFnishing={this.handleTimelineChange}/>
+                    <FileUpload status={this.state.allowupload} timeline={this.props.timeline} onFnishing={this.handleTimelineChange}/>
                     <div className='col-md-2'>
                         <Button color="danger" onClick={this.toggle} className="btn btn-sm">Filters</Button>
                         <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>

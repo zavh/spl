@@ -1,4 +1,4 @@
-import { SET_MAIN_PANEL, SET_EMPLOYEE, SET_PAY_YEAR, SET_TAB_HEADS, SET_SALARY_ROWS } from "../constants/action-types";
+import { SET_MAIN_PANEL, SET_EMPLOYEE, SET_PAY_YEAR, SET_TAB_HEADS, SET_SALARY_ROWS, SET_REF_TIMELINE } from "../constants/action-types";
 const initialState = {
   session: {}
 };
@@ -31,6 +31,11 @@ function rootReducer(state = initialState, action) {
       salaryrows: rows
     });
 
+  }
+  if (action.type === SET_REF_TIMELINE){
+    return Object.assign({}, state, {
+      reftimeline: action.payload
+    });
   }
   // if (action.type === GET_PIS){
   //   return Object.assign({}, state, {

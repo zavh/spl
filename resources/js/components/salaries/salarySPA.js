@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import MainPanel from './mainPanel';
 import TaxConfig from './TaxConfig';
 import { connect } from "react-redux";
-import { setMainPanel, setPayYear, setTabHeads, setSalaryRows} from "./redux/actions/index";
+import { setMainPanel, setPayYear, setTabHeads, setSalaryRows, setRefTimeline} from "./redux/actions/index";
 import axios from 'axios';
 
 function mapStateToProps (state)
@@ -16,6 +16,7 @@ function mapDispatchToProps(dispatch) {
     return {
         setMainPanel: panel=> dispatch(setMainPanel(panel)),
         setPayYear: timeline=> dispatch(setPayYear(timeline)),
+        setRefTimeline: timeline=> dispatch(setRefTimeline(timeline)),
         setTabHeads: tabheads=> dispatch(setTabHeads(tabheads)),
         setSalaryRows: salaryrows=> dispatch(setSalaryRows(salaryrows)),
     };
@@ -45,6 +46,7 @@ class ConnectedSalarySPA extends Component {
                     month : response.data.month,
                 }
                 this.props.setPayYear(timeline);
+                this.props.setRefTimeline(timeline);
                 this.props.setTabHeads(response.data.tabheads);
                 this.props.setSalaryRows(response.data.data);
 

@@ -50,7 +50,7 @@ export default class FileUploadComponent extends Component
   
    render()
    {
-     if(this.props.status == 'success')
+     if(this.props.status)
       return(
         <div className='input-group input-group-sm col-md-4'>
           <div className='input-group-prepend'>

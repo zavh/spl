@@ -7,3 +7,4 @@ export const SET_EMPLOYEE = "SET_EMPLOYEE";
 export const SET_PAY_YEAR = "SET_PAY_YEAR";
 export const SET_TAB_HEADS = "SET_TAB_HEADS";
 export const SET_SALARY_ROWS = "SET_SALARY_ROWS";
+export const SET_REF_TIMELINE = "SET_REF_TIMELINE";
