@@ -176,5 +176,6 @@ function SlabTable(props){
         </table>
     );
 }
+
 const TaxConfig = connect(mapStateToProps, mapDispatchToProps)(ConnectedTaxConfig);
 export default TaxConfig;

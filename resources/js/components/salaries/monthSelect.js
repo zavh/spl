@@ -12,6 +12,7 @@ export default class MonthSelect extends Component {
     render(){
         return(
         <select value={this.props.month} className='form-control form-control-sm' onChange={this.handleMonthChange}>
+            <option value='0' disabled={true}>Select One</option>
             <option value='7'>{this.props.fromYear}-July</option>
             <option value='8'>{this.props.fromYear}-August</option>
             <option value='9'>{this.props.fromYear}-September</option>

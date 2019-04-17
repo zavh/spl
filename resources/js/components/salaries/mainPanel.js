@@ -2,9 +2,11 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import FileUpload from './UploadMonthData';
 import MonthSelect from './monthSelect';
+import Departments from '../commons/Departments';
 import { connect } from "react-redux";
 import { setMainPanel, setEmployee, setPayYear, setSalaryRows } from "./redux/actions/index";
-
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import SalaryOutput from './SalaryOutput';
 function mapStateToProps (state)
 {
   return { 
@@ -31,12 +33,19 @@ class ConnectedMainPanel extends Component {
             errors:{
                 year:[],
             },
+            modal:false,
         }
         this.handleMonthChange = this.handleMonthChange.bind(this);
         this.handleYearChange = this.handleYearChange.bind(this);
         this.handleTimelineChange = this.handleTimelineChange.bind(this);
-        this.showTax = this.showTax.bind(this);
+        this.toggle = this.toggle.bind(this);
     }
+
+    toggle() {
+        this.setState(prevState => ({
+          modal: !prevState.modal
+        }));
+      }
 
     handleMonthChange(month){
         let timeline = {
@@ -45,19 +54,21 @@ class ConnectedMainPanel extends Component {
             month: parseInt(month),
         };
         this.props.setPayYear(timeline);
+        if(timeline.month>0)
+            this.handleTimelineChange(timeline.fromYear, timeline.month);
     }
 
     handleYearChange(e){
         let timeline = {
             fromYear:parseInt(e.target.value),
             toYear:parseInt(e.target.value) + 1,
-            month: 7,
+            month: 0,
         };
         this.props.setPayYear(timeline);
     }
 
-    handleTimelineChange(){
-        axios.get(`/salaries/dbcheck/${this.props.timeline.fromYear}-${this.props.timeline.month}`)
+    handleTimelineChange(fromYear=this.props.timeline.fromYear, month=this.props.timeline.month){
+        axios.get(`/salaries/dbcheck/${fromYear}-${month}`)
         .then(
             (response)=>{
                 console.log(response);
@@ -78,13 +89,7 @@ class ConnectedMainPanel extends Component {
           });
         ;
     }
-    showTax(e){
-        const tc = {
-            employee_id:e.target.dataset.index,
-        }
-        this.props.setEmployee(tc);
-        this.props.setMainPanel("TaxConfig");
-    }
+
     componentDidMount(){
         this.setState({
             status:this.props.status,
@@ -92,44 +97,11 @@ class ConnectedMainPanel extends Component {
     }
     render(){
         var Output;
-        if(this.state.status === 'success'){
-            Output = 
-                <div>
-                    <table className='table table-sm table-bordered table-striped small text-right'>
-                        <tbody className='small'>
-                            <tr>
-                            { Object.keys(this.props.tabheads).map((key, index)=>{
-                                return <th key={index}>{this.props.tabheads[key]}</th>
-                            })}
-                            </tr>
-                            {this.props.salaryrows.map((e,i)=>{
-                                return <tr key={i}>
-                                    {Object.keys(e).map((key,index)=>{
-                                        if(key=='monthly_tax')
-                                            return <td key={index}>
-                                                <a href='javascript:void(0)' onClick={this.showTax} data-index={e.employee_id}>{e[key]}</a>
-                                            </td>
-                                        else return <td key={index}>
-                                                {e[key]}
-                                            </td>
-                                    })}
-                                </tr>
-                            })}
-                        </tbody>
-                    </table>
-                </div>
-        }
-        else if(this.state.status === 'fail'){
-            Output = <div>{this.state.message}</div>
-        }
-        else {
-            Output = <div>Loading Data</div>
-        }
-        
+
         return(
             <div>
                 <div className="form-group row my-1 small">
-                    <div className="input-group input-group-sm col-md-8">
+                    <div className="input-group input-group-sm col-md-6">
                         <div className="input-group-prepend">
                             <span className="input-group-text">Choose Year</span>
                         </div>
@@ -138,14 +110,23 @@ class ConnectedMainPanel extends Component {
                             <span className="input-group-text">Choose Month</span>
                         </div>
                         <MonthSelect fromYear={this.props.timeline.fromYear} toYear={this.props.timeline.toYear} month={this.props.timeline.month} onChange={this.handleMonthChange}/>
-                        <div className="input-group-append">
-                            <button className="btn btn-outline-success" type="button" onClick={this.handleTimelineChange}>Submit</button>
-                        </div>
                     </div>
                     <FileUpload status={this.state.status} timeline={this.props.timeline} onFnishing={this.handleTimelineChange}/>
-
+                    <div className='col-md-2'>
+                        <Button color="danger" onClick={this.toggle} className="btn btn-sm">Filters</Button>
+                        <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
+                        <ModalHeader toggle={this.toggle}>Modal title</ModalHeader>
+                        <ModalBody>
+                            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                        </ModalBody>
+                        <ModalFooter>
+                            <Button color="primary" onClick={this.toggle}>Do Something</Button>{' '}
+                            <Button color="secondary" onClick={this.toggle}>Cancel</Button>
+                        </ModalFooter>
+                        </Modal>
+                    </div>
                 </div>
-                {Output}
+                <SalaryOutput fromYear={this.props.timeline.fromYear} />
             </div>
         )
     }
