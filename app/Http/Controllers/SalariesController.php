@@ -132,6 +132,8 @@ class SalariesController extends Controller
         $target_month = Carbon::create($t[0],$t[1]+1, 1, 0, 0, 0, 'Asia/Dhaka');
         for($i=0;$i<count($d);$i++){
             if(Carbon::parse($d[$i]->profile->join_date)->gt($target_month)) continue;
+            $user = User::find($d[$i]->profile->id);
+            $salaryinfo = json_decode($user->salary->salaryinfo);
             $response['data'][$i]['employee_id'] = $d[$i]->profile->employee_id;
             $response['data'][$i]['name'] = $d[$i]->profile->name;
             $response['data'][$i]['join_date'] = $d[$i]->profile->join_date;
@@ -142,6 +144,15 @@ class SalariesController extends Controller
             $response['data'][$i]['pf_self'] = number_format($d[$i]->salary[$month]->pf_self, 2);
             $response['data'][$i]['pf_company'] = number_format($d[$i]->salary[$month]->pf_company, 2);
             $response['data'][$i]['bonus'] = number_format($d[$i]->salary[$month]->bonus, 2);
+            if(!isset($response['indexing'][$user->department->id])){
+                $response['indexing'][$user->department->id] = array();
+                $response['indexing'][$user->department->id][0] = $i;
+            }
+            else {
+                $x = count($response['indexing'][$user->department->id]);
+                $response['indexing'][$user->department->id][$x] = $i;
+            }
+            // if($salaryinfo->pay_out_mode == 'BANK')
             if(is_object($d[$i]->salary[$month]->loan)){
                 $total_loan = $d[$i]->salary[$month]->loan->sum;
                 $response['data'][$i]['loan'] = number_format($total_loan,2);

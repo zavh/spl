@@ -29500,11 +29500,10 @@ var SalarySPA = Object(__WEBPACK_IMPORTED_MODULE_3_react_redux__["b" /* connect 
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_axios__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__UploadMonthData__ = __webpack_require__(72);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__monthSelect__ = __webpack_require__(73);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__commons_Departments__ = __webpack_require__(14);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_react_redux__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__redux_actions_index__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_reactstrap__ = __webpack_require__(142);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__SalaryOutput__ = __webpack_require__(236);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_react_redux__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__redux_actions_index__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_reactstrap__ = __webpack_require__(142);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__SalaryOutput__ = __webpack_require__(236);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -29534,16 +29533,16 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         setMainPanel: function setMainPanel(panel) {
-            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_6__redux_actions_index__["b" /* setMainPanel */])(panel));
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_5__redux_actions_index__["b" /* setMainPanel */])(panel));
         },
         setEmployee: function setEmployee(employee) {
-            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_6__redux_actions_index__["a" /* setEmployee */])(employee));
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_5__redux_actions_index__["a" /* setEmployee */])(employee));
         },
         setPayYear: function setPayYear(timeline) {
-            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_6__redux_actions_index__["c" /* setPayYear */])(timeline));
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_5__redux_actions_index__["c" /* setPayYear */])(timeline));
         },
         setSalaryRows: function setSalaryRows(salaryrows) {
-            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_6__redux_actions_index__["e" /* setSalaryRows */])(salaryrows));
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_5__redux_actions_index__["e" /* setSalaryRows */])(salaryrows));
         }
     };
 }
@@ -29563,11 +29562,15 @@ var ConnectedMainPanel = function (_Component) {
             errors: {
                 year: []
             },
-            modal: false
+            modal: false,
+            filteredrows: [],
+            validtimeline: {},
+            indexing: []
         };
         _this.handleMonthChange = _this.handleMonthChange.bind(_this);
         _this.handleYearChange = _this.handleYearChange.bind(_this);
         _this.handleTimelineChange = _this.handleTimelineChange.bind(_this);
+        _this.departmentFilter = _this.departmentFilter.bind(_this);
         _this.toggle = _this.toggle.bind(_this);
         return _this;
     }
@@ -29590,7 +29593,10 @@ var ConnectedMainPanel = function (_Component) {
                 month: parseInt(month)
             };
             this.props.setPayYear(timeline);
-            if (timeline.month > 0) this.handleTimelineChange(timeline.fromYear, timeline.month);
+            if (timeline.month > 0) {
+                this.handleTimelineChange(timeline.fromYear, timeline.month);
+                timeline.fromYear != this.props.reftimeline.fromYear ? this.setState({ allowupload: false }) : this.setState({ allowupload: true });
+            }
         }
     }, {
         key: 'handleYearChange',
@@ -29601,7 +29607,7 @@ var ConnectedMainPanel = function (_Component) {
                 month: 0
             };
             this.props.setPayYear(timeline);
-            timeline.fromYear != this.props.reftimeline.fromYear ? this.setState({ allowupload: false }) : this.setState({ allowupload: true });
+            this.setState({ allowupload: false });
         }
     }, {
         key: 'handleTimelineChange',
@@ -29617,9 +29623,16 @@ var ConnectedMainPanel = function (_Component) {
                 _this2.setState({ status: status });
                 if (status === 'success') {
                     _this2.props.setSalaryRows(response.data.data);
-                } else if (status === 'fail') {
                     _this2.setState({
-                        message: response.data.message
+                        validtimeline: _this2.props.timeline,
+                        indexing: response.data.indexing
+                    });
+                } else if (status === 'fail') {
+                    // If db table for target month does not exist, set the current timeline same as the last valid timeline
+                    _this2.props.setPayYear(_this2.state.validtimeline);
+                    _this2.setState({
+                        message: response.data.message,
+                        allowupload: true
                     });
                 }
             }).catch(function (error) {
@@ -29628,17 +29641,32 @@ var ConnectedMainPanel = function (_Component) {
             ;
         }
     }, {
+        key: 'departmentFilter',
+        value: function departmentFilter(value) {
+            var rows = this.props.salaryrows;
+            var indexing = this.state.indexing[value];
+            var result = [],
+                i = void 0;
+            for (i = 0; i < indexing.length; i++) {
+                result[i] = rows[indexing[i]];
+            }
+            this.setState({
+                filteredrows: result
+            });
+            // console.log(result);
+        }
+    }, {
         key: 'componentDidMount',
         value: function componentDidMount() {
             this.setState({
-                status: this.props.status
+                status: this.props.status,
+                filteredrows: this.props.salaryrows,
+                validtimeline: this.props.timeline
             });
         }
     }, {
         key: 'render',
         value: function render() {
-            var Output;
-
             return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 'div',
                 null,
@@ -29669,47 +29697,9 @@ var ConnectedMainPanel = function (_Component) {
                         ),
                         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__monthSelect__["a" /* default */], { fromYear: this.props.timeline.fromYear, toYear: this.props.timeline.toYear, month: this.props.timeline.month, onChange: this.handleMonthChange })
                     ),
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__UploadMonthData__["a" /* default */], { status: this.state.allowupload, timeline: this.props.timeline, onFnishing: this.handleTimelineChange }),
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                        'div',
-                        { className: 'col-md-2' },
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                            __WEBPACK_IMPORTED_MODULE_7_reactstrap__["a" /* Button */],
-                            { color: 'danger', onClick: this.toggle, className: 'btn btn-sm' },
-                            'Filters'
-                        ),
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                            __WEBPACK_IMPORTED_MODULE_7_reactstrap__["b" /* Modal */],
-                            { isOpen: this.state.modal, toggle: this.toggle, className: this.props.className },
-                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                __WEBPACK_IMPORTED_MODULE_7_reactstrap__["e" /* ModalHeader */],
-                                { toggle: this.toggle },
-                                'Modal title'
-                            ),
-                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                __WEBPACK_IMPORTED_MODULE_7_reactstrap__["c" /* ModalBody */],
-                                null,
-                                'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-                            ),
-                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                __WEBPACK_IMPORTED_MODULE_7_reactstrap__["d" /* ModalFooter */],
-                                null,
-                                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                    __WEBPACK_IMPORTED_MODULE_7_reactstrap__["a" /* Button */],
-                                    { color: 'primary', onClick: this.toggle },
-                                    'Do Something'
-                                ),
-                                ' ',
-                                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                    __WEBPACK_IMPORTED_MODULE_7_reactstrap__["a" /* Button */],
-                                    { color: 'secondary', onClick: this.toggle },
-                                    'Cancel'
-                                )
-                            )
-                        )
-                    )
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__UploadMonthData__["a" /* default */], { status: this.state.allowupload, timeline: this.props.timeline, onFnishing: this.handleTimelineChange })
                 ),
-                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_8__SalaryOutput__["a" /* default */], { fromYear: this.props.timeline.fromYear })
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_7__SalaryOutput__["a" /* default */], { timeline: this.state.validtimeline, salaryrows: this.state.filteredrows, departmentFilter: this.departmentFilter })
             );
         }
     }]);
@@ -29729,7 +29719,7 @@ function YearNotification(props) {
     );
 }
 
-var MainPanel = Object(__WEBPACK_IMPORTED_MODULE_5_react_redux__["b" /* connect */])(mapStateToProps, mapDispatchToProps)(ConnectedMainPanel);
+var MainPanel = Object(__WEBPACK_IMPORTED_MODULE_4_react_redux__["b" /* connect */])(mapStateToProps, mapDispatchToProps)(ConnectedMainPanel);
 /* harmony default export */ __webpack_exports__["a"] = (MainPanel);
 
 /***/ }),
@@ -32242,8 +32232,14 @@ var store = Object(__WEBPACK_IMPORTED_MODULE_0_redux__["b" /* createStore */])(_
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__constants_action_types__ = __webpack_require__(32);
 
+
 var initialState = {
-  session: {}
+  mainPanel: 'Main',
+  targetEmployee: {},
+  timeline: {},
+  tabheads: {},
+  salaryrows: [],
+  reftimeline: {}
 };
 function rootReducer() {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
@@ -36169,7 +36165,7 @@ Collapse.defaultProps = defaultProps;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__BreadcrumbItem__ = __webpack_require__(155);
 /* unused harmony reexport BreadcrumbItem */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__Button__ = __webpack_require__(124);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return __WEBPACK_IMPORTED_MODULE_11__Button__["a"]; });
+/* unused harmony reexport Button */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_12__ButtonDropdown__ = __webpack_require__(125);
 /* unused harmony reexport ButtonDropdown */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_13__ButtonGroup__ = __webpack_require__(166);
@@ -36243,13 +36239,13 @@ Collapse.defaultProps = defaultProps;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_47__Progress__ = __webpack_require__(199);
 /* unused harmony reexport Progress */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_48__Modal__ = __webpack_require__(201);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return __WEBPACK_IMPORTED_MODULE_48__Modal__["a"]; });
+/* unused harmony reexport Modal */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_49__ModalHeader__ = __webpack_require__(203);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return __WEBPACK_IMPORTED_MODULE_49__ModalHeader__["a"]; });
+/* unused harmony reexport ModalHeader */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_50__ModalBody__ = __webpack_require__(204);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return __WEBPACK_IMPORTED_MODULE_50__ModalBody__["a"]; });
+/* unused harmony reexport ModalBody */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_51__ModalFooter__ = __webpack_require__(205);
-/* harmony reexport (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return __WEBPACK_IMPORTED_MODULE_51__ModalFooter__["a"]; });
+/* unused harmony reexport ModalFooter */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_52__Tooltip__ = __webpack_require__(137);
 /* unused harmony reexport Tooltip */
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_53__Table__ = __webpack_require__(206);
@@ -44299,7 +44295,7 @@ function (_React$Component) {
 Modal.propTypes = propTypes;
 Modal.defaultProps = defaultProps;
 Modal.openCount = 0;
-/* harmony default export */ __webpack_exports__["a"] = (Modal);
+/* unused harmony default export */ var _unused_webpack_default_export = (Modal);
 
 /***/ }),
 /* 202 */
@@ -44437,7 +44433,7 @@ var ModalHeader = function ModalHeader(props) {
 
 ModalHeader.propTypes = propTypes;
 ModalHeader.defaultProps = defaultProps;
-/* harmony default export */ __webpack_exports__["a"] = (ModalHeader);
+/* unused harmony default export */ var _unused_webpack_default_export = (ModalHeader);
 
 /***/ }),
 /* 204 */
@@ -44482,7 +44478,7 @@ var ModalBody = function ModalBody(props) {
 
 ModalBody.propTypes = propTypes;
 ModalBody.defaultProps = defaultProps;
-/* harmony default export */ __webpack_exports__["a"] = (ModalBody);
+/* unused harmony default export */ var _unused_webpack_default_export = (ModalBody);
 
 /***/ }),
 /* 205 */
@@ -44527,7 +44523,7 @@ var ModalFooter = function ModalFooter(props) {
 
 ModalFooter.propTypes = propTypes;
 ModalFooter.defaultProps = defaultProps;
-/* harmony default export */ __webpack_exports__["a"] = (ModalFooter);
+/* unused harmony default export */ var _unused_webpack_default_export = (ModalFooter);
 
 /***/ }),
 /* 206 */
@@ -46543,7 +46539,8 @@ Spinner.defaultProps = defaultProps;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_react_redux__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__redux_actions_index__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Departments__ = __webpack_require__(237);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__redux_actions_index__ = __webpack_require__(11);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -46559,18 +46556,17 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function mapStateToProps(state) {
     return {
-        tabheads: state.tabheads,
-        salaryrows: state.salaryrows
+        tabheads: state.tabheads
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
         setMainPanel: function setMainPanel(panel) {
-            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_2__redux_actions_index__["b" /* setMainPanel */])(panel));
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__redux_actions_index__["b" /* setMainPanel */])(panel));
         },
         setEmployee: function setEmployee(employee) {
-            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_2__redux_actions_index__["a" /* setEmployee */])(employee));
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__redux_actions_index__["a" /* setEmployee */])(employee));
         }
     };
 }
@@ -46584,11 +46580,13 @@ var ConnectedSalaryOutput = function (_Component) {
         var _this = _possibleConstructorReturn(this, (ConnectedSalaryOutput.__proto__ || Object.getPrototypeOf(ConnectedSalaryOutput)).call(this, props));
 
         _this.showTax = _this.showTax.bind(_this);
+        _this.monthMapping = _this.monthMapping.bind(_this);
+        _this.handleDepartmentChange = _this.handleDepartmentChange.bind(_this);
         return _this;
     }
 
     _createClass(ConnectedSalaryOutput, [{
-        key: "showTax",
+        key: 'showTax',
         value: function showTax(e) {
             var tc = {
                 employee_id: e.target.dataset.index
@@ -46597,22 +46595,76 @@ var ConnectedSalaryOutput = function (_Component) {
             this.props.setMainPanel("TaxConfig");
         }
     }, {
-        key: "render",
+        key: 'handleDepartmentChange',
+        value: function handleDepartmentChange(value) {
+            this.props.departmentFilter(value);
+        }
+    }, {
+        key: 'monthMapping',
+        value: function monthMapping(month) {
+            var months = [];
+            months[7] = this.props.timeline.fromYear + '- July';
+            months[8] = this.props.timeline.fromYear + '- August';
+            months[9] = this.props.timeline.fromYear + '- September';
+            months[10] = this.props.timeline.fromYear + '- October';
+            months[11] = this.props.timeline.fromYear + '- November';
+            months[12] = this.props.timeline.fromYear + '- December';
+            months[1] = this.props.timeline.toYear + '- January';
+            months[2] = this.props.timeline.toYear + '- February';
+            months[3] = this.props.timeline.toYear + '- March';
+            months[4] = this.props.timeline.toYear + '- April';
+            months[5] = this.props.timeline.toYear + '- May';
+            months[6] = this.props.timeline.toYear + '- June';
+            return months[month];
+        }
+    }, {
+        key: 'render',
         value: function render() {
             var _this2 = this;
 
+            var monthtext = this.monthMapping(this.props.timeline.month);
             return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                "table",
-                { className: "table table-sm table-bordered table-striped small text-right" },
+                'table',
+                { className: 'table table-sm table-bordered table-striped small text-right' },
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                    "tbody",
-                    { className: "small" },
+                    'tbody',
+                    { className: 'small' },
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                        "tr",
+                        'tr',
+                        null,
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            'td',
+                            null,
+                            'Salary Year: ',
+                            this.props.timeline.fromYear,
+                            ' - ',
+                            this.props.timeline.toYear
+                        ),
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            'td',
+                            null,
+                            'Month: ',
+                            monthtext
+                        ),
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('td', { colSpan: 11 }),
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            'td',
+                            { colSpan: 3 },
+                            'Filter by Department: ',
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__Departments__["a" /* default */], { onChange: this.handleDepartmentChange })
+                        ),
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            'td',
+                            { colSpan: 3 },
+                            'Filter by Payout Method'
+                        )
+                    ),
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        'tr',
                         null,
                         Object.keys(this.props.tabheads).map(function (key, index) {
                             return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                "th",
+                                'th',
                                 { key: index },
                                 _this2.props.tabheads[key]
                             );
@@ -46620,19 +46672,19 @@ var ConnectedSalaryOutput = function (_Component) {
                     ),
                     this.props.salaryrows.map(function (e, i) {
                         return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                            "tr",
+                            'tr',
                             { key: i },
                             Object.keys(e).map(function (key, index) {
                                 if (key == 'monthly_tax') return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                    "td",
+                                    'td',
                                     { key: index },
                                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                        "a",
-                                        { href: "javascript:void(0)", onClick: _this2.showTax, "data-index": e.employee_id },
+                                        'a',
+                                        { href: 'javascript:void(0)', onClick: _this2.showTax, 'data-index': e.employee_id },
                                         e[key]
                                     )
                                 );else return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                    "td",
+                                    'td',
                                     { key: index },
                                     e[key]
                                 );
@@ -46649,6 +46701,94 @@ var ConnectedSalaryOutput = function (_Component) {
 
 var SalaryOutput = Object(__WEBPACK_IMPORTED_MODULE_1_react_redux__["b" /* connect */])(mapStateToProps, mapDispatchToProps)(ConnectedSalaryOutput);
 /* harmony default export */ __webpack_exports__["a"] = (SalaryOutput);
+
+/***/ }),
+/* 237 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_axios__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_axios__);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+
+
+
+var Departments = function (_Component) {
+    _inherits(Departments, _Component);
+
+    function Departments(props) {
+        _classCallCheck(this, Departments);
+
+        var _this = _possibleConstructorReturn(this, (Departments.__proto__ || Object.getPrototypeOf(Departments)).call(this, props));
+
+        _this.state = {
+            departments: []
+        };
+        _this.inputChange = _this.inputChange.bind(_this);
+        return _this;
+    }
+
+    _createClass(Departments, [{
+        key: 'getDepartments',
+        value: function getDepartments() {
+            var _this2 = this;
+
+            __WEBPACK_IMPORTED_MODULE_1_axios___default.a.get('/departments/getall').then(function (response) {
+                return _this2.setState({
+                    departments: [].concat(_toConsumableArray(response.data.departments))
+                });
+            });
+        }
+    }, {
+        key: 'inputChange',
+        value: function inputChange(e) {
+            this.props.onChange(e.target.value);
+        }
+    }, {
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            this.getDepartments();
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var labelSize = {
+                width: this.props.labelSize
+            };
+            return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'select',
+                { value: this.props.selected, name: this.props.name, onChange: this.inputChange },
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'option',
+                    { key: '0', value: '0', disabled: true },
+                    'Select One'
+                ),
+                this.state.departments.map(function (department) {
+                    return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        'option',
+                        { key: department.id, value: department.id },
+                        department.name
+                    );
+                })
+            );
+        }
+    }]);
+
+    return Departments;
+}(__WEBPACK_IMPORTED_MODULE_0_react__["Component"]);
+
+/* harmony default export */ __webpack_exports__["a"] = (Departments);
 
 /***/ })
 /******/ ]);

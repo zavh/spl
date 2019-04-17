@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import FileUpload from './UploadMonthData';
 import MonthSelect from './monthSelect';
-import Departments from '../commons/Departments';
+
 import { connect } from "react-redux";
 import { setMainPanel, setEmployee, setPayYear, setSalaryRows } from "./redux/actions/index";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
@@ -36,10 +36,14 @@ class ConnectedMainPanel extends Component {
                 year:[],
             },
             modal:false,
+            filteredrows:[],
+            validtimeline:{},
+            indexing:[],
         }
         this.handleMonthChange = this.handleMonthChange.bind(this);
         this.handleYearChange = this.handleYearChange.bind(this);
         this.handleTimelineChange = this.handleTimelineChange.bind(this);
+        this.departmentFilter = this.departmentFilter.bind(this);
         this.toggle = this.toggle.bind(this);
     }
 
@@ -56,8 +60,11 @@ class ConnectedMainPanel extends Component {
             month: parseInt(month),
         };
         this.props.setPayYear(timeline);
-        if(timeline.month>0)
+        if(timeline.month>0){
             this.handleTimelineChange(timeline.fromYear, timeline.month);
+            (timeline.fromYear != this.props.reftimeline.fromYear)?this.setState({allowupload:false}):this.setState({allowupload:true});
+        }
+            
     }
 
     handleYearChange(e){
@@ -67,7 +74,7 @@ class ConnectedMainPanel extends Component {
             month: 0,
         };
         this.props.setPayYear(timeline);
-        (timeline.fromYear != this.props.reftimeline.fromYear)?this.setState({allowupload:false}):this.setState({allowupload:true});
+        this.setState({allowupload:false});
     }
 
     handleTimelineChange(fromYear=this.props.timeline.fromYear, month=this.props.timeline.month){
@@ -79,10 +86,17 @@ class ConnectedMainPanel extends Component {
                 this.setState({status:status})
                 if(status === 'success'){
                     this.props.setSalaryRows(response.data.data);
+                    this.setState({
+                        validtimeline:this.props.timeline,
+                        indexing:response.data.indexing,
+                    });
                 }
                 else if(status === 'fail'){
+                    // If db table for target month does not exist, set the current timeline same as the last valid timeline
+                    this.props.setPayYear(this.state.validtimeline);
                     this.setState({
                         message:response.data.message,
+                        allowupload:true,
                     });
                 }
             }
@@ -92,15 +106,26 @@ class ConnectedMainPanel extends Component {
           });
         ;
     }
-
+    departmentFilter(value){
+        let rows = this.props.salaryrows;
+        let indexing = this.state.indexing[value];
+        let result = [], i;
+        for(i=0;i<indexing.length;i++){
+            result[i] = rows[indexing[i]];
+        }
+        this.setState({
+            filteredrows:result,
+        });
+        // console.log(result);
+    }
     componentDidMount(){
         this.setState({
             status:this.props.status,
+            filteredrows:this.props.salaryrows,
+            validtimeline:this.props.timeline,
         });
     }
     render(){
-        var Output;
-
         return(
             <div>
                 <div className="form-group row my-1 small">
@@ -115,7 +140,7 @@ class ConnectedMainPanel extends Component {
                         <MonthSelect fromYear={this.props.timeline.fromYear} toYear={this.props.timeline.toYear} month={this.props.timeline.month} onChange={this.handleMonthChange}/>
                     </div>
                     <FileUpload status={this.state.allowupload} timeline={this.props.timeline} onFnishing={this.handleTimelineChange}/>
-                    <div className='col-md-2'>
+                    {/* <div className='col-md-2'>
                         <Button color="danger" onClick={this.toggle} className="btn btn-sm">Filters</Button>
                         <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
                         <ModalHeader toggle={this.toggle}>Modal title</ModalHeader>
@@ -127,9 +152,9 @@ class ConnectedMainPanel extends Component {
                             <Button color="secondary" onClick={this.toggle}>Cancel</Button>
                         </ModalFooter>
                         </Modal>
-                    </div>
+                    </div> */}
                 </div>
-                <SalaryOutput fromYear={this.props.timeline.fromYear} />
+                <SalaryOutput timeline={this.state.validtimeline} salaryrows={this.state.filteredrows} departmentFilter={this.departmentFilter}/>
             </div>
         )
     }
