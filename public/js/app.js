@@ -46622,10 +46622,12 @@ Spinner.defaultProps = defaultProps;
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_react_redux__ = __webpack_require__(3);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Departments__ = __webpack_require__(237);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__PayOutMode__ = __webpack_require__(238);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__redux_actions_index__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_react_dom__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_react_dom___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_react_dom__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_react_redux__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__Departments__ = __webpack_require__(237);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__PayOutMode__ = __webpack_require__(238);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__redux_actions_index__ = __webpack_require__(11);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -46640,23 +46642,25 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 
 
+
 function mapStateToProps(state) {
     return {
         tabheads: state.tabheads,
-        filters: state.filters
+        filters: state.filters,
+        bankaccounts: state.bankaccounts
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
         setMainPanel: function setMainPanel(panel) {
-            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__redux_actions_index__["e" /* setMainPanel */])(panel));
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_5__redux_actions_index__["e" /* setMainPanel */])(panel));
         },
         setEmployee: function setEmployee(employee) {
-            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__redux_actions_index__["b" /* setEmployee */])(employee));
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_5__redux_actions_index__["b" /* setEmployee */])(employee));
         },
         setFilters: function setFilters(filters) {
-            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__redux_actions_index__["c" /* setFilters */])(filters));
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_5__redux_actions_index__["c" /* setFilters */])(filters));
         }
     };
 }
@@ -46673,10 +46677,36 @@ var ConnectedSalaryOutput = function (_Component) {
         _this.monthMapping = _this.monthMapping.bind(_this);
         _this.handleDepartmentChange = _this.handleDepartmentChange.bind(_this);
         _this.handlePOMChange = _this.handlePOMChange.bind(_this);
+        _this.downloadCSV = _this.downloadCSV.bind(_this);
         return _this;
     }
 
     _createClass(ConnectedSalaryOutput, [{
+        key: 'downloadCSV',
+        value: function downloadCSV() {
+            var sr = this.props.salaryrows;
+            var result = [],
+                csvContent = "Bank Name,Branch,Account Name,Account Number,Amount\n";
+            for (var i = 0; i < sr.length; i++) {
+                result[i] = Object.assign(this.props.bankaccounts[sr[i].employee_id], { net_salary: sr[i].net_salary });
+                csvContent += Object.keys(result[i]).map(function (key) {
+                    return result[i][key];
+                }).join(",");
+                csvContent += "\n";
+            }
+            return csvContent;
+            // let hiddenElement = React.createElement(
+            //     'a',
+            //     {
+            //     '_target':'blank',
+            //     'href':'data:text/csv;charset=utf-8,' + encodeURI(csvContent),
+            //     'download':'people.csv',
+            //     'class':'btn btn-sm btn-outline-danger badge badge-pill'
+            //     }, 'Download');
+            //     ReactDOM.render(hiddenElement,document.querySelector('#downloadMe'))
+            // console.log(hiddenElement);
+        }
+    }, {
         key: 'showTax',
         value: function showTax(e) {
             var tc = {
@@ -46729,11 +46759,20 @@ var ConnectedSalaryOutput = function (_Component) {
             var _this2 = this;
 
             var monthtext = this.monthMapping(this.props.timeline.month);
-            if (this.props.filters.pay_out_mode == 'bank') var download = __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                'a',
-                { href: 'javascript:void(0)', className: 'btn btn-sm btn-outline-secondary badge badge-pill' },
-                'Download'
-            );else var download = null;
+            var downloadElm = null;
+            if (this.props.filters.pay_out_mode == 'bank') {
+                var csvContent = encodeURI(this.downloadCSV());
+                downloadElm = __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'a',
+                    {
+                        href: 'data:text/csv;charset=utf-8,' + csvContent,
+                        _target: 'blank',
+                        download: 'bankaccounts.csv',
+                        className: 'btn btn-sm btn-outline-danger badge badge-pill'
+                    },
+                    'Download'
+                );
+            }
             return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 'table',
                 { className: 'table table-sm table-bordered table-striped small text-right' },
@@ -46761,18 +46800,18 @@ var ConnectedSalaryOutput = function (_Component) {
                             'td',
                             { colSpan: 6 },
                             'Filter by Department : ',
-                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__Departments__["a" /* default */], { onChange: this.handleDepartmentChange, selected: this.props.filters.department })
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__Departments__["a" /* default */], { onChange: this.handleDepartmentChange, selected: this.props.filters.department })
                         ),
                         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                             'td',
                             { colSpan: 6 },
                             'Filter by Payout Method : ',
-                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__PayOutMode__["a" /* default */], { onChange: this.handlePOMChange, selected: this.props.filters.pay_out_mode })
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4__PayOutMode__["a" /* default */], { onChange: this.handlePOMChange, selected: this.props.filters.pay_out_mode })
                         ),
                         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                             'td',
                             { colSpan: 1 },
-                            download
+                            downloadElm
                         )
                     ),
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
@@ -46815,7 +46854,7 @@ var ConnectedSalaryOutput = function (_Component) {
     return ConnectedSalaryOutput;
 }(__WEBPACK_IMPORTED_MODULE_0_react__["Component"]);
 
-var SalaryOutput = Object(__WEBPACK_IMPORTED_MODULE_1_react_redux__["b" /* connect */])(mapStateToProps, mapDispatchToProps)(ConnectedSalaryOutput);
+var SalaryOutput = Object(__WEBPACK_IMPORTED_MODULE_2_react_redux__["b" /* connect */])(mapStateToProps, mapDispatchToProps)(ConnectedSalaryOutput);
 /* harmony default export */ __webpack_exports__["a"] = (SalaryOutput);
 
 /***/ }),

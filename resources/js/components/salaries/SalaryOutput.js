@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactDOM from 'react-dom';
 import { connect } from "react-redux";
 import Departments from './Departments';
 import PayOutMode from './PayOutMode';
@@ -9,6 +10,7 @@ function mapStateToProps (state)
   return { 
       tabheads: state.tabheads,
       filters: state.filters,
+      bankaccounts: state.bankaccounts,
     };
 }
 
@@ -27,8 +29,28 @@ class ConnectedSalaryOutput extends Component {
         this.monthMapping = this.monthMapping.bind(this);
         this.handleDepartmentChange = this.handleDepartmentChange.bind(this);
         this.handlePOMChange = this.handlePOMChange.bind(this);
+        this.downloadCSV = this.downloadCSV.bind(this);
     }
-
+    downloadCSV(){
+        let sr = this.props.salaryrows;
+        let result = [], csvContent = "Bank Name,Branch,Account Name,Account Number,Amount\n";
+        for(var i=0; i<sr.length;i++){
+            result[i] = Object.assign(this.props.bankaccounts[sr[i].employee_id], {net_salary:sr[i].net_salary});
+            csvContent += Object.keys(result[i]).map(key=>{return result[i][key]}).join(",");
+            csvContent +="\n";
+        }
+        return csvContent;
+        // let hiddenElement = React.createElement(
+        //     'a',
+        //     {
+        //     '_target':'blank',
+        //     'href':'data:text/csv;charset=utf-8,' + encodeURI(csvContent),
+        //     'download':'people.csv',
+        //     'class':'btn btn-sm btn-outline-danger badge badge-pill'
+        //     }, 'Download');
+        //     ReactDOM.render(hiddenElement,document.querySelector('#downloadMe'))
+        // console.log(hiddenElement);
+    }
     showTax(e){
         const tc = {
             employee_id:e.target.dataset.index,
@@ -69,10 +91,17 @@ class ConnectedSalaryOutput extends Component {
         return months[month];
     }
     render(){
-        let monthtext = this.monthMapping(this.props.timeline.month);
-        if(this.props.filters.pay_out_mode == 'bank')
-            var download = <a href='javascript:void(0)' className='btn btn-sm btn-outline-secondary badge badge-pill'>Download</a>
-        else var download = null
+        let monthtext = this.monthMapping(this.props.timeline.month); 
+        var downloadElm = null;
+        if(this.props.filters.pay_out_mode == 'bank'){
+            var csvContent = encodeURI(this.downloadCSV());
+           downloadElm = <a 
+            href={`data:text/csv;charset=utf-8,${csvContent}`} 
+            _target='blank' 
+            download='bankaccounts.csv'
+            className='btn btn-sm btn-outline-danger badge badge-pill'
+            >Download</a> 
+        }
         return(
             <table className='table table-sm table-bordered table-striped small text-right'>
             <tbody className='small'>
@@ -81,7 +110,7 @@ class ConnectedSalaryOutput extends Component {
                     <td colSpan={3}>Month: {monthtext}</td>
                     <td colSpan={6}>Filter by Department : <Departments onChange={this.handleDepartmentChange} selected={this.props.filters.department}/></td>
                     <td colSpan={6}>Filter by Payout Method : <PayOutMode onChange={this.handlePOMChange} selected={this.props.filters.pay_out_mode}/></td>
-                    <td colSpan={1}>{download}</td>
+                    <td colSpan={1}>{downloadElm}</td>
                 </tr>
                 <tr>
                 { Object.keys(this.props.tabheads).map((key, index)=>{

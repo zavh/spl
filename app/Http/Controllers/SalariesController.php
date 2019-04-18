@@ -159,12 +159,6 @@ class SalariesController extends Controller
                 if($salaryinfo->pay_out_mode == 'BANK'){
                     $x = count($response['indexing'][$user->department->id]['bank']);
                     $response['indexing'][$user->department->id]['bank'][$x] = $rc++;
-                    $response['bankaccounts'][$d[$i]->profile->employee_id] = [
-                        'bank_name' => $d[$i]->profile->bank_name,
-                        'bank_branch' => $d[$i]->profile->bank_branch,
-                        'bank_account_name' => $d[$i]->profile->bank_account_name,
-                        'bank_account_number' => $d[$i]->profile->bank_account_number,
-                    ];
                 }
                 else {
                     $x = count($response['indexing'][$user->department->id]['cash']);
@@ -206,6 +200,14 @@ class SalariesController extends Controller
             $response['data'][$i]['gross_salary'] = number_format($gross_salary, 2);
             $response['data'][$i]['gross_total'] = number_format($gross_salary + $d[$i]->salary[$month]->pf_company, 2);
             $response['data'][$i]['net_salary'] = number_format($gross_salary - $deduction_total,2);
+            if($salaryinfo->pay_out_mode == 'BANK'){
+                $response['bankaccounts'][$d[$i]->profile->employee_id] = [
+                    'bank_name' => $d[$i]->profile->bank_name,
+                    'bank_branch' => $d[$i]->profile->bank_branch,
+                    'bank_account_name' => $d[$i]->profile->bank_account_name,
+                    'bank_account_number' => $d[$i]->profile->bank_account_number,
+                ];
+            }
         }
         return $response;
     }
