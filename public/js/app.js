@@ -29686,6 +29686,17 @@ var ConnectedMainPanel = function (_Component) {
                         resultc[i] = rows[indexing['cash'][i]];
                     }
                     if (filters.pay_out_mode == 0) result = resultb.concat(resultc);else if (filters.pay_out_mode == 'bank') result = resultb;else if (filters.pay_out_mode == 'cash') result = resultc;
+                } else {
+                    var _indexing = this.props.indexing,
+                        _i = 0;
+                    for (var k in _indexing) {
+                        if (_indexing.hasOwnProperty(k)) {
+                            var pom = _indexing[k][filters.pay_out_mode];
+                            for (var j = 0; j < pom.length; j++) {
+                                result[_i++] = rows[pom[j]];
+                            }
+                        }
+                    }
                 }
 
                 this.setState({
@@ -31874,7 +31885,8 @@ var ConnectedTaxConfig = function (_Component) {
                                 taxable_salary: this.state.taxable_salary,
                                 MaxInvestment: this.state.MaxInvestment,
                                 TIRebate: this.state.TIRebate,
-                                finalTax: this.state.finalTax
+                                finalTax: this.state.finalTax,
+                                pf_company: this.state.totaldata.pf_company
                             })
                         )
                     ),
@@ -32200,9 +32212,11 @@ function SlabTable(props) {
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     'th',
                     { colSpan: 3 },
-                    'Maximum Investment Required ( 25% of ',
+                    'Maximum Investment Required [ 30% of (',
                     props.taxable_salary,
-                    ' )'
+                    ' -',
+                    props.pf_company,
+                    ') ]'
                 ),
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     'td',
@@ -32217,9 +32231,9 @@ function SlabTable(props) {
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     'th',
                     { colSpan: 3 },
-                    'Tax Rebate on Investment ( 15% of ',
+                    'Tax Rebate on Investment  [15% of ',
                     props.MaxInvestment,
-                    ')'
+                    ']'
                 ),
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     'td',
@@ -46593,7 +46607,8 @@ Spinner.defaultProps = defaultProps;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_react_redux__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__Departments__ = __webpack_require__(237);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__redux_actions_index__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__PayOutMode__ = __webpack_require__(238);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__redux_actions_index__ = __webpack_require__(11);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -46601,6 +46616,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
 
 
 
@@ -46617,13 +46633,13 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         setMainPanel: function setMainPanel(panel) {
-            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__redux_actions_index__["d" /* setMainPanel */])(panel));
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__redux_actions_index__["d" /* setMainPanel */])(panel));
         },
         setEmployee: function setEmployee(employee) {
-            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__redux_actions_index__["a" /* setEmployee */])(employee));
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__redux_actions_index__["a" /* setEmployee */])(employee));
         },
         setFilters: function setFilters(filters) {
-            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__redux_actions_index__["b" /* setFilters */])(filters));
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__redux_actions_index__["b" /* setFilters */])(filters));
         }
     };
 }
@@ -46639,6 +46655,7 @@ var ConnectedSalaryOutput = function (_Component) {
         _this.showTax = _this.showTax.bind(_this);
         _this.monthMapping = _this.monthMapping.bind(_this);
         _this.handleDepartmentChange = _this.handleDepartmentChange.bind(_this);
+        _this.handlePOMChange = _this.handlePOMChange.bind(_this);
         return _this;
     }
 
@@ -46657,6 +46674,16 @@ var ConnectedSalaryOutput = function (_Component) {
             var filters = {
                 department: value,
                 pay_out_mode: this.props.filters.pay_out_mode
+            };
+            this.props.setFilters(filters);
+            this.props.handleFilterChange(filters);
+        }
+    }, {
+        key: 'handlePOMChange',
+        value: function handlePOMChange(value) {
+            var filters = {
+                department: this.props.filters.department,
+                pay_out_mode: value
             };
             this.props.setFilters(filters);
             this.props.handleFilterChange(filters);
@@ -46718,7 +46745,8 @@ var ConnectedSalaryOutput = function (_Component) {
                         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                             'td',
                             { colSpan: 6 },
-                            'Filter by Payout Method'
+                            'Filter by Payout Method : ',
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__PayOutMode__["a" /* default */], { onChange: this.handlePOMChange, selected: this.props.filters.pay_out_mode })
                         )
                     ),
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
@@ -46825,9 +46853,6 @@ var Departments = function (_Component) {
     }, {
         key: 'render',
         value: function render() {
-            var labelSize = {
-                width: this.props.labelSize
-            };
             return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 'select',
                 { value: this.props.selected, name: this.props.name, onChange: this.inputChange },
@@ -46851,6 +46876,89 @@ var Departments = function (_Component) {
 }(__WEBPACK_IMPORTED_MODULE_0_react__["Component"]);
 
 /* harmony default export */ __webpack_exports__["a"] = (Departments);
+
+/***/ }),
+/* 238 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_axios__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_axios__);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+
+
+
+var PayOutMode = function (_Component) {
+    _inherits(PayOutMode, _Component);
+
+    function PayOutMode(props) {
+        _classCallCheck(this, PayOutMode);
+
+        var _this = _possibleConstructorReturn(this, (PayOutMode.__proto__ || Object.getPrototypeOf(PayOutMode)).call(this, props));
+
+        _this.state = {
+            pay_out_mode: []
+        };
+        _this.inputChange = _this.inputChange.bind(_this);
+        return _this;
+    }
+
+    // getDepartments(){
+    //     axios.get('/departments/getall')
+    //         .then((response)=>this.setState({
+    //             departments:[...response.data.departments]
+    //         })
+    //     );
+    // }
+
+    _createClass(PayOutMode, [{
+        key: 'inputChange',
+        value: function inputChange(e) {
+            this.props.onChange(e.target.value);
+        }
+    }, {
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            // this.getDepartments();
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'select',
+                { value: this.props.selected, name: this.props.name, onChange: this.inputChange },
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'option',
+                    { key: '0', value: '0' },
+                    'All'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'option',
+                    { key: '1', value: 'bank' },
+                    'Bank'
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'option',
+                    { key: '2', value: 'cash' },
+                    'Cash'
+                )
+            );
+        }
+    }]);
+
+    return PayOutMode;
+}(__WEBPACK_IMPORTED_MODULE_0_react__["Component"]);
+
+/* harmony default export */ __webpack_exports__["a"] = (PayOutMode);
 
 /***/ })
 /******/ ]);

@@ -135,6 +135,16 @@ class ConnectedMainPanel extends Component {
                 else if(filters.pay_out_mode == 'cash')
                     result = resultc;
             }
+            else {
+                let indexing = this.props.indexing, i=0;
+                for (var k in indexing){
+                    if (indexing.hasOwnProperty(k)) {
+                        let pom = indexing[k][filters.pay_out_mode];
+                        for(var j=0;j<pom.length;j++)
+                            result[i++] = rows[pom[j]];
+                    }
+                }
+            }
             
             this.setState({
                 filteredrows:result,

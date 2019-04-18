@@ -176,7 +176,7 @@ trait SalaryGenerator {
         $gender = $ysd['profile']->gender;
         $age = Carbon::parse($ysd['profile']->date_of_birth)->age;
         for($i=0;$i<count($ysd['salary']);$i++){
-            $cysd['basicSalary'] += $ysd['salary'][$i]['basic'];
+            $cysd['basicSalary'] += $ysd['salary'][$i]['basic'] * $ysd['salary'][$i]['fraction'];
             $cysd['houseRent'] += $ysd['salary'][$i]['house_rent'];
             $cysd['conveyance'] += $ysd['salary'][$i]['conveyance'];
             $cysd['medicalAllowance'] += $ysd['salary'][$i]['medical_allowance'];
@@ -238,36 +238,38 @@ trait SalaryGenerator {
         $Tax = array_sum($tax);
         $response['taxbeforeinv'] = $Tax;
 
-        if($Tax > 5000)
-        {
+        // if($Tax > 5000)
+        // {
             $TI1 = $TaxableSalary - $cysd['pfCompany'];//is bonus includedin tax investment?
-            $MaxInvestment = ceil($TI1 * (25/100));
+            // $MaxInvestment = ceil($TI1 * (30/100));
+            ceil($TI1 * (30/100)) > 15000000 ? $MaxInvestment = 15000000 : $MaxInvestment = ceil($TI1 * (30/100));
             $response['MaxInvestment'] = $MaxInvestment;
             $TIRebate = ceil($MaxInvestment * (15/100));
             $response['TIRebate'] = $TIRebate;
             $finalTax = $Tax - $TIRebate;
-            $response['finalTax'] = $finalTax;
-        }
-        else if($Tax>0 && $Tax<=5000) 
-        {
-            $finalTax = 5000;
-            $response['finalTax'] = $finalTax;
-        }
-        else
-        {
-            $response['MaxInvestment'] = 0;
-            $response['TIRebate'] = 0;
-            $response['finalTax'] = 0;
-        }
+            $finalTax > 0 && $finalTax < 5000 ? $response['finalTax'] = 5000 : $response['finalTax'] = $finalTax;
+            $finalTax < 0 ? $response['finalTax'] = 0 : $response['finalTax'] = $finalTax;
+        // }
+        // else if($Tax>0 && $Tax<=5000) 
+        // {
+        //     $finalTax = 5000;
+        //     $response['finalTax'] = $finalTax;
+        // }
+        // else
+        // {
+        //     $response['MaxInvestment'] = 0;
+        //     $response['TIRebate'] = 0;
+        //     $response['finalTax'] = 0;
+        // }
         return $response;
     }
 
-    private function yearly_income_table_data_entry($id,$name,$yearlyProbableSalary,$tablename)
+    private function yearly_income_table_data_entry($yearlyProbableSalary,$tablename)
     {
         
         DB::table($tablename)->insert([
-            'user_id' => $id,
-            'name' => $name,
+            'user_id' => $yearlyProbableSalary['profile']->id,
+            'name' => $yearlyProbableSalary['profile']->employee_id,
             'salary' => json_encode($yearlyProbableSalary['salary']),
             'profile' => json_encode($yearlyProbableSalary['profile']),
             'structure' => json_encode($yearlyProbableSalary['structure']),

@@ -52,6 +52,7 @@ class SalariesController extends Controller
             $fromYear = $targetPeriod[0] + 0;
             $toYear = $targetPeriod[0] + 1;
         }
+        
         // Determine the array index according to month. 
         // This array index matches with the yearly json data stored in the db
         // This index determines data of which array element should be shown
@@ -88,7 +89,7 @@ class SalariesController extends Controller
                 // call yearly_income_table_generator and yearly_income_table_data_entry
                 $this->yearly_income_table_generator($db_table_name);
                 for($i=0;$i<count($d);$i++){
-                    $this->yearly_income_table_data_entry($d[$i]['profile']->id,$d[$i]['profile']->employee_id,$d[$i],$db_table_name);
+                    $this->yearly_income_table_data_entry($d[$i],$db_table_name);
                 }
                 // then send this reponse to prepare presentation
             }
@@ -128,7 +129,6 @@ class SalariesController extends Controller
         $d = json_decode(json_encode($d));
         $response['tabheads'] = $this->tabhead_generation();
         $t = explode('-',$year);
-        if($t[1]<7) $t[0]++;
         $target_month = Carbon::create($t[0],$t[1]+1, 1, 0, 0, 0, 'Asia/Dhaka');
         $rc = 0;
         for($i=0;$i<count($d);$i++){

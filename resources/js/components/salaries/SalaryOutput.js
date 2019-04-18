@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 import Departments from './Departments';
+import PayOutMode from './PayOutMode';
 import { setMainPanel, setEmployee, setFilters } from "./redux/actions/index";
 
 function mapStateToProps (state)
@@ -25,6 +26,7 @@ class ConnectedSalaryOutput extends Component {
         this.showTax = this.showTax.bind(this);
         this.monthMapping = this.monthMapping.bind(this);
         this.handleDepartmentChange = this.handleDepartmentChange.bind(this);
+        this.handlePOMChange = this.handlePOMChange.bind(this);
     }
 
     showTax(e){
@@ -38,6 +40,14 @@ class ConnectedSalaryOutput extends Component {
         let filters = {
             department: value,
             pay_out_mode: this.props.filters.pay_out_mode
+        };
+        this.props.setFilters(filters);
+        this.props.handleFilterChange(filters);
+    }
+    handlePOMChange(value){
+        let filters = {
+            department: this.props.filters.department,
+            pay_out_mode: value
         };
         this.props.setFilters(filters);
         this.props.handleFilterChange(filters);
@@ -68,7 +78,7 @@ class ConnectedSalaryOutput extends Component {
                     <td colSpan={3}>Month: {monthtext}</td>
                     <td colSpan={1}></td>
                     <td colSpan={6}>Filter by Department : <Departments onChange={this.handleDepartmentChange} selected={this.props.filters.department}/></td>
-                    <td colSpan={6}>Filter by Payout Method</td>
+                    <td colSpan={6}>Filter by Payout Method : <PayOutMode onChange={this.handlePOMChange} selected={this.props.filters.pay_out_mode}/></td>
                 </tr>
                 <tr>
                 { Object.keys(this.props.tabheads).map((key, index)=>{

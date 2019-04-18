@@ -11,13 +11,18 @@ use App\Role;
 use App\Department;
 use App\Designation;
 use App\Salary;
+use App\Http\Traits\SalaryGenerator;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+
 class UsersController extends Controller
 {
+    use SalaryGenerator;
     public function __construct()
     {
         $this->middleware('auth');
@@ -67,7 +72,7 @@ class UsersController extends Controller
         }
 
         $salary = $request->salary;
-        // dd($salary);
+        
         $svalidator = Validator::make($salary, [
             'basic' => 'required|numeric',
             'join_date' => 'required|date',
@@ -84,7 +89,7 @@ class UsersController extends Controller
             $response['messages'] = $svalidator->errors()->messages();
             return response()->json(['result'=>$response]);
         }
-        // dd($useraccount);
+
         $userCreate = User::create([
             'name' => $useraccount['name'],
             'email' => $useraccount['email'],
@@ -101,7 +106,31 @@ class UsersController extends Controller
             'salaryinfo' => $salaryinfo,
             ]);
 
-        if($userCreate || $salaryCreate){
+        ########### Yearly Income Generator & Tax Calculation starts ############
+        $join_date = Carbon::parse($salary['join_date']);
+        $current_month = date('n');
+        $current_year = date('Y');
+        if($current_month > 6){
+            $next_year = $current_year + 1;
+            $current_pay_year_to = Carbon::parse($next_year.'-07-01');
+        }
+        else {
+            $next_year = $current_year;
+            $current_year = $current_year - 1;
+            $current_pay_year_to = Carbon::parse($next_year.'-07-01');
+        }
+        $db_table_name = 'yearly_income_'.$current_year."_".$next_year;
+        if($join_date->lt($current_pay_year_to) && Schema::hasTable($db_table_name)){
+            
+            $data = $this->yearly_generator($userCreate, "$current_year-07-01", "$next_year-06-30");
+            $tax_config = $this->income_tax_calculation($data);
+            $data['tax_config'] = $tax_config;
+            $data= $this->generate_monthly_tax($data, $tax_config['finalTax']);
+            $this->yearly_income_table_data_entry($data,$db_table_name);
+        }                
+        ########### Yearly Income Generator & Tax Calculation starts ############
+
+        if($userCreate && $salaryCreate){
             $me = User::find(Auth::User()->id);
             $completion = $this->profileCalculation($me);
             $response['status'] = 'success';
@@ -187,7 +216,6 @@ class UsersController extends Controller
             $response['messages'] = $uavalidator->errors()->messages();
             return response()->json(['result'=>$response]);
         }
-        // dd($salary);
         
         $user = User::find($id);
         if (Auth::User()->role_id == 1) //admin
@@ -204,7 +232,6 @@ class UsersController extends Controller
             $user->role_id = $useraccount['role'];
             $user->active = $useraccount['active_status'];
 
-            // dd($user->active);
             $user->save();
     
             $salaryaccount = $request->salary;
@@ -251,72 +278,12 @@ class UsersController extends Controller
             $user->sname = $useraccount['sname'];
             $user->phone = $useraccount['phone'];
             $user->address = $useraccount['address'];
-            // dd($user->active);
             $user->save();
 
             $response['status'] = 'success';
             $response['type'] = 'user';
             return response()->json(['result'=>$response]);
         }
-        
-        // $user->name = $useraccount['name'];
-        // $user->email = $useraccount['email'];
-        // $user->fname = $useraccount['fname'];
-        // $user->sname = $useraccount['sname'];
-        // $user->phone = $useraccount['phone'];
-        // $user->address = $useraccount['address'];
-        // $user->designation_id = $useraccount['designation'];
-        // $user->department_id = $useraccount['department'];
-        // $user->salaryprofile = $useraccount['salarystructure'];
-        
-        // if(Auth::User()->role_id == 1){
-        //     $user->role_id = $useraccount['role'];
-        //     $user->active = $useraccount['active_status'];
-        // }
-        // else {
-        //     $user->role_id = Auth::User()->role_id;
-        //     $user->active = Auth::User()->active;
-        // }
-        // // dd($user->active);
-        // $user->save();
-
-        // $salaryaccount = $request->salary;
-
-        // $svalidator = Validator::make($salaryaccount, [
-        //     'basic' => 'required|numeric',
-        //     'join_date' => 'required|date',
-        //     'date_of_birth' => 'required|date',
-        //     'bank_account_name'=> 'required_if:pay_out_mode,BANK',
-        //     'bank_account_number'=> 'required_if:pay_out_mode,BANK',
-        //     'bank_name'=> 'required_if:pay_out_mode,BANK',
-        //     'bank_branch'=> 'required_if:pay_out_mode,BANK',
-        //     'end_date'=>'required_unless:tstatus,a'
-        // ]);
-
-        // if($svalidator->fails()){
-        //     $response['status'] = 'failed';
-        //     $response['messages'] = $svalidator->errors()->messages();
-        //     return response()->json(['result'=>$response]);
-        // }
-
-        // $salaryinfo = json_encode($salaryaccount);
-
-        // $salary = Salary::where('user_id',$id)->get()->first();
-        // $salary->salaryinfo = $salaryinfo;
-        // $salary->save();
-
-        // // if($userCreate || $salaryCreate){
-        // //     $response['status'] = 'success';
-        // //     return response()->json(['result'=>$response]);
-        // // }
-        // $response['status'] = 'success';
-        // return response()->json(['result'=>$response]);
-        
-        
-        // if(Auth::User()->role_id == 1)
-        //     return redirect('/users')->with('success', 'User Updated');
-        // else 
-        // return redirect('/home')->with('success', 'User Updated');
     }
 
     public function destroy(User $user)

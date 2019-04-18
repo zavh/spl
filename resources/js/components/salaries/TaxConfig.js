@@ -79,6 +79,7 @@ class ConnectedTaxConfig extends Component{
                             MaxInvestment={this.state.MaxInvestment}
                             TIRebate={this.state.TIRebate}
                             finalTax={this.state.finalTax}
+                            pf_company={this.state.totaldata.pf_company}
                             />
                     </div>
                 </div>
@@ -169,8 +170,8 @@ function SlabTable(props){
                     )
                 })}
                 <tr><th colSpan={3}>Total</th><td>{props.taxable_salary}</td><td>{props.taxbeforeinv}</td></tr>
-                <tr><th colSpan={3}>Maximum Investment Required ( 25% of {props.taxable_salary} )</th><td>{props.MaxInvestment}</td><td></td></tr>
-                <tr><th colSpan={3}>Tax Rebate on Investment ( 15% of {props.MaxInvestment})</th><td>( - )</td><td>{props.TIRebate}</td></tr>
+                <tr><th colSpan={3}>Maximum Investment Required [ 30% of ({props.taxable_salary} -{props.pf_company}) ]</th><td>{props.MaxInvestment}</td><td></td></tr>
+                <tr><th colSpan={3}>Tax Rebate on Investment  [15% of {props.MaxInvestment}]</th><td>( - )</td><td>{props.TIRebate}</td></tr>
                 <tr><th colSpan={3}>Final Tax</th><td></td><td>{props.finalTax}</td></tr>
             </tbody>
         </table>
