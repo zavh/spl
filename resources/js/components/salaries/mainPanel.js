@@ -141,7 +141,7 @@ class ConnectedMainPanel extends Component {
                     if (indexing.hasOwnProperty(k)) {
                         let pom = indexing[k][filters.pay_out_mode];
                         for(var j=0;j<pom.length;j++)
-                            result[i++] = rows[pom[j]];
+                         result[i++] = rows[pom[j]];
                     }
                 }
             }

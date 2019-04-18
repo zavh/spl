@@ -10,3 +10,4 @@ export const SET_SALARY_ROWS = "SET_SALARY_ROWS";
 export const SET_REF_TIMELINE = "SET_REF_TIMELINE";
 export const SET_INDEXING = "SET_INDEXING";
 export const SET_FILTERS = "SET_FILTERS";
+export const SET_BANK_ACCOUNTS = "SET_BANK_ACCOUNTS";

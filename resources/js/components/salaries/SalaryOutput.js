@@ -70,15 +70,18 @@ class ConnectedSalaryOutput extends Component {
     }
     render(){
         let monthtext = this.monthMapping(this.props.timeline.month);
+        if(this.props.filters.pay_out_mode == 'bank')
+            var download = <a href='javascript:void(0)' className='btn btn-sm btn-outline-secondary badge badge-pill'>Download</a>
+        else var download = null
         return(
             <table className='table table-sm table-bordered table-striped small text-right'>
             <tbody className='small'>
                 <tr className='text-center'>
                     <td colSpan={3}>Salary Year: {this.props.timeline.fromYear} - {this.props.timeline.toYear}</td>
                     <td colSpan={3}>Month: {monthtext}</td>
-                    <td colSpan={1}></td>
                     <td colSpan={6}>Filter by Department : <Departments onChange={this.handleDepartmentChange} selected={this.props.filters.department}/></td>
                     <td colSpan={6}>Filter by Payout Method : <PayOutMode onChange={this.handlePOMChange} selected={this.props.filters.pay_out_mode}/></td>
+                    <td colSpan={1}>{download}</td>
                 </tr>
                 <tr>
                 { Object.keys(this.props.tabheads).map((key, index)=>{

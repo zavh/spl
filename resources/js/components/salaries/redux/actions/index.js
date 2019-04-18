@@ -7,6 +7,7 @@ import {
   SET_REF_TIMELINE,
   SET_INDEXING,
   SET_FILTERS,
+  SET_BANK_ACCOUNTS,
  } from "../constants/action-types";
 
 
@@ -52,4 +53,8 @@ export function setIndexing(payload){
 
 export function setFilters(payload){
   return { type: SET_FILTERS, payload};
+};
+
+export function setBankAccounts(payload){
+  return { type: SET_BANK_ACCOUNTS, payload};
 };

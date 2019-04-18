@@ -6,7 +6,9 @@ import {
   SET_SALARY_ROWS, 
   SET_REF_TIMELINE,
   SET_INDEXING, 
-  SET_FILTERS} from "../constants/action-types";
+  SET_FILTERS,
+  SET_BANK_ACCOUNTS,
+} from "../constants/action-types";
   
 const initialState = {
   mainPanel: 'Main',
@@ -17,6 +19,7 @@ const initialState = {
   reftimeline:{},
   indexing:[],
   filters:{department:0,pay_out_mode:0},
+  bankaccounts:{},
 };
 function rootReducer(state = initialState, action) {
   if (action.type === SET_MAIN_PANEL){
@@ -60,6 +63,11 @@ function rootReducer(state = initialState, action) {
   if (action.type === SET_FILTERS){
     return Object.assign({}, state, {
       filters: action.payload
+    });
+  }
+  if (action.type === SET_BANK_ACCOUNTS){
+    return Object.assign({}, state, {
+      bankaccounts: action.payload
     });
   }
   // if (action.type === GET_PIS){

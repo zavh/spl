@@ -43,7 +43,7 @@ class SalariesController extends Controller
         if($year == null){ //Default
             $fromYear = $currentFromYear;
             $toYear = $currentToYear;
-            $year = Carbon::parse($today)->subMonth()->format("Y-n");       //subMonth choses the previous month
+            $year = Carbon::parse($fromYear.'-'.date('m').'-'.date('d'))->subMonth()->format("Y-n"); //subMonth choses the previous month
             $thisMonth = Carbon::parse($today)->subMonth()->format("n");    //subMonth choses the previous month
         }
         else {
@@ -129,6 +129,7 @@ class SalariesController extends Controller
         $d = json_decode(json_encode($d));
         $response['tabheads'] = $this->tabhead_generation();
         $t = explode('-',$year);
+        if($t[1]<7) $t[0]++;
         $target_month = Carbon::create($t[0],$t[1]+1, 1, 0, 0, 0, 'Asia/Dhaka');
         $rc = 0;
         for($i=0;$i<count($d);$i++){
@@ -158,6 +159,12 @@ class SalariesController extends Controller
                 if($salaryinfo->pay_out_mode == 'BANK'){
                     $x = count($response['indexing'][$user->department->id]['bank']);
                     $response['indexing'][$user->department->id]['bank'][$x] = $rc++;
+                    $response['bankaccounts'][$d[$i]->profile->employee_id] = [
+                        'bank_name' => $d[$i]->profile->bank_name,
+                        'bank_branch' => $d[$i]->profile->bank_branch,
+                        'bank_account_name' => $d[$i]->profile->bank_account_name,
+                        'bank_account_number' => $d[$i]->profile->bank_account_number,
+                    ];
                 }
                 else {
                     $x = count($response['indexing'][$user->department->id]['cash']);
