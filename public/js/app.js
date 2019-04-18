@@ -46689,22 +46689,14 @@ var ConnectedSalaryOutput = function (_Component) {
                 csvContent = "Bank Name,Branch,Account Name,Account Number,Amount\n";
             for (var i = 0; i < sr.length; i++) {
                 result[i] = Object.assign(this.props.bankaccounts[sr[i].employee_id], { net_salary: sr[i].net_salary });
+                csvContent += "\"";
                 csvContent += Object.keys(result[i]).map(function (key) {
                     return result[i][key];
-                }).join(",");
-                csvContent += "\n";
+                }).join("\",\"");
+                csvContent += "\"\n";
             }
+            console.log(csvContent);
             return csvContent;
-            // let hiddenElement = React.createElement(
-            //     'a',
-            //     {
-            //     '_target':'blank',
-            //     'href':'data:text/csv;charset=utf-8,' + encodeURI(csvContent),
-            //     'download':'people.csv',
-            //     'class':'btn btn-sm btn-outline-danger badge badge-pill'
-            //     }, 'Download');
-            //     ReactDOM.render(hiddenElement,document.querySelector('#downloadMe'))
-            // console.log(hiddenElement);
         }
     }, {
         key: 'showTax',
