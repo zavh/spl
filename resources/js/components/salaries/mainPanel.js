@@ -15,6 +15,7 @@ function mapStateToProps (state)
       timeline: state.timeline,
       reftimeline: state.reftimeline,
       indexing: state.indexing,
+      filters: state.filters,
     };
 }
 
@@ -44,7 +45,7 @@ class ConnectedMainPanel extends Component {
         this.handleMonthChange = this.handleMonthChange.bind(this);
         this.handleYearChange = this.handleYearChange.bind(this);
         this.handleTimelineChange = this.handleTimelineChange.bind(this);
-        this.departmentFilter = this.departmentFilter.bind(this);
+        this.handleFilterChange = this.handleFilterChange.bind(this);
         this.toggle = this.toggle.bind(this);
     }
 
@@ -87,10 +88,12 @@ class ConnectedMainPanel extends Component {
                 this.setState({status:status})
                 if(status === 'success'){
                     this.props.setSalaryRows(response.data.data);
+                    this.props.setIndexing(response.data.indexing);
                     this.setState({
                         validtimeline:this.props.timeline,
                     });
-                    this.props.setIndexing(response.data.indexing);
+                    console.log(this.props.salaryrows);
+                    this.handleFilterChange(this.props.filters)
                 }
                 else if(status === 'fail'){
                     // If db table for target month does not exist, set the current timeline same as the last valid timeline
@@ -107,21 +110,38 @@ class ConnectedMainPanel extends Component {
           });
         ;
     }
-    departmentFilter(value){
-        let rows = this.props.salaryrows;
-        let indexing = this.props.indexing[value];
-        let resultb = [], resultc = [], i;
-        for(i=0;i<indexing['bank'].length;i++){
-            resultb[i] = rows[indexing['bank'][i]];
+    handleFilterChange(filters){
+        if(filters.department == 0 && filters.pay_out_mode == 0){
+            this.setState({
+                filteredrows:this.props.salaryrows,
+            });
         }
-        for(i=0;i<indexing['cash'].length;i++){
-            resultc[i] = rows[indexing['cash'][i]];
+        else {
+            let rows = this.props.salaryrows;
+            let result = [];
+            if(filters.department > 0){
+                let indexing = this.props.indexing[filters.department];
+                let resultb = [], resultc = [], i;
+                for(i=0;i<indexing['bank'].length;i++){
+                    resultb[i] = rows[indexing['bank'][i]];
+                }
+                for(i=0;i<indexing['cash'].length;i++){
+                    resultc[i] = rows[indexing['cash'][i]];
+                }
+                if(filters.pay_out_mode==0)
+                    result = resultb.concat(resultc);
+                else if(filters.pay_out_mode == 'bank')
+                    result = resultb;
+                else if(filters.pay_out_mode == 'cash')
+                    result = resultc;
+            }
+            
+            this.setState({
+                filteredrows:result,
+            });            
         }
-        let result = resultb.concat(resultc);
-        // this.setState({
-        //     filteredrows:result,
-        // });
-        console.log(result);
+
+        // console.log(result);
     }
     componentDidMount(){
         this.setState({
@@ -129,6 +149,7 @@ class ConnectedMainPanel extends Component {
             filteredrows:this.props.salaryrows,
             validtimeline:this.props.timeline,
         });
+        this.handleFilterChange(this.props.filters);
     }
     render(){
         return(
@@ -159,7 +180,7 @@ class ConnectedMainPanel extends Component {
                         </Modal>
                     </div> */}
                 </div>
-                <SalaryOutput timeline={this.state.validtimeline} salaryrows={this.state.filteredrows} departmentFilter={this.departmentFilter}/>
+                <SalaryOutput timeline={this.state.validtimeline} salaryrows={this.state.filteredrows} handleFilterChange={this.handleFilterChange}/>
             </div>
         )
     }

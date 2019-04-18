@@ -52,7 +52,7 @@ export default class FileUploadComponent extends Component
    {
      if(this.props.status)
       return(
-        <div className='input-group input-group-sm col-md-4'>
+        <div className='input-group input-group-sm col-md-6'>
           <div className='input-group-prepend'>
               <span className="input-group-text">Upload</span>
           </div>

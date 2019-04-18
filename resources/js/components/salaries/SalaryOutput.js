@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 import Departments from './Departments';
-import { setMainPanel, setEmployee } from "./redux/actions/index";
+import { setMainPanel, setEmployee, setFilters } from "./redux/actions/index";
 
 function mapStateToProps (state)
 {
   return { 
       tabheads: state.tabheads,
+      filters: state.filters,
     };
 }
 
@@ -14,6 +15,7 @@ function mapDispatchToProps(dispatch) {
     return {
         setMainPanel: panel=> dispatch(setMainPanel(panel)),
         setEmployee: employee=> dispatch(setEmployee(employee)),
+        setFilters: filters=> dispatch(setFilters(filters)),
     };
 }
 
@@ -33,7 +35,12 @@ class ConnectedSalaryOutput extends Component {
         this.props.setMainPanel("TaxConfig");
     }
     handleDepartmentChange(value){
-        this.props.departmentFilter(value);
+        let filters = {
+            department: value,
+            pay_out_mode: this.props.filters.pay_out_mode
+        };
+        this.props.setFilters(filters);
+        this.props.handleFilterChange(filters);
     }
     monthMapping(month){
         let months=[];
@@ -60,7 +67,7 @@ class ConnectedSalaryOutput extends Component {
                     <td colSpan={3}>Salary Year: {this.props.timeline.fromYear} - {this.props.timeline.toYear}</td>
                     <td colSpan={3}>Month: {monthtext}</td>
                     <td colSpan={1}></td>
-                    <td colSpan={6}>Filter by Department : <Departments onChange={this.handleDepartmentChange}/></td>
+                    <td colSpan={6}>Filter by Department : <Departments onChange={this.handleDepartmentChange} selected={this.props.filters.department}/></td>
                     <td colSpan={6}>Filter by Payout Method</td>
                 </tr>
                 <tr>

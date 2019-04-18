@@ -5,7 +5,8 @@ import {
   SET_TAB_HEADS, 
   SET_SALARY_ROWS, 
   SET_REF_TIMELINE,
-  SET_INDEXING } from "../constants/action-types";
+  SET_INDEXING, 
+  SET_FILTERS} from "../constants/action-types";
   
 const initialState = {
   mainPanel: 'Main',
@@ -15,6 +16,7 @@ const initialState = {
   salaryrows:[],
   reftimeline:{},
   indexing:[],
+  filters:{department:0,pay_out_mode:0},
 };
 function rootReducer(state = initialState, action) {
   if (action.type === SET_MAIN_PANEL){
@@ -53,6 +55,11 @@ function rootReducer(state = initialState, action) {
   if (action.type === SET_INDEXING){
     return Object.assign({}, state, {
       indexing: action.payload
+    });
+  }
+  if (action.type === SET_FILTERS){
+    return Object.assign({}, state, {
+      filters: action.payload
     });
   }
   // if (action.type === GET_PIS){

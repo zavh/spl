@@ -30,7 +30,7 @@ export default class Departments extends Component {
           };
         return (
             <select value={this.props.selected} name={this.props.name} onChange={this.inputChange}>
-                <option key='0' value='0' disabled>Select One</option>
+                <option key='0' value='0'>All</option>
                 {this.state.departments.map(department => (
                     <option key={department.id} value={department.id}>
                         {department.name}
