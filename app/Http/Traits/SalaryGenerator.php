@@ -163,105 +163,77 @@ trait SalaryGenerator {
 
     private function income_tax_calculation($ysd)
     {
-        $cysd['basicSalary'] = 0;
-        $cysd['houseRent'] = 0;
-        $cysd['conveyance'] = 0;
-        $cysd['medicalAllowance'] = 0;
-        $cysd['bonus'] = 0;
-        $cysd['extra'] = 0;
-        $cysd['less'] = 0;
-        $cysd['medicalAllowance'] = 0;
-        $cysd['pfCompany'] = 0;
+        $exemptions = (Object)[
+            'house_rent' => 300000,
+            'conveyance' => 30000,
+            'medical_allowance' => 120000,
+        ];
+        $investment = (Object)[
+            'inv_threshold' => 30,
+            'max_investment' => 15000000,
+            'rebate_rate' => 15
+        ];
+        $min_tax = 5000;
+        $tc = (Object)[
+            'exemptions' => $exemptions,
+            'investment' => $investment,
+            'min_tax' => $min_tax,
+        ];
+        $cysd = ['basic' => 0,'house_rent' => 0,'conveyance' => 0,'medical_allowance' => 0,'bonus' => 0,'extra' => 0,'less' => 0,'pf_company' =>0,];
         
         $gender = $ysd['profile']->gender;
         $age = Carbon::parse($ysd['profile']->date_of_birth)->age;
         for($i=0;$i<count($ysd['salary']);$i++){
-            $cysd['basicSalary'] += $ysd['salary'][$i]['basic'] * $ysd['salary'][$i]['fraction'];
-            $cysd['houseRent'] += $ysd['salary'][$i]['house_rent'];
-            $cysd['conveyance'] += $ysd['salary'][$i]['conveyance'];
-            $cysd['medicalAllowance'] += $ysd['salary'][$i]['medical_allowance'];
-            $cysd['pfCompany'] += $ysd['salary'][$i]['pf_company'];
-            $cysd['bonus'] += $ysd['salary'][$i]['bonus'];
-            $cysd['extra'] += $ysd['salary'][$i]['extra'];
-            $cysd['less'] += $ysd['salary'][$i]['less'];
+            foreach($cysd as $key=>$value){
+                if($key == 'basic')
+                    $cysd[$key] += $ysd['salary'][$i][$key] * $ysd['salary'][$i]['fraction'];
+                else $cysd[$key] += $ysd['salary'][$i][$key];
+            }
         }
-
-        $response['basic'] = $cysd['basicSalary'];
-        $response['house_rent'] = $cysd['houseRent'];
-        $response['conveyance'] = $cysd['conveyance'];
-        $response['medical_allowance'] = $cysd['medicalAllowance'];
-        $response['bonus'] = $cysd['bonus'];
-        $response['extra'] = $cysd['extra'];
-        $response['less'] = $cysd['less'];
         
-
-        $grossSalary = $cysd['basicSalary'] + $cysd['houseRent'] + $cysd['conveyance'] + $cysd['medicalAllowance'] + $cysd['bonus'] + $cysd['extra'];
-        $response['gross_salary'] = $grossSalary;
-
-        $grossTotal = $grossSalary +$cysd['pfCompany'];
-        $response['gross_total'] = $grossTotal;
-
-        $houseRentExempted = 300000;
-        $response['house_rent_exempted'] = $houseRentExempted;
-
-        $HouseRentTR = $cysd['houseRent'];
-        if(($HouseRentTR-$houseRentExempted)>=0)$HouseRentTR=$HouseRentTR-$houseRentExempted; else $HouseRentTR=0;
-        $response['house_rent_tax_remaining'] = $HouseRentTR;
-        
-        $conveyanceExempted = 30000;
-        $response['conveyance_exempted'] = $conveyanceExempted;
+        $cysd['gross_salary'] = $cysd['basic'] + $cysd['house_rent'] + $cysd['conveyance'] + $cysd['medical_allowance'] + $cysd['bonus'] + $cysd['extra'];
+        $cysd['gross_total'] = $cysd['gross_salary'] + $cysd['pf_company'];
+        $cysd['house_rent_exempted'] = $tc->exemptions->house_rent;
+        ##### House Rent Tax Calculation with Exemption #####
+        $HouseRentTR = $cysd['house_rent'];
+        ($HouseRentTR-$tc->exemptions->house_rent) >= 0 ? $HouseRentTR=$HouseRentTR-$tc->exemptions->house_rent : $HouseRentTR=0;
+        $cysd['house_rent_tax_remaining'] = $HouseRentTR;
+        ##### Conveyance Tax Calculation with Exemption #####
+        $cysd['conveyance_exempted'] = $exemptions->conveyance;
 
         $conveyanceTR = $cysd['conveyance'];
-        if(($conveyanceTR-$conveyanceExempted)>=0)$conveyanceTR=$conveyanceTR-$conveyanceExempted; else $conveyanceTR=0;
-        $response['conveyance_tax_remaining'] = $conveyanceTR;
+        if(($conveyanceTR-$exemptions->conveyance)>=0)$conveyanceTR=$conveyanceTR-$exemptions->conveyance; else $conveyanceTR=0;
+        $cysd['conveyance_tax_remaining'] = $conveyanceTR;
+        ##### Medical Allowance Tax Calculation with Exemption #####
+        $cysd['medical_allowance_exempted'] = $exemptions->medical_allowance;
 
-        $medicalExempted = 120000;
-        $response['medical_allowance_exempted'] = $medicalExempted;
+        $medicalTR = $cysd['medical_allowance'];
+        if(($medicalTR-$exemptions->medical_allowance)>=0)$medicalTR=$medicalTR-$exemptions->medical_allowance; else $medicalTR=0;
+        $cysd['medical_allowance_tax_remaining'] = $medicalTR;
+        ##### Taxable Salary Calculation #####
+        $taxableFields = $HouseRentTR + $conveyanceTR + $medicalTR + $cysd['pf_company'] + $cysd['bonus'] + $cysd['extra'] - $cysd['less'];
 
-        $medicalTR = $cysd['medicalAllowance'];
-        if(($medicalTR-$medicalExempted)>=0)$medicalTR=$medicalTR-$medicalExempted; else $medicalTR=0;
-        $response['medical_allowance_tax_remaining'] = $medicalTR;
-
-        $response['pf_company'] = $cysd['pfCompany'];
-
-        $taxableFields = $HouseRentTR + $conveyanceTR + $medicalTR + $cysd['pfCompany'] + $cysd['bonus'] + $cysd['extra'] - $cysd['less'];
-
-        $TaxableSalary = $cysd['basicSalary'] + $taxableFields;
-        $response['taxable_salary'] = $TaxableSalary;
-
-        $info = $this->TDS($TaxableSalary,$gender,$age);
+        $cysd['taxable_salary'] = $cysd['basic'] + $taxableFields;
+        $info = $this->TDS($cysd['taxable_salary'],$gender,$age);
 
         $tax = $info['slabwisetax'];
         
-        $response['slabinfo'] = $info;
+        $cysd['slabinfo'] = $info;
 
         $Tax = array_sum($tax);
-        $response['taxbeforeinv'] = $Tax;
+        $cysd['taxbeforeinv'] = $Tax;
 
-        // if($Tax > 5000)
-        // {
-            $TI1 = $TaxableSalary - $cysd['pfCompany'];//is bonus includedin tax investment?
-            // $MaxInvestment = ceil($TI1 * (30/100));
-            ceil($TI1 * (30/100)) > 15000000 ? $MaxInvestment = 15000000 : $MaxInvestment = ceil($TI1 * (30/100));
-            $response['MaxInvestment'] = $MaxInvestment;
-            $TIRebate = ceil($MaxInvestment * (15/100));
-            $response['TIRebate'] = $TIRebate;
-            $finalTax = $Tax - $TIRebate;
-            $finalTax > 0 && $finalTax < 5000 ? $response['finalTax'] = 5000 : $response['finalTax'] = $finalTax;
-            $finalTax < 0 ? $response['finalTax'] = 0 : $response['finalTax'] = $finalTax;
-        // }
-        // else if($Tax>0 && $Tax<=5000) 
-        // {
-        //     $finalTax = 5000;
-        //     $response['finalTax'] = $finalTax;
-        // }
-        // else
-        // {
-        //     $response['MaxInvestment'] = 0;
-        //     $response['TIRebate'] = 0;
-        //     $response['finalTax'] = 0;
-        // }
-        return $response;
+        $TI1 = $cysd['taxable_salary'] - $cysd['pf_company'];//is bonus includedin tax investment?
+        $threshold = ceil($TI1 * ($tc->investment->inv_threshold/100));
+        $threshold > $tc->investment->max_investment ? $MaxInvestment = $tc->investment->max_investment : $MaxInvestment = $threshold;
+        $cysd['MaxInvestment'] = $MaxInvestment;
+        $TIRebate = ceil($MaxInvestment * ($tc->investment->rebate_rate/100));
+        $cysd['TIRebate'] = $TIRebate;
+        $finalTax = $Tax - $TIRebate;
+        $finalTax > 0 && $finalTax < $tc->min_tax ? $cysd['finalTax'] = $tc->min_tax : $cysd['finalTax'] = $finalTax;
+        $finalTax < 0 ? $cysd['finalTax'] = 0 : $cysd['finalTax'] = $finalTax;
+
+        return $cysd;
     }
 
     private function yearly_income_table_data_entry($yearlyProbableSalary,$tablename)

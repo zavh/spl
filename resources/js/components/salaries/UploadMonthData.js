@@ -18,7 +18,7 @@ export default class FileUploadComponent extends Component
       e.preventDefault();
       this.fileUpload();
       this.setState({filename:'Choose File'});
-      this.props.onFnishing();
+      // this.props.onFnishing();
     }
     onChange(e) {
       let files = e.target.files || e.dataTransfer.files;

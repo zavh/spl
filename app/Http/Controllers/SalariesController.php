@@ -256,11 +256,14 @@ class SalariesController extends Controller
 
     private function taxable_income_changers()
     {
-        $tabheads = array(
-            'basic'=> 'Basic',
-            'bonus'=> 'Bonus',
-            'extra'=> 'Extra',
-            'less'=> 'Less',
+        $tabheads = array();
+        $tabheads['monthchanger'] = array(
+            'bonus' => 'Bonus',
+            'extra' => 'Extra',
+            'less' => 'Less',
+        );
+        $tabheads['yearchanger'] = array(
+            'basic' => 'Basic',
         );
         return $tabheads;
     }
@@ -274,6 +277,32 @@ class SalariesController extends Controller
         $ysd['salary'] = $s;
         return $this->income_tax_calculation($ysd);
     }
+    private function basicChanger($d){
+        $newbasic =  floatval($d['basic']);
+        $salary = json_decode($d['edata']->salary, true);
+        $profile = $d['edata']->profile;
+        $structure = json_decode($d['edata']->structure);
+        $tax_config = json_decode($d['edata']->tax_config);
+        $index = $d['index'];
+
+        for($i=$index;$i<12;$i++){
+            $salary[$i]['basic'] = $newbasic * $salary[$i]['fraction'];
+            for($k=0;$k<count($structure);$k++){
+                if($structure[$k]->value == 0) continue;
+                $param_name = $structure[$k]->param_name; 
+                $salary[$i][$param_name] = $structure[$k]->value * $newbasic * $salary[$i]['fraction'] /100;
+            }
+        }
+        $newtaxconfig = $this->tax_change_preparation($salary, $profile);
+        $taxdiff = $newtaxconfig['finalTax'] - $tax_config->finalTax;
+        $taxdelta = $taxdiff/(12-$index);
+        for($i=$index;$i<12;$i++){
+            $salary[$i]['monthly_tax'] += $taxdelta; 
+        }
+        $d['edata']->tax_config = json_encode($newtaxconfig);
+        $d['edata']->salary = json_encode($newtaxconfig);
+        return(['salary'=>$salary, 'edata'=>$d['edata']]);
+    }
     public function upload(Request $request)
     {
         $dataarray = array();
@@ -283,10 +312,11 @@ class SalariesController extends Controller
         Storage::disk('local')->put($filename, $uploadedFile);
         $changes = $this->filevalidate($filename);
         if($changes['status'] == 'success'){
+            $response = array();
             $table = "yearly_income_".$request->fromYear."_".$request->toYear;
             $tax_changer = $this->taxable_income_changers();
             $tax_change_flag = false;
-            if($request->month >6)
+            if($request->month > 6)
                 $index = $request->month - 7;
             else 
                 $index = $request->month + 5;
@@ -294,9 +324,19 @@ class SalariesController extends Controller
             for($i=0;$i<count($changes['data']);$i++){
                 $e = DB::table($table)->where('name', $changes['data'][$i]['employee_id'])->first();
                 $s = json_decode($e->salary, true);
+                foreach($tax_changer['yearchanger'] as $key=>$value){
+                    if(isset($changes['data'][$i][$key])){
+                        if($key == 'basic'){
+                            $t = $this->basicChanger(['edata'=>$e, 'basic'=>$changes['data'][$i][$key], 'index'=>$index]);
+                            $s = $t['salary'];
+                            $e = $t['edata'];
+                            $this->yearly_income_table_data_update($changes['data'][$i]['employee_id'], $table, ['salary'=>$e->salary,'tax_config'=>$e->tax_config]);
+                        }
+                    }
+                }
                 foreach($changes['data'][$i] as $key=>$value){
                     $s[$index][$key] = floatval($value);
-                    if(isset($tax_changer[$key]))
+                    if(isset($tax_changer['monthchanger'][$key]))
                         $tax_change_flag = true;
                 }
                 if($tax_change_flag){
@@ -321,11 +361,10 @@ class SalariesController extends Controller
                 $this->yearly_income_table_data_update($changes['data'][$i]['employee_id'], $table, $updates);
                 $salaries[$i] = $s[$index];
             }
-            // return response()->json($salaries);
-            return response()->json($changes);
+            return response()->json($response);
         }
         else {
-            return response()->json($changes);
+            return response()->json($response);
         }
     }
 

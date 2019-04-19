@@ -29830,7 +29830,7 @@ var FileUploadComponent = function (_Component) {
       e.preventDefault();
       this.fileUpload();
       this.setState({ filename: 'Choose File' });
-      this.props.onFnishing();
+      // this.props.onFnishing();
     }
   }, {
     key: 'onChange',
