@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import MainPanel from './mainPanel';
+import IndvTaxCalc from './IndvTaxCalc';
 import TaxConfig from './TaxConfig';
 import { connect } from "react-redux";
 import { setMainPanel, setPayYear, setTabHeads, setSalaryRows, setRefTimeline, setIndexing, setBankAccounts} from "./redux/actions/index";
@@ -74,6 +75,13 @@ class ConnectedSalarySPA extends Component {
             else 
                 return <div>Loading</div>
         }
+
+        else if(this.props.mainPanel === 'IndvTaxCalc')
+            return (
+                <div className="container-fluid">
+                    <IndvTaxCalc />
+                </div> 
+            );
 
         else if(this.props.mainPanel === 'TaxConfig')
             return (

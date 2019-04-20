@@ -23,7 +23,7 @@
         <nav class="navbar navbar-expand-md navbar-light navbar-laravel py-0">
             <div class="container-fluid">
                 <a class="navbar-brand" href="{{ url('/') }}">
-                    {{ config('app.name', 'Sigma Pumps Limited') }}
+                    {{ config('app.name', 'Sigma Group') }}
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
@@ -42,13 +42,13 @@
                 </div>
             </div>
         </nav>
-        <nav class="navbar navbar-expand-md navbar-light navbar-laravel py-0 my-0">
+        {{-- <nav class="navbar navbar-expand-md navbar-light navbar-laravel py-0 my-0">
             <div class="container-fluid small">
                 <div class="container-fluid small text-right mt-0">a b c d e f g h</div>
             </div>
-        </nav>
+        </nav> --}}
         
-        @isset($breadcrumb)
+        {{-- @isset($breadcrumb)
         <div>
             <ol class="breadcrumb small p-1 m-0">
                 @foreach ($breadcrumb as $item)
@@ -64,7 +64,7 @@
                 @endforeach
             </ol>
         </div>
-        @endisset
+        @endisset --}}
 
         <main class="py-2">
             @yield('content')

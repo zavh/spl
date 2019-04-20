@@ -5,7 +5,6 @@ import MonthSelect from './monthSelect';
 
 import { connect } from "react-redux";
 import { setMainPanel, setEmployee, setPayYear, setSalaryRows, setIndexing } from "./redux/actions/index";
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 import SalaryOutput from './SalaryOutput';
 function mapStateToProps (state)
 {
@@ -46,6 +45,7 @@ class ConnectedMainPanel extends Component {
         this.handleYearChange = this.handleYearChange.bind(this);
         this.handleTimelineChange = this.handleTimelineChange.bind(this);
         this.handleFilterChange = this.handleFilterChange.bind(this);
+        this.yearlyTaxConfig = this.yearlyTaxConfig.bind(this);
         this.toggle = this.toggle.bind(this);
     }
 
@@ -53,8 +53,12 @@ class ConnectedMainPanel extends Component {
         this.setState(prevState => ({
           modal: !prevState.modal
         }));
-      }
+    }
 
+    yearlyTaxConfig(){
+        this.props.setMainPanel('TaxConfig');
+    }
+    
     handleMonthChange(month){
         let timeline = {
             fromYear:this.props.timeline.fromYear,
@@ -165,7 +169,7 @@ class ConnectedMainPanel extends Component {
         return(
             <div>
                 <div className="form-group row my-1 small">
-                    <div className="input-group input-group-sm col-md-6">
+                    <div className="input-group input-group-sm col-md-5">
                         <div className="input-group-prepend">
                             <span className="input-group-text">Choose Year</span>
                         </div>
@@ -176,19 +180,14 @@ class ConnectedMainPanel extends Component {
                         <MonthSelect fromYear={this.props.timeline.fromYear} toYear={this.props.timeline.toYear} month={this.props.timeline.month} onChange={this.handleMonthChange}/>
                     </div>
                     <FileUpload status={this.state.allowupload} timeline={this.props.timeline} onFnishing={this.handleTimelineChange}/>
-                    {/* <div className='col-md-2'>
-                        <Button color="danger" onClick={this.toggle} className="btn btn-sm">Filters</Button>
-                        <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
-                        <ModalHeader toggle={this.toggle}>Modal title</ModalHeader>
-                        <ModalBody>
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                        </ModalBody>
-                        <ModalFooter>
-                            <Button color="primary" onClick={this.toggle}>Do Something</Button>{' '}
-                            <Button color="secondary" onClick={this.toggle}>Cancel</Button>
-                        </ModalFooter>
-                        </Modal>
-                    </div> */}
+                    <div className="input-group input-group-sm col-md-2">
+                        <button
+                            className='btn btn-sm btn-outline-success badge badge-pill'
+                            onClick={this.yearlyTaxConfig}
+                            >
+                            Yearly Tax Configuration
+                        </button>
+                    </div>
                 </div>
                 <SalaryOutput timeline={this.state.validtimeline} salaryrows={this.state.filteredrows} handleFilterChange={this.handleFilterChange}/>
             </div>

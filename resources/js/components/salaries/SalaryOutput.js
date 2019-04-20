@@ -48,7 +48,7 @@ class ConnectedSalaryOutput extends Component {
             employee_id:e.target.dataset.index,
         }
         this.props.setEmployee(tc);
-        this.props.setMainPanel("TaxConfig");
+        this.props.setMainPanel("IndvTaxCalc");
     }
     handleDepartmentChange(value){
         let filters = {

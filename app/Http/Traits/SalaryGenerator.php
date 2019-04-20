@@ -69,7 +69,9 @@ trait SalaryGenerator {
         $loanarr = array();
         $loansum = 0;
         for($i=0;$i<count($loans);$i++){
+            $start =  Carbon::parse($loans[$i]->start_date);
             $expiry = Carbon::parse($loans[$i]->end_date);
+            if($start->gt($target_month)) continue;
             if($expiry->gt($target_month->copy()->startOfMonth()) && $expiry->lt($target_month->copy()->endOfMonth()))
                 $inBetween = true;
             else $inBetween = false;

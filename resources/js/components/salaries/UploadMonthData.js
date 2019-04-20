@@ -18,7 +18,7 @@ export default class FileUploadComponent extends Component
       e.preventDefault();
       this.fileUpload();
       this.setState({filename:'Choose File'});
-      // this.props.onFnishing();
+      this.props.onFnishing();
     }
     onChange(e) {
       let files = e.target.files || e.dataTransfer.files;
@@ -52,7 +52,7 @@ export default class FileUploadComponent extends Component
    {
      if(this.props.status)
       return(
-        <div className='input-group input-group-sm col-md-6'>
+        <div className='input-group input-group-sm col-md-5'>
           <div className='input-group-prepend'>
               <span className="input-group-text">Upload</span>
           </div>

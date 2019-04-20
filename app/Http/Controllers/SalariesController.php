@@ -139,7 +139,7 @@ class SalariesController extends Controller
             $response['data'][$i]['employee_id'] = $d[$i]->profile->employee_id;
             $response['data'][$i]['name'] = $d[$i]->profile->name;
             $response['data'][$i]['join_date'] = $d[$i]->profile->join_date;
-            $response['data'][$i]['basic'] = $d[$i]->profile->basic;
+            $response['data'][$i]['basic'] = number_format($d[$i]->salary[$month]->basic, 2);
             $response['data'][$i]['house_rent'] = number_format($d[$i]->salary[$month]->house_rent, 2);
             $response['data'][$i]['conveyance'] = number_format($d[$i]->salary[$month]->conveyance, 2);
             $response['data'][$i]['medical_allowance'] = number_format($d[$i]->salary[$month]->medical_allowance, 2);
