@@ -139,13 +139,42 @@ class SalariesController extends Controller
             $response['data'][$i]['employee_id'] = $d[$i]->profile->employee_id;
             $response['data'][$i]['name'] = $d[$i]->profile->name;
             $response['data'][$i]['join_date'] = $d[$i]->profile->join_date;
-            $response['data'][$i]['basic'] = number_format($d[$i]->salary[$month]->basic, 2);
+            $response['data'][$i]['basic'] = number_format($d[$i]->salary[$month]->basic * $d[$i]->salary[$month]->fraction, 2);
             $response['data'][$i]['house_rent'] = number_format($d[$i]->salary[$month]->house_rent, 2);
             $response['data'][$i]['conveyance'] = number_format($d[$i]->salary[$month]->conveyance, 2);
             $response['data'][$i]['medical_allowance'] = number_format($d[$i]->salary[$month]->medical_allowance, 2);
-            $response['data'][$i]['pf_self'] = number_format($d[$i]->salary[$month]->pf_self, 2);
-            $response['data'][$i]['pf_company'] = number_format($d[$i]->salary[$month]->pf_company, 2);
             $response['data'][$i]['bonus'] = number_format($d[$i]->salary[$month]->bonus, 2);
+            $response['data'][$i]['extra'] = $d[$i]->salary[$month]->extra;
+            $response['data'][$i]['less'] = $d[$i]->salary[$month]->less;
+            if(is_object($d[$i]->salary[$month]->loan)){
+                $total_loan = $d[$i]->salary[$month]->loan->sum;
+                $response['data'][$i]['loan'] = number_format($total_loan,2);
+            }
+            else {
+                $total_loan = 0;
+                $response['data'][$i]['loan'] = number_format($total_loan,2);
+            }
+            $response['data'][$i]['pf_self'] = number_format($d[$i]->salary[$month]->pf_self, 2);
+            $response['data'][$i]['fooding'] = $d[$i]->salary[$month]->fooding;
+            $response['data'][$i]['monthly_tax'] = number_format($d[$i]->salary[$month]->monthly_tax, 2);
+            $deduction_total = 
+                        $d[$i]->salary[$month]->pf_self + 
+                        $total_loan +
+                        $d[$i]->salary[$month]->less +
+                        $d[$i]->salary[$month]->monthly_tax +
+                        $d[$i]->salary[$month]->fooding
+                        ;
+            $response['data'][$i]['deduction_total'] = number_format($deduction_total, 2);
+            $gross_salary = 
+                        $d[$i]->salary[$month]->basic * $d[$i]->salary[$month]->fraction+
+                        $d[$i]->salary[$month]->house_rent +
+                        $d[$i]->salary[$month]->conveyance +
+                        $d[$i]->salary[$month]->medical_allowance +
+                        $d[$i]->salary[$month]->bonus +
+                        $d[$i]->salary[$month]->extra
+                        ;
+            $response['data'][$i]['gross_salary'] = number_format($gross_salary, 2);
+            $response['data'][$i]['pf_company'] = number_format($d[$i]->salary[$month]->pf_company, 2);
             if(!isset($response['indexing'][$user->department->id])){
                 // $response['indexing'][$user->department->id] = array();
                 $response['indexing'][$user->department->id]['bank'] = array();
@@ -166,38 +195,6 @@ class SalariesController extends Controller
                 }
 
             }
-            // if($salaryinfo->pay_out_mode == 'BANK')
-            if(is_object($d[$i]->salary[$month]->loan)){
-                $total_loan = $d[$i]->salary[$month]->loan->sum;
-                $response['data'][$i]['loan'] = number_format($total_loan,2);
-            }
-            else {
-                $response['data'][$i]['loan'] = 0;
-                $total_loan = 0;
-            }
-                
-            $response['data'][$i]['extra'] = $d[$i]->salary[$month]->extra;
-            $response['data'][$i]['less'] = $d[$i]->salary[$month]->less;
-            $response['data'][$i]['fooding'] = $d[$i]->salary[$month]->fooding;
-            $response['data'][$i]['monthly_tax'] = number_format($d[$i]->salary[$month]->monthly_tax, 2);
-            
-            $deduction_total = 
-                        $d[$i]->salary[$month]->pf_self + 
-                        $total_loan +
-                        $d[$i]->salary[$month]->less +
-                        $d[$i]->salary[$month]->monthly_tax +
-                        $d[$i]->salary[$month]->fooding
-                        ;
-            $response['data'][$i]['deduction_total'] = number_format($deduction_total, 2);
-            $gross_salary = 
-                        $d[$i]->profile->basic * $d[$i]->salary[$month]->fraction +
-                        $d[$i]->salary[$month]->house_rent +
-                        $d[$i]->salary[$month]->conveyance +
-                        $d[$i]->salary[$month]->medical_allowance +
-                        $d[$i]->salary[$month]->bonus +
-                        $d[$i]->salary[$month]->extra
-                        ;
-            $response['data'][$i]['gross_salary'] = number_format($gross_salary, 2);
             $response['data'][$i]['gross_total'] = number_format($gross_salary + $d[$i]->salary[$month]->pf_company, 2);
             $response['data'][$i]['net_salary'] = number_format($gross_salary - $deduction_total,2);
             if($salaryinfo->pay_out_mode == 'BANK'){
@@ -208,6 +205,7 @@ class SalariesController extends Controller
                     'bank_account_number' => $d[$i]->profile->bank_account_number,
                 ];
             }
+            $response['data'][$i]['fraction'] = $d[$i]->salary[$month]->fraction;
         }
         return $response;
     }
@@ -238,18 +236,19 @@ class SalariesController extends Controller
             'house_rent'=> 'House Rent',
             'conveyance'=> 'Conveyance',
             'medical_allowance'=> 'Medical Allowance',
-            'pf_self'=> 'PF Self',
-            'pf_company'=> 'PF Company',
             'bonus'=> 'Bonus',
-            'loan'=> 'Loan',
             'extra'=> 'Extra',
             'less'=> 'Less',
+            'loan'=> 'Loan',
+            'pf_self'=> 'PF Self',
             'fooding'=>'Fooding',
             'monthly_tax'=>'Monthly Tax',
             'deduction_total'=> 'Deduction Total',
             'gross_salary'=> 'Gross Salary',
+            'pf_company'=> 'PF Company',
             'gross_total'=> 'Gross Total',
-            'net_salary'=> 'Net Salary'
+            'net_salary'=> 'Net Salary',
+            'fraction'=>'Fraction'
         );
         return $tabheads;
     }

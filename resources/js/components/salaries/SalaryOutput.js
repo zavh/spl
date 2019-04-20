@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import Departments from './Departments';
 import PayOutMode from './PayOutMode';
 import { setMainPanel, setEmployee, setFilters } from "./redux/actions/index";
+import { Button, Popover, PopoverHeader, PopoverBody } from 'reactstrap';
 
 function mapStateToProps (state)
 {
@@ -84,7 +85,7 @@ class ConnectedSalaryOutput extends Component {
     }
     render(){
         let monthtext = this.monthMapping(this.props.timeline.month); 
-        var downloadElm = null;
+        var downloadElm = null, frac;
         if(this.props.filters.pay_out_mode == 'bank'){
             var csvContent = encodeURI(this.downloadCSV());
            downloadElm = <a 
@@ -106,16 +107,29 @@ class ConnectedSalaryOutput extends Component {
                 </tr>
                 <tr>
                 { Object.keys(this.props.tabheads).map((key, index)=>{
+                    if(key=='fraction') return
+                    else 
                     return <th key={index}>{this.props.tabheads[key]}</th>
                 })}
                 </tr>
                 {this.props.salaryrows.map((e,i)=>{
-                    return <tr key={i}>
+                    return <tr key={i} className={frac}>
                         {Object.keys(e).map((key,index)=>{
+                            if(e.fraction < 1 && (key=='basic' || key=='house_rent' || key=='conveyance' || key=='medical_allowance' || key=='pf_self' || key=='pf_company'))
+                                return(
+                                    <PopOver 
+                                        key={key}
+                                        id={i+'-'+key}
+                                        title={'Fractional '+this.props.tabheads[key]}
+                                        value={e[key]}
+                                        body={`Employee didn't work for the whole month. A fractional factor of ${e.fraction} has been applied`}/>
+                                )
                             if(key=='monthly_tax')
                                 return <td key={index}>
                                     <a href='javascript:void(0)' onClick={this.showTax} data-index={e.employee_id}>{e[key]}</a>
                                 </td>
+                            else if(key=='fraction')
+                                return
                             else return <td key={index}>
                                     {e[key]}
                                 </td>
@@ -124,9 +138,41 @@ class ConnectedSalaryOutput extends Component {
                 })}
             </tbody>
         </table>
+        
         );
     }
 }
 
 const SalaryOutput = connect(mapStateToProps, mapDispatchToProps)(ConnectedSalaryOutput);
 export default SalaryOutput;
+
+class PopOver extends React.Component {
+    constructor(props) {
+      super(props);
+  
+      this.toggle = this.toggle.bind(this);
+      this.state = {
+        popoverOpen: false
+      };
+    }
+  
+    toggle() {
+      this.setState({
+        popoverOpen: !this.state.popoverOpen
+      });
+    }
+  
+    render() {
+      return (
+        <td key={this.props.id}>
+          <a href='javascript:void(0)' id={`Popover${this.props.id}`} className='badge btn btn-outline-danger'>
+            {this.props.value}
+          </a>
+          <Popover placement="bottom" isOpen={this.state.popoverOpen} target={`Popover${this.props.id}`} toggle={this.toggle}>
+            <PopoverHeader>{this.props.title}</PopoverHeader>
+            <PopoverBody>{this.props.body}</PopoverBody>
+          </Popover>
+        </td>
+      );
+    }
+  }
