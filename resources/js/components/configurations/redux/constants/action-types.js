@@ -1,0 +1,13 @@
+export const ADD_ARTICLE = "ADD_ARTICLE";
+export const REMOVE_ARTICLE = "REMOVE_ARTICLE";
+export const EDIT_ARTICLE = "EDIT_ARTICLE";
+export const ADD_USERS = "ADD_USERS";
+export const SET_MAIN_PANEL = "SET_MAIN_PANEL";
+export const SET_EMPLOYEE = "SET_EMPLOYEE";
+export const SET_PAY_YEAR = "SET_PAY_YEAR";
+export const SET_TAB_HEADS = "SET_TAB_HEADS";
+export const SET_SALARY_ROWS = "SET_SALARY_ROWS";
+export const SET_REF_TIMELINE = "SET_REF_TIMELINE";
+export const SET_INDEXING = "SET_INDEXING";
+export const SET_FILTERS = "SET_FILTERS";
+export const SET_BANK_ACCOUNTS = "SET_BANK_ACCOUNTS";

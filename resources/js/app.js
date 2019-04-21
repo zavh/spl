@@ -20,4 +20,7 @@ if(target == 'loans'){
 if(target == 'salaries'){
     require('./components/salaries/index');
 }
+if(target == 'configurations'){
+    require('./components/configurations/index');
+}
     

@@ -111,3 +111,4 @@ Route::resource('salaries','SalariesController');
 Route::resource('loans','LoansController');
 Route::resource('appmodules','AppModulesController')->only(['index']);
 Route::resource('quotations','QuotationsController')->except('create');
+Route::resource('configurations','ConfigurationsController');
