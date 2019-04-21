@@ -82576,10 +82576,10 @@ var TaxConfig = function (_Component) {
                 null,
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     'div',
-                    { className: 'row my-1 small' },
+                    { className: 'row m-4 small' },
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                         'div',
-                        { className: 'col-md-4' },
+                        { className: 'col-md-3' },
                         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                             'ul',
                             { className: 'list-group shadow-sm' },
@@ -82596,7 +82596,7 @@ var TaxConfig = function (_Component) {
                     ),
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                         'div',
-                        { className: 'col-md-8' },
+                        { className: 'col-md-9' },
                         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                             __WEBPACK_IMPORTED_MODULE_1_react_router_dom__["d" /* Switch */],
                             null,
@@ -82624,6 +82624,8 @@ var TaxConfig = function (_Component) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__commons_SingleInput__ = __webpack_require__(265);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -82643,21 +82645,76 @@ var SlabConfig = function (_Component) {
 
         _this.state = {
             firstSlabCategories: {},
+            firstSlabConfig: {},
+            slabs: [],
             newCategory: '',
-            categoryError: []
+            newSlab: '',
+            categoryError: [],
+            slabError: [],
+            fscSelected: 0
         };
         _this.inputCategory = _this.inputCategory.bind(_this);
+        _this.inputSlab = _this.inputSlab.bind(_this);
         _this.addCategory = _this.addCategory.bind(_this);
-        _this.handleCategoryChange = _this.handleCategoryChange.bind(_this);
+        _this.addSlab = _this.addSlab.bind(_this);
+        _this.handleFSCChange = _this.handleFSCChange.bind(_this);
+        _this.onSlabChange = _this.onSlabChange.bind(_this);
+        _this.onPercChange = _this.onPercChange.bind(_this);
+        _this.deleteSlab = _this.deleteSlab.bind(_this);
         return _this;
     }
 
     _createClass(SlabConfig, [{
+        key: 'onSlabChange',
+        value: function onSlabChange(value, index) {
+            var slabs = [].concat(_toConsumableArray(this.state.slabs));
+            slabs[index].slabval = value;
+            this.setState({ slabs: slabs });
+        }
+    }, {
+        key: 'onPercChange',
+        value: function onPercChange(value, index) {
+            var slabs = [].concat(_toConsumableArray(this.state.slabs));
+            slabs[index].percval = value;
+            this.setState({ slabs: slabs });
+        }
+    }, {
+        key: 'deleteSlab',
+        value: function deleteSlab(index) {
+            var slabs = [].concat(_toConsumableArray(this.state.slabs)),
+                modslabs = [];
+            for (var i = 0; i < slabs.length; i++) {
+                if (i != index) modslabs[modslabs.length] = slabs[i];
+            }this.setState({ slabs: modslabs });
+        }
+    }, {
         key: 'inputCategory',
         value: function inputCategory(value) {
             this.setState({
                 newCategory: value,
                 categoryError: []
+            });
+        }
+    }, {
+        key: 'inputSlab',
+        value: function inputSlab(value) {
+            this.setState({
+                newSlab: value,
+                slabError: []
+            });
+        }
+    }, {
+        key: 'addSlab',
+        value: function addSlab() {
+            var newslab = [];
+            newslab[0] = {
+                slabval: this.state.newSlab,
+                percval: 0
+            };
+            var slabs = this.state.slabs.concat(newslab);
+            this.setState({
+                slabs: slabs,
+                newSlab: ''
             });
         }
     }, {
@@ -82687,12 +82744,13 @@ var SlabConfig = function (_Component) {
                     newCategory: ''
                 });
             }
-            console.log(this.state);
         }
     }, {
-        key: 'handleCategoryChange',
-        value: function handleCategoryChange() {
-            console.log(this.state);
+        key: 'handleFSCChange',
+        value: function handleFSCChange(e) {
+            this.setState({
+                fscSelected: e.target.value
+            });
         }
     }, {
         key: 'render',
@@ -82701,29 +82759,75 @@ var SlabConfig = function (_Component) {
 
             return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 'div',
-                null,
-                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__commons_SingleInput__["a" /* default */], {
-                    type: 'text',
-                    label: 'Insert Category',
-                    errors: this.state.categoryError,
-                    onChange: this.inputCategory,
-                    value: this.state.newCategory,
-                    onInsert: this.addCategory
-                }),
+                { className: 'row m-0 small' },
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                    'select',
-                    { value: 0, onChange: this.handleCategoryChange },
+                    'div',
+                    { className: 'col-md-6' },
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__commons_SingleInput__["a" /* default */], {
+                        type: 'text',
+                        label: 'Insert Category',
+                        errors: this.state.categoryError,
+                        onChange: this.inputCategory,
+                        value: this.state.newCategory,
+                        onInsert: this.addCategory
+                    }),
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                        'option',
-                        { disabled: true, value: 0 },
-                        'Select One'
+                        'div',
+                        { className: 'form-group row my-1' },
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            'div',
+                            { className: 'input-group input-group-sm col-md-12' },
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                'div',
+                                { className: 'input-group-prepend' },
+                                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                    'span',
+                                    { className: 'input-group-text', id: 'inputGroup-sizing-sm' },
+                                    'Tax Categories'
+                                )
+                            ),
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                'select',
+                                { value: this.state.fscSelected, onChange: this.handleFSCChange, className: 'form-control' },
+                                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                    'option',
+                                    { disabled: true, value: 0 },
+                                    'Select One'
+                                ),
+                                Object.keys(this.state.firstSlabCategories).map(function (category, index) {
+                                    return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                        'option',
+                                        { key: index, value: category },
+                                        _this2.state.firstSlabCategories[category]
+                                    );
+                                })
+                            )
+                        )
                     ),
-                    Object.keys(this.state.firstSlabCategories).map(function (category, index) {
-                        return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                            'option',
-                            { key: index, value: category },
-                            _this2.state.firstSlabCategories[category]
-                        );
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(FSConfig, { fsdata: this.state.firstSlabConfig, category: this.state.fscSelected })
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'div',
+                    { className: 'col-md-6' },
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__commons_SingleInput__["a" /* default */], {
+                        type: 'text',
+                        label: 'Add Slab',
+                        errors: this.state.slabError,
+                        onChange: this.inputSlab,
+                        value: this.state.newSlab,
+                        onInsert: this.addSlab
+                    }),
+                    this.state.slabs.map(function (slab, index) {
+                        return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(SlabView, {
+                            key: index,
+                            index: index,
+                            onSlabChange: _this2.onSlabChange,
+                            onPercChange: _this2.onPercChange,
+                            deleteSlab: _this2.deleteSlab,
+                            slabval: slab.slabval,
+                            percval: slab.percval,
+                            label: 'Slab - ' + (index + 1)
+                        });
                     })
                 )
             );
@@ -82734,6 +82838,144 @@ var SlabConfig = function (_Component) {
 }(__WEBPACK_IMPORTED_MODULE_0_react__["Component"]);
 
 /* harmony default export */ __webpack_exports__["a"] = (SlabConfig);
+
+function SlabView(props) {
+    function handleSlabChange(e) {
+        props.onSlabChange(e.target.value, e.target.dataset.index);
+    }
+
+    function handlePercChange(e) {
+        props.onPercChange(e.target.value, e.target.dataset.index);
+    }
+
+    function deleteSlab(e) {
+        props.deleteSlab(e.target.dataset.index);
+    }
+    return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+        'div',
+        { className: 'form-group row my-1' },
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'div',
+            { className: 'input-group input-group-sm col-md-12' },
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'div',
+                { className: 'input-group-prepend' },
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'span',
+                    { className: 'input-group-text' },
+                    props.label
+                )
+            ),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { type: 'text', className: 'form-control', onChange: handleSlabChange, value: props.slabval, 'data-index': props.index }),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'div',
+                { className: 'input-group-append' },
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'span',
+                    { className: 'input-group-text' },
+                    'Percentage'
+                )
+            ),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { type: 'number', className: 'form-control', onChange: handlePercChange, value: props.percval, 'data-index': props.index }),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'div',
+                { className: 'input-group-append' },
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'span',
+                    { className: 'input-group-text' },
+                    '%'
+                )
+            ),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'div',
+                { className: 'input-group-append' },
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'button',
+                    { className: 'btn btn-outline-secondary', type: 'button', id: 'button-addon2', 'data-index': props.index, onClick: deleteSlab },
+                    'Delete'
+                )
+            )
+        )
+    );
+}
+
+var FSConfig = function (_Component2) {
+    _inherits(FSConfig, _Component2);
+
+    function FSConfig(props) {
+        _classCallCheck(this, FSConfig);
+
+        var _this3 = _possibleConstructorReturn(this, (FSConfig.__proto__ || Object.getPrototypeOf(FSConfig)).call(this, props));
+
+        _this3.state = {
+            category: '',
+            fsdata: {}
+        };
+        return _this3;
+    }
+
+    _createClass(FSConfig, [{
+        key: 'componentDidUpdate',
+        value: function componentDidUpdate() {
+            if (this.state.category != this.props.category) {
+                var category = this.props.category,
+                    fsdata = {};
+                if (category in this.props.fsdata) {
+                    fsdata = this.props.fsdata;
+                } else {
+                    var slab = {},
+                        age = [];
+                    slab['any'] = '';
+                    age[0] = 'any';
+                    fsdata[category] = {
+                        age: age,
+                        slab: slab
+                    };
+                }
+                this.setState({
+                    category: this.props.category,
+                    fsdata: fsdata
+                });
+            }
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            console.log(this.state);
+            if (this.state.category == '') return null;else return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'div',
+                { className: 'form-group row my-1' },
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'div',
+                    { className: 'input-group input-group-sm col-md-12' },
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        'div',
+                        { className: 'input-group-prepend' },
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            'span',
+                            { className: 'input-group-text' },
+                            this.state.categoy,
+                            ' Age '
+                        )
+                    ),
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { type: 'text', className: 'form-control', value: this.state.fsdata[this.state.category].age[0], readOnly: true }),
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        'div',
+                        { className: 'input-group-append' },
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            'span',
+                            { className: 'input-group-text' },
+                            'Slab Value'
+                        )
+                    ),
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { type: 'number', className: 'form-control', value: this.state.fsdata[this.state.category].slab[this.state.fsdata[this.state.category].age[0]], readOnly: true })
+                )
+            );
+        }
+    }]);
+
+    return FSConfig;
+}(__WEBPACK_IMPORTED_MODULE_0_react__["Component"]);
 
 /***/ }),
 /* 265 */

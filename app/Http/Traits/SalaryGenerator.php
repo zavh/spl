@@ -98,16 +98,16 @@ trait SalaryGenerator {
     private function TDS($TaxableSalary,$gender,$age)
     {
         
-        $firstSlab['f'] = array();
-        $firstSlab['f']['age'] = 'any';
-        $firstSlab['f']['slab'][$firstSlab['f']['age']] = 300000;
-        $firstSlab['m'] = array();
-        $firstSlab['m']['age'] = 65;
-        $firstSlab['m']['slab'][$firstSlab['m']['age']-1] = 250000;
-        $firstSlab['m']['slab'][$firstSlab['m']['age']] = 300000;
+        $firstSlab['female'] = array();
+        $firstSlab['female']['age'] = 'any';
+        $firstSlab['female']['slab'][$firstSlab['female']['age']] = 300000;
+        $firstSlab['male'] = array();
+        $firstSlab['male']['age'] = 65;
+        $firstSlab['male']['slab'][$firstSlab['male']['age']-1] = 250000;
+        $firstSlab['male']['slab'][$firstSlab['male']['age']] = 300000;
 
         $a = 0;
-        if($firstSlab[$gender]['age'] == 'any')
+        if(isset($firstSlab[$gender]['slab']['any']))
             $a = $firstSlab[$gender]['slab']['any'];
         else {
             foreach($firstSlab[$gender]['slab'] as $slabage=>$value){

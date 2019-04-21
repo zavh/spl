@@ -20,8 +20,8 @@ export default class TaxConfig extends Component{
     render(){
         return(
             <Router>
-                <div className="row my-1 small">
-                    <div className="col-md-4">
+                <div className="row m-4 small">
+                    <div className="col-md-3">
                         <ul className="list-group shadow-sm">
                             {this.state.menuItems.map((item,index) =>
                                 <StyledLi 
@@ -34,7 +34,7 @@ export default class TaxConfig extends Component{
                             )}
                         </ul>
                     </div>
-                    <div className="col-md-8">
+                    <div className="col-md-9">
                         <Switch>
                             <Route path="/configurations" component={SlabConfig} exact/>
                             <Route path="/configurations/taxconfig/slabs" component={SlabConfig}/>
