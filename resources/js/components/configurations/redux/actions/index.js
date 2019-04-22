@@ -1,60 +1,23 @@
 import {
-  SET_MAIN_PANEL,
-  SET_EMPLOYEE,
-  SET_PAY_YEAR,
-  SET_TAB_HEADS,
-  SET_SALARY_ROWS,
-  SET_REF_TIMELINE,
-  SET_INDEXING,
-  SET_FILTERS,
-  SET_BANK_ACCOUNTS,
+  ADD_SLAB, EDIT_SLAB, DELETE_SLAB, ADD_FS_CATEGORY, EDIT_FS_DATA,
  } from "../constants/action-types";
 
-
-export function addArticle(payload) {
-  return { type: ADD_ARTICLE, payload };
+export function addSlab(payload) {
+  return { type: ADD_SLAB, payload };
 };
 
-export function removeArticle(payload) {
-  return { type: REMOVE_ARTICLE, payload };
+export function editSlab(payload) {
+  return { type: EDIT_SLAB, payload };
 };
 
-export function editArticle(payload) {
-  return { type: EDIT_ARTICLE, payload };
+export function deleteSlab(payload) {
+  return { type: DELETE_SLAB, payload };
 };
 
-export function setEmployee(payload) {
-  return { type: SET_EMPLOYEE, payload };
+export function addFSCategory(payload) {
+  return { type: ADD_FS_CATEGORY, payload };
 };
 
-export function setMainPanel(payload) {
-  return { type: SET_MAIN_PANEL, payload };
-};
-
-export function setPayYear(payload) {
-  return { type: SET_PAY_YEAR, payload };
-};
-
-export function setTabHeads(payload) {
-  return { type: SET_TAB_HEADS, payload };
-};
-
-export function setSalaryRows(payload) {
-  return { type: SET_SALARY_ROWS, payload };
-};
-
-export function setRefTimeline(payload){
-  return { type: SET_REF_TIMELINE, payload};
-};
-
-export function setIndexing(payload){
-  return { type: SET_INDEXING, payload};
-};
-
-export function setFilters(payload){
-  return { type: SET_FILTERS, payload};
-};
-
-export function setBankAccounts(payload){
-  return { type: SET_BANK_ACCOUNTS, payload};
+export function editFSData(payload) {
+  return { type: EDIT_FS_DATA, payload };
 };

@@ -82322,86 +82322,76 @@ var store = Object(__WEBPACK_IMPORTED_MODULE_0_redux__["b" /* createStore */])(_
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__constants_action_types__ = __webpack_require__(256);
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 
 
 var initialState = {
-  mainPanel: 'Main',
-  targetEmployee: {},
-  timeline: {},
-  tabheads: {},
-  salaryrows: [],
-  reftimeline: {},
-  indexing: [],
-  filters: { department: 0, pay_out_mode: 0 },
-  bankaccounts: {}
+  slabs: [],
+  firstSlabCategories: {},
+  fsdata: {}
 };
 function rootReducer() {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
   var action = arguments[1];
 
-  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["e" /* SET_MAIN_PANEL */]) {
+  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["b" /* ADD_SLAB */]) {
+    var slabs = [].concat(_toConsumableArray(state.slabs)).concat(action.payload);
     return Object.assign({}, state, {
-      mainPanel: action.payload
+      slabs: slabs
     });
   }
-  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["b" /* SET_EMPLOYEE */]) {
+
+  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["e" /* EDIT_SLAB */]) {
+    var _slabs = [].concat(_toConsumableArray(state.slabs));
+    _slabs[action.payload.index].slabval = action.payload.slabval;
+    _slabs[action.payload.index].percval = action.payload.percval;
     return Object.assign({}, state, {
-      targetEmployee: action.payload
+      slabs: _slabs
     });
   }
-  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["f" /* SET_PAY_YEAR */]) {
+
+  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["c" /* DELETE_SLAB */]) {
+    var index = action.payload;
+    var s = [].concat(_toConsumableArray(state.slabs)),
+        modslabs = [];
+    for (var i = 0; i < s.length; i++) {
+      if (i == index) continue;
+      modslabs[modslabs.length] = s[i];
+    }
     return Object.assign({}, state, {
-      timeline: action.payload
+      slabs: modslabs
     });
   }
-  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["i" /* SET_TAB_HEADS */]) {
+
+  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["a" /* ADD_FS_CATEGORY */]) {
+    var catkey = '';
+    for (var key in action.payload) {
+      catkey = key;
+    }var categories = Object.assign({}, state.firstSlabCategories, action.payload);
+    var slab = {},
+        age = [],
+        newfsdata = {},
+        fsdata = {};
+    slab['any'] = '100000'; //some default value
+    age[0] = 'any'; //some default value
+    newfsdata[catkey] = {
+      age: age,
+      slab: slab
+    };
+    fsdata = Object.assign({}, state.fsdata, newfsdata);
     return Object.assign({}, state, {
-      tabheads: action.payload
+      firstSlabCategories: categories,
+      fsdata: fsdata
     });
   }
-  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["h" /* SET_SALARY_ROWS */]) {
-    var rows = Object.keys(action.payload).map(function (key) {
-      return action.payload[key];
-    });
-    return Object.assign({}, state, {
-      salaryrows: rows
-    });
+
+  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["d" /* EDIT_FS_DATA */]) {
+    var category = action.payload.key;
+    var edited = Object.assign({}, state.fsdata, action.payload.update);
+
+    return Object.assign({}, state, { fsdata: edited });
   }
-  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["g" /* SET_REF_TIMELINE */]) {
-    return Object.assign({}, state, {
-      reftimeline: action.payload
-    });
-  }
-  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["d" /* SET_INDEXING */]) {
-    return Object.assign({}, state, {
-      indexing: action.payload
-    });
-  }
-  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["c" /* SET_FILTERS */]) {
-    return Object.assign({}, state, {
-      filters: action.payload
-    });
-  }
-  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["a" /* SET_BANK_ACCOUNTS */]) {
-    return Object.assign({}, state, {
-      bankaccounts: action.payload
-    });
-  }
-  // if (action.type === GET_PIS){
-  //   return Object.assign({}, state, {
-  //     pis: action.payload
-  //   });
-  // }
-  // if (action.type === EDIT_PI) {
-  //   let pis = [...state.pis];
-  //   pis[action.payload.index]['cus_id'] = action.payload.cus_id;
-  //   pis[action.payload.index]['customer_id'] = action.payload.customer_id;
-  //   pis[action.payload.index]['owner_name'] = action.payload.owner_name;
-  //   pis[action.payload.index]['status'] = action.payload.status;
-  //   return Object.assign({}, state, {
-  //     pis: pis
-  //   });
-  // }
 
   return state;
 }
@@ -82412,32 +82402,16 @@ function rootReducer() {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* unused harmony export ADD_ARTICLE */
-/* unused harmony export REMOVE_ARTICLE */
-/* unused harmony export EDIT_ARTICLE */
-/* unused harmony export ADD_USERS */
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return SET_MAIN_PANEL; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return SET_EMPLOYEE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return SET_PAY_YEAR; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "i", function() { return SET_TAB_HEADS; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return SET_SALARY_ROWS; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return SET_REF_TIMELINE; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return SET_INDEXING; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return SET_FILTERS; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return SET_BANK_ACCOUNTS; });
-var ADD_ARTICLE = "ADD_ARTICLE";
-var REMOVE_ARTICLE = "REMOVE_ARTICLE";
-var EDIT_ARTICLE = "EDIT_ARTICLE";
-var ADD_USERS = "ADD_USERS";
-var SET_MAIN_PANEL = "SET_MAIN_PANEL";
-var SET_EMPLOYEE = "SET_EMPLOYEE";
-var SET_PAY_YEAR = "SET_PAY_YEAR";
-var SET_TAB_HEADS = "SET_TAB_HEADS";
-var SET_SALARY_ROWS = "SET_SALARY_ROWS";
-var SET_REF_TIMELINE = "SET_REF_TIMELINE";
-var SET_INDEXING = "SET_INDEXING";
-var SET_FILTERS = "SET_FILTERS";
-var SET_BANK_ACCOUNTS = "SET_BANK_ACCOUNTS";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return ADD_SLAB; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return EDIT_SLAB; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return DELETE_SLAB; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ADD_FS_CATEGORY; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return EDIT_FS_DATA; });
+var ADD_SLAB = "ADD_SLAB";
+var EDIT_SLAB = "EDIT_SLAB";
+var DELETE_SLAB = "DELETE_SLAB";
+var ADD_FS_CATEGORY = "ADD_FS_CATEGORY";
+var EDIT_FS_DATA = "EDIT_FS_DATA";
 
 /***/ }),
 /* 257 */
@@ -82529,8 +82503,9 @@ var StyledLi = function (_Component) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_react_router_dom__ = __webpack_require__(79);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__StyledLi__ = __webpack_require__(262);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__SlabConfig__ = __webpack_require__(264);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_react_redux__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__StyledLi__ = __webpack_require__(262);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__SlabConfig__ = __webpack_require__(264);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -82544,13 +82519,21 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 
 
-var TaxConfig = function (_Component) {
-    _inherits(TaxConfig, _Component);
+function mapStateToProps(state) {
+    return {};
+}
 
-    function TaxConfig(props) {
-        _classCallCheck(this, TaxConfig);
+function mapDispatchToProps(dispatch) {
+    return {};
+}
 
-        var _this = _possibleConstructorReturn(this, (TaxConfig.__proto__ || Object.getPrototypeOf(TaxConfig)).call(this, props));
+var ConnectedTaxConfig = function (_Component) {
+    _inherits(ConnectedTaxConfig, _Component);
+
+    function ConnectedTaxConfig(props) {
+        _classCallCheck(this, ConnectedTaxConfig);
+
+        var _this = _possibleConstructorReturn(this, (ConnectedTaxConfig.__proto__ || Object.getPrototypeOf(ConnectedTaxConfig)).call(this, props));
 
         _this.state = {
             panel: 'Slab Configuration',
@@ -82561,13 +82544,13 @@ var TaxConfig = function (_Component) {
         return _this;
     }
 
-    _createClass(TaxConfig, [{
-        key: 'activeLinkChange',
+    _createClass(ConnectedTaxConfig, [{
+        key: "activeLinkChange",
         value: function activeLinkChange(al) {
             this.setState({ panel: al });
         }
     }, {
-        key: 'render',
+        key: "render",
         value: function render() {
             var _this2 = this;
 
@@ -82575,16 +82558,16 @@ var TaxConfig = function (_Component) {
                 __WEBPACK_IMPORTED_MODULE_1_react_router_dom__["a" /* BrowserRouter */],
                 null,
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                    'div',
-                    { className: 'row m-4 small' },
+                    "div",
+                    { className: "row m-4 small" },
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                        'div',
-                        { className: 'col-md-3' },
+                        "div",
+                        { className: "col-md-3" },
                         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                            'ul',
-                            { className: 'list-group shadow-sm' },
+                            "ul",
+                            { className: "list-group shadow-sm" },
                             this.state.menuItems.map(function (item, index) {
-                                return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__StyledLi__["a" /* default */], {
+                                return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__StyledLi__["a" /* default */], {
                                     item: item,
                                     target: _this2.state.panel,
                                     key: index,
@@ -82595,13 +82578,13 @@ var TaxConfig = function (_Component) {
                         )
                     ),
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                        'div',
-                        { className: 'col-md-9' },
+                        "div",
+                        { className: "col-md-9" },
                         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                             __WEBPACK_IMPORTED_MODULE_1_react_router_dom__["d" /* Switch */],
                             null,
-                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1_react_router_dom__["c" /* Route */], { path: '/configurations', component: __WEBPACK_IMPORTED_MODULE_3__SlabConfig__["a" /* default */], exact: true }),
-                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1_react_router_dom__["c" /* Route */], { path: '/configurations/taxconfig/slabs', component: __WEBPACK_IMPORTED_MODULE_3__SlabConfig__["a" /* default */] })
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1_react_router_dom__["c" /* Route */], { path: "/configurations", component: __WEBPACK_IMPORTED_MODULE_4__SlabConfig__["a" /* default */], exact: true }),
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1_react_router_dom__["c" /* Route */], { path: "/configurations/taxconfig/slabs", component: __WEBPACK_IMPORTED_MODULE_4__SlabConfig__["a" /* default */] })
                         )
                     )
                 )
@@ -82609,9 +82592,10 @@ var TaxConfig = function (_Component) {
         }
     }]);
 
-    return TaxConfig;
+    return ConnectedTaxConfig;
 }(__WEBPACK_IMPORTED_MODULE_0_react__["Component"]);
 
+var TaxConfig = Object(__WEBPACK_IMPORTED_MODULE_2_react_redux__["b" /* connect */])(mapStateToProps, mapDispatchToProps)(ConnectedTaxConfig);
 /* harmony default export */ __webpack_exports__["a"] = (TaxConfig);
 
 /***/ }),
@@ -82623,6 +82607,8 @@ var TaxConfig = function (_Component) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__FirstSlabConfig__ = __webpack_require__(266);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__commons_SingleInput__ = __webpack_require__(265);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_react_redux__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__redux_actions_index__ = __webpack_require__(267);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
@@ -82637,18 +82623,41 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 
 
-var SlabConfig = function (_Component) {
-    _inherits(SlabConfig, _Component);
 
-    function SlabConfig(props) {
-        _classCallCheck(this, SlabConfig);
 
-        var _this = _possibleConstructorReturn(this, (SlabConfig.__proto__ || Object.getPrototypeOf(SlabConfig)).call(this, props));
+function mapStateToProps(state) {
+    return {
+        slabs: state.slabs,
+        firstSlabCategories: state.firstSlabCategories
+    };
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        addSlab: function addSlab(slab) {
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__redux_actions_index__["b" /* addSlab */])(slab));
+        },
+        editSlab: function editSlab(slab) {
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__redux_actions_index__["e" /* editSlab */])(slab));
+        },
+        deleteSlab: function deleteSlab(index) {
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__redux_actions_index__["c" /* deleteSlab */])(index));
+        },
+        addFSCategory: function addFSCategory(category) {
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__redux_actions_index__["a" /* addFSCategory */])(category));
+        }
+    };
+}
+
+var ConnectedSlabConfig = function (_Component) {
+    _inherits(ConnectedSlabConfig, _Component);
+
+    function ConnectedSlabConfig(props) {
+        _classCallCheck(this, ConnectedSlabConfig);
+
+        var _this = _possibleConstructorReturn(this, (ConnectedSlabConfig.__proto__ || Object.getPrototypeOf(ConnectedSlabConfig)).call(this, props));
 
         _this.state = {
-            firstSlabCategories: {},
-            firstSlabConfig: {},
-            slabs: [],
             newCategory: '',
             newSlab: '',
             categoryError: [],
@@ -82666,44 +82675,19 @@ var SlabConfig = function (_Component) {
         return _this;
     }
 
-    _createClass(SlabConfig, [{
+    _createClass(ConnectedSlabConfig, [{
         key: 'onSlabChange',
         value: function onSlabChange(value, index) {
-            var slabs = [].concat(_toConsumableArray(this.state.slabs));
-            slabs[index].slabval = value;
-            this.setState({ slabs: slabs });
+            var slabs = [].concat(_toConsumableArray(this.props.slabs));
+            var percval = slabs[index].percval;
+            this.props.editSlab({ slabval: value, percval: percval, index: index });
         }
     }, {
         key: 'onPercChange',
         value: function onPercChange(value, index) {
-            var slabs = [].concat(_toConsumableArray(this.state.slabs));
-            slabs[index].percval = value;
-            this.setState({ slabs: slabs });
-        }
-    }, {
-        key: 'deleteSlab',
-        value: function deleteSlab(index) {
-            var slabs = [].concat(_toConsumableArray(this.state.slabs)),
-                modslabs = [];
-            for (var i = 0; i < slabs.length; i++) {
-                if (i != index) modslabs[modslabs.length] = slabs[i];
-            }this.setState({ slabs: modslabs });
-        }
-    }, {
-        key: 'inputCategory',
-        value: function inputCategory(value) {
-            this.setState({
-                newCategory: value,
-                categoryError: []
-            });
-        }
-    }, {
-        key: 'inputSlab',
-        value: function inputSlab(value) {
-            this.setState({
-                newSlab: value,
-                slabError: []
-            });
+            var slabs = [].concat(_toConsumableArray(this.props.slabs));
+            var slabval = slabs[index].slabval;
+            this.props.editSlab({ slabval: slabval, percval: value, index: index });
         }
     }, {
         key: 'addSlab',
@@ -82713,10 +82697,32 @@ var SlabConfig = function (_Component) {
                 slabval: this.state.newSlab,
                 percval: 0
             };
-            var slabs = this.state.slabs.concat(newslab);
+            this.setState({ newSlab: '' });
+            this.props.addSlab(newslab);
+        }
+    }, {
+        key: 'deleteSlab',
+        value: function deleteSlab(index) {
+            this.props.deleteSlab(index);
+        }
+        //Local State change action //
+
+    }, {
+        key: 'inputCategory',
+        value: function inputCategory(value) {
             this.setState({
-                slabs: slabs,
-                newSlab: ''
+                newCategory: value,
+                categoryError: []
+            });
+        }
+        //Local State change action //
+
+    }, {
+        key: 'inputSlab',
+        value: function inputSlab(value) {
+            this.setState({
+                newSlab: value,
+                slabError: []
             });
         }
     }, {
@@ -82731,7 +82737,7 @@ var SlabConfig = function (_Component) {
             } else {
                 var value = this.state.newCategory;
                 var newkey = value.toLowerCase().replace(' ', '_');
-                if (newkey in this.state.firstSlabCategories) {
+                if (newkey in this.props.firstSlabCategories) {
                     var _errors = [];
                     _errors[0] = 'Category ' + value + ' already defined', this.setState({
                         categoryError: _errors
@@ -82740,11 +82746,8 @@ var SlabConfig = function (_Component) {
                 }
                 var category = {};
                 category[newkey] = value;
-                var categories = Object.assign(this.state.firstSlabCategories, category);
-                this.setState({
-                    firstSlabCategories: categories,
-                    newCategory: ''
-                });
+                this.setState({ newCategory: '' });
+                this.props.addFSCategory(category);
             }
         }
     }, {
@@ -82796,17 +82799,17 @@ var SlabConfig = function (_Component) {
                                     { disabled: true, value: 0 },
                                     'Select One'
                                 ),
-                                Object.keys(this.state.firstSlabCategories).map(function (category, index) {
+                                Object.keys(this.props.firstSlabCategories).map(function (category, index) {
                                     return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                                         'option',
                                         { key: index, value: category },
-                                        _this2.state.firstSlabCategories[category]
+                                        _this2.props.firstSlabCategories[category]
                                     );
                                 })
                             )
                         )
                     ),
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__FirstSlabConfig__["a" /* default */], { fsdata: this.state.firstSlabConfig, category: this.state.fscSelected })
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__FirstSlabConfig__["a" /* default */], { category: this.state.fscSelected })
                 ),
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     'div',
@@ -82819,7 +82822,7 @@ var SlabConfig = function (_Component) {
                         value: this.state.newSlab,
                         onInsert: this.addSlab
                     }),
-                    this.state.slabs.map(function (slab, index) {
+                    this.props.slabs.map(function (slab, index) {
                         return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(SlabView, {
                             key: index,
                             index: index,
@@ -82836,10 +82839,8 @@ var SlabConfig = function (_Component) {
         }
     }]);
 
-    return SlabConfig;
+    return ConnectedSlabConfig;
 }(__WEBPACK_IMPORTED_MODULE_0_react__["Component"]);
-
-/* harmony default export */ __webpack_exports__["a"] = (SlabConfig);
 
 function SlabView(props) {
     function handleSlabChange(e) {
@@ -82900,6 +82901,9 @@ function SlabView(props) {
         )
     );
 }
+
+var SlabConfig = Object(__WEBPACK_IMPORTED_MODULE_3_react_redux__["b" /* connect */])(mapStateToProps, mapDispatchToProps)(ConnectedSlabConfig);
+/* harmony default export */ __webpack_exports__["a"] = (SlabConfig);
 
 /***/ }),
 /* 265 */
@@ -83015,6 +83019,8 @@ var SingleInput = function (_Component) {
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_react_redux__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__redux_actions_index__ = __webpack_require__(267);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
@@ -83027,13 +83033,29 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 
 
-var FSConfig = function (_Component) {
-    _inherits(FSConfig, _Component);
 
-    function FSConfig(props) {
-        _classCallCheck(this, FSConfig);
 
-        var _this = _possibleConstructorReturn(this, (FSConfig.__proto__ || Object.getPrototypeOf(FSConfig)).call(this, props));
+function mapStateToProps(state) {
+    return {
+        fsdata: state.fsdata
+    };
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        editFSData: function editFSData(fsdata) {
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_2__redux_actions_index__["d" /* editFSData */])(fsdata));
+        }
+    };
+}
+
+var ConnectedFSConfig = function (_Component) {
+    _inherits(ConnectedFSConfig, _Component);
+
+    function ConnectedFSConfig(props) {
+        _classCallCheck(this, ConnectedFSConfig);
+
+        var _this = _possibleConstructorReturn(this, (ConnectedFSConfig.__proto__ || Object.getPrototypeOf(ConnectedFSConfig)).call(this, props));
 
         _this.state = {
             category: '',
@@ -83047,15 +83069,15 @@ var FSConfig = function (_Component) {
         return _this;
     }
 
-    _createClass(FSConfig, [{
-        key: 'handleChangeAge',
+    _createClass(ConnectedFSConfig, [{
+        key: "handleChangeAge",
         value: function handleChangeAge(e) {
 
             //COPYING
             var index = e.target.dataset.index;
             var category = this.state.category;
-            var s = Object.assign({}, this.state.fsdata[category].slab);
-            var ua = [].concat(_toConsumableArray(this.state.fsdata[category].age)); //Updated Age array
+            var s = Object.assign({}, this.props.fsdata[category].slab);
+            var ua = [].concat(_toConsumableArray(this.props.fsdata[category].age)); //Updated Age array
 
             var orig = ua[index];
             //MUTATING COPIES
@@ -83070,7 +83092,8 @@ var FSConfig = function (_Component) {
 
             update[category]['age'] = ua;
             update[category]['slab'] = us;
-            this.setState({ fsdata: update });
+
+            this.props.editFSData({ update: update, key: category });
             if (e.target.value != 'any' && isNaN(e.target.value) || e.target.value == '') {
                 var errors = [].concat(_toConsumableArray(this.state.ageerrors));
                 errors[0] = "'Age' should be either 'any' or a numeric value";
@@ -83080,13 +83103,13 @@ var FSConfig = function (_Component) {
             }
         }
     }, {
-        key: 'handleSlabValChange',
+        key: "handleSlabValChange",
         value: function handleSlabValChange(e) {
             //COPYING
             var index = e.target.dataset.index;
             var category = this.state.category;
-            var s = Object.assign({}, this.state.fsdata[category].slab);
-            var a = [].concat(_toConsumableArray(this.state.fsdata[category].age));
+            var s = Object.assign({}, this.props.fsdata[category].slab);
+            var a = [].concat(_toConsumableArray(this.props.fsdata[category].age));
             var age = a[index];
             s[a] = e.target.value;
 
@@ -83095,7 +83118,7 @@ var FSConfig = function (_Component) {
 
             update[category]['age'] = a;
             update[category]['slab'] = s;
-            this.setState({ fsdata: update });
+            this.props.editFSData({ update: update, key: category });
             if (isNaN(e.target.value) || e.target.value == '' || e.target.value < 1) {
                 var errors = [].concat(_toConsumableArray(this.state.slaberrors));
                 errors[0] = "'Slab' should be a non-zero numeric value";
@@ -83105,31 +83128,16 @@ var FSConfig = function (_Component) {
             }
         }
     }, {
-        key: 'componentDidUpdate',
+        key: "componentDidUpdate",
         value: function componentDidUpdate() {
             if (this.state.category != this.props.category) {
-                var category = this.props.category,
-                    fsdata = {};
-                if (category in this.props.fsdata) {
-                    fsdata = this.props.fsdata;
-                } else {
-                    var slab = {},
-                        age = [];
-                    slab['any'] = '';
-                    age[0] = 'any';
-                    fsdata[category] = {
-                        age: age,
-                        slab: slab
-                    };
-                }
                 this.setState({
-                    category: this.props.category,
-                    fsdata: fsdata
+                    category: this.props.category
                 });
             }
         }
     }, {
-        key: 'errorProcess',
+        key: "errorProcess",
         value: function errorProcess() {
             var a = [],
                 g = [],
@@ -83138,19 +83146,18 @@ var FSConfig = function (_Component) {
             if (this.state.slaberrors.length > 0) g = [].concat(_toConsumableArray(this.state.slaberrors));
 
             errors = a.concat(g);
-            console.log(errors);
             if (errors.length > 0) {
                 var divStyle = {
                     display: 'block'
                 };
                 return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                    'span',
-                    { className: 'invalid-feedback', role: 'alert', style: divStyle },
+                    "span",
+                    { className: "invalid-feedback", role: "alert", style: divStyle },
                     errors.map(function (e, i) {
                         return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                            'strong',
-                            { key: i, className: 'mr-2' },
-                            '\u25B6',
+                            "strong",
+                            { key: i, className: "mr-2" },
+                            "\u25B6",
                             e
                         );
                     })
@@ -83158,42 +83165,42 @@ var FSConfig = function (_Component) {
             }
         }
     }, {
-        key: 'render',
+        key: "render",
         value: function render() {
             var _this2 = this;
 
             var category = this.state.category;
 
             if (category == '') return null;else return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                'div',
+                "div",
                 null,
-                this.state.fsdata[category].age.map(function (Age, index) {
+                this.props.fsdata[category].age.map(function (Age, index) {
                     return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                        'div',
-                        { className: 'form-group row my-1', key: index },
+                        "div",
+                        { className: "form-group row my-1", key: index },
                         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                            'div',
-                            { className: 'input-group input-group-sm col-md-12' },
+                            "div",
+                            { className: "input-group input-group-sm col-md-12" },
                             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                'div',
-                                { className: 'input-group-prepend' },
+                                "div",
+                                { className: "input-group-prepend" },
                                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                    'span',
-                                    { className: 'input-group-text' },
-                                    ' Age '
+                                    "span",
+                                    { className: "input-group-text" },
+                                    " Age "
                                 )
                             ),
-                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { type: 'text', className: 'form-control', value: Age, 'data-index': index, onChange: _this2.handleChangeAge }),
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("input", { type: "text", className: "form-control", value: Age, "data-index": index, onChange: _this2.handleChangeAge }),
                             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                'div',
-                                { className: 'input-group-append' },
+                                "div",
+                                { className: "input-group-append" },
                                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                    'span',
-                                    { className: 'input-group-text' },
-                                    'Slab Value'
+                                    "span",
+                                    { className: "input-group-text" },
+                                    "Slab Value"
                                 )
                             ),
-                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { type: 'number', className: 'form-control', value: _this2.state.fsdata[category].slab[Age], 'data-index': index, onChange: _this2.handleSlabValChange }),
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("input", { type: "number", className: "form-control", value: _this2.props.fsdata[category].slab[Age], "data-index": index, onChange: _this2.handleSlabValChange }),
                             _this2.errorProcess()
                         )
                     );
@@ -83202,10 +83209,44 @@ var FSConfig = function (_Component) {
         }
     }]);
 
-    return FSConfig;
+    return ConnectedFSConfig;
 }(__WEBPACK_IMPORTED_MODULE_0_react__["Component"]);
 
+var FSConfig = Object(__WEBPACK_IMPORTED_MODULE_1_react_redux__["b" /* connect */])(mapStateToProps, mapDispatchToProps)(ConnectedFSConfig);
 /* harmony default export */ __webpack_exports__["a"] = (FSConfig);
+
+/***/ }),
+/* 267 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["b"] = addSlab;
+/* harmony export (immutable) */ __webpack_exports__["e"] = editSlab;
+/* harmony export (immutable) */ __webpack_exports__["c"] = deleteSlab;
+/* harmony export (immutable) */ __webpack_exports__["a"] = addFSCategory;
+/* harmony export (immutable) */ __webpack_exports__["d"] = editFSData;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__constants_action_types__ = __webpack_require__(256);
+
+
+function addSlab(payload) {
+  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["b" /* ADD_SLAB */], payload: payload };
+};
+
+function editSlab(payload) {
+  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["e" /* EDIT_SLAB */], payload: payload };
+};
+
+function deleteSlab(payload) {
+  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["c" /* DELETE_SLAB */], payload: payload };
+};
+
+function addFSCategory(payload) {
+  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["a" /* ADD_FS_CATEGORY */], payload: payload };
+};
+
+function editFSData(payload) {
+  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["d" /* EDIT_FS_DATA */], payload: payload };
+};
 
 /***/ })
 /******/ ]);

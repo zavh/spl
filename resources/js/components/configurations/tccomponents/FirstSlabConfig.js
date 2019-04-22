@@ -1,6 +1,21 @@
 import React, { Component } from 'react';
+import { connect } from "react-redux";
+import { editFSData } from "../redux/actions/index";
 
-export default class FSConfig extends Component{
+function mapStateToProps (state)
+{
+  return { 
+    fsdata: state.fsdata,
+    };
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        editFSData: fsdata => dispatch(editFSData(fsdata)),
+    };
+}
+
+class ConnectedFSConfig extends Component{
     constructor(props){
         super(props);
         this.state = {
@@ -18,8 +33,8 @@ export default class FSConfig extends Component{
         //COPYING
         let index = e.target.dataset.index;
         let category = this.state.category;
-        var s = Object.assign({},this.state.fsdata[category].slab);
-        var ua = [...this.state.fsdata[category].age]; //Updated Age array
+        var s = Object.assign({},this.props.fsdata[category].slab);
+        var ua = [...this.props.fsdata[category].age]; //Updated Age array
         
         let orig = ua[index];
         //MUTATING COPIES
@@ -37,7 +52,8 @@ export default class FSConfig extends Component{
 
         update[category]['age'] = ua;
         update[category]['slab'] = us;
-        this.setState({fsdata:update});
+        
+        this.props.editFSData({update:update, key:category});
         if((e.target.value != 'any' && isNaN(e.target.value)) || e.target.value == ''){
             let errors = [...this.state.ageerrors]; 
             errors[0] = "'Age' should be either 'any' or a numeric value";
@@ -51,8 +67,8 @@ export default class FSConfig extends Component{
         //COPYING
         let index = e.target.dataset.index;
         let category = this.state.category;
-        let s = Object.assign({},this.state.fsdata[category].slab);
-        let a = [...this.state.fsdata[category].age];
+        let s = Object.assign({},this.props.fsdata[category].slab);
+        let a = [...this.props.fsdata[category].age];
         let age = a[index];
         s[a] = e.target.value;
 
@@ -61,7 +77,7 @@ export default class FSConfig extends Component{
 
         update[category]['age'] = a;
         update[category]['slab'] = s;
-        this.setState({fsdata:update});
+        this.props.editFSData({update:update, key:category});
         if(isNaN(e.target.value) || e.target.value == '' || e.target.value < 1){
             let errors = [...this.state.slaberrors]; 
             errors[0] = "'Slab' should be a non-zero numeric value";
@@ -73,22 +89,8 @@ export default class FSConfig extends Component{
     }
     componentDidUpdate(){
         if(this.state.category != this.props.category){
-            let category = this.props.category, fsdata = {};
-            if(category in this.props.fsdata){
-                fsdata = this.props.fsdata;
-            }
-            else {
-                let slab = {}, age = [];
-                slab['any'] = '';
-                age[0] = 'any';
-                fsdata[category] = {
-                    age:age,
-                    slab:slab,
-                }
-            }
             this.setState({
                 category:this.props.category,
-                fsdata:fsdata,
             })
         }
     }
@@ -100,7 +102,6 @@ export default class FSConfig extends Component{
             g = [...this.state.slaberrors];
         
         errors = a.concat(g);
-        console.log(errors);
         if(errors.length > 0){
             const divStyle = {
                 display:'block',
@@ -121,7 +122,7 @@ export default class FSConfig extends Component{
         else 
             return(
                 <div>
-                {this.state.fsdata[category].age.map((Age, index)=>{
+                {this.props.fsdata[category].age.map((Age, index)=>{
                     return(
                         <div className="form-group row my-1" key={index}>
                             <div className="input-group input-group-sm col-md-12">
@@ -133,17 +134,15 @@ export default class FSConfig extends Component{
                                 <div className="input-group-append">
                                     <span className="input-group-text">Slab Value</span>
                                 </div>
-                                <input type='number' className="form-control" value={this.state.fsdata[category].slab[Age]} data-index={index} onChange={this.handleSlabValChange}/>
+                                <input type='number' className="form-control" value={this.props.fsdata[category].slab[Age]} data-index={index} onChange={this.handleSlabValChange}/>
                                 {this.errorProcess()}
-                                {/* <div className="input-group-append">
-                                    <button className="btn btn-outline-secondary" type="button" id="button-addon2" data-index={props.index} onClick={deleteSlab}>Delete</button>
-                                </div> */}
                             </div>
                         </div>
                     )
                 })}
                 </div>
             );
-            
     }
 }
+const FSConfig = connect(mapStateToProps, mapDispatchToProps)(ConnectedFSConfig);
+export default FSConfig;

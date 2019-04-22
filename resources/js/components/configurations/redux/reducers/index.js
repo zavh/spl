@@ -1,90 +1,66 @@
 import { 
-  SET_MAIN_PANEL, 
-  SET_EMPLOYEE, 
-  SET_PAY_YEAR, 
-  SET_TAB_HEADS, 
-  SET_SALARY_ROWS, 
-  SET_REF_TIMELINE,
-  SET_INDEXING, 
-  SET_FILTERS,
-  SET_BANK_ACCOUNTS,
+  ADD_SLAB, EDIT_SLAB, DELETE_SLAB, ADD_FS_CATEGORY, EDIT_FS_DATA,
 } from "../constants/action-types";
   
 const initialState = {
-  mainPanel: 'Main',
-  targetEmployee:{},
-  timeline:{},
-  tabheads:{},
-  salaryrows:[],
-  reftimeline:{},
-  indexing:[],
-  filters:{department:0,pay_out_mode:0},
-  bankaccounts:{},
+  slabs:[],
+  firstSlabCategories:{},
+  fsdata:{},
 };
 function rootReducer(state = initialState, action) {
-  if (action.type === SET_MAIN_PANEL){
+  if (action.type === ADD_SLAB){
+    let slabs = [...state.slabs].concat(action.payload);
     return Object.assign({}, state, {
-      mainPanel: action.payload
+      slabs: slabs
     });
   }
-  if (action.type === SET_EMPLOYEE){
+  
+  if (action.type === EDIT_SLAB){
+    let slabs = [...state.slabs];
+    slabs[action.payload.index].slabval = action.payload.slabval;
+    slabs[action.payload.index].percval = action.payload.percval;
     return Object.assign({}, state, {
-      targetEmployee: action.payload
+      slabs: slabs
     });
   }
-  if (action.type === SET_PAY_YEAR){
+  
+  if (action.type === DELETE_SLAB){
+    let index = action.payload;
+    let s = [...state.slabs], modslabs = [];
+    for(var i=0;i<s.length;i++){
+      if(i == index) continue;
+      modslabs[modslabs.length] = s[i];
+    }
     return Object.assign({}, state, {
-      timeline: action.payload
+      slabs: modslabs
     });
   }
-  if (action.type === SET_TAB_HEADS){
+  
+  if (action.type === ADD_FS_CATEGORY){
+    let catkey = '';
+    for(var key in action.payload)
+      catkey = key;
+    let categories = Object.assign({},state.firstSlabCategories, action.payload);
+    let slab = {}, age = [], newfsdata={}, fsdata={};
+    slab['any'] = '100000'; //some default value
+    age[0] = 'any'; //some default value
+    newfsdata[catkey] = {
+        age:age,
+        slab:slab,
+    }
+    fsdata = Object.assign({}, state.fsdata, newfsdata);
     return Object.assign({}, state, {
-      tabheads: action.payload
+      firstSlabCategories:categories,
+      fsdata:fsdata
     });
   }
-  if (action.type === SET_SALARY_ROWS){
-    let rows = Object.keys(action.payload).map(function(key){
-      return action.payload[key]
-    });
-    return Object.assign({}, state, {
-      salaryrows: rows
-    });
+
+  if (action.type === EDIT_FS_DATA){
+    let category = action.payload.key;
+    let edited = Object.assign({},state.fsdata,action.payload.update);
+  
+    return Object.assign({}, state, {fsdata : edited})
   }
-  if (action.type === SET_REF_TIMELINE){
-    return Object.assign({}, state, {
-      reftimeline: action.payload
-    });
-  }
-  if (action.type === SET_INDEXING){
-    return Object.assign({}, state, {
-      indexing: action.payload
-    });
-  }
-  if (action.type === SET_FILTERS){
-    return Object.assign({}, state, {
-      filters: action.payload
-    });
-  }
-  if (action.type === SET_BANK_ACCOUNTS){
-    return Object.assign({}, state, {
-      bankaccounts: action.payload
-    });
-  }
-  // if (action.type === GET_PIS){
-  //   return Object.assign({}, state, {
-  //     pis: action.payload
-  //   });
-  // }
-  // if (action.type === EDIT_PI) {
-  //   let pis = [...state.pis];
-  //   pis[action.payload.index]['cus_id'] = action.payload.cus_id;
-  //   pis[action.payload.index]['customer_id'] = action.payload.customer_id;
-  //   pis[action.payload.index]['owner_name'] = action.payload.owner_name;
-  //   pis[action.payload.index]['status'] = action.payload.status;
-  //   return Object.assign({}, state, {
-  //     pis: pis
-  //   });
-  // }
 
   return state;
 }

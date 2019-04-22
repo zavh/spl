@@ -1,9 +1,21 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route, Switch} from "react-router-dom";
+import { connect } from "react-redux";
 import StyledLi from './StyledLi';
 import SlabConfig from './SlabConfig';
+function mapStateToProps (state)
+{
+  return { 
 
-export default class TaxConfig extends Component{
+    };
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+
+    };
+}
+class ConnectedTaxConfig extends Component{
     constructor(props){
         super(props);
         this.state = {
@@ -45,3 +57,5 @@ export default class TaxConfig extends Component{
         );
     }
 }
+const TaxConfig = connect(mapStateToProps, mapDispatchToProps)(ConnectedTaxConfig);
+export default TaxConfig;

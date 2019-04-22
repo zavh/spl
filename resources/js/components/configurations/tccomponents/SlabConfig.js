@@ -1,13 +1,31 @@
 import React, { Component } from 'react';
 import FSConfig from './FirstSlabConfig';
 import SingleInput from '../../commons/SingleInput';
-export default class SlabConfig extends Component{
+import { connect } from "react-redux";
+import { addSlab, editSlab, deleteSlab, addFSCategory } from "../redux/actions/index";
+
+
+function mapStateToProps (state)
+{
+  return { 
+      slabs: state.slabs,
+      firstSlabCategories: state.firstSlabCategories,
+    };
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        addSlab: slab => dispatch(addSlab(slab)),
+        editSlab: slab => dispatch(editSlab(slab)),
+        deleteSlab: index => dispatch(deleteSlab(index)),
+        addFSCategory: category => dispatch(addFSCategory(category)),
+    };
+}
+
+class ConnectedSlabConfig extends Component{
     constructor(props){
         super(props);
         this.state = {
-            firstSlabCategories:{},
-            firstSlabConfig:{},
-            slabs:[],
             newCategory:'',
             newSlab:'',
             categoryError:[],
@@ -24,33 +42,14 @@ export default class SlabConfig extends Component{
         this.deleteSlab = this.deleteSlab.bind(this);
     }
     onSlabChange(value, index){
-        let slabs = [...this.state.slabs];
-        slabs[index].slabval = value;
-        this.setState({slabs:slabs});
+        let slabs = [...this.props.slabs];
+        let percval = slabs[index].percval;
+        this.props.editSlab({slabval:value, percval:percval, index:index});
     }
     onPercChange(value, index){
-        let slabs = [...this.state.slabs];
-        slabs[index].percval = value;
-        this.setState({slabs:slabs});
-    }
-    deleteSlab(index){
-        let slabs = [...this.state.slabs], modslabs = [];
-        for(var i=0;i<slabs.length;i++)
-            if(i!=index)
-                modslabs[modslabs.length] = slabs[i];
-        this.setState({slabs:modslabs});
-    }
-    inputCategory(value){
-        this.setState({
-            newCategory : value,
-            categoryError : [],
-        });
-    }
-    inputSlab(value){
-        this.setState({
-            newSlab : value,
-            slabError : [],
-        });
+        let slabs = [...this.props.slabs];
+        let slabval = slabs[index].slabval;
+        this.props.editSlab({slabval:slabval, percval:value, index:index});
     }
     addSlab(){
         let newslab =[];
@@ -58,12 +57,27 @@ export default class SlabConfig extends Component{
             slabval:this.state.newSlab,
             percval:0
         }
-        let slabs = this.state.slabs.concat(newslab);
-        this.setState({
-            slabs:slabs,
-            newSlab:''
-        })
+        this.setState({newSlab:''})
+        this.props.addSlab(newslab);
     }
+    deleteSlab(index){
+        this.props.deleteSlab(index);
+    }
+    //Local State change action //
+    inputCategory(value){
+        this.setState({
+            newCategory : value,
+            categoryError : [],
+        });
+    }
+    //Local State change action //
+    inputSlab(value){
+        this.setState({
+            newSlab : value,
+            slabError : [],
+        });
+    }
+    
     addCategory(){
         if(this.state.newCategory == ""){
             let errors = [];
@@ -76,7 +90,7 @@ export default class SlabConfig extends Component{
         else{
             let value = this.state.newCategory;
             let newkey = value.toLowerCase().replace(' ','_');
-            if(newkey in this.state.firstSlabCategories){
+            if(newkey in this.props.firstSlabCategories){
                 let errors = [];
                 errors[0] = 'Category '+ value +' already defined',
                 this.setState({
@@ -86,12 +100,8 @@ export default class SlabConfig extends Component{
             }
             let category = {};
             category[newkey] = value;
-            let categories = Object.assign(this.state.firstSlabCategories, category);
-            this.setState(
-                {
-                    firstSlabCategories: categories,
-                    newCategory: ''
-                });
+            this.setState({newCategory: ''});
+            this.props.addFSCategory(category);
         }
     }
     handleFSCChange(e){
@@ -121,15 +131,15 @@ export default class SlabConfig extends Component{
                             <select value={this.state.fscSelected} onChange={this.handleFSCChange} className='form-control'>
                                 <option disabled={true} value={0}>Select One</option>
                                 {
-                                    Object.keys(this.state.firstSlabCategories).map((category, index)=>{
+                                    Object.keys(this.props.firstSlabCategories).map((category, index)=>{
                                     return(
-                                        <option key={index} value={category}>{this.state.firstSlabCategories[category]}</option>
+                                        <option key={index} value={category}>{this.props.firstSlabCategories[category]}</option>
                                     );
                                 })}
                             </select>
                         </div>
                     </div>
-                    <FSConfig fsdata={this.state.firstSlabConfig} category={this.state.fscSelected}/>
+                    <FSConfig category={this.state.fscSelected}/>
                 </div>
                 <div className="col-md-6">
                     <SingleInput 
@@ -141,7 +151,7 @@ export default class SlabConfig extends Component{
                             onInsert={this.addSlab}
                             />
                         {
-                            this.state.slabs.map((slab, index)=>{
+                            this.props.slabs.map((slab, index)=>{
                                 return(
                                     <SlabView 
                                         key={index}
@@ -195,3 +205,6 @@ function SlabView(props){
         </div>
     );
 }
+
+const SlabConfig = connect(mapStateToProps, mapDispatchToProps)(ConnectedSlabConfig);
+export default SlabConfig;
