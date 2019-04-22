@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import FSConfig from './FirstSlabConfig';
 import SingleInput from '../../commons/SingleInput';
 export default class SlabConfig extends Component{
     constructor(props){
@@ -193,60 +194,4 @@ function SlabView(props){
             </div>
         </div>
     );
-}
-
-class FSConfig extends Component{
-    constructor(props){
-        super(props);
-        this.state = {
-            category:'',
-            fsdata:{},
-        }
-    }
-    componentDidUpdate(){
-        if(this.state.category != this.props.category){
-            let category = this.props.category, fsdata = {};
-            if(category in this.props.fsdata){
-                fsdata = this.props.fsdata;
-            }
-            else {
-                let slab = {}, age = [];
-                slab['any'] = '';
-                age[0] = 'any';
-                fsdata[category] = {
-                    age:age,
-                    slab:slab,
-                }
-            }
-            this.setState({
-                category:this.props.category,
-                fsdata:fsdata,
-            })
-        }
-    }
-    render(){
-        console.log(this.state);
-        if(this.state.category == '')
-            return null;
-        else 
-            return(
-                <div className="form-group row my-1">
-                    <div className="input-group input-group-sm col-md-12">
-                        <div className="input-group-prepend">
-                            <span className="input-group-text">{this.state.categoy} Age </span>
-                        </div>
-                        <input type='text' className="form-control" value={this.state.fsdata[this.state.category].age[0]} readOnly/>
-                        
-                        <div className="input-group-append">
-                            <span className="input-group-text">Slab Value</span>
-                        </div>
-                        <input type='number' className="form-control" value={this.state.fsdata[this.state.category].slab[this.state.fsdata[this.state.category].age[0]]} readOnly/>
-
-                        {/* <div className="input-group-append">
-                            <button className="btn btn-outline-secondary" type="button" id="button-addon2" data-index={props.index} onClick={deleteSlab}>Delete</button>
-                        </div> */}
-                    </div>
-                </div>
-            );
-    }
 }

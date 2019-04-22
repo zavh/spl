@@ -82621,7 +82621,8 @@ var TaxConfig = function (_Component) {
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__commons_SingleInput__ = __webpack_require__(265);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__FirstSlabConfig__ = __webpack_require__(266);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__commons_SingleInput__ = __webpack_require__(265);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
@@ -82631,6 +82632,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
 
 
 
@@ -82763,7 +82765,7 @@ var SlabConfig = function (_Component) {
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     'div',
                     { className: 'col-md-6' },
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__commons_SingleInput__["a" /* default */], {
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__commons_SingleInput__["a" /* default */], {
                         type: 'text',
                         label: 'Insert Category',
                         errors: this.state.categoryError,
@@ -82804,12 +82806,12 @@ var SlabConfig = function (_Component) {
                             )
                         )
                     ),
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(FSConfig, { fsdata: this.state.firstSlabConfig, category: this.state.fscSelected })
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__FirstSlabConfig__["a" /* default */], { fsdata: this.state.firstSlabConfig, category: this.state.fscSelected })
                 ),
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     'div',
                     { className: 'col-md-6' },
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__commons_SingleInput__["a" /* default */], {
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__commons_SingleInput__["a" /* default */], {
                         type: 'text',
                         label: 'Add Slab',
                         errors: this.state.slabError,
@@ -82898,84 +82900,6 @@ function SlabView(props) {
         )
     );
 }
-
-var FSConfig = function (_Component2) {
-    _inherits(FSConfig, _Component2);
-
-    function FSConfig(props) {
-        _classCallCheck(this, FSConfig);
-
-        var _this3 = _possibleConstructorReturn(this, (FSConfig.__proto__ || Object.getPrototypeOf(FSConfig)).call(this, props));
-
-        _this3.state = {
-            category: '',
-            fsdata: {}
-        };
-        return _this3;
-    }
-
-    _createClass(FSConfig, [{
-        key: 'componentDidUpdate',
-        value: function componentDidUpdate() {
-            if (this.state.category != this.props.category) {
-                var category = this.props.category,
-                    fsdata = {};
-                if (category in this.props.fsdata) {
-                    fsdata = this.props.fsdata;
-                } else {
-                    var slab = {},
-                        age = [];
-                    slab['any'] = '';
-                    age[0] = 'any';
-                    fsdata[category] = {
-                        age: age,
-                        slab: slab
-                    };
-                }
-                this.setState({
-                    category: this.props.category,
-                    fsdata: fsdata
-                });
-            }
-        }
-    }, {
-        key: 'render',
-        value: function render() {
-            console.log(this.state);
-            if (this.state.category == '') return null;else return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                'div',
-                { className: 'form-group row my-1' },
-                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                    'div',
-                    { className: 'input-group input-group-sm col-md-12' },
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                        'div',
-                        { className: 'input-group-prepend' },
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                            'span',
-                            { className: 'input-group-text' },
-                            this.state.categoy,
-                            ' Age '
-                        )
-                    ),
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { type: 'text', className: 'form-control', value: this.state.fsdata[this.state.category].age[0], readOnly: true }),
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                        'div',
-                        { className: 'input-group-append' },
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                            'span',
-                            { className: 'input-group-text' },
-                            'Slab Value'
-                        )
-                    ),
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { type: 'number', className: 'form-control', value: this.state.fsdata[this.state.category].slab[this.state.fsdata[this.state.category].age[0]], readOnly: true })
-                )
-            );
-        }
-    }]);
-
-    return FSConfig;
-}(__WEBPACK_IMPORTED_MODULE_0_react__["Component"]);
 
 /***/ }),
 /* 265 */
@@ -83083,6 +83007,205 @@ var SingleInput = function (_Component) {
 }(__WEBPACK_IMPORTED_MODULE_0_react__["Component"]);
 
 /* harmony default export */ __webpack_exports__["a"] = (SingleInput);
+
+/***/ }),
+/* 266 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+
+
+var FSConfig = function (_Component) {
+    _inherits(FSConfig, _Component);
+
+    function FSConfig(props) {
+        _classCallCheck(this, FSConfig);
+
+        var _this = _possibleConstructorReturn(this, (FSConfig.__proto__ || Object.getPrototypeOf(FSConfig)).call(this, props));
+
+        _this.state = {
+            category: '',
+            fsdata: {},
+            ageerrors: [],
+            slaberrors: []
+        };
+        _this.handleChangeAge = _this.handleChangeAge.bind(_this);
+        _this.handleSlabValChange = _this.handleSlabValChange.bind(_this);
+        _this.errorProcess = _this.errorProcess.bind(_this);
+        return _this;
+    }
+
+    _createClass(FSConfig, [{
+        key: 'handleChangeAge',
+        value: function handleChangeAge(e) {
+
+            //COPYING
+            var index = e.target.dataset.index;
+            var category = this.state.category;
+            var s = Object.assign({}, this.state.fsdata[category].slab);
+            var ua = [].concat(_toConsumableArray(this.state.fsdata[category].age)); //Updated Age array
+
+            var orig = ua[index];
+            //MUTATING COPIES
+            ua[index] = e.target.value;
+            var us = {}; //Updated Slab object
+            for (var key in s) {
+                if (key == orig) us[e.target.value] = s[key];else us[key] = s[key];
+            }
+
+            var update = {};
+            update[category] = {};
+
+            update[category]['age'] = ua;
+            update[category]['slab'] = us;
+            this.setState({ fsdata: update });
+            if (e.target.value != 'any' && isNaN(e.target.value) || e.target.value == '') {
+                var errors = [].concat(_toConsumableArray(this.state.ageerrors));
+                errors[0] = "'Age' should be either 'any' or a numeric value";
+                this.setState({ ageerrors: errors });
+            } else {
+                this.setState({ ageerrors: [] });
+            }
+        }
+    }, {
+        key: 'handleSlabValChange',
+        value: function handleSlabValChange(e) {
+            //COPYING
+            var index = e.target.dataset.index;
+            var category = this.state.category;
+            var s = Object.assign({}, this.state.fsdata[category].slab);
+            var a = [].concat(_toConsumableArray(this.state.fsdata[category].age));
+            var age = a[index];
+            s[a] = e.target.value;
+
+            var update = {};
+            update[category] = {};
+
+            update[category]['age'] = a;
+            update[category]['slab'] = s;
+            this.setState({ fsdata: update });
+            if (isNaN(e.target.value) || e.target.value == '' || e.target.value < 1) {
+                var errors = [].concat(_toConsumableArray(this.state.slaberrors));
+                errors[0] = "'Slab' should be a non-zero numeric value";
+                this.setState({ slaberrors: errors });
+            } else {
+                this.setState({ slaberrors: [] });
+            }
+        }
+    }, {
+        key: 'componentDidUpdate',
+        value: function componentDidUpdate() {
+            if (this.state.category != this.props.category) {
+                var category = this.props.category,
+                    fsdata = {};
+                if (category in this.props.fsdata) {
+                    fsdata = this.props.fsdata;
+                } else {
+                    var slab = {},
+                        age = [];
+                    slab['any'] = '';
+                    age[0] = 'any';
+                    fsdata[category] = {
+                        age: age,
+                        slab: slab
+                    };
+                }
+                this.setState({
+                    category: this.props.category,
+                    fsdata: fsdata
+                });
+            }
+        }
+    }, {
+        key: 'errorProcess',
+        value: function errorProcess() {
+            var a = [],
+                g = [],
+                errors = [];
+            if (this.state.ageerrors.length > 0) a = [].concat(_toConsumableArray(this.state.ageerrors));
+            if (this.state.slaberrors.length > 0) g = [].concat(_toConsumableArray(this.state.slaberrors));
+
+            errors = a.concat(g);
+            console.log(errors);
+            if (errors.length > 0) {
+                var divStyle = {
+                    display: 'block'
+                };
+                return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'span',
+                    { className: 'invalid-feedback', role: 'alert', style: divStyle },
+                    errors.map(function (e, i) {
+                        return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            'strong',
+                            { key: i, className: 'mr-2' },
+                            '\u25B6',
+                            e
+                        );
+                    })
+                );
+            }
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var _this2 = this;
+
+            var category = this.state.category;
+
+            if (category == '') return null;else return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'div',
+                null,
+                this.state.fsdata[category].age.map(function (Age, index) {
+                    return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        'div',
+                        { className: 'form-group row my-1', key: index },
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            'div',
+                            { className: 'input-group input-group-sm col-md-12' },
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                'div',
+                                { className: 'input-group-prepend' },
+                                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                    'span',
+                                    { className: 'input-group-text' },
+                                    ' Age '
+                                )
+                            ),
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { type: 'text', className: 'form-control', value: Age, 'data-index': index, onChange: _this2.handleChangeAge }),
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                'div',
+                                { className: 'input-group-append' },
+                                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                    'span',
+                                    { className: 'input-group-text' },
+                                    'Slab Value'
+                                )
+                            ),
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { type: 'number', className: 'form-control', value: _this2.state.fsdata[category].slab[Age], 'data-index': index, onChange: _this2.handleSlabValChange }),
+                            _this2.errorProcess()
+                        )
+                    );
+                })
+            );
+        }
+    }]);
+
+    return FSConfig;
+}(__WEBPACK_IMPORTED_MODULE_0_react__["Component"]);
+
+/* harmony default export */ __webpack_exports__["a"] = (FSConfig);
 
 /***/ })
 /******/ ]);
