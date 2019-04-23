@@ -108,12 +108,12 @@ trait SalaryGenerator {
         else {
             $ages = $firstSlab[$gender]['age'];
             asort($ages);
-            // for($i=0;$i<count($firstSlab[$gender]['age']);$i++){
-            foreach($ages as $i=>$age){
-                if($age <= intval($firstSlab[$gender]['age'][$i])){
+            foreach($ages as $i=>$confage){
+                if($age <= intval($confage)){
                     $a = $firstSlab[$gender]['slab'][$firstSlab[$gender]['age'][$i]];
                     break;
                 }
+                $a = $firstSlab[$gender]['slab'][$firstSlab[$gender]['age'][$i]];
             }
         }
 

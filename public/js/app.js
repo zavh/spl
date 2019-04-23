@@ -82622,7 +82622,8 @@ var ConnectedTaxConfig = function (_Component) {
         _this.state = {
             panel: 'Slab Configuration',
             menuItems: ['Slab Configuration', 'Tax Exemption Configuration', 'Investment Configuration'],
-            links: ['/configurations/taxconfig/slabs', '/configurations/taxconfig/exemptions', '/configurations/taxconfig/investment']
+            links: ['/configurations/taxconfig/slabs', '/configurations/taxconfig/exemptions', '/configurations/taxconfig/investment'],
+            needssaving: -1
         };
         _this.activeLinkChange = _this.activeLinkChange.bind(_this);
         _this.saveConfig = _this.saveConfig.bind(_this);
@@ -82650,15 +82651,13 @@ var ConnectedTaxConfig = function (_Component) {
                 axios.post('/configurations/taxconfig', {
                     data: JSON.stringify(data),
                     _method: 'patch' }).then(function (response) {
-                    console.log(response);
-                    //   status = response.data.status;
-                    //   if(status == 'failed'){
-                    //       console.log(response)
-                    //   }
-                    //   else if(status == 'success'){
-                    //       console.log(response);
-                    //       this.props.setSlabDBStatus(true);
-                    //   }
+                    status = response.data.status;
+                    if (status == 'failed') {
+                        console.log(response);
+                    } else if (status == 'success') {
+                        console.log(response);
+                        _this2.props.setSlabDBStatus(true);
+                    }
                 }).catch(function (error) {
                     console.log(error);
                 });
@@ -82693,12 +82692,11 @@ var ConnectedTaxConfig = function (_Component) {
                 console.log(error);
             });
         }
-        // componentDidUpdate(prevProps){
-        //     if(this.props.slabdbstatus){
-        //         console.log('Data changed, needs saving');
-        //     }
-        // }
-
+    }, {
+        key: "componentDidUpdate",
+        value: function componentDidUpdate(prev) {
+            if (this.props.slabs != prev.slabs) console.log(this.state.needssaving);
+        }
     }, {
         key: "render",
         value: function render() {
@@ -82725,15 +82723,6 @@ var ConnectedTaxConfig = function (_Component) {
                                     onClick: _this4.activeLinkChange
                                 });
                             })
-                        ),
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                            "div",
-                            { className: "d-flex justify-content-center bd-highlight m-3" },
-                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                "button",
-                                { type: "button", className: "btn btn-sm btn-primary", onClick: this.saveConfig },
-                                " Save Configuration "
-                            )
                         )
                     ),
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
@@ -82744,6 +82733,15 @@ var ConnectedTaxConfig = function (_Component) {
                             null,
                             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1_react_router_dom__["c" /* Route */], { path: "/configurations", component: __WEBPACK_IMPORTED_MODULE_4__SlabConfig__["a" /* default */], exact: true }),
                             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1_react_router_dom__["c" /* Route */], { path: "/configurations/taxconfig/slabs", component: __WEBPACK_IMPORTED_MODULE_4__SlabConfig__["a" /* default */] })
+                        ),
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            "div",
+                            { className: "d-flex justify-content-center bd-highlight m-3" },
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                "button",
+                                { type: "button", className: "btn btn-sm btn-outline-primary", onClick: this.saveConfig },
+                                " Save Configuration "
+                            )
                         )
                     )
                 )

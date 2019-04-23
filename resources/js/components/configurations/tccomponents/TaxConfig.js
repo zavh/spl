@@ -29,6 +29,7 @@ class ConnectedTaxConfig extends Component{
             panel:'Slab Configuration',
             menuItems: ['Slab Configuration', 'Tax Exemption Configuration', 'Investment Configuration'],
             links:['/configurations/taxconfig/slabs', '/configurations/taxconfig/exemptions', '/configurations/taxconfig/investment'],
+            needssaving: -1,
         }
         this.activeLinkChange = this.activeLinkChange.bind(this);
         this.saveConfig = this.saveConfig.bind(this);
@@ -50,15 +51,14 @@ class ConnectedTaxConfig extends Component{
                 data:JSON.stringify(data),
                 _method:'patch'})
             .then((response)=>{
-                console.log(response);
-            //   status = response.data.status;
-            //   if(status == 'failed'){
-            //       console.log(response)
-            //   }
-            //   else if(status == 'success'){
-            //       console.log(response);
-            //       this.props.setSlabDBStatus(true);
-            //   }
+              status = response.data.status;
+              if(status == 'failed'){
+                  console.log(response)
+              }
+              else if(status == 'success'){
+                  console.log(response);
+                  this.props.setSlabDBStatus(true);
+              }
             })
             .catch(function (error) {
               console.log(error);
@@ -97,11 +97,10 @@ class ConnectedTaxConfig extends Component{
           });
 
     }
-    // componentDidUpdate(prevProps){
-    //     if(this.props.slabdbstatus){
-    //         console.log('Data changed, needs saving');
-    //     }
-    // }
+    componentDidUpdate(prev){
+        if(this.props.slabs != prev.slabs)
+        console.log(this.state.needssaving);
+    }
     render(){
         return(
             <Router>
@@ -118,15 +117,16 @@ class ConnectedTaxConfig extends Component{
                                     />
                             )}
                         </ul>
-                        <div className="d-flex justify-content-center bd-highlight m-3">
-                            <button type='button' className='btn btn-sm btn-primary' onClick={this.saveConfig}> Save Configuration </button>
-                        </div>
+
                     </div>
                     <div className="col-md-9">
                         <Switch>
                             <Route path="/configurations" component={SlabConfig} exact/>
                             <Route path="/configurations/taxconfig/slabs" component={SlabConfig}/>
                         </Switch>
+                        <div className="d-flex justify-content-center bd-highlight m-3">
+                            <button type='button' className='btn btn-sm btn-outline-primary' onClick={this.saveConfig}> Save Configuration </button>
+                        </div>
                     </div>
                 </div>
             </Router>

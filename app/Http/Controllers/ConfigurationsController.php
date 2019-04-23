@@ -74,7 +74,19 @@ class ConfigurationsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        return response()->json($request->all());
+        $config = Configuration::where('name',$id)->first();
+        if($config == null){
+            $response['status'] = 'failed';
+            $response['message'] = 'Could not find the configuration in database';
+        }
+        else {
+            $config->data = $request->data;
+            $config->save();
+            $response['status'] = 'success';
+            $response['message'] = 'Configuration updated successfully';
+        }
+
+        return response()->json($response);
     }
 
     /**
