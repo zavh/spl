@@ -82431,7 +82431,7 @@ function rootReducer() {
     return Object.assign({}, state, { fsdata: _edited });
   }
 
-  if (action.type == __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["j" /* SET_SLAB */]) {
+  if (action.type == __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["i" /* SET_SLAB */]) {
     return Object.assign({}, state, { slabs: action.payload });
   }
 
@@ -82439,12 +82439,11 @@ function rootReducer() {
     return Object.assign({}, state, { firstSlabCategories: action.payload });
   }
 
-  if (action.type == __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["i" /* SET_FSDATA */]) {
+  if (action.type == __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["h" /* SET_FSDATA */]) {
     return Object.assign({}, state, { fsdata: action.payload });
   }
 
-  if (action.type == __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["h" /* SET_DB_STATUS */]) {
-    console.log(action);
+  if (action.type == __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["j" /* SET_SLAB_DB_STATUS */]) {
     return Object.assign({}, state, { slabdbstatus: action.payload });
   }
 
@@ -82463,10 +82462,10 @@ function rootReducer() {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ADD_FS_CATEGORY; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return EDIT_FS_AGE; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return EDIT_FS_SLAB; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "j", function() { return SET_SLAB; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "i", function() { return SET_SLAB; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return SET_CATEGORIES; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "i", function() { return SET_FSDATA; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return SET_DB_STATUS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return SET_FSDATA; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "j", function() { return SET_SLAB_DB_STATUS; });
 var ADD_SLAB = "ADD_SLAB";
 var EDIT_SLAB = "EDIT_SLAB";
 var DELETE_SLAB = "DELETE_SLAB";
@@ -82476,7 +82475,7 @@ var EDIT_FS_SLAB = "EDIT_FS_SLAB";
 var SET_SLAB = "SET_SLAB";
 var SET_CATEGORIES = "SET_CATEGORIES";
 var SET_FSDATA = "SET_FSDATA";
-var SET_DB_STATUS = "SET_DB_STATUS";
+var SET_SLAB_DB_STATUS = "SET_SLAB_DB_STATUS";
 
 /***/ }),
 /* 257 */
@@ -82647,24 +82646,42 @@ var ConnectedTaxConfig = function (_Component) {
             data['categories'] = this.props.firstSlabCategories;
             formData.set('data', JSON.stringify(data));
             formData.set('field', 'taxconfig');
-            axios.post('/configurations', formData).then(function (response) {
-                status = response.data.status;
-                if (status == 'failed') {
+            if (this.props.slabdbstatus) {
+                axios.post('/configurations/taxconfig', {
+                    data: JSON.stringify(data),
+                    _method: 'patch' }).then(function (response) {
                     console.log(response);
-                } else if (status == 'success') {
-                    console.log(response);
-                    _this2.props.setSlabDBStatus(true);
-                }
-            }).catch(function (error) {
-                console.log(error);
-            });
+                    //   status = response.data.status;
+                    //   if(status == 'failed'){
+                    //       console.log(response)
+                    //   }
+                    //   else if(status == 'success'){
+                    //       console.log(response);
+                    //       this.props.setSlabDBStatus(true);
+                    //   }
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            } else {
+                axios.post('/configurations', formData).then(function (response) {
+                    status = response.data.status;
+                    if (status == 'failed') {
+                        console.log(response);
+                    } else if (status == 'success') {
+                        console.log(response);
+                        _this2.props.setSlabDBStatus(true);
+                    }
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            }
         }
     }, {
         key: "componentDidMount",
         value: function componentDidMount() {
             var _this3 = this;
 
-            axios.get('/configurations/taxconfig').then(function (response) {
+            axios.get('/configurations/gettaxconfig').then(function (response) {
                 if (response.data.status == 'success') {
                     console.log(response);
                     _this3.props.setSlab(response.data.data.slabs);
@@ -82676,6 +82693,12 @@ var ConnectedTaxConfig = function (_Component) {
                 console.log(error);
             });
         }
+        // componentDidUpdate(prevProps){
+        //     if(this.props.slabdbstatus){
+        //         console.log('Data changed, needs saving');
+        //     }
+        // }
+
     }, {
         key: "render",
         value: function render() {
@@ -83383,7 +83406,7 @@ function editFSSlab(payload) {
 };
 
 function setSlab(payload) {
-  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["j" /* SET_SLAB */], payload: payload };
+  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["i" /* SET_SLAB */], payload: payload };
 }
 
 function setCategories(payload) {
@@ -83391,11 +83414,11 @@ function setCategories(payload) {
 }
 
 function setFSData(payload) {
-  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["i" /* SET_FSDATA */], payload: payload };
+  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["h" /* SET_FSDATA */], payload: payload };
 }
 
 function setSlabDBStatus(payload) {
-  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["h" /* SET_DB_STATUS */], payload: payload };
+  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["j" /* SET_SLAB_DB_STATUS */], payload: payload };
 }
 
 /***/ })

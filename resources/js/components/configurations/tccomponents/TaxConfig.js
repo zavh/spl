@@ -44,24 +44,45 @@ class ConnectedTaxConfig extends Component{
         data['fsdata'] = this.props.fsdata;
         data['categories'] = this.props.firstSlabCategories;
         formData.set('data', JSON.stringify(data));
-        formData.set('field','taxconfig')
-        axios.post('/configurations', formData)
-          .then((response)=>{
-            status = response.data.status;
-            if(status == 'failed'){
-                console.log(response)
-            }
-            else if(status == 'success'){
+        formData.set('field','taxconfig');
+        if(this.props.slabdbstatus){
+            axios.post('/configurations/taxconfig', {
+                data:JSON.stringify(data),
+                _method:'patch'})
+            .then((response)=>{
                 console.log(response);
-                this.props.setSlabDBStatus(true);
-            }
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
+            //   status = response.data.status;
+            //   if(status == 'failed'){
+            //       console.log(response)
+            //   }
+            //   else if(status == 'success'){
+            //       console.log(response);
+            //       this.props.setSlabDBStatus(true);
+            //   }
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+        }
+        else {
+            axios.post('/configurations', formData)
+            .then((response)=>{
+              status = response.data.status;
+              if(status == 'failed'){
+                  console.log(response)
+              }
+              else if(status == 'success'){
+                  console.log(response);
+                  this.props.setSlabDBStatus(true);
+              }
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+        }
     }
     componentDidMount(){
-        axios.get('/configurations/taxconfig')
+        axios.get('/configurations/gettaxconfig')
           .then((response)=>{
               if(response.data.status == 'success'){
                   console.log(response);
@@ -76,6 +97,11 @@ class ConnectedTaxConfig extends Component{
           });
 
     }
+    // componentDidUpdate(prevProps){
+    //     if(this.props.slabdbstatus){
+    //         console.log('Data changed, needs saving');
+    //     }
+    // }
     render(){
         return(
             <Router>

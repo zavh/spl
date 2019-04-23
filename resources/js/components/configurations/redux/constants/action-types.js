@@ -7,4 +7,4 @@ export const EDIT_FS_SLAB = "EDIT_FS_SLAB";
 export const SET_SLAB = "SET_SLAB";
 export const SET_CATEGORIES = "SET_CATEGORIES";
 export const SET_FSDATA = "SET_FSDATA";
-export const SET_DB_STATUS = "SET_DB_STATUS";
+export const SET_SLAB_DB_STATUS = "SET_SLAB_DB_STATUS";

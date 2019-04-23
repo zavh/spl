@@ -96,7 +96,7 @@ Route::get('/departments/getall', 'DepartmentsController@getDepartments');
 Route::get('/departments/users/{id}', 'DepartmentsController@getUsers');
 
 Route::get('/loans/active', 'LoansController@active');
-Route::get('/configurations/taxconfig', 'ConfigurationsController@gettaxconfig');
+Route::get('/configurations/gettaxconfig', 'ConfigurationsController@gettaxconfig');
 
 Route::resource('clients','ClientsController');
 Route::resource('projects','ProjectsController');
@@ -114,4 +114,4 @@ Route::resource('salaries','SalariesController');
 Route::resource('loans','LoansController');
 Route::resource('appmodules','AppModulesController')->only(['index']);
 Route::resource('quotations','QuotationsController')->except('create');
-Route::resource('configurations','ConfigurationsController')->only('index','store');;
+Route::resource('configurations','ConfigurationsController');
