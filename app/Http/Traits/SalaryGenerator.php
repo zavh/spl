@@ -99,20 +99,22 @@ trait SalaryGenerator {
     {
         
         $firstSlab['female'] = array();
-        $firstSlab['female']['age'] = 'any';
-        $firstSlab['female']['slab'][$firstSlab['female']['age']] = 300000;
+        $firstSlab['female']['age'][0] = 'any';
+        $firstSlab['female']['slab']['any'] = 300000;
         $firstSlab['male'] = array();
-        $firstSlab['male']['age'] = 65;
-        $firstSlab['male']['slab'][$firstSlab['male']['age']-1] = 250000;
-        $firstSlab['male']['slab'][$firstSlab['male']['age']] = 300000;
+        $firstSlab['male']['age'][0] = 65;
+        $firstSlab['male']['age'][1] = 64;
+        $firstSlab['male']['slab']['64'] = 250000;
+        $firstSlab['male']['slab']['65'] = 300000;
 
         $a = 0;
         if(isset($firstSlab[$gender]['slab']['any']))
             $a = $firstSlab[$gender]['slab']['any'];
         else {
-            foreach($firstSlab[$gender]['slab'] as $slabage=>$value){
-                if($age <= $slabage){
-                    $a = $firstSlab[$gender]['slab'][$slabage];
+            rsort($firstSlab[$gender]['age']);
+            for($i=0;$i<count($firstSlab[$gender]['age']);$i++){
+                if($age <= intval($firstSlab[$gender]['age'][$i])){
+                    $a = $firstSlab[$gender]['slab'][$firstSlab[$gender]['age'][$i]];
                     break;
                 }
             }

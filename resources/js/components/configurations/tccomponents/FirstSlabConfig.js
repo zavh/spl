@@ -1,17 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
-import { editFSData } from "../redux/actions/index";
+import { editFSAge, editFSSlab } from "../redux/actions/index";
 
 function mapStateToProps (state)
 {
   return { 
     fsdata: state.fsdata,
+    fserrors: state.fserrors,
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        editFSData: fsdata => dispatch(editFSData(fsdata)),
+        editFSAge: fsdata => dispatch(editFSAge(fsdata)),
+        editFSSlab: fsdata => dispatch(editFSSlab(fsdata)),
     };
 }
 
@@ -22,10 +24,10 @@ class ConnectedFSConfig extends Component{
             category:'',
             fsdata:{},
             ageerrors:[],
-            slaberrors:[]
+            slaberrors:[],
         }
         this.handleChangeAge = this.handleChangeAge.bind(this);
-        this.handleSlabValChange = this.handleSlabValChange.bind(this);
+        this.handleChangeSlab = this.handleChangeSlab.bind(this);
         this.errorProcess = this.errorProcess.bind(this);
     }
     handleChangeAge(e){
@@ -53,39 +55,23 @@ class ConnectedFSConfig extends Component{
         update[category]['age'] = ua;
         update[category]['slab'] = us;
         
-        this.props.editFSData({update:update, key:category});
-        if((e.target.value != 'any' && isNaN(e.target.value)) || e.target.value == ''){
-            let errors = [...this.state.ageerrors]; 
-            errors[0] = "'Age' should be either 'any' or a numeric value";
-            this.setState({ageerrors:errors});
-        }
-        else {
-            this.setState({ageerrors:[]});
-        }
+        this.props.editFSAge({update:update, index:index, value:e.target.value, category:category});
     }
-    handleSlabValChange(e){
+    handleChangeSlab(e){
         //COPYING
         let index = e.target.dataset.index;
         let category = this.state.category;
         let s = Object.assign({},this.props.fsdata[category].slab);
         let a = [...this.props.fsdata[category].age];
         let age = a[index];
-        s[a] = e.target.value;
+        s[age] = e.target.value;
 
         let update = {};
         update[category] = {};
 
         update[category]['age'] = a;
         update[category]['slab'] = s;
-        this.props.editFSData({update:update, key:category});
-        if(isNaN(e.target.value) || e.target.value == '' || e.target.value < 1){
-            let errors = [...this.state.slaberrors]; 
-            errors[0] = "'Slab' should be a non-zero numeric value";
-            this.setState({slaberrors:errors});
-        }
-        else {
-            this.setState({slaberrors:[]});
-        }
+        this.props.editFSSlab({update:update, key:category});
     }
     componentDidUpdate(){
         if(this.state.category != this.props.category){
@@ -94,21 +80,24 @@ class ConnectedFSConfig extends Component{
             })
         }
     }
-    errorProcess(){
-        let a = [], g=[], errors = [];
-        if(this.state.ageerrors.length > 0)
-            a = [...this.state.ageerrors];
-        if(this.state.slaberrors.length > 0)
-            g = [...this.state.slaberrors];
-        
-        errors = a.concat(g);
-        if(errors.length > 0){
+    errorProcess(index){
+        // let a = [], g=[], errors = [];
+        // if(this.state.ageerrors.length > 0)
+        //     a = [...this.state.ageerrors];
+        // if(this.state.slaberrors.length > 0)
+        //     g = [...this.state.slaberrors];
+        if(this.props.fserrors[index] === undefined)
+            return;        
+        let errors = this.props.fserrors[index];
+
+        if(errors != ''){
             const divStyle = {
                 display:'block',
               };
             return (
                 <span className="invalid-feedback" role="alert" style={divStyle}>
-                    {errors.map((e,i)=><strong key={i} className='mr-2'>▶{e}</strong>)}
+                    {/* {errors.map((e,i)=><strong key={i} className='mr-2'>▶{e}</strong>)} */}
+                    <strong className='mr-2'>▶{errors}</strong>
                 </span>
             )
         }
@@ -134,8 +123,8 @@ class ConnectedFSConfig extends Component{
                                 <div className="input-group-append">
                                     <span className="input-group-text">Slab Value</span>
                                 </div>
-                                <input type='number' className="form-control" value={this.props.fsdata[category].slab[Age]} data-index={index} onChange={this.handleSlabValChange}/>
-                                {this.errorProcess()}
+                                <input type='number' className="form-control" value={this.props.fsdata[category].slab[Age]} data-index={index} onChange={this.handleChangeSlab}/>
+                                {this.errorProcess(index)}
                             </div>
                         </div>
                     )

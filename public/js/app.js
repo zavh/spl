@@ -82329,7 +82329,8 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 var initialState = {
   slabs: [],
   firstSlabCategories: {},
-  fsdata: {}
+  fsdata: {},
+  fserrors: []
 };
 function rootReducer() {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
@@ -82342,7 +82343,7 @@ function rootReducer() {
     });
   }
 
-  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["e" /* EDIT_SLAB */]) {
+  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["f" /* EDIT_SLAB */]) {
     var _slabs = [].concat(_toConsumableArray(state.slabs));
     _slabs[action.payload.index].slabval = action.payload.slabval;
     _slabs[action.payload.index].percval = action.payload.percval;
@@ -82373,7 +82374,7 @@ function rootReducer() {
         age = [],
         newfsdata = {},
         fsdata = {};
-    slab['any'] = '100000'; //some default value
+    slab['any'] = 100000; //some default value
     age[0] = 'any'; //some default value
     newfsdata[catkey] = {
       age: age,
@@ -82386,11 +82387,39 @@ function rootReducer() {
     });
   }
 
-  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["d" /* EDIT_FS_DATA */]) {
-    var category = action.payload.key;
+  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["d" /* EDIT_FS_AGE */]) {
+    var _index = action.payload.index;
+    var value = action.payload.value;
     var edited = Object.assign({}, state.fsdata, action.payload.update);
+    var errors = [].concat(_toConsumableArray(state.fserrors));
+    errors[_index] = '';
+    if (_index == 0) {
+      if (!isNaN(value)) {
+        //it's a valid number
+        if (value == '') errors[0] = "'Age' should be either 'any' or a numeric value";else {
+          var category = action.payload.category;
+          var newel = (parseInt(value) - 1).toString();
+          edited[category].age[parseInt(_index) + 1] = newel;
+          edited[category].slab[newel] = 100000;
+          var _age = edited[category].age;
+          var newslab = {};
+          for (var i = 0; i < _age.length; i++) {
+            if (_age[i] in edited[category].slab) newslab[_age[i]] = edited[category].slab[_age[i]];
+          }
+          edited[category].slab = newslab;
+        }
+      } else if (value != 'any') {
+        errors[0] = "'Age' should be either 'any' or a numeric value";
+      }
+    }
 
-    return Object.assign({}, state, { fsdata: edited });
+    return Object.assign({}, state, { fsdata: edited, fserrors: errors });
+  }
+
+  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["e" /* EDIT_FS_SLAB */]) {
+    var _edited = Object.assign({}, state.fsdata, action.payload.update);
+    return Object.assign({}, state, { fsdata: _edited });
+    // console.log(edited);
   }
 
   return state;
@@ -82403,15 +82432,17 @@ function rootReducer() {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return ADD_SLAB; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return EDIT_SLAB; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return EDIT_SLAB; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return DELETE_SLAB; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ADD_FS_CATEGORY; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return EDIT_FS_DATA; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return EDIT_FS_AGE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return EDIT_FS_SLAB; });
 var ADD_SLAB = "ADD_SLAB";
 var EDIT_SLAB = "EDIT_SLAB";
 var DELETE_SLAB = "DELETE_SLAB";
 var ADD_FS_CATEGORY = "ADD_FS_CATEGORY";
-var EDIT_FS_DATA = "EDIT_FS_DATA";
+var EDIT_FS_AGE = "EDIT_FS_AGE";
+var EDIT_FS_SLAB = "EDIT_FS_SLAB";
 
 /***/ }),
 /* 257 */
@@ -82638,7 +82669,7 @@ function mapDispatchToProps(dispatch) {
             return dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__redux_actions_index__["b" /* addSlab */])(slab));
         },
         editSlab: function editSlab(slab) {
-            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__redux_actions_index__["e" /* editSlab */])(slab));
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__redux_actions_index__["f" /* editSlab */])(slab));
         },
         deleteSlab: function deleteSlab(index) {
             return dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__redux_actions_index__["c" /* deleteSlab */])(index));
@@ -83037,14 +83068,18 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function mapStateToProps(state) {
     return {
-        fsdata: state.fsdata
+        fsdata: state.fsdata,
+        fserrors: state.fserrors
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-        editFSData: function editFSData(fsdata) {
-            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_2__redux_actions_index__["d" /* editFSData */])(fsdata));
+        editFSAge: function editFSAge(fsdata) {
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_2__redux_actions_index__["d" /* editFSAge */])(fsdata));
+        },
+        editFSSlab: function editFSSlab(fsdata) {
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_2__redux_actions_index__["e" /* editFSSlab */])(fsdata));
         }
     };
 }
@@ -83064,7 +83099,7 @@ var ConnectedFSConfig = function (_Component) {
             slaberrors: []
         };
         _this.handleChangeAge = _this.handleChangeAge.bind(_this);
-        _this.handleSlabValChange = _this.handleSlabValChange.bind(_this);
+        _this.handleChangeSlab = _this.handleChangeSlab.bind(_this);
         _this.errorProcess = _this.errorProcess.bind(_this);
         return _this;
     }
@@ -83093,39 +83128,25 @@ var ConnectedFSConfig = function (_Component) {
             update[category]['age'] = ua;
             update[category]['slab'] = us;
 
-            this.props.editFSData({ update: update, key: category });
-            if (e.target.value != 'any' && isNaN(e.target.value) || e.target.value == '') {
-                var errors = [].concat(_toConsumableArray(this.state.ageerrors));
-                errors[0] = "'Age' should be either 'any' or a numeric value";
-                this.setState({ ageerrors: errors });
-            } else {
-                this.setState({ ageerrors: [] });
-            }
+            this.props.editFSAge({ update: update, index: index, value: e.target.value, category: category });
         }
     }, {
-        key: "handleSlabValChange",
-        value: function handleSlabValChange(e) {
+        key: "handleChangeSlab",
+        value: function handleChangeSlab(e) {
             //COPYING
             var index = e.target.dataset.index;
             var category = this.state.category;
             var s = Object.assign({}, this.props.fsdata[category].slab);
             var a = [].concat(_toConsumableArray(this.props.fsdata[category].age));
             var age = a[index];
-            s[a] = e.target.value;
+            s[age] = e.target.value;
 
             var update = {};
             update[category] = {};
 
             update[category]['age'] = a;
             update[category]['slab'] = s;
-            this.props.editFSData({ update: update, key: category });
-            if (isNaN(e.target.value) || e.target.value == '' || e.target.value < 1) {
-                var errors = [].concat(_toConsumableArray(this.state.slaberrors));
-                errors[0] = "'Slab' should be a non-zero numeric value";
-                this.setState({ slaberrors: errors });
-            } else {
-                this.setState({ slaberrors: [] });
-            }
+            this.props.editFSSlab({ update: update, key: category });
         }
     }, {
         key: "componentDidUpdate",
@@ -83138,29 +83159,28 @@ var ConnectedFSConfig = function (_Component) {
         }
     }, {
         key: "errorProcess",
-        value: function errorProcess() {
-            var a = [],
-                g = [],
-                errors = [];
-            if (this.state.ageerrors.length > 0) a = [].concat(_toConsumableArray(this.state.ageerrors));
-            if (this.state.slaberrors.length > 0) g = [].concat(_toConsumableArray(this.state.slaberrors));
+        value: function errorProcess(index) {
+            // let a = [], g=[], errors = [];
+            // if(this.state.ageerrors.length > 0)
+            //     a = [...this.state.ageerrors];
+            // if(this.state.slaberrors.length > 0)
+            //     g = [...this.state.slaberrors];
+            if (this.props.fserrors[index] === undefined) return;
+            var errors = this.props.fserrors[index];
 
-            errors = a.concat(g);
-            if (errors.length > 0) {
+            if (errors != '') {
                 var divStyle = {
                     display: 'block'
                 };
                 return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     "span",
                     { className: "invalid-feedback", role: "alert", style: divStyle },
-                    errors.map(function (e, i) {
-                        return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                            "strong",
-                            { key: i, className: "mr-2" },
-                            "\u25B6",
-                            e
-                        );
-                    })
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        "strong",
+                        { className: "mr-2" },
+                        "\u25B6",
+                        errors
+                    )
                 );
             }
         }
@@ -83200,8 +83220,8 @@ var ConnectedFSConfig = function (_Component) {
                                     "Slab Value"
                                 )
                             ),
-                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("input", { type: "number", className: "form-control", value: _this2.props.fsdata[category].slab[Age], "data-index": index, onChange: _this2.handleSlabValChange }),
-                            _this2.errorProcess()
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("input", { type: "number", className: "form-control", value: _this2.props.fsdata[category].slab[Age], "data-index": index, onChange: _this2.handleChangeSlab }),
+                            _this2.errorProcess(index)
                         )
                     );
                 })
@@ -83221,10 +83241,11 @@ var FSConfig = Object(__WEBPACK_IMPORTED_MODULE_1_react_redux__["b" /* connect *
 
 "use strict";
 /* harmony export (immutable) */ __webpack_exports__["b"] = addSlab;
-/* harmony export (immutable) */ __webpack_exports__["e"] = editSlab;
+/* harmony export (immutable) */ __webpack_exports__["f"] = editSlab;
 /* harmony export (immutable) */ __webpack_exports__["c"] = deleteSlab;
 /* harmony export (immutable) */ __webpack_exports__["a"] = addFSCategory;
-/* harmony export (immutable) */ __webpack_exports__["d"] = editFSData;
+/* harmony export (immutable) */ __webpack_exports__["d"] = editFSAge;
+/* harmony export (immutable) */ __webpack_exports__["e"] = editFSSlab;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__constants_action_types__ = __webpack_require__(256);
 
 
@@ -83233,7 +83254,7 @@ function addSlab(payload) {
 };
 
 function editSlab(payload) {
-  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["e" /* EDIT_SLAB */], payload: payload };
+  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["f" /* EDIT_SLAB */], payload: payload };
 };
 
 function deleteSlab(payload) {
@@ -83244,8 +83265,12 @@ function addFSCategory(payload) {
   return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["a" /* ADD_FS_CATEGORY */], payload: payload };
 };
 
-function editFSData(payload) {
-  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["d" /* EDIT_FS_DATA */], payload: payload };
+function editFSAge(payload) {
+  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["d" /* EDIT_FS_AGE */], payload: payload };
+};
+
+function editFSSlab(payload) {
+  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["e" /* EDIT_FS_SLAB */], payload: payload };
 };
 
 /***/ })
