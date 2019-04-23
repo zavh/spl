@@ -103,9 +103,9 @@
                                 </div>
                             <select name="gender" id="gender" class="form-control salary" required>
                             <option value="" disabled selected>Select One</option>
-                            <option value="m" {{$salaryinfo->gender == "m" ? 'selected' : ''}}>Male</option>
-                            <option value="f" {{$salaryinfo->gender == "f" ? 'selected' : ''}}>Female</option>
-                            <option value="o" {{$salaryinfo->gender == "o" ? 'selected' : ''}}>Other</option>
+                            <option value="m" {{$salaryinfo->gender == "male" ? 'selected' : ''}}>Male</option>
+                            <option value="f" {{$salaryinfo->gender == "female" ? 'selected' : ''}}>Female</option>
+                            <option value="o" {{$salaryinfo->gender == "other" ? 'selected' : ''}}>Other</option>
                             </select>
                         </div>
                     </div>

@@ -5,8 +5,10 @@ import StyledLi from './StyledLi';
 import SlabConfig from './SlabConfig';
 function mapStateToProps (state)
 {
-  return { 
-
+  return {
+    slabs:state.slabs,
+    fsdata:state.fsdata,
+    firstSlabCategories:state.firstSlabCategories,
     };
 }
 
@@ -24,9 +26,31 @@ class ConnectedTaxConfig extends Component{
             links:['/configurations/taxconfig/slabs', '/configurations/taxconfig/exemptions', '/configurations/taxconfig/investment'],
         }
         this.activeLinkChange = this.activeLinkChange.bind(this);
+        this.saveConfig = this.saveConfig.bind(this);
     }
     activeLinkChange(al){
         this.setState({panel:al});
+    }
+
+    saveConfig(){
+        var formData = new FormData();
+        formData.set('slabs', JSON.stringify(this.props.slabs));
+        formData.set('fsdata', JSON.stringify(this.props.fsdata));
+        formData.set('categories', JSON.stringify(this.props.firstSlabCategories));
+        formData.set('field','taxconfig')
+        axios.post('/configurations', formData)
+          .then((response)=>{
+            status = response.data.status;
+            if(status == 'failed'){
+                console.log(response)
+            }
+            else if(status == 'success'){
+                console.log(response);
+            }
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
     }
 
     render(){
@@ -45,6 +69,9 @@ class ConnectedTaxConfig extends Component{
                                     />
                             )}
                         </ul>
+                        <div className="d-flex justify-content-center bd-highlight m-3">
+                            <button type='button' className='btn btn-sm btn-primary' onClick={this.saveConfig}> Save Configuration </button>
+                        </div>
                     </div>
                     <div className="col-md-9">
                         <Switch>

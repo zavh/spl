@@ -104,8 +104,8 @@
                                 </div>
                             <select name="gender" id="gender" class="form-control salary" required>
                             <option value="" disabled selected>Select One</option>
-                            <option value="m" >Male</option>
-                            <option value="f" >Female</option>
+                            <option value="male" >Male</option>
+                            <option value="female" >Female</option>
                             <option value="o" >Other</option>
                             </select>
                         </div>

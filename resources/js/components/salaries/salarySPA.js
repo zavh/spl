@@ -30,7 +30,8 @@ class ConnectedSalarySPA extends Component {
         super(props);
         this.state = {
             taxcfg:{},
-            status:''
+            status:'',
+            message:'',
         };
     }
     
@@ -42,20 +43,25 @@ class ConnectedSalarySPA extends Component {
         axios.get('/salaries/dbcheck')
         .then(
             (response)=>{
-                console.log(response);
-                const timeline = {
-                    fromYear: response.data.fromYear,
-                    toYear: response.data.toYear,
-                    month : response.data.month,
-                }
-                this.props.setPayYear(timeline);
-                this.props.setRefTimeline(timeline);
-                this.props.setTabHeads(response.data.tabheads);
-                this.props.setSalaryRows(response.data.data);
-                this.props.setIndexing(response.data.indexing);
-                this.props.setBankAccounts(response.data.bankaccounts);
+                if(response.data.status == 'success'){
+                    console.log(response);
+                    const timeline = {
+                        fromYear: response.data.fromYear,
+                        toYear: response.data.toYear,
+                        month : response.data.month,
+                    }
+                    this.props.setPayYear(timeline);
+                    this.props.setRefTimeline(timeline);
+                    this.props.setTabHeads(response.data.tabheads);
+                    this.props.setSalaryRows(response.data.data);
+                    this.props.setIndexing(response.data.indexing);
+                    this.props.setBankAccounts(response.data.bankaccounts);
 
-                this.setState({status:'success'});
+                    this.setState({status:'success'});
+                }
+                else {
+                    this.setState({status:'failed',message:response.data.message});
+                }
             }
         )
         .catch(function (error) {
@@ -73,7 +79,14 @@ class ConnectedSalarySPA extends Component {
                 </div>
             );
             else 
-                return <div>Loading</div>
+                return (
+                    <div className='container-fluid'>
+                        <div className="p-3 mb-2 bg-warning text-dark">
+                            {this.state.message}
+                        </div>
+                        
+                    </div>
+                )
         }
 
         else if(this.props.mainPanel === 'IndvTaxCalc')

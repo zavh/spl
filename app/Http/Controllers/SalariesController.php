@@ -83,7 +83,6 @@ class SalariesController extends Controller
                 return $response;
             }
             else {                
-                
                 // save this $db into database 
                 $d = $this->initial_salary_generator("$fromYear-07-01", "$toYear-06-30");
                 // call yearly_income_table_generator and yearly_income_table_data_entry
@@ -93,6 +92,16 @@ class SalariesController extends Controller
                 }
                 // then send this reponse to prepare presentation
             }
+        }
+        if(!isset($d)){
+            $response['status'] = 'fail';
+            $response['message'] = 'Probably no Employee defined yet';
+            return response()->json($response);
+        }
+        else if(count($d) == 0){
+            $response['status'] = 'fail';
+            $response['message'] = 'Probably no Employee defined yet';
+            return response()->json($response);
         }
         $response = $this->presentation($d, $year, $month);
         $response['status'] = 'success';

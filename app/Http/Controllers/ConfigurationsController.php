@@ -34,7 +34,9 @@ class ConfigurationsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $response['status'] = 'success';
+        $response['data'] = $request->all();
+        return response()->json($response);
     }
 
     /**

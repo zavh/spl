@@ -70110,7 +70110,8 @@ var ConnectedSalarySPA = function (_Component) {
 
         _this.state = {
             taxcfg: {},
-            status: ''
+            status: '',
+            message: ''
         };
         return _this;
     }
@@ -70125,20 +70126,24 @@ var ConnectedSalarySPA = function (_Component) {
             }
 
             __WEBPACK_IMPORTED_MODULE_6_axios___default.a.get('/salaries/dbcheck').then(function (response) {
-                console.log(response);
-                var timeline = {
-                    fromYear: response.data.fromYear,
-                    toYear: response.data.toYear,
-                    month: response.data.month
-                };
-                _this2.props.setPayYear(timeline);
-                _this2.props.setRefTimeline(timeline);
-                _this2.props.setTabHeads(response.data.tabheads);
-                _this2.props.setSalaryRows(response.data.data);
-                _this2.props.setIndexing(response.data.indexing);
-                _this2.props.setBankAccounts(response.data.bankaccounts);
+                if (response.data.status == 'success') {
+                    console.log(response);
+                    var timeline = {
+                        fromYear: response.data.fromYear,
+                        toYear: response.data.toYear,
+                        month: response.data.month
+                    };
+                    _this2.props.setPayYear(timeline);
+                    _this2.props.setRefTimeline(timeline);
+                    _this2.props.setTabHeads(response.data.tabheads);
+                    _this2.props.setSalaryRows(response.data.data);
+                    _this2.props.setIndexing(response.data.indexing);
+                    _this2.props.setBankAccounts(response.data.bankaccounts);
 
-                _this2.setState({ status: 'success' });
+                    _this2.setState({ status: 'success' });
+                } else {
+                    _this2.setState({ status: 'failed', message: response.data.message });
+                }
             }).catch(function (error) {
                 console.log(error);
             });
@@ -70153,8 +70158,12 @@ var ConnectedSalarySPA = function (_Component) {
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__mainPanel__["a" /* default */], { status: this.state.status })
                 );else return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     'div',
-                    null,
-                    'Loading'
+                    { className: 'container-fluid' },
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        'div',
+                        { className: 'p-3 mb-2 bg-warning text-dark' },
+                        this.state.message
+                    )
                 );
             } else if (this.props.mainPanel === 'IndvTaxCalc') return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 'div',
@@ -82551,7 +82560,11 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 
 function mapStateToProps(state) {
-    return {};
+    return {
+        slabs: state.slabs,
+        fsdata: state.fsdata,
+        firstSlabCategories: state.firstSlabCategories
+    };
 }
 
 function mapDispatchToProps(dispatch) {
@@ -82572,6 +82585,7 @@ var ConnectedTaxConfig = function (_Component) {
             links: ['/configurations/taxconfig/slabs', '/configurations/taxconfig/exemptions', '/configurations/taxconfig/investment']
         };
         _this.activeLinkChange = _this.activeLinkChange.bind(_this);
+        _this.saveConfig = _this.saveConfig.bind(_this);
         return _this;
     }
 
@@ -82579,6 +82593,25 @@ var ConnectedTaxConfig = function (_Component) {
         key: "activeLinkChange",
         value: function activeLinkChange(al) {
             this.setState({ panel: al });
+        }
+    }, {
+        key: "saveConfig",
+        value: function saveConfig() {
+            var formData = new FormData();
+            formData.set('slabs', JSON.stringify(this.props.slabs));
+            formData.set('fsdata', JSON.stringify(this.props.fsdata));
+            formData.set('categories', JSON.stringify(this.props.firstSlabCategories));
+            formData.set('field', 'taxconfig');
+            axios.post('/configurations', formData).then(function (response) {
+                status = response.data.status;
+                if (status == 'failed') {
+                    console.log(response);
+                } else if (status == 'success') {
+                    console.log(response);
+                }
+            }).catch(function (error) {
+                console.log(error);
+            });
         }
     }, {
         key: "render",
@@ -82606,6 +82639,15 @@ var ConnectedTaxConfig = function (_Component) {
                                     onClick: _this2.activeLinkChange
                                 });
                             })
+                        ),
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            "div",
+                            { className: "d-flex justify-content-center bd-highlight m-3" },
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                "button",
+                                { type: "button", className: "btn btn-sm btn-primary", onClick: this.saveConfig },
+                                " Save Configuration "
+                            )
                         )
                     ),
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
