@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Configuration;
 
 class ConfigurationsController extends Controller
 {
@@ -34,20 +35,23 @@ class ConfigurationsController extends Controller
      */
     public function store(Request $request)
     {
-        $response['status'] = 'success';
-        $response['data'] = $request->all();
-        return response()->json($response);
+        $config = new Configuration;
+        $config->name = $request->field;
+        $config->data = $request->data;
+        $config->save();
+
+        return response()->json($request);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
+    public function gettaxconfig(){
+        $config = Configuration::where('name','taxconfig')->first();
+        if($config == null)
+            $response['status'] = 'failed';
+        else {
+            $response['data'] = json_decode($config->data);
+            $response['status'] = 'success';
+        }            
+        return response()->json($response);
     }
 
     /**

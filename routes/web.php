@@ -82,6 +82,8 @@ Route::get('/salaries/taxtable/{user_id?}', 'SalariesController@taxtable');
 Route::get('/salaries/dbcheck/{year?}', 'SalariesController@dbcheck');
 Route::get('/salaries/taxconfig/{table?}/{name?}', 'SalariesController@taxconfig');
 
+Route::get('/salaries/test', 'SalariesController@test');
+
 Route::post('/appmodules/addmod', 'AppModulesController@addmod')->name('addModule');
 Route::post('/appmodules/defaultconfig', 'AppModulesController@defaultconfig')->name('appDefaultConfiguration');
 Route::post('/appmodules/changedefaultcfg', 'AppModulesController@changedefaultcfg')->name('changeDefaultCfg');
@@ -94,6 +96,7 @@ Route::get('/departments/getall', 'DepartmentsController@getDepartments');
 Route::get('/departments/users/{id}', 'DepartmentsController@getUsers');
 
 Route::get('/loans/active', 'LoansController@active');
+Route::get('/configurations/taxconfig', 'ConfigurationsController@gettaxconfig');
 
 Route::resource('clients','ClientsController');
 Route::resource('projects','ProjectsController');
@@ -111,4 +114,4 @@ Route::resource('salaries','SalariesController');
 Route::resource('loans','LoansController');
 Route::resource('appmodules','AppModulesController')->only(['index']);
 Route::resource('quotations','QuotationsController')->except('create');
-Route::resource('configurations','ConfigurationsController');
+Route::resource('configurations','ConfigurationsController')->only('index','store');;

@@ -1,5 +1,5 @@
 import { 
-  ADD_SLAB, EDIT_SLAB, DELETE_SLAB, ADD_FS_CATEGORY, EDIT_FS_AGE, EDIT_FS_SLAB,
+  ADD_SLAB, EDIT_SLAB, DELETE_SLAB, ADD_FS_CATEGORY, EDIT_FS_AGE, EDIT_FS_SLAB, SET_SLAB, SET_CATEGORIES, SET_FSDATA, SET_DB_STATUS
 } from "../constants/action-types";
   
 const initialState = {
@@ -7,6 +7,7 @@ const initialState = {
   firstSlabCategories:{},
   fsdata:{},
   fserrors:[],
+  slabdbstatus: false,
 };
 function rootReducer(state = initialState, action) {
   if (action.type === ADD_SLAB){
@@ -91,7 +92,23 @@ function rootReducer(state = initialState, action) {
   if (action.type === EDIT_FS_SLAB){
     let edited = Object.assign({},state.fsdata,action.payload.update);
     return Object.assign({}, state, {fsdata : edited})
-    // console.log(edited);
+  }
+
+  if(action.type == SET_SLAB){
+    return Object.assign({}, state, {slabs : action.payload})
+  }
+
+  if(action.type == SET_CATEGORIES){
+    return Object.assign({}, state, {firstSlabCategories : action.payload})
+  }
+  
+  if(action.type == SET_FSDATA){
+    return Object.assign({}, state, {fsdata : action.payload})
+  }
+
+  if(action.type == SET_DB_STATUS){
+    console.log(action);
+    return Object.assign({}, state, {slabdbstatus : action.payload})
   }
 
   return state;

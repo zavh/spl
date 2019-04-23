@@ -4,6 +4,7 @@ namespace App\Http\Traits;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Loan;
+use App\Configuration;
 
 trait SalaryGenerator {
 
@@ -97,22 +98,18 @@ trait SalaryGenerator {
 
     private function TDS($TaxableSalary,$gender,$age)
     {
-        
-        $firstSlab['female'] = array();
-        $firstSlab['female']['age'][0] = 'any';
-        $firstSlab['female']['slab']['any'] = 300000;
-        $firstSlab['male'] = array();
-        $firstSlab['male']['age'][0] = 65;
-        $firstSlab['male']['age'][1] = 64;
-        $firstSlab['male']['slab']['64'] = 250000;
-        $firstSlab['male']['slab']['65'] = 300000;
+        $config = Configuration::where('name','taxconfig')->first();
+        $data = json_decode($config->data, true);
+        $firstSlab = $data['fsdata'];
 
         $a = 0;
         if(isset($firstSlab[$gender]['slab']['any']))
             $a = $firstSlab[$gender]['slab']['any'];
         else {
-            rsort($firstSlab[$gender]['age']);
-            for($i=0;$i<count($firstSlab[$gender]['age']);$i++){
+            $ages = $firstSlab[$gender]['age'];
+            asort($ages);
+            // for($i=0;$i<count($firstSlab[$gender]['age']);$i++){
+            foreach($ages as $i=>$age){
                 if($age <= intval($firstSlab[$gender]['age'][$i])){
                     $a = $firstSlab[$gender]['slab'][$firstSlab[$gender]['age'][$i]];
                     break;

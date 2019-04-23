@@ -3,18 +3,23 @@ import { BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import { connect } from "react-redux";
 import StyledLi from './StyledLi';
 import SlabConfig from './SlabConfig';
+import { setSlab, setCategories, setFSData, setSlabDBStatus } from "../redux/actions/index";
 function mapStateToProps (state)
 {
   return {
     slabs:state.slabs,
     fsdata:state.fsdata,
     firstSlabCategories:state.firstSlabCategories,
+    slabdbstatus: state.slabdbstatus,
     };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
-
+        setSlab: slabs => dispatch(setSlab(slabs)),
+        setCategories: catagories => dispatch(setCategories(catagories)),
+        setFSData: fsdata => dispatch(setFSData(fsdata)),
+        setSlabDBStatus: slabdbstatus => dispatch(setSlabDBStatus(slabdbstatus)),
     };
 }
 class ConnectedTaxConfig extends Component{
@@ -34,9 +39,11 @@ class ConnectedTaxConfig extends Component{
 
     saveConfig(){
         var formData = new FormData();
-        formData.set('slabs', JSON.stringify(this.props.slabs));
-        formData.set('fsdata', JSON.stringify(this.props.fsdata));
-        formData.set('categories', JSON.stringify(this.props.firstSlabCategories));
+        let data = {};
+        data['slabs'] = this.props.slabs;
+        data['fsdata'] = this.props.fsdata;
+        data['categories'] = this.props.firstSlabCategories;
+        formData.set('data', JSON.stringify(data));
         formData.set('field','taxconfig')
         axios.post('/configurations', formData)
           .then((response)=>{
@@ -46,13 +53,29 @@ class ConnectedTaxConfig extends Component{
             }
             else if(status == 'success'){
                 console.log(response);
+                this.props.setSlabDBStatus(true);
             }
           })
           .catch(function (error) {
             console.log(error);
           });
     }
+    componentDidMount(){
+        axios.get('/configurations/taxconfig')
+          .then((response)=>{
+              if(response.data.status == 'success'){
+                  console.log(response);
+                this.props.setSlab(response.data.data.slabs);
+                this.props.setCategories(response.data.data.categories);
+                this.props.setFSData(response.data.data.fsdata);
+                this.props.setSlabDBStatus(true);
+              }
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
 
+    }
     render(){
         return(
             <Router>

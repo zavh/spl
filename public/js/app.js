@@ -82339,7 +82339,8 @@ var initialState = {
   slabs: [],
   firstSlabCategories: {},
   fsdata: {},
-  fserrors: []
+  fserrors: [],
+  slabdbstatus: false
 };
 function rootReducer() {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
@@ -82428,7 +82429,23 @@ function rootReducer() {
   if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["e" /* EDIT_FS_SLAB */]) {
     var _edited = Object.assign({}, state.fsdata, action.payload.update);
     return Object.assign({}, state, { fsdata: _edited });
-    // console.log(edited);
+  }
+
+  if (action.type == __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["j" /* SET_SLAB */]) {
+    return Object.assign({}, state, { slabs: action.payload });
+  }
+
+  if (action.type == __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["g" /* SET_CATEGORIES */]) {
+    return Object.assign({}, state, { firstSlabCategories: action.payload });
+  }
+
+  if (action.type == __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["i" /* SET_FSDATA */]) {
+    return Object.assign({}, state, { fsdata: action.payload });
+  }
+
+  if (action.type == __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["h" /* SET_DB_STATUS */]) {
+    console.log(action);
+    return Object.assign({}, state, { slabdbstatus: action.payload });
   }
 
   return state;
@@ -82446,12 +82463,20 @@ function rootReducer() {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ADD_FS_CATEGORY; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return EDIT_FS_AGE; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return EDIT_FS_SLAB; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "j", function() { return SET_SLAB; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return SET_CATEGORIES; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "i", function() { return SET_FSDATA; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return SET_DB_STATUS; });
 var ADD_SLAB = "ADD_SLAB";
 var EDIT_SLAB = "EDIT_SLAB";
 var DELETE_SLAB = "DELETE_SLAB";
 var ADD_FS_CATEGORY = "ADD_FS_CATEGORY";
 var EDIT_FS_AGE = "EDIT_FS_AGE";
 var EDIT_FS_SLAB = "EDIT_FS_SLAB";
+var SET_SLAB = "SET_SLAB";
+var SET_CATEGORIES = "SET_CATEGORIES";
+var SET_FSDATA = "SET_FSDATA";
+var SET_DB_STATUS = "SET_DB_STATUS";
 
 /***/ }),
 /* 257 */
@@ -82546,6 +82571,7 @@ var StyledLi = function (_Component) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_react_redux__ = __webpack_require__(12);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__StyledLi__ = __webpack_require__(262);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__SlabConfig__ = __webpack_require__(264);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__redux_actions_index__ = __webpack_require__(267);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -82559,16 +82585,31 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 
 
+
 function mapStateToProps(state) {
     return {
         slabs: state.slabs,
         fsdata: state.fsdata,
-        firstSlabCategories: state.firstSlabCategories
+        firstSlabCategories: state.firstSlabCategories,
+        slabdbstatus: state.slabdbstatus
     };
 }
 
 function mapDispatchToProps(dispatch) {
-    return {};
+    return {
+        setSlab: function setSlab(slabs) {
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_5__redux_actions_index__["i" /* setSlab */])(slabs));
+        },
+        setCategories: function setCategories(catagories) {
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_5__redux_actions_index__["g" /* setCategories */])(catagories));
+        },
+        setFSData: function setFSData(fsdata) {
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_5__redux_actions_index__["h" /* setFSData */])(fsdata));
+        },
+        setSlabDBStatus: function setSlabDBStatus(slabdbstatus) {
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_5__redux_actions_index__["j" /* setSlabDBStatus */])(slabdbstatus));
+        }
+    };
 }
 
 var ConnectedTaxConfig = function (_Component) {
@@ -82597,10 +82638,14 @@ var ConnectedTaxConfig = function (_Component) {
     }, {
         key: "saveConfig",
         value: function saveConfig() {
+            var _this2 = this;
+
             var formData = new FormData();
-            formData.set('slabs', JSON.stringify(this.props.slabs));
-            formData.set('fsdata', JSON.stringify(this.props.fsdata));
-            formData.set('categories', JSON.stringify(this.props.firstSlabCategories));
+            var data = {};
+            data['slabs'] = this.props.slabs;
+            data['fsdata'] = this.props.fsdata;
+            data['categories'] = this.props.firstSlabCategories;
+            formData.set('data', JSON.stringify(data));
             formData.set('field', 'taxconfig');
             axios.post('/configurations', formData).then(function (response) {
                 status = response.data.status;
@@ -82608,6 +82653,24 @@ var ConnectedTaxConfig = function (_Component) {
                     console.log(response);
                 } else if (status == 'success') {
                     console.log(response);
+                    _this2.props.setSlabDBStatus(true);
+                }
+            }).catch(function (error) {
+                console.log(error);
+            });
+        }
+    }, {
+        key: "componentDidMount",
+        value: function componentDidMount() {
+            var _this3 = this;
+
+            axios.get('/configurations/taxconfig').then(function (response) {
+                if (response.data.status == 'success') {
+                    console.log(response);
+                    _this3.props.setSlab(response.data.data.slabs);
+                    _this3.props.setCategories(response.data.data.categories);
+                    _this3.props.setFSData(response.data.data.fsdata);
+                    _this3.props.setSlabDBStatus(true);
                 }
             }).catch(function (error) {
                 console.log(error);
@@ -82616,7 +82679,7 @@ var ConnectedTaxConfig = function (_Component) {
     }, {
         key: "render",
         value: function render() {
-            var _this2 = this;
+            var _this4 = this;
 
             return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 __WEBPACK_IMPORTED_MODULE_1_react_router_dom__["a" /* BrowserRouter */],
@@ -82633,10 +82696,10 @@ var ConnectedTaxConfig = function (_Component) {
                             this.state.menuItems.map(function (item, index) {
                                 return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__StyledLi__["a" /* default */], {
                                     item: item,
-                                    target: _this2.state.panel,
+                                    target: _this4.state.panel,
                                     key: index,
-                                    linkto: _this2.state.links[index],
-                                    onClick: _this2.activeLinkChange
+                                    linkto: _this4.state.links[index],
+                                    onClick: _this4.activeLinkChange
                                 });
                             })
                         ),
@@ -83288,6 +83351,10 @@ var FSConfig = Object(__WEBPACK_IMPORTED_MODULE_1_react_redux__["b" /* connect *
 /* harmony export (immutable) */ __webpack_exports__["a"] = addFSCategory;
 /* harmony export (immutable) */ __webpack_exports__["d"] = editFSAge;
 /* harmony export (immutable) */ __webpack_exports__["e"] = editFSSlab;
+/* harmony export (immutable) */ __webpack_exports__["i"] = setSlab;
+/* harmony export (immutable) */ __webpack_exports__["g"] = setCategories;
+/* harmony export (immutable) */ __webpack_exports__["h"] = setFSData;
+/* harmony export (immutable) */ __webpack_exports__["j"] = setSlabDBStatus;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__constants_action_types__ = __webpack_require__(256);
 
 
@@ -83314,6 +83381,22 @@ function editFSAge(payload) {
 function editFSSlab(payload) {
   return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["e" /* EDIT_FS_SLAB */], payload: payload };
 };
+
+function setSlab(payload) {
+  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["j" /* SET_SLAB */], payload: payload };
+}
+
+function setCategories(payload) {
+  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["g" /* SET_CATEGORIES */], payload: payload };
+}
+
+function setFSData(payload) {
+  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["i" /* SET_FSDATA */], payload: payload };
+}
+
+function setSlabDBStatus(payload) {
+  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["h" /* SET_DB_STATUS */], payload: payload };
+}
 
 /***/ })
 /******/ ]);

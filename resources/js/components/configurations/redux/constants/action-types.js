@@ -4,3 +4,7 @@ export const DELETE_SLAB = "DELETE_SLAB";
 export const ADD_FS_CATEGORY = "ADD_FS_CATEGORY";
 export const EDIT_FS_AGE = "EDIT_FS_AGE";
 export const EDIT_FS_SLAB = "EDIT_FS_SLAB";
+export const SET_SLAB = "SET_SLAB";
+export const SET_CATEGORIES = "SET_CATEGORIES";
+export const SET_FSDATA = "SET_FSDATA";
+export const SET_DB_STATUS = "SET_DB_STATUS";

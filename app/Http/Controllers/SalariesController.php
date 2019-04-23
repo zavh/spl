@@ -12,7 +12,7 @@ use App\Loan;
 use Carbon\Carbon;
 use App\Http\Traits\SalaryGenerator;
 use App\Http\Presentations\TaxConfig;
-
+use App\Configuration;
 use App\User;
 use Illuminate\Support\Facades\Storage;
 
@@ -415,5 +415,24 @@ class SalariesController extends Controller
         $tax_config = json_decode($db->tax_config, true);
         $s = new TaxConfig($salary, $tax_config);
         return response()->json($s->summary());
+    }
+
+    public function test(){
+        $config = Configuration::where('name','taxconfig')->first();
+        $data = json_decode($config->data, true);
+        $categories = $data['categories'];
+        $firstSlab = $data['fsdata'];
+        
+        foreach($categories as $gender=>$value){
+            if(isset($firstSlab[$gender]['slab']['any']))
+                echo "ANY exists";
+            else {
+                $ages = $firstSlab[$gender]['age'];
+                asort($ages);
+                echo "<pre>";
+                print_r($ages);
+                echo "</pre>";
+            }
+        }
     }
 }
