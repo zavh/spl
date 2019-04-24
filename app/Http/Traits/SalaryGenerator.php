@@ -102,6 +102,7 @@ trait SalaryGenerator {
         $data = json_decode($config->data, true);
         $firstSlab = $data['fsdata'];
 
+        ################# Determining First Slab from Configuration #################
         $a = 0;
         if(isset($firstSlab[$gender]['slab']['any']))
             $a = $firstSlab[$gender]['slab']['any'];
@@ -116,10 +117,20 @@ trait SalaryGenerator {
                 $a = $firstSlab[$gender]['slab'][$firstSlab[$gender]['age'][$i]];
             }
         }
+        #############################################################################
+
+        ################ Determining Slab Values and Slab Percentages ###############
+        $slabs = $data['slabs'];
+        for($i=0;$i<count($slabs);$i++){
+            $slab[$i] = floatval($slabs[$i]['slabval']);
+            $slabperc[$i] = floatval($slabs[$i]['percval']);
+        }
+        array_pop($slab);
+        $slab = array_merge([$a],$slab);
+        $slabperc = array_merge([0], $slabperc);
+        #############################################################################
 
         $taxableIncome = $TaxableSalary;
-        $slab = array($a, 400000, 500000, 600000, 3000000);
-        $slabperc = array(0,10,15,20,25,30);
         $tax = array();
         $slabamount = array();
 

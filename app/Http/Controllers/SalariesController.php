@@ -416,4 +416,18 @@ class SalariesController extends Controller
         $s = new TaxConfig($salary, $tax_config);
         return response()->json($s->summary());
     }
+
+    public function test(){
+        $config = Configuration::where('name','taxconfig')->first();
+        $data = json_decode($config->data, true);
+
+        $slabs = $data['slabs'];
+        for($i=0;$i<count($slabs);$i++){
+            $slab[$i] = floatval($slabs[$i]['slabval']);
+            $slabperc[$i] = floatval($slabs[$i]['percval']);
+        }
+        array_pop($slab);
+        $slabperc = array_merge([0], $slabperc);
+        dd($slabperc);
+    }
 }
