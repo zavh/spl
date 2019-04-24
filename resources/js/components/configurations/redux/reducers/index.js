@@ -1,5 +1,5 @@
 import { 
-  ADD_SLAB, EDIT_SLAB, DELETE_SLAB, ADD_FS_CATEGORY, EDIT_FS_AGE, EDIT_FS_SLAB, SET_SLAB, SET_CATEGORIES, SET_FSDATA, SET_SLAB_DB_STATUS
+  ADD_SLAB, EDIT_SLAB, DELETE_SLAB, ADD_FS_CATEGORY, EDIT_FS_AGE, EDIT_FS_SLAB, SET_SLAB, SET_CATEGORIES, SET_FSDATA, SET_SLAB_DB_STATUS, SET_SLAB_INITIATION
 } from "../constants/action-types";
   
 const initialState = {
@@ -8,6 +8,7 @@ const initialState = {
   fsdata:{},
   fserrors:[],
   slabdbstatus: false,
+  slabinitiated: false,
 };
 function rootReducer(state = initialState, action) {
   if (action.type === ADD_SLAB){
@@ -84,6 +85,19 @@ function rootReducer(state = initialState, action) {
       else if(value != 'any'){
         errors[0] = "'Age' should be either 'any' or a numeric value";
       }
+      else if(value == 'any'){
+        let category = action.payload.category;
+        let age = edited[category].age;
+        if(age.length > 1){
+          console.log('needs deletion for '+category);
+          let newagearr = [];
+          newagearr[0]='any';
+          let newslab = {};
+          newslab['any'] = edited[category].slab['any'];
+          edited[category].age = newagearr;
+          edited[category].slab = newslab;
+        }
+      }
     }
     
     return Object.assign({}, state, {fsdata : edited, fserrors:errors})
@@ -108,6 +122,10 @@ function rootReducer(state = initialState, action) {
 
   if(action.type == SET_SLAB_DB_STATUS){
     return Object.assign({}, state, {slabdbstatus : action.payload})
+  }
+
+  if(action.type == SET_SLAB_INITIATION){
+    return Object.assign({}, state, {slabinitiated : action.payload})
   }
 
   return state;

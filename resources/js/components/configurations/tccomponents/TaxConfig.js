@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import { connect } from "react-redux";
 import StyledLi from './StyledLi';
 import SlabConfig from './SlabConfig';
-import { setSlab, setCategories, setFSData, setSlabDBStatus } from "../redux/actions/index";
+import { setSlab, setCategories, setFSData, setSlabDBStatus, setSlabInitiation } from "../redux/actions/index";
 function mapStateToProps (state)
 {
   return {
@@ -11,6 +11,7 @@ function mapStateToProps (state)
     fsdata:state.fsdata,
     firstSlabCategories:state.firstSlabCategories,
     slabdbstatus: state.slabdbstatus,
+    slabinitiated: state.slabinitiated
     };
 }
 
@@ -20,6 +21,7 @@ function mapDispatchToProps(dispatch) {
         setCategories: catagories => dispatch(setCategories(catagories)),
         setFSData: fsdata => dispatch(setFSData(fsdata)),
         setSlabDBStatus: slabdbstatus => dispatch(setSlabDBStatus(slabdbstatus)),
+        setSlabInitiation: init => dispatch(setSlabInitiation(init)),
     };
 }
 class ConnectedTaxConfig extends Component{
@@ -29,7 +31,7 @@ class ConnectedTaxConfig extends Component{
             panel:'Slab Configuration',
             menuItems: ['Slab Configuration', 'Tax Exemption Configuration', 'Investment Configuration'],
             links:['/configurations/taxconfig/slabs', '/configurations/taxconfig/exemptions', '/configurations/taxconfig/investment'],
-            needssaving: -1,
+            needssaving: false,
         }
         this.activeLinkChange = this.activeLinkChange.bind(this);
         this.saveConfig = this.saveConfig.bind(this);
@@ -80,6 +82,7 @@ class ConnectedTaxConfig extends Component{
               console.log(error);
             });
         }
+        this.setState({needssaving:false})
     }
     componentDidMount(){
         axios.get('/configurations/gettaxconfig')
@@ -90,16 +93,16 @@ class ConnectedTaxConfig extends Component{
                 this.props.setCategories(response.data.data.categories);
                 this.props.setFSData(response.data.data.fsdata);
                 this.props.setSlabDBStatus(true);
-              }
+                this.props.setSlabInitiation(true);
+            }
           })
           .catch(function (error) {
             console.log(error);
           });
-
     }
     componentDidUpdate(prev){
-        if(this.props.slabs != prev.slabs)
-        console.log(this.state.needssaving);
+        if( this.props.slabinitiated && this.props.slabs != prev.slabs)
+            this.setState({needssaving:true})
     }
     render(){
         return(
@@ -125,7 +128,8 @@ class ConnectedTaxConfig extends Component{
                             <Route path="/configurations/taxconfig/slabs" component={SlabConfig}/>
                         </Switch>
                         <div className="d-flex justify-content-center bd-highlight m-3">
-                            <button type='button' className='btn btn-sm btn-outline-primary' onClick={this.saveConfig}> Save Configuration </button>
+                            {/* <button type='button' className='btn btn-sm btn-danger' onClick={this.saveConfig} disabled={!this.state.needssaving}> Save Configuration </button> */}
+                            <SaveButton onClick={this.saveConfig} needssaving={this.state.needssaving}/>
                         </div>
                     </div>
                 </div>
@@ -135,3 +139,21 @@ class ConnectedTaxConfig extends Component{
 }
 const TaxConfig = connect(mapStateToProps, mapDispatchToProps)(ConnectedTaxConfig);
 export default TaxConfig;
+
+function SaveButton(props){
+    function onClick(){
+        props.onClick;
+    }
+    if(props.needssaving)
+        return(
+            <button type='button' className='btn btn-sm btn-danger' onClick={props.onClick} disabled={false}>
+                Save Configuration
+            </button>
+            )
+    else
+        return(
+            <button type='button' className='btn btn-sm btn-secondary' onClick={onClick} disabled={true}>
+                Save Configuration
+            </button>
+            )
+}

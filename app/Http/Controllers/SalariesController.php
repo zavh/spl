@@ -416,23 +416,4 @@ class SalariesController extends Controller
         $s = new TaxConfig($salary, $tax_config);
         return response()->json($s->summary());
     }
-
-    public function test(){
-        $config = Configuration::where('name','taxconfig')->first();
-        $data = json_decode($config->data, true);
-        $categories = $data['categories'];
-        $firstSlab = $data['fsdata'];
-        
-        foreach($categories as $gender=>$value){
-            if(isset($firstSlab[$gender]['slab']['any']))
-                echo "ANY exists";
-            else {
-                $ages = $firstSlab[$gender]['age'];
-                asort($ages);
-                echo "<pre>";
-                print_r($ages);
-                echo "</pre>";
-            }
-        }
-    }
 }

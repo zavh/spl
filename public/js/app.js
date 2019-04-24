@@ -82340,7 +82340,8 @@ var initialState = {
   firstSlabCategories: {},
   fsdata: {},
   fserrors: [],
-  slabdbstatus: false
+  slabdbstatus: false,
+  slabinitiated: false
 };
 function rootReducer() {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
@@ -82420,6 +82421,18 @@ function rootReducer() {
         }
       } else if (value != 'any') {
         errors[0] = "'Age' should be either 'any' or a numeric value";
+      } else if (value == 'any') {
+        var _category = action.payload.category;
+        var _age2 = edited[_category].age;
+        if (_age2.length > 1) {
+          console.log('needs deletion for ' + _category);
+          var newagearr = [];
+          newagearr[0] = 'any';
+          var _newslab = {};
+          _newslab['any'] = edited[_category].slab['any'];
+          edited[_category].age = newagearr;
+          edited[_category].slab = _newslab;
+        }
       }
     }
 
@@ -82447,6 +82460,10 @@ function rootReducer() {
     return Object.assign({}, state, { slabdbstatus: action.payload });
   }
 
+  if (action.type == __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["k" /* SET_SLAB_INITIATION */]) {
+    return Object.assign({}, state, { slabinitiated: action.payload });
+  }
+
   return state;
 }
 /* harmony default export */ __webpack_exports__["a"] = (rootReducer);
@@ -82466,6 +82483,7 @@ function rootReducer() {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "g", function() { return SET_CATEGORIES; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "h", function() { return SET_FSDATA; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "j", function() { return SET_SLAB_DB_STATUS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "k", function() { return SET_SLAB_INITIATION; });
 var ADD_SLAB = "ADD_SLAB";
 var EDIT_SLAB = "EDIT_SLAB";
 var DELETE_SLAB = "DELETE_SLAB";
@@ -82476,6 +82494,7 @@ var SET_SLAB = "SET_SLAB";
 var SET_CATEGORIES = "SET_CATEGORIES";
 var SET_FSDATA = "SET_FSDATA";
 var SET_SLAB_DB_STATUS = "SET_SLAB_DB_STATUS";
+var SET_SLAB_INITIATION = "SET_SLAB_INITIATION";
 
 /***/ }),
 /* 257 */
@@ -82590,7 +82609,8 @@ function mapStateToProps(state) {
         slabs: state.slabs,
         fsdata: state.fsdata,
         firstSlabCategories: state.firstSlabCategories,
-        slabdbstatus: state.slabdbstatus
+        slabdbstatus: state.slabdbstatus,
+        slabinitiated: state.slabinitiated
     };
 }
 
@@ -82607,6 +82627,9 @@ function mapDispatchToProps(dispatch) {
         },
         setSlabDBStatus: function setSlabDBStatus(slabdbstatus) {
             return dispatch(Object(__WEBPACK_IMPORTED_MODULE_5__redux_actions_index__["j" /* setSlabDBStatus */])(slabdbstatus));
+        },
+        setSlabInitiation: function setSlabInitiation(init) {
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_5__redux_actions_index__["k" /* setSlabInitiation */])(init));
         }
     };
 }
@@ -82623,7 +82646,7 @@ var ConnectedTaxConfig = function (_Component) {
             panel: 'Slab Configuration',
             menuItems: ['Slab Configuration', 'Tax Exemption Configuration', 'Investment Configuration'],
             links: ['/configurations/taxconfig/slabs', '/configurations/taxconfig/exemptions', '/configurations/taxconfig/investment'],
-            needssaving: -1
+            needssaving: false
         };
         _this.activeLinkChange = _this.activeLinkChange.bind(_this);
         _this.saveConfig = _this.saveConfig.bind(_this);
@@ -82674,6 +82697,7 @@ var ConnectedTaxConfig = function (_Component) {
                     console.log(error);
                 });
             }
+            this.setState({ needssaving: false });
         }
     }, {
         key: "componentDidMount",
@@ -82687,6 +82711,7 @@ var ConnectedTaxConfig = function (_Component) {
                     _this3.props.setCategories(response.data.data.categories);
                     _this3.props.setFSData(response.data.data.fsdata);
                     _this3.props.setSlabDBStatus(true);
+                    _this3.props.setSlabInitiation(true);
                 }
             }).catch(function (error) {
                 console.log(error);
@@ -82695,7 +82720,7 @@ var ConnectedTaxConfig = function (_Component) {
     }, {
         key: "componentDidUpdate",
         value: function componentDidUpdate(prev) {
-            if (this.props.slabs != prev.slabs) console.log(this.state.needssaving);
+            if (this.props.slabinitiated && this.props.slabs != prev.slabs) this.setState({ needssaving: true });
         }
     }, {
         key: "render",
@@ -82737,11 +82762,7 @@ var ConnectedTaxConfig = function (_Component) {
                         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                             "div",
                             { className: "d-flex justify-content-center bd-highlight m-3" },
-                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                "button",
-                                { type: "button", className: "btn btn-sm btn-outline-primary", onClick: this.saveConfig },
-                                " Save Configuration "
-                            )
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(SaveButton, { onClick: this.saveConfig, needssaving: this.state.needssaving })
                         )
                     )
                 )
@@ -82754,6 +82775,21 @@ var ConnectedTaxConfig = function (_Component) {
 
 var TaxConfig = Object(__WEBPACK_IMPORTED_MODULE_2_react_redux__["b" /* connect */])(mapStateToProps, mapDispatchToProps)(ConnectedTaxConfig);
 /* harmony default export */ __webpack_exports__["a"] = (TaxConfig);
+
+function SaveButton(props) {
+    function onClick() {
+        props.onClick;
+    }
+    if (props.needssaving) return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+        "button",
+        { type: "button", className: "btn btn-sm btn-danger", onClick: props.onClick, disabled: false },
+        "Save Configuration"
+    );else return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+        "button",
+        { type: "button", className: "btn btn-sm btn-secondary", onClick: onClick, disabled: true },
+        "Save Configuration"
+    );
+}
 
 /***/ }),
 /* 264 */
@@ -83376,6 +83412,7 @@ var FSConfig = Object(__WEBPACK_IMPORTED_MODULE_1_react_redux__["b" /* connect *
 /* harmony export (immutable) */ __webpack_exports__["g"] = setCategories;
 /* harmony export (immutable) */ __webpack_exports__["h"] = setFSData;
 /* harmony export (immutable) */ __webpack_exports__["j"] = setSlabDBStatus;
+/* harmony export (immutable) */ __webpack_exports__["k"] = setSlabInitiation;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__constants_action_types__ = __webpack_require__(256);
 
 
@@ -83417,6 +83454,9 @@ function setFSData(payload) {
 
 function setSlabDBStatus(payload) {
   return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["j" /* SET_SLAB_DB_STATUS */], payload: payload };
+}
+function setSlabInitiation(payload) {
+  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["k" /* SET_SLAB_INITIATION */], payload: payload };
 }
 
 /***/ })

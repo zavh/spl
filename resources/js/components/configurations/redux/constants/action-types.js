@@ -8,3 +8,4 @@ export const SET_SLAB = "SET_SLAB";
 export const SET_CATEGORIES = "SET_CATEGORIES";
 export const SET_FSDATA = "SET_FSDATA";
 export const SET_SLAB_DB_STATUS = "SET_SLAB_DB_STATUS";
+export const SET_SLAB_INITIATION = "SET_SLAB_INITIATION";

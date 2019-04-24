@@ -1,5 +1,15 @@
 import {
-  ADD_SLAB, EDIT_SLAB, DELETE_SLAB, ADD_FS_CATEGORY, EDIT_FS_AGE, EDIT_FS_SLAB, SET_SLAB, SET_CATEGORIES, SET_FSDATA, SET_SLAB_DB_STATUS
+  ADD_SLAB,
+  EDIT_SLAB,
+  DELETE_SLAB,
+  ADD_FS_CATEGORY,
+  EDIT_FS_AGE,
+  EDIT_FS_SLAB,
+  SET_SLAB,
+  SET_CATEGORIES,
+  SET_FSDATA,
+  SET_SLAB_DB_STATUS,
+  SET_SLAB_INITIATION
  } from "../constants/action-types";
 
 export function addSlab(payload) {
@@ -40,4 +50,7 @@ export function setFSData(payload){
 
 export function setSlabDBStatus(payload){
   return {type: SET_SLAB_DB_STATUS, payload};
+}
+export function setSlabInitiation(payload){
+  return {type: SET_SLAB_INITIATION, payload};
 }
