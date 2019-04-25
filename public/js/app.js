@@ -83470,12 +83470,12 @@ var ConnectedSalaryHeads = function (_Component) {
                     if (response.data.status == 'success') {
                         _this3.props.setSalaryHead(response.data.data);
                         _this3.props.setHeadDBStatus(true);
+                        _this3.props.setHeadInitiation(true);
                     }
                 }).catch(function (error) {
                     console.log(error);
                 });
             }
-            this.props.setHeadInitiation(true);
         }
     }, {
         key: 'componentDidUpdate',

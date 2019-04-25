@@ -111,13 +111,13 @@ class ConnectedSalaryHeads extends Component{
                 if(response.data.status == 'success'){
                     this.props.setSalaryHead(response.data.data);
                     this.props.setHeadDBStatus(true);
+                    this.props.setHeadInitiation(true);
               }
             })
             .catch(function (error) {
               console.log(error);
             });
         }
-        this.props.setHeadInitiation(true);
     }
     componentDidUpdate(prev){
         if( this.props.headinitiated && this.props.salaryheads != prev.salaryheads)
