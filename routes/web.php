@@ -97,6 +97,7 @@ Route::get('/departments/users/{id}', 'DepartmentsController@getUsers');
 
 Route::get('/loans/active', 'LoansController@active');
 Route::get('/configurations/gettaxconfig', 'ConfigurationsController@gettaxconfig');
+// Route::get('/configurations/getheadconfig', 'ConfigurationsController@getheadconfig');
 
 Route::resource('clients','ClientsController');
 Route::resource('projects','ProjectsController');

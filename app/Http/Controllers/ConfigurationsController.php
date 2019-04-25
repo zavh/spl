@@ -39,12 +39,26 @@ class ConfigurationsController extends Controller
         $config->name = $request->field;
         $config->data = $request->data;
         $config->save();
-
-        return response()->json($request);
+        if($config->id > 0){
+            $response['status'] = 'success';
+            $response['message'] = 'Created new configuration successfully';
+        }
+        return response()->json($response);
     }
 
     public function gettaxconfig(){
         $config = Configuration::where('name','taxconfig')->first();
+        if($config == null)
+            $response['status'] = 'failed';
+        else {
+            $response['data'] = json_decode($config->data);
+            $response['status'] = 'success';
+        }            
+        return response()->json($response);
+    }
+
+    public function getheadconfig(){
+        $config = Configuration::where('name','headconfig')->first();
         if($config == null)
             $response['status'] = 'failed';
         else {
@@ -62,7 +76,16 @@ class ConfigurationsController extends Controller
      */
     public function edit($id)
     {
-        //
+        $config = Configuration::where('name',$id)->first();
+        if($config == null){
+            $response['status'] = 'failed';
+            $response['message'] = 'Could not find configuration with name $id';
+        }
+        else {
+            $response['data'] = json_decode($config->data);
+            $response['status'] = 'success';
+        }            
+        return response()->json($response);
     }
 
     /**

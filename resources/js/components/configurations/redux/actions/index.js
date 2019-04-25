@@ -9,12 +9,15 @@ import {
   SET_CATEGORIES,
   SET_FSDATA,
   SET_SLAB_DB_STATUS,
+  SET_SLAB_SAVINGS,
   SET_SLAB_INITIATION,
+
+  SET_HEADS,
   ADD_SALARY_HEAD,
   SET_SALARY_HEAD,
   MOD_SALARY_CONFIG,
   SET_HEAD_INITIATION,
-  SET_SLAB_SAVINGS,
+  SET_HEAD_DB_STATUS,
   SET_HEAD_SAVINGS,
  } from "../constants/action-types";
 
@@ -81,7 +84,11 @@ export function setHeadInitiation(payload){
 export function setSlabSavingsFlag(payload){
   return {type: SET_SLAB_SAVINGS, payload};
 }
+
 export function setHeadSaveFlag(payload){
   return {type: SET_HEAD_SAVINGS, payload};
 }
 
+export function setHeadDBStatus(payload){
+  return {type: SET_HEAD_DB_STATUS, payload};
+}

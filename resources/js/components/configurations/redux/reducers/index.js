@@ -10,11 +10,13 @@ import {
   SET_FSDATA, 
   SET_SLAB_DB_STATUS, 
   SET_SLAB_INITIATION,
+  SET_SLAB_SAVINGS,
+  
   ADD_SALARY_HEAD,
   SET_SALARY_HEAD,
   MOD_SALARY_CONFIG,
+  SET_HEAD_DB_STATUS, 
   SET_HEAD_INITIATION,
-  SET_SLAB_SAVINGS,
   SET_HEAD_SAVINGS,
 } from "../constants/action-types";
   
@@ -25,9 +27,11 @@ const initialState = {
   fserrors:[],
   slabdbstatus: false,
   slabinitiated: false,
-  salaryheads: {},
-  headinitiated: false,
   slabneedsaving: false,
+  
+  salaryheads: {},
+  headdbstatus: false,
+  headinitiated: false,
   headneedsaving: false,
 };
 function rootReducer(state = initialState, action) {
@@ -163,7 +167,7 @@ function rootReducer(state = initialState, action) {
   }
 
   if(action.type == SET_SALARY_HEAD){
-    console.log(action);
+    return Object.assign({}, state, {salaryheads : action.payload.heads})
   }
 
   if(action.type == MOD_SALARY_CONFIG){
@@ -178,11 +182,17 @@ function rootReducer(state = initialState, action) {
   if(action.type == SET_HEAD_INITIATION){
     return Object.assign({}, state, {headinitiated : action.payload})
   }
+  
   if(action.type == SET_SLAB_SAVINGS){
     return Object.assign({}, state, {slabneedsaving : action.payload})
   }
+  
   if(action.type == SET_HEAD_SAVINGS){
     return Object.assign({}, state, {headneedsaving : action.payload})
+  }
+  
+  if(action.type == SET_HEAD_DB_STATUS){
+    return Object.assign({}, state, {headdbstatus : action.payload})
   }
   return state;
 }

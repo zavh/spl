@@ -30,9 +30,7 @@ class ConnectedConfigSPA extends Component{
     activeLinkChange(al){
         this.setState({panel:al});
     }
-
-      render() {
-          
+    render() {
         return (
             <Router>
             <ul className="nav nav-tabs">
@@ -57,7 +55,7 @@ class ConnectedConfigSPA extends Component{
             </div>
             </Router>
         );
-      }
+    }
 }
 const ConfigSPA = connect(mapStateToProps, mapDispatchToProps)(ConnectedConfigSPA);
 export default ConfigSPA;

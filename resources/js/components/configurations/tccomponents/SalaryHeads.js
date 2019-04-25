@@ -3,7 +3,7 @@ import SingleInput from '../../commons/SingleInput';
 import HeadConfig from './HeadConfig';
 import {SaveButton} from './SaveButton';
 import { connect } from "react-redux";
-import { addSalaryHead, setSalaryHead, setHeadInitiation, setHeadSaveFlag} from "../redux/actions/index";
+import { addSalaryHead, setSalaryHead, setHeadInitiation, setHeadSaveFlag, setHeadDBStatus, setHeads} from "../redux/actions/index";
 
 function mapStateToProps (state)
 {
@@ -11,6 +11,7 @@ function mapStateToProps (state)
     salaryheads: state.salaryheads,
     headinitiated: state.headinitiated,
     headneedsaving: state.headneedsaving,
+    headdbstatus: state.headdbstatus,
     };
 }
 
@@ -19,6 +20,7 @@ function mapDispatchToProps(dispatch) {
         addSalaryHead: head => dispatch(addSalaryHead(head)),
         setSalaryHead: heads => dispatch(setSalaryHead(heads)),
         setHeadInitiation: flag => dispatch(setHeadInitiation(flag)),
+        setHeadDBStatus: headdbstatus => dispatch(setHeadDBStatus(headdbstatus)),
         setHeadSaveFlag: flag => dispatch(setHeadSaveFlag(flag)),
     };
 }
@@ -64,14 +66,62 @@ class ConnectedSalaryHeads extends Component{
         }
     }
     saveConfig(){
-        console.log(this.props.salaryheads);
+        let data = {};
+        data['heads'] = this.props.salaryheads;
+        if(this.props.headdbstatus){
+            axios.post('/configurations/headconfig', {
+                data:JSON.stringify(data),
+                _method:'patch'})
+            .then((response)=>{
+              status = response.data.status;
+              if(status == 'failed'){
+                  console.log(response)
+              }
+              else if(status == 'success'){
+                  console.log(response);
+                  this.props.setHeadDBStatus(true);
+              }
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+        }
+        else{
+            axios.post('/configurations', {data: JSON.stringify(data), field: 'headconfig'})
+            .then((response)=>{
+              status = response.data.status;
+              if(status == 'failed'){
+                  console.log(response)
+              }
+              else if(status == 'success'){
+                  console.log(response);
+                  this.props.setHeadDBStatus(true);
+              }
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+        }
+        this.props.setHeadSaveFlag(false);
     }
     componentDidMount(){
+        if(!this.props.headdbstatus){
+            axios.get('/configurations/headconfig/edit')
+            .then((response)=>{
+                if(response.data.status == 'success'){
+                    this.props.setSalaryHead(response.data.data);
+                    this.props.setHeadDBStatus(true);
+              }
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+        }
         this.props.setHeadInitiation(true);
     }
     componentDidUpdate(prev){
         if( this.props.headinitiated && this.props.salaryheads != prev.salaryheads)
-            this.props.setHeadSaveFlag(true)
+            this.props.setHeadSaveFlag(true);
     }
     render(){
         return(
