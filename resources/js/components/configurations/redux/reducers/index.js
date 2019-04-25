@@ -1,5 +1,21 @@
 import { 
-  ADD_SLAB, EDIT_SLAB, DELETE_SLAB, ADD_FS_CATEGORY, EDIT_FS_AGE, EDIT_FS_SLAB, SET_SLAB, SET_CATEGORIES, SET_FSDATA, SET_SLAB_DB_STATUS, SET_SLAB_INITIATION
+  ADD_SLAB, 
+  EDIT_SLAB, 
+  DELETE_SLAB, 
+  ADD_FS_CATEGORY, 
+  EDIT_FS_AGE, 
+  EDIT_FS_SLAB, 
+  SET_SLAB, 
+  SET_CATEGORIES, 
+  SET_FSDATA, 
+  SET_SLAB_DB_STATUS, 
+  SET_SLAB_INITIATION,
+  ADD_SALARY_HEAD,
+  SET_SALARY_HEAD,
+  MOD_SALARY_CONFIG,
+  SET_HEAD_INITIATION,
+  SET_SLAB_SAVINGS,
+  SET_HEAD_SAVINGS,
 } from "../constants/action-types";
   
 const initialState = {
@@ -9,6 +25,10 @@ const initialState = {
   fserrors:[],
   slabdbstatus: false,
   slabinitiated: false,
+  salaryheads: {},
+  headinitiated: false,
+  slabneedsaving: false,
+  headneedsaving: false,
 };
 function rootReducer(state = initialState, action) {
   if (action.type === ADD_SLAB){
@@ -128,6 +148,42 @@ function rootReducer(state = initialState, action) {
     return Object.assign({}, state, {slabinitiated : action.payload})
   }
 
+  if(action.type == ADD_SALARY_HEAD){
+    let keys = Object.keys(action.payload);
+    let objkey = keys[0];
+    let hobj = {}; hobj[objkey] = {};
+    hobj[objkey]['presentation'] = action.payload[objkey];
+    hobj[objkey]['taxable'] = true;
+    hobj[objkey]['tax_exemption'] = 0;
+    hobj[objkey]['calctype'] = 'addition';
+    hobj[objkey]['valuetype'] = ['From Profile', 'Percentage of Reference', 'Value', 'Upload'];
+    hobj[objkey]['threshold'] = 'none';
+    let heads = Object.assign({}, state.salaryheads, hobj);
+    return Object.assign({}, state, {salaryheads : heads})
+  }
+
+  if(action.type == SET_SALARY_HEAD){
+    console.log(action);
+  }
+
+  if(action.type == MOD_SALARY_CONFIG){
+    let confname = action.payload.confname;
+    let key = action.payload.key;
+    let newval = action.payload.newval;
+    let heads = Object.assign({}, state.salaryheads);
+    heads[key][confname] = newval;
+    return Object.assign({}, state, {salaryheads : heads})
+  }
+  
+  if(action.type == SET_HEAD_INITIATION){
+    return Object.assign({}, state, {headinitiated : action.payload})
+  }
+  if(action.type == SET_SLAB_SAVINGS){
+    return Object.assign({}, state, {slabneedsaving : action.payload})
+  }
+  if(action.type == SET_HEAD_SAVINGS){
+    return Object.assign({}, state, {headneedsaving : action.payload})
+  }
   return state;
 }
 export default rootReducer;

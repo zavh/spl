@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 export default class StyledLi extends Component {
     constructor(props){
         super(props);
-
         this.onClick = this.onClick.bind(this);
     }
     onClick(){

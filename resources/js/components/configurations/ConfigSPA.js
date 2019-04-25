@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from "react-redux";
 import { BrowserRouter as Router, Route, Switch, Link} from "react-router-dom";
 import TaxConfig from './tccomponents/TaxConfig';
+import SalaryHeads from './tccomponents/SalaryHeads';
 function mapStateToProps (state)
 {
   return { 
@@ -18,47 +19,40 @@ function mapDispatchToProps(dispatch) {
 class ConnectedConfigSPA extends Component{
     constructor(props) {
         super(props);
-    
-        this.toggle = this.toggle.bind(this);
         this.state = {
-          dropdownOpen: false
-        };
-      }
-    
-      toggle() {
-        this.setState({
-          dropdownOpen: !this.state.dropdownOpen
-        });
-      }
-    
+            panel:'Salary Heads',
+            menuItems: ['Salary Heads', 'Tax Configuration'],
+            links:['/configurations/salaryheads', '/configurations/taxconfig'],
+        }
+        this.activeLinkChange = this.activeLinkChange.bind(this);        
+    }
+
+    activeLinkChange(al){
+        this.setState({panel:al});
+    }
+
       render() {
+          
         return (
             <Router>
             <ul className="nav nav-tabs">
-                <li className="nav-item">
-                    <Link to='/configurations/taxconfig' className="nav-link active"> Tax Configuration </Link>
-                </li>
-                <li className="nav-item dropdown">
-                    <a className="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>
-                    <div className="dropdown-menu">
-                    <a className="dropdown-item" href="#">Action</a>
-                    <a className="dropdown-item" href="#">Another action</a>
-                    <a className="dropdown-item" href="#">Something else here</a>
-                    <div className="dropdown-divider"></div>
-                    <a className="dropdown-item" href="#">Separated link</a>
-                    </div>
-                </li>
-                <li className="nav-item">
-                    <a className="nav-link" href="#">Link</a>
-                </li>
-                <li className="nav-item">
-                    <a className="nav-link disabled" href="#" tabIndex="-1" aria-disabled="true">Disabled</a>
-                </li>
+                {this.state.menuItems.map((item, index)=>{
+                    return(
+                        <StyledNav 
+                            item={item}
+                            target={this.state.panel}
+                            key={index}
+                            linkto={this.state.links[index]}
+                            onClick={this.activeLinkChange}
+                        />
+                    )
+                })}
             </ul>
             <div className='container-fluid'>
                 <Switch>
-                    <Route path="/configurations" component={TaxConfig} exact/>
+                    <Route path="/configurations" component={SalaryHeads} exact/>
                     <Route path="/configurations/taxconfig" component={TaxConfig} exact/>
+                    <Route path="/configurations/salaryheads" component={SalaryHeads} exact/>
                 </Switch>
             </div>
             </Router>
@@ -67,3 +61,21 @@ class ConnectedConfigSPA extends Component{
 }
 const ConfigSPA = connect(mapStateToProps, mapDispatchToProps)(ConnectedConfigSPA);
 export default ConfigSPA;
+
+function StyledNav(props){
+    function onClick(){
+        props.onClick(props.item)
+    }
+    if(props.item === props.target)
+        return(
+            <li className="nav-item">
+                <Link to={props.linkto} className="nav-link active" onClick={onClick}> {props.item} </Link>
+            </li>
+        );
+    else 
+        return(
+            <li className="nav-item">
+                <Link to={props.linkto} className="nav-link" onClick={onClick}> {props.item} </Link>
+            </li>
+        );
+}

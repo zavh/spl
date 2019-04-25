@@ -3,7 +3,8 @@ import { BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import { connect } from "react-redux";
 import StyledLi from './StyledLi';
 import SlabConfig from './SlabConfig';
-import { setSlab, setCategories, setFSData, setSlabDBStatus, setSlabInitiation } from "../redux/actions/index";
+import {SaveButton} from './SaveButton';
+import { setSlab, setCategories, setFSData, setSlabDBStatus, setSlabInitiation, setSlabSavingsFlag } from "../redux/actions/index";
 function mapStateToProps (state)
 {
   return {
@@ -11,7 +12,8 @@ function mapStateToProps (state)
     fsdata:state.fsdata,
     firstSlabCategories:state.firstSlabCategories,
     slabdbstatus: state.slabdbstatus,
-    slabinitiated: state.slabinitiated
+    slabinitiated: state.slabinitiated,
+    slabneedsaving: state.slabneedsaving,
     };
 }
 
@@ -22,6 +24,7 @@ function mapDispatchToProps(dispatch) {
         setFSData: fsdata => dispatch(setFSData(fsdata)),
         setSlabDBStatus: slabdbstatus => dispatch(setSlabDBStatus(slabdbstatus)),
         setSlabInitiation: init => dispatch(setSlabInitiation(init)),
+        setSlabSavingsFlag: init => dispatch(setSlabSavingsFlag(init)),
     };
 }
 class ConnectedTaxConfig extends Component{
@@ -31,7 +34,6 @@ class ConnectedTaxConfig extends Component{
             panel:'Slab Configuration',
             menuItems: ['Slab Configuration', 'Tax Exemption Configuration', 'Investment Configuration'],
             links:['/configurations/taxconfig/slabs', '/configurations/taxconfig/exemptions', '/configurations/taxconfig/investment'],
-            needssaving: false,
         }
         this.activeLinkChange = this.activeLinkChange.bind(this);
         this.saveConfig = this.saveConfig.bind(this);
@@ -82,27 +84,29 @@ class ConnectedTaxConfig extends Component{
               console.log(error);
             });
         }
-        this.setState({needssaving:false})
+        this.props.setSlabSavingsFlag(false);
     }
     componentDidMount(){
-        axios.get('/configurations/gettaxconfig')
-          .then((response)=>{
-              if(response.data.status == 'success'){
-                  console.log(response);
-                this.props.setSlab(response.data.data.slabs);
-                this.props.setCategories(response.data.data.categories);
-                this.props.setFSData(response.data.data.fsdata);
-                this.props.setSlabDBStatus(true);
-                this.props.setSlabInitiation(true);
-            }
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
+        if(!this.props.slabdbstatus){
+            axios.get('/configurations/gettaxconfig')
+            .then((response)=>{
+                if(response.data.status == 'success'){
+                    console.log(response);
+                  this.props.setSlab(response.data.data.slabs);
+                  this.props.setCategories(response.data.data.categories);
+                  this.props.setFSData(response.data.data.fsdata);
+                  this.props.setSlabDBStatus(true);
+                  this.props.setSlabInitiation(true);
+              }
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+        }
     }
     componentDidUpdate(prev){
         if( this.props.slabinitiated && this.props.slabs != prev.slabs)
-            this.setState({needssaving:true})
+            this.props.setSlabSavingsFlag(true);
     }
     render(){
         return(
@@ -125,11 +129,11 @@ class ConnectedTaxConfig extends Component{
                     <div className="col-md-9">
                         <Switch>
                             <Route path="/configurations" component={SlabConfig} exact/>
+                            <Route path="/configurations/taxconfig" component={SlabConfig} exact/>
                             <Route path="/configurations/taxconfig/slabs" component={SlabConfig}/>
                         </Switch>
                         <div className="d-flex justify-content-center bd-highlight m-3">
-                            {/* <button type='button' className='btn btn-sm btn-danger' onClick={this.saveConfig} disabled={!this.state.needssaving}> Save Configuration </button> */}
-                            <SaveButton onClick={this.saveConfig} needssaving={this.state.needssaving}/>
+                            <SaveButton onClick={this.saveConfig} needssaving={this.props.slabneedsaving}/>
                         </div>
                     </div>
                 </div>
@@ -139,21 +143,3 @@ class ConnectedTaxConfig extends Component{
 }
 const TaxConfig = connect(mapStateToProps, mapDispatchToProps)(ConnectedTaxConfig);
 export default TaxConfig;
-
-function SaveButton(props){
-    function onClick(){
-        props.onClick;
-    }
-    if(props.needssaving)
-        return(
-            <button type='button' className='btn btn-sm btn-danger' onClick={props.onClick} disabled={false}>
-                Save Configuration
-            </button>
-            )
-    else
-        return(
-            <button type='button' className='btn btn-sm btn-secondary' onClick={onClick} disabled={true}>
-                Save Configuration
-            </button>
-            )
-}
