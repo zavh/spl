@@ -19,8 +19,6 @@ use Illuminate\Support\Facades\Storage;
 class SalariesController extends Controller
 {
     use SalaryGenerator;
-    private $taxable_income = 0;
-    private $yearly_tds = 0;
 
     public function index()
     {

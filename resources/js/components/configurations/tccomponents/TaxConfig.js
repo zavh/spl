@@ -88,7 +88,7 @@ class ConnectedTaxConfig extends Component{
     }
     componentDidMount(){
         if(!this.props.slabdbstatus){
-            axios.get('/configurations/gettaxconfig')
+            axios.get('/configurations/taxconfig/edit')
             .then((response)=>{
                 if(response.data.status == 'success'){
                     console.log(response);

@@ -70703,18 +70703,6 @@ var ConnectedMainPanel = function (_Component) {
     return ConnectedMainPanel;
 }(__WEBPACK_IMPORTED_MODULE_0_react__["Component"]);
 
-function YearNotification(props) {
-    return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-        'div',
-        { className: 'small' },
-        'Year ',
-        props.fromYear,
-        ' to ',
-        props.toYear,
-        ' salaries wil be shown'
-    );
-}
-
 var MainPanel = Object(__WEBPACK_IMPORTED_MODULE_4_react_redux__["b" /* connect */])(mapStateToProps, mapDispatchToProps)(ConnectedMainPanel);
 /* harmony default export */ __webpack_exports__["a"] = (MainPanel);
 
@@ -82673,7 +82661,7 @@ var ConnectedTaxConfig = function (_Component) {
             var _this3 = this;
 
             if (!this.props.slabdbstatus) {
-                axios.get('/configurations/gettaxconfig').then(function (response) {
+                axios.get('/configurations/taxconfig/edit').then(function (response) {
                     if (response.data.status == 'success') {
                         console.log(response);
                         _this3.props.setSlab(response.data.data.slabs);

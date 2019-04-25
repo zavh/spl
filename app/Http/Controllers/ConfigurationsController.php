@@ -46,28 +46,6 @@ class ConfigurationsController extends Controller
         return response()->json($response);
     }
 
-    public function gettaxconfig(){
-        $config = Configuration::where('name','taxconfig')->first();
-        if($config == null)
-            $response['status'] = 'failed';
-        else {
-            $response['data'] = json_decode($config->data);
-            $response['status'] = 'success';
-        }            
-        return response()->json($response);
-    }
-
-    public function getheadconfig(){
-        $config = Configuration::where('name','headconfig')->first();
-        if($config == null)
-            $response['status'] = 'failed';
-        else {
-            $response['data'] = json_decode($config->data);
-            $response['status'] = 'success';
-        }            
-        return response()->json($response);
-    }
-
     /**
      * Show the form for editing the specified resource.
      *

@@ -195,11 +195,6 @@ class ConnectedMainPanel extends Component {
     }
 }
 
-function YearNotification(props){
-    return(
-      <div className='small'>Year {props.fromYear} to {props.toYear} salaries wil be shown</div>
-    ) 
-}
 
 const MainPanel = connect(mapStateToProps, mapDispatchToProps)(ConnectedMainPanel);
 export default MainPanel;
