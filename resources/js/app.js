@@ -23,4 +23,6 @@ if(target == 'salaries'){
 if(target == 'configurations'){
     require('./components/configurations/index');
 }
-    
+if(target == 'salarystructures'){
+    require('./components/salarystructures/index');
+}

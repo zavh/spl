@@ -32,8 +32,8 @@ class ConnectedTaxConfig extends Component{
         super(props);
         this.state = {
             panel:'Slab Configuration',
-            menuItems: ['Slab Configuration', 'Tax Exemption Configuration', 'Investment Configuration'],
-            links:['/configurations/taxconfig/slabs', '/configurations/taxconfig/exemptions', '/configurations/taxconfig/investment'],
+            menuItems: ['Slab Configuration', 'Investment Configuration'],
+            links:['/slabs', '/investment'],
         }
         this.activeLinkChange = this.activeLinkChange.bind(this);
         this.saveConfig = this.saveConfig.bind(this);
@@ -109,6 +109,7 @@ class ConnectedTaxConfig extends Component{
             this.props.setSlabSavingsFlag(true);
     }
     render(){
+        let url = this.props.match.url;
         return(
             <Router>
                 <div className="row m-4 small">
@@ -121,6 +122,7 @@ class ConnectedTaxConfig extends Component{
                                     key={index}
                                     linkto={this.state.links[index]}
                                     onClick={this.activeLinkChange}
+                                    url={this.props.match.url} 
                                     />
                             )}
                         </ul>
@@ -128,9 +130,8 @@ class ConnectedTaxConfig extends Component{
                     </div>
                     <div className="col-md-9">
                         <Switch>
-                            <Route path="/configurations" component={SlabConfig} exact/>
-                            <Route path="/configurations/taxconfig" component={SlabConfig} exact/>
-                            <Route path="/configurations/taxconfig/slabs" component={SlabConfig}/>
+                            <Route path={url} component={SlabConfig} exact/>
+                            <Route path={`${url}/slabs`} component={SlabConfig}/>
                         </Switch>
                         <div className="d-flex justify-content-center bd-highlight m-3">
                             <SaveButton onClick={this.saveConfig} needssaving={this.props.slabneedsaving}/>

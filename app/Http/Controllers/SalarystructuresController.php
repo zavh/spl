@@ -17,10 +17,16 @@ class SalarystructuresController extends Controller
 
     public function index()
     {
-        $structures = SalaryStructure::all();
-        return view('salarystructures.index')->with('structures', $structures);
+        return view('salarystructures.index');   
     }
-
+    public function getall(){
+        $s = SalaryStructure::all();
+        
+        for($i=0;$i<count($s);$i++){
+            $s[$i]['structure'] = json_decode($s[$i]['structure']);
+        }
+        return response()->json($s);
+    }
     /**
      * Show the form for creating a new resource.
      *

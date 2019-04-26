@@ -10,17 +10,18 @@ export default class StyledLi extends Component {
         this.props.onClick(this.props.item);
     }
     render(){
+        let url= this.props.url+this.props.linkto;
         if(this.props.item === this.props.target){
             return(
                 <li className="list-group-item bg-success">
-                    <Link to={this.props.linkto} className='text-white'> {this.props.item} </Link>
+                    <Link to={url} className='text-white'> {this.props.item} </Link>
                 </li>
             );
         }
         else {
             return(
                 <li className="list-group-item">
-                    <Link to={this.props.linkto} onClick={this.onClick}> {this.props.item} </Link>
+                    <Link to={url} onClick={this.onClick}> {this.props.item} </Link>
                 </li>
             )
         }

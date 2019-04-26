@@ -72,6 +72,7 @@ Route::post('/product/addgroup', 'ProductsController@addgroup');
 Route::post('/product/preview', 'ProductsController@preview');
 Route::post('/product/addgrpel', 'ProductsController@addgrpel');
 
+Route::get('/salarystructures/getall', 'SalarystructuresController@getall');
 Route::get('/salarystructures/config', 'SalarystructuresController@config');
 Route::post('/salarystructures/addparam', 'SalarystructuresController@addparam');
 Route::post('/salarystructures/saveconfig', 'SalarystructuresController@saveconfig');

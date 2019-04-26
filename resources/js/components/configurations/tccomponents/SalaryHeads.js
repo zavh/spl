@@ -38,6 +38,7 @@ class ConnectedSalaryHeads extends Component{
     handleAddHead(value){
         this.setState({
             newHead:value,
+            errors:[],
         });
     }
     onInsert(){
