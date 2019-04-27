@@ -67,11 +67,10 @@ class ConnectedSalaryHeads extends Component{
         }
     }
     saveConfig(){
-        let data = {};
-        data['heads'] = this.props.salaryheads;
+        let data = JSON.stringify(this.props.salaryheads);
         if(this.props.headdbstatus){
             axios.post('/configurations/headconfig', {
-                data:JSON.stringify(data),
+                data: data,
                 _method:'patch'})
             .then((response)=>{
               status = response.data.status;
@@ -88,7 +87,7 @@ class ConnectedSalaryHeads extends Component{
             });
         }
         else{
-            axios.post('/configurations', {data: JSON.stringify(data), field: 'headconfig'})
+            axios.post('/configurations', {data: data, field: 'headconfig'})
             .then((response)=>{
               status = response.data.status;
               if(status == 'failed'){
@@ -112,8 +111,8 @@ class ConnectedSalaryHeads extends Component{
                 if(response.data.status == 'success'){
                     this.props.setSalaryHead(response.data.data);
                     this.props.setHeadDBStatus(true);
-                    this.props.setHeadInitiation(true);
-              }
+                }
+                this.props.setHeadInitiation(true);
             })
             .catch(function (error) {
               console.log(error);

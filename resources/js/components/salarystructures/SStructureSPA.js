@@ -1,29 +1,54 @@
 import React, { Component } from 'react';
+import AddStrcture from './AddStructure';
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { connect } from "react-redux";
+import { setStructures, } from "./redux/actions/index";
 
-export default class SStructureSPA extends Component{
+function mapStateToProps (state)
+{
+  return {
+    salaryStructures : state.salaryStructures,
+    currentStructure : 0,
+     };
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        setStructures: panel=> dispatch(setStructures(panel)),
+     };
+}
+class ConnectedSStructureSPA extends Component{
     constructor(props){
         super(props);
         this.state = {
-            structures: [],
+            targetid:0,
         }
     }
     componentDidMount(){
         axios.get('/salarystructures/getall')
         .then((response)=>{
             console.log(response);
-            this.setState({structures : response.data});
+            this.props.setStructures(response.data);
         })
         .catch(function (error) {
           console.log(error);
         });
     }
     render(){
-        return(<ShowAllStructures s={this.state.structures}/>);
+        return(
+            <Router>
+                <Switch>
+                    <Route exact path="/salarystructures" render={(props) =>  <ShowAllStructures {...props} s={this.props.salaryStructures}/>} />
+                    <Route exact path="/salarystructures/add" component={AddStrcture} />
+                </Switch>
+            </Router>
+        );
     }
 }
+const SStructureSPA = connect(mapStateToProps, mapDispatchToProps)(ConnectedSStructureSPA);
+export default SStructureSPA;
 
 function ShowAllStructures(props){
-    console.log(props);
     return(
         <div className="container-fluid">
             <div className="row" >
@@ -35,7 +60,7 @@ function ShowAllStructures(props){
                                     <div className="d-flex justify-content-between align-items-center w-100">
                                         <strong className="text-dark pl-1 pt-1">List of Salary Structures</strong>
                                         <span>
-                                        <a href="/salarystructures/create" className='small mx-2'>Add Structure</a>
+                                        <Link to="/salarystructures/add" className='small mx-2'>Add Structure</Link>
                                         </span>
                                     </div>
                                     {props.s.map((structure, index)=>{
@@ -62,9 +87,14 @@ function ShowAllStructures(props){
                     </div>
                 </div>
                 <div className="col-md-6 col-lg-6" id="salary_structure_details">
+
                 </div>
             </div>
         </div>
     );
+}
 
+function StructureDetails(props){
+    console.log(props);
+    return(<div>Routing through Child</div>);
 }

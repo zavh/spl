@@ -160,14 +160,15 @@ function rootReducer(state = initialState, action) {
     hobj[objkey]['taxable'] = true;
     hobj[objkey]['tax_exemption'] = 0;
     hobj[objkey]['calctype'] = 'addition';
-    hobj[objkey]['valuetype'] = ['From Profile', 'Percentage of Reference', 'Value', 'Upload'];
-    hobj[objkey]['threshold'] = 'none';
+    hobj[objkey]['valuetype'] = ['From Profile', 'Percentage of Basic', 'Value', 'Upload'];
+    hobj[objkey]['default_valuetype'] = -1;
+    hobj[objkey]['threshold'] = 0;
     let heads = Object.assign({}, state.salaryheads, hobj);
     return Object.assign({}, state, {salaryheads : heads})
   }
 
   if(action.type == SET_SALARY_HEAD){
-    return Object.assign({}, state, {salaryheads : action.payload.heads})
+    return Object.assign({}, state, {salaryheads : action.payload})
   }
 
   if(action.type == MOD_SALARY_CONFIG){

@@ -35,16 +35,10 @@ class SalarystructuresController extends Controller
      */
     public function create()
     {
+        // $ss = SalaryStructure::withoutGlobalScope('excfg')->where('structurename','config')->get()->first();
         $ss = Configuration::where('name','headconfig')->first();
-        if($ss == null){
-            $response['status'] = 'failed';
-            $response['message'] = 'Could not find Salary Structure configuration';
-        }
-        else {
-            $response['status'] = 'success';
-            $response['data'] = json_decode($ss->data);
-        }
-        return response()->json($response);
+        // return view('salarystructures.create',["config"=>json_decode($ss->structure)]);
+        return response()->json(json_decode($ss->data));
     }
 
     /**
