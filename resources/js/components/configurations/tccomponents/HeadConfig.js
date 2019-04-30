@@ -86,30 +86,37 @@ class ConnectedHeadConfig extends Component{
                     data-confname={'tax_exemption'}
                     />
                 <div className="input-group-append">
-                    <span className="input-group-text">Calculation Type : </span>
+                    <span className="input-group-text">Uploadable : </span>
                 </div>
-                <select className="custom-select" value={p.calctype} onChange={this.onTextFieldChange}  data-key={this.props.u} data-confname={'calctype'}>
+                <div className="input-group-append">
+                    <div className="input-group-text">
+                        <input 
+                            type="checkbox"
+                            aria-label="Checkbox for following text input"
+                            value={p.uploadable}
+                            checked={p.uploadable}
+                            onChange={this.onTaxableChange}
+                            data-key={this.props.u}
+                            data-confname={'uploadable'}
+                            />
+                    </div>
+                </div>
+                <div className="input-group-append">
+                    <span className="input-group-text">At Gross : </span>
+                </div>
+                <select className="custom-select" value={p.gcalc} onChange={this.onTextFieldChange}  data-key={this.props.u} data-confname={'gcalc'}>
                     <option value='addition'>Addition</option>
                     <option value='deduction'>Deduction</option>
+                    <option value='none'>None</option>
                 </select>
                 <div className="input-group-append">
-                    <span className="input-group-text text-danger">Value Calculation : </span>
+                    <span className="input-group-text">At Payout : </span>
                 </div>
-                <select className="custom-select">
-                    <option>Structure Dependent</option>
-                    {p.valuetype.map((value, index)=>{
-                        return <option disabled key={index}>{value}</option>
-                    })}
+                <select className="custom-select" value={p.pcalc} onChange={this.onTextFieldChange}  data-key={this.props.u} data-confname={'pcalc'}>
+                    <option value='addition'>Addition</option>
+                    <option value='deduction'>Deduction</option>
+                    <option value='none'>None</option>
                 </select>
-                <div className="input-group-append">
-                    <span className="input-group-text text-danger">Threshold : </span>
-                </div>
-                <input 
-                    type="text"
-                    className="form-control"
-                    placeholder="Structure Dependent"
-                    readOnly={true}
-                    />
             </div>
         )
     }

@@ -83689,12 +83689,38 @@ var ConnectedHeadConfig = function (_Component) {
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                         "span",
                         { className: "input-group-text" },
-                        "Calculation Type : "
+                        "Uploadable : "
+                    )
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    "div",
+                    { className: "input-group-append" },
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        "div",
+                        { className: "input-group-text" },
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("input", {
+                            type: "checkbox",
+                            "aria-label": "Checkbox for following text input",
+                            value: p.uploadable,
+                            checked: p.uploadable,
+                            onChange: this.onTaxableChange,
+                            "data-key": this.props.u,
+                            "data-confname": 'uploadable'
+                        })
+                    )
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    "div",
+                    { className: "input-group-append" },
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        "span",
+                        { className: "input-group-text" },
+                        "At Gross : "
                     )
                 ),
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     "select",
-                    { className: "custom-select", value: p.calctype, onChange: this.onTextFieldChange, "data-key": this.props.u, "data-confname": 'calctype' },
+                    { className: "custom-select", value: p.gcalc, onChange: this.onTextFieldChange, "data-key": this.props.u, "data-confname": 'gcalc' },
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                         "option",
                         { value: "addition" },
@@ -83704,6 +83730,11 @@ var ConnectedHeadConfig = function (_Component) {
                         "option",
                         { value: "deduction" },
                         "Deduction"
+                    ),
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        "option",
+                        { value: "none" },
+                        "None"
                     )
                 ),
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
@@ -83711,41 +83742,29 @@ var ConnectedHeadConfig = function (_Component) {
                     { className: "input-group-append" },
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                         "span",
-                        { className: "input-group-text text-danger" },
-                        "Value Calculation : "
+                        { className: "input-group-text" },
+                        "At Payout : "
                     )
                 ),
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     "select",
-                    { className: "custom-select" },
+                    { className: "custom-select", value: p.pcalc, onChange: this.onTextFieldChange, "data-key": this.props.u, "data-confname": 'pcalc' },
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                         "option",
-                        null,
-                        "Structure Dependent"
+                        { value: "addition" },
+                        "Addition"
                     ),
-                    p.valuetype.map(function (value, index) {
-                        return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                            "option",
-                            { disabled: true, key: index },
-                            value
-                        );
-                    })
-                ),
-                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                    "div",
-                    { className: "input-group-append" },
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                        "span",
-                        { className: "input-group-text text-danger" },
-                        "Threshold : "
+                        "option",
+                        { value: "deduction" },
+                        "Deduction"
+                    ),
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        "option",
+                        { value: "none" },
+                        "None"
                     )
-                ),
-                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("input", {
-                    type: "text",
-                    className: "form-control",
-                    placeholder: "Structure Dependent",
-                    readOnly: true
-                })
+                )
             );
         }
     }]);
@@ -83920,10 +83939,17 @@ function rootReducer() {
     hobj[objkey]['presentation'] = action.payload[objkey];
     hobj[objkey]['taxable'] = true;
     hobj[objkey]['tax_exemption'] = 0;
-    hobj[objkey]['calctype'] = 'addition';
-    hobj[objkey]['valuetype'] = ['From Profile', 'Percentage of Basic', 'Value', 'Upload'];
+    hobj[objkey]['pcalc'] = 'addition';
+    hobj[objkey]['gcalc'] = 'addition';
+    hobj[objkey]['valuetype'] = ['From Profile', 'Percentage of Basic', 'Fixed Value', 'Upload', 'Function'];
     hobj[objkey]['default_valuetype'] = -1;
+    hobj[objkey]['profile_field'] = '';
+    hobj[objkey]['percentage'] = '10';
+    hobj[objkey]['default_valuetype'];
+    hobj[objkey]['fixed_value'] = '0';
     hobj[objkey]['threshold'] = 0;
+    hobj[objkey]['fnname'] = '';
+    hobj[objkey]['uploadable'] = false;
     var heads = Object.assign({}, state.salaryheads, hobj);
     return Object.assign({}, state, { salaryheads: heads });
   }
@@ -84064,7 +84090,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         setStructures: function setStructures(panel) {
-            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__redux_actions_index__["d" /* setStructures */])(panel));
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__redux_actions_index__["e" /* setStructures */])(panel));
         }
     };
 }
@@ -84201,27 +84227,37 @@ function StructureDetails(props) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (immutable) */ __webpack_exports__["d"] = setStructures;
+/* harmony export (immutable) */ __webpack_exports__["e"] = setStructures;
 /* harmony export (immutable) */ __webpack_exports__["b"] = setConfig;
-/* harmony export (immutable) */ __webpack_exports__["c"] = setCurrent;
-/* harmony export (immutable) */ __webpack_exports__["a"] = modStructure;
+/* harmony export (immutable) */ __webpack_exports__["d"] = setCurrent;
+/* harmony export (immutable) */ __webpack_exports__["a"] = addStructure;
+/* unused harmony export modStructure */
+/* harmony export (immutable) */ __webpack_exports__["c"] = setConfigLoaded;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__constants_action_types__ = __webpack_require__(274);
 
 
 function setStructures(payload) {
-  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["d" /* SET_STRUCTURES */], payload: payload };
+  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["f" /* SET_STRUCTURES */], payload: payload };
 };
 
 function setConfig(payload) {
-  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["b" /* SET_CONFIG */], payload: payload };
+  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["c" /* SET_CONFIG */], payload: payload };
 };
 
 function setCurrent(payload) {
-  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["c" /* SET_CURRENT */], payload: payload };
+  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["e" /* SET_CURRENT */], payload: payload };
+};
+
+function addStructure(payload) {
+  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["a" /* ADD_STRUCTURE */], payload: payload };
 };
 
 function modStructure(payload) {
-  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["a" /* MOD_STRUCTURE */], payload: payload };
+  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["b" /* MOD_STRUCTURE */], payload: payload };
+};
+
+function setConfigLoaded(payload) {
+  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["d" /* SET_CONFIG_LOADED */], payload: payload };
 };
 
 /***/ }),
@@ -84229,14 +84265,18 @@ function modStructure(payload) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return SET_STRUCTURES; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return SET_CURRENT; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return SET_CONFIG; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return MOD_STRUCTURE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "f", function() { return SET_STRUCTURES; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return SET_CURRENT; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return SET_CONFIG; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ADD_STRUCTURE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return MOD_STRUCTURE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return SET_CONFIG_LOADED; });
 var SET_STRUCTURES = "SET_STRUCTURES";
 var SET_CURRENT = "SET_CURRENT";
 var SET_CONFIG = "SET_CONFIG";
+var ADD_STRUCTURE = "ADD_STRUCTURE";
 var MOD_STRUCTURE = "MOD_STRUCTURE";
+var SET_CONFIG_LOADED = "SET_CONFIG_LOADED";
 
 /***/ }),
 /* 275 */
@@ -84256,40 +84296,55 @@ var store = Object(__WEBPACK_IMPORTED_MODULE_0_redux__["b" /* createStore */])(_
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__constants_action_types__ = __webpack_require__(274);
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 
 
 var initialState = {
   salaryStructures: [],
   current: 0,
-  config: {}
-
+  config: {},
+  configloaded: false
 };
 function rootReducer() {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
   var action = arguments[1];
 
-  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["d" /* SET_STRUCTURES */]) {
+  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["f" /* SET_STRUCTURES */]) {
     return Object.assign({}, state, {
       salaryStructures: action.payload
     });
   }
 
-  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["c" /* SET_CURRENT */]) {
+  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["e" /* SET_CURRENT */]) {
     return Object.assign({}, state, {
       current: action.payload
     });
   }
 
-  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["b" /* SET_CONFIG */]) {
+  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["c" /* SET_CONFIG */]) {
     return Object.assign({}, state, {
       config: action.payload
     });
   }
 
-  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["a" /* MOD_STRUCTURE */]) {
-    console.log(action.payload);
+  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["a" /* ADD_STRUCTURE */]) {
+    var ss = [].concat(_toConsumableArray(state.salaryStructures));
+    ss.concat(action.payload);
     return Object.assign({}, state, {
-      config: action.payload
+      salaryStructures: ss
+    });
+  }
+
+  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["b" /* MOD_STRUCTURE */]) {
+    // return Object.assign({}, state, {
+    //   config:action.payload
+    // });
+  }
+
+  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["d" /* SET_CONFIG_LOADED */]) {
+    return Object.assign({}, state, {
+      configloaded: action.payload
     });
   }
   return state;
@@ -84306,6 +84361,8 @@ function rootReducer() {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_react_router_dom__ = __webpack_require__(17);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_react_redux__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__redux_actions_index__ = __webpack_require__(273);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__commons_SingleInput__ = __webpack_require__(84);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__commons_submit__ = __webpack_require__(48);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -84319,9 +84376,11 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 
 
+
 function mapStateToProps(state) {
     return {
-        config: state.config
+        config: state.config,
+        configloaded: state.configloaded
     };
 }
 
@@ -84331,10 +84390,13 @@ function mapDispatchToProps(dispatch) {
             return dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__redux_actions_index__["b" /* setConfig */])(structure));
         },
         setCurrent: function setCurrent(index) {
-            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__redux_actions_index__["c" /* setCurrent */])(index));
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__redux_actions_index__["d" /* setCurrent */])(index));
         },
-        modStructure: function modStructure(structure) {
-            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__redux_actions_index__["a" /* modStructure */])(structure));
+        addStructure: function addStructure(structure) {
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__redux_actions_index__["a" /* addStructure */])(structure));
+        },
+        setConfigLoaded: function setConfigLoaded(flag) {
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__redux_actions_index__["c" /* setConfigLoaded */])(flag));
         }
     };
 }
@@ -84348,64 +84410,205 @@ var ConnectedAddStructure = function (_Component) {
         var _this = _possibleConstructorReturn(this, (ConnectedAddStructure.__proto__ || Object.getPrototypeOf(ConnectedAddStructure)).call(this, props));
 
         _this.state = {
-            loaderror: ''
+            loaderror: '',
+            config: {},
+            name: '',
+            nameerror: []
         };
         _this.handleCancel = _this.handleCancel.bind(_this);
-        _this.handleValueTypeChange = _this.handleValueTypeChange.bind(_this);
+        _this.getValueProp = _this.getValueProp.bind(_this);
+        _this.handleValueChange = _this.handleValueChange.bind(_this);
+        _this.ssNameChange = _this.ssNameChange.bind(_this);
+        _this.onInsertSSName = _this.onInsertSSName.bind(_this);
+        _this.addStructure = _this.addStructure.bind(_this);
+
         return _this;
     }
 
     _createClass(ConnectedAddStructure, [{
+        key: "ssNameChange",
+        value: function ssNameChange(value) {
+            this.setState({ name: value });
+        }
+    }, {
+        key: "onInsertSSName",
+        value: function onInsertSSName() {
+            console.log(this.state);
+        }
+    }, {
         key: "handleCancel",
         value: function handleCancel() {
             this.props.history.push('/salarystructures');
         }
     }, {
-        key: "handleValueTypeChange",
-        value: function handleValueTypeChange(e) {
+        key: "handleValueChange",
+        value: function handleValueChange(e) {
             var index = e.target.dataset.index;
-            var heads = JSON.parse(JSON.stringify(this.props.config));
-            heads[index].default_valuetype = e.target.value;
-            this.props.modStructure(heads);
+            var heads = JSON.parse(JSON.stringify(this.state.config));
+            heads[index][e.target.name] = e.target.value;
+            this.setState({ config: heads });
+        }
+    }, {
+        key: "addStructure",
+        value: function addStructure(e) {
+            e.preventDefault();
+            var commons = ['gcalc', 'pcalc', 'default_valuetype', 'presentation'];
+            var savethese = [['profile_field'], ['percentage', 'threshold'], ['fixed_value'], [], ['fnname']];
+            var config = this.state.config;
+            // console.log(config);
+            var structure = {},
+                dvt = -1;
+            for (var key in config) {
+                dvt = config[key].default_valuetype;
+                var combined_fields = commons.concat(savethese[dvt]);
+                structure[key] = {};
+                for (var i = 0; i < combined_fields.length; i++) {
+                    structure[key][combined_fields[i]] = config[key][combined_fields[i]];
+                }
+            }
+            axios.post('/salarystructures', { 'structurename': this.state.name, structure: JSON.stringify(structure) }).then(function (response) {
+                console.log(response);
+                // if(response.data.status == 'success'){
+                //     this.props.setConfig(response.data.data);
+                //     this.props.setConfigLoaded(true);
+                //     this.setState({config:response.data.data})
+                // }
+                // else 
+                //     this.setState({loaderror:response.data.message})
+            }).catch(function (error) {
+                console.log(error);
+            });
+            console.log(structure);
+        }
+    }, {
+        key: "getValueProp",
+        value: function getValueProp(key) {
+            var dv = this.state.config[key].default_valuetype;
+            if (dv < 0) return null;else {
+                var s = this.state.config[key];
+                if (dv == 0) {
+                    return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.Fragment,
+                        null,
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            "div",
+                            { className: "input-group-append" },
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                "span",
+                                { className: "input-group-text" },
+                                "Profile Field"
+                            )
+                        ),
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("input", { type: "text", value: s.profile_field, onChange: this.handleValueChange, "data-index": key, name: "profile_field" })
+                    );
+                } else if (dv == 1) return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.Fragment,
+                    null,
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        "div",
+                        { className: "input-group-append" },
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            "span",
+                            { className: "input-group-text" },
+                            "Percentage"
+                        )
+                    ),
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("input", { type: "text", value: s.percentage, onChange: this.handleValueChange, "data-index": key, name: "percentage" }),
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        "div",
+                        { className: "input-group-append" },
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            "span",
+                            { className: "input-group-text" },
+                            "%"
+                        )
+                    ),
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        "div",
+                        { className: "input-group-append" },
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            "span",
+                            { className: "input-group-text" },
+                            "Max Value"
+                        )
+                    ),
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("input", { type: "number", value: s.threshold, onChange: this.handleValueChange, "data-index": key, style: { MozAppearance: 'textfield' }, min: 0, name: "threshold" })
+                );else if (dv == 2) return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.Fragment,
+                    null,
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        "div",
+                        { className: "input-group-append" },
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            "span",
+                            { className: "input-group-text", style: { width: '120px' } },
+                            "Fixed Value"
+                        )
+                    ),
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("input", { type: "text", value: s.fixed_value, onChange: this.handleValueChange, "data-index": key, name: "fixed_value" })
+                );else if (dv == 4) return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.Fragment,
+                    null,
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        "div",
+                        { className: "input-group-append" },
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            "span",
+                            { className: "input-group-text", style: { width: '120px' } },
+                            "Fixed Value"
+                        )
+                    ),
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("input", { type: "text", value: s.fnname, onChange: this.handleValueChange, "data-index": key, name: "fnname" })
+                );
+            }
         }
     }, {
         key: "componentDidMount",
         value: function componentDidMount() {
             var _this2 = this;
 
-            axios.get('/salarystructures/create').then(function (response) {
-                console.log(response);
-                if (response.data.status == 'success') {
-                    _this2.props.setConfig(response.data.data);
-                } else _this2.setState({ loaderror: response.data.message });
-            }).catch(function (error) {
-                console.log(error);
-            });
+            if (!this.props.configloaded) {
+                axios.get('/salarystructures/create').then(function (response) {
+                    console.log(response);
+                    if (response.data.status == 'success') {
+                        _this2.props.setConfig(response.data.data);
+                        _this2.props.setConfigLoaded(true);
+                        _this2.setState({ config: response.data.data });
+                    } else _this2.setState({ loaderror: response.data.message });
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            } else this.setState({ config: this.props.config });
         }
     }, {
         key: "render",
         value: function render() {
             var _this3 = this;
 
-            var c = this.props.config;
-            return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            var c = this.state.config;
+            if (this.state.loaderror === '') return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 "div",
-                { className: "container-fluid" },
-                Object.keys(c).map(function (key) {
-                    return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                        "div",
-                        { className: "input-group input-group-sm mb-1", key: key },
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                { className: "container" },
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    "form",
+                    { onSubmit: this.addStructure },
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4__commons_SingleInput__["a" /* default */], { onChange: this.ssNameChange, onInsert: this.onInsertSSName, errors: this.state.nameerror, label: "Salary Structure Name:" }),
+                    Object.keys(c).map(function (key) {
+                        return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                             "div",
-                            { className: "input-group-prepend" },
+                            { className: "input-group input-group-sm mb-1 small", key: key },
                             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                "span",
-                                { className: "input-group-text", id: "basic-addon-" + key, style: { width: '120px' } },
-                                c[key].presentation
+                                "div",
+                                { className: "input-group-prepend" },
+                                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                    "span",
+                                    { className: "input-group-text", id: "basic-addon-" + key, style: { width: '120px' } },
+                                    c[key].presentation
+                                )
                             ),
                             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                                 "select",
-                                { value: c[key].default_valuetype, onChange: _this3.handleValueTypeChange, "data-index": key },
+                                { value: c[key].default_valuetype, onChange: _this3.handleValueChange, "data-index": key, name: "default_valuetype" },
                                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                                     "option",
                                     { disabled: true, value: -1, key: -1 },
@@ -84418,12 +84621,13 @@ var ConnectedAddStructure = function (_Component) {
                                         value
                                     );
                                 })
-                            )
-                        )
-                    );
-                }),
-                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(LoadError, { message: this.state.loaderror, cancel: this.handleCancel })
-            );
+                            ),
+                            _this3.getValueProp(key)
+                        );
+                    }),
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_5__commons_submit__["a" /* default */], { submitLabel: "Add Structure", cancelLabel: "Cancel", onCancel: this.handleCancel })
+                )
+            );else return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(LoadError, { message: this.state.loaderror, cancel: this.handleCancel });
         }
     }]);
 

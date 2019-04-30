@@ -35,6 +35,9 @@ trait SalaryGenerator {
             
             for($i=0;$i<count($structure);$i++){
                 $response['salary'][$count][$structure[$i]->param_name] = $basic * ( $structure[$i]->value / 100 )* $fraction;
+                ### DELETE OR MODIFY ###
+                isset($response['taxconfig'][$structure[$i]->param_name]) ? $response['taxconfig'][$structure[$i]->param_name] += $response['salary'][$count][$structure[$i]->param_name] : $response['taxconfig'][$structure[$i]->param_name] = $response['salary'][$count][$structure[$i]->param_name];
+                ### DELETE OR MODIFY ###
             }
             if(count($loans) > 0)
                 $response['salary'][$count]['loan'] = $this->loan_manager($loans, $from->copy());

@@ -1,5 +1,7 @@
 export const SET_STRUCTURES = "SET_STRUCTURES";
 export const SET_CURRENT = "SET_CURRENT";
 export const SET_CONFIG = "SET_CONFIG";
+export const ADD_STRUCTURE = "ADD_STRUCTURE";
 export const MOD_STRUCTURE = "MOD_STRUCTURE";
+export const SET_CONFIG_LOADED = "SET_CONFIG_LOADED";
  

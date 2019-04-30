@@ -56,29 +56,64 @@ class SalarystructuresController extends Controller
     public function store(Request $request)
     {
         $fields = $request->all();
-        $vlogic['structurename'] = 'required|min:3|max:255|unique:salarystructures,structurename';
         $structure['structurename'] = $fields['structurename'];
-        for($i=0;$i<count($fields['data']);$i++){
-            $vlogic[$fields['data'][$i]['param_name']] = 'numeric|max:100|min:0';
-            $structure[$fields['data'][$i]['param_name']] = $fields['data'][$i]['value'];
-        }
 
-        $validator = Validator::make($structure, $vlogic);
-        
-        if($validator->fails()){
+        $namelogic['structurename'] = 'required|min:3|max:255|unique:salarystructures,structurename';
+
+        $nv = Validator::make($structure, $namelogic);
+
+        if($nv->fails()){
             $response['status'] = 'failed';
-            $response['messages'] = $validator->errors()->messages();
-            return response()->json(['result'=>$response]);
+            $response['messages']['name'] = $nv->errors()->messages();
+            // return response()->json(['result'=>$response]);
         }
-        else {
-            $salarystructure = new SalaryStructure;
-            $salarystructure->structure = json_encode($fields['data']);
-            $salarystructure->structurename = $fields['structurename'];
-            $salarystructure->save();
+        $structlogic[-1]['defualt_value'] = 'required|gte:0';
+        $structlogic[0]['profile_field'] = 'required';
 
-            $response['status'] = 'success';
-            return response()->json(['result'=>$response]);
+        $structlogic[1]['percentage'] = 'required|gte:0|lte:100|numeric';
+        $structlogic[1]['threshold'] = 'required|gte:0|numeric';
+        
+        $structlogic[2]['fixed_value'] = 'required|gt:0|numeric';
+
+        $structlogic[3]['default_valuetype'] = 'required|gt:0|numeric';
+
+        $structlogic[4]['fnname'] = 'required|min:4';
+
+        $structure = json_decode($fields['structure'], true);
+        foreach($structure as $key=>$value){
+            $dv = $structure[$key]['default_valuetype'];
+            $temp = Validator::make($structure[$key], $structlogic[$dv]);
+            $sv[$key] = $temp->errors()->messages();
         }
+        
+        // $sv = Validator::make($structure['basic'], $structlogic[0]);
+        // if($sv->fails()){
+        //     $response['messages']['basic'] = $sv->errors()->messages();
+        // }
+        return response()->json($sv);
+        // $vlogic['structurename'] = 'required|min:3|max:255|unique:salarystructures,structurename';
+        // $structure['structurename'] = $fields['structurename'];
+        // for($i=0;$i<count($fields['data']);$i++){
+        //     $vlogic[$fields['data'][$i]['param_name']] = 'numeric|max:100|min:0';
+        //     $structure[$fields['data'][$i]['param_name']] = $fields['data'][$i]['value'];
+        // }
+
+        // $validator = Validator::make($structure, $vlogic);
+        
+        // if($validator->fails()){
+        //     $response['status'] = 'failed';
+        //     $response['messages'] = $validator->errors()->messages();
+        //     return response()->json(['result'=>$response]);
+        // }
+        // else {
+        //     $salarystructure = new SalaryStructure;
+        //     $salarystructure->structure = json_encode($fields['data']);
+        //     $salarystructure->structurename = $fields['structurename'];
+        //     $salarystructure->save();
+
+        //     $response['status'] = 'success';
+        //     return response()->json(['result'=>$response]);
+        // }
     }
 
     /**

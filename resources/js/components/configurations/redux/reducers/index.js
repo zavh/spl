@@ -159,10 +159,17 @@ function rootReducer(state = initialState, action) {
     hobj[objkey]['presentation'] = action.payload[objkey];
     hobj[objkey]['taxable'] = true;
     hobj[objkey]['tax_exemption'] = 0;
-    hobj[objkey]['calctype'] = 'addition';
-    hobj[objkey]['valuetype'] = ['From Profile', 'Percentage of Basic', 'Value', 'Upload'];
+    hobj[objkey]['pcalc'] = 'addition';
+    hobj[objkey]['gcalc'] = 'addition';
+    hobj[objkey]['valuetype'] = ['From Profile', 'Percentage of Basic', 'Fixed Value', 'Upload', 'Function'];
     hobj[objkey]['default_valuetype'] = -1;
+    hobj[objkey]['profile_field'] = '';
+    hobj[objkey]['percentage'] = '10';
+    hobj[objkey]['default_valuetype'];
+    hobj[objkey]['fixed_value'] = '0';
     hobj[objkey]['threshold'] = 0;
+    hobj[objkey]['fnname'] = '';
+    hobj[objkey]['uploadable'] = false;
     let heads = Object.assign({}, state.salaryheads, hobj);
     return Object.assign({}, state, {salaryheads : heads})
   }

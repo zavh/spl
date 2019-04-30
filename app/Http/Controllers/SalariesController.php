@@ -83,6 +83,12 @@ class SalariesController extends Controller
             else {                
                 // save this $db into database 
                 $d = $this->initial_salary_generator("$fromYear-07-01", "$toYear-06-30");
+                ############################## DELETE THIS ##################################
+                $response['status'] = 'fail';
+                $response['message'] = 'Probably no Employee defined yet';
+                $response['salaries'] = $d;
+                return response()->json($response);
+                #############################################################################
                 // call yearly_income_table_generator and yearly_income_table_data_entry
                 $this->yearly_income_table_generator($db_table_name);
                 for($i=0;$i<count($d);$i++){

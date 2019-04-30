@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Department;
-use App\SalaryStructure;
+use App\Configuration;
 use Illuminate\Support\Facades\DB;
 
 class AppModulesController extends Controller
@@ -23,7 +23,6 @@ class AppModulesController extends Controller
                 $r['methods'] = $route->methods();
                 $a = explode('\\',$route->getActionName());
                 $name = $route->getName();
-                //$r['action'] = $route->getActionName();
                 $action = explode("@", $a[count($a) - 1]);
                 if(!isset($modules[$action[0]]))
                     $modules[$action[0]] = array();
@@ -97,7 +96,7 @@ class AppModulesController extends Controller
     }
 
     public function widget(){
-        $wresponse['ss'] = SalaryStructure::withoutGlobalScope('excfg')->where('structurename','config')->get()->all();
+        $wresponse['ss'] = $ss = Configuration::where('name','headconfig')->get();
         $wresponse['apc'] = DB::table('appdeafultconfig')->where('name', 'default')->get()->all(); //app permission config
         return view('appmodules.widget', ['response'=>$wresponse]);
     }

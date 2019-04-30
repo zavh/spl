@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Department;
 use App\SalaryStructure;
+use App\Configuration;
 use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
@@ -73,7 +74,7 @@ class HomeController extends Controller
 
     private function essentials(){
         $response['cc'] = true;
-        $ss = SalaryStructure::withoutGlobalScope('excfg')->where('structurename','config')->get();
+        $ss = Configuration::where('name','headconfig')->get();
         if(count($ss) == 0) {
             $response['ss'] = false;
             $response['cc'] = false;  //config completion
