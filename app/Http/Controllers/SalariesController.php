@@ -83,11 +83,11 @@ class SalariesController extends Controller
             else {                
                 // save this $db into database 
                 $d = $this->initial_salary_generator("$fromYear-07-01", "$toYear-06-30");
-                ############################## DELETE THIS ##################################
-                $response['status'] = 'fail';
-                $response['message'] = 'Probably no Employee defined yet';
-                $response['salaries'] = $d;
-                return response()->json($response);
+                // ############################## DELETE THIS ##################################
+                // $response['status'] = 'fail';
+                // $response['message'] = 'Probably no Employee defined yet';
+                // $response['salaries'] = $d;
+                // return response()->json($response);
                 #############################################################################
                 // call yearly_income_table_generator and yearly_income_table_data_entry
                 $this->yearly_income_table_generator($db_table_name);
@@ -159,20 +159,13 @@ class SalariesController extends Controller
             $response['data'][$i]['bonus'] = number_format($d[$i]->salary[$month]->bonus, 2);
             $response['data'][$i]['extra'] = $d[$i]->salary[$month]->extra;
             $response['data'][$i]['less'] = $d[$i]->salary[$month]->less;
-            if(is_object($d[$i]->salary[$month]->loan)){
-                $total_loan = $d[$i]->salary[$month]->loan->sum;
-                $response['data'][$i]['loan'] = number_format($total_loan,2);
-            }
-            else {
-                $total_loan = 0;
-                $response['data'][$i]['loan'] = number_format($total_loan,2);
-            }
+            $response['data'][$i]['loan'] = number_format($d[$i]->salary[$month]->loan,2);
             $response['data'][$i]['pf_self'] = number_format($d[$i]->salary[$month]->pf_self, 2);
             $response['data'][$i]['fooding'] = $d[$i]->salary[$month]->fooding;
             $response['data'][$i]['monthly_tax'] = number_format($d[$i]->salary[$month]->monthly_tax, 2);
             $deduction_total = 
                         $d[$i]->salary[$month]->pf_self + 
-                        $total_loan +
+                        $d[$i]->salary[$month]->loan +
                         $d[$i]->salary[$month]->less +
                         $d[$i]->salary[$month]->monthly_tax +
                         $d[$i]->salary[$month]->fooding

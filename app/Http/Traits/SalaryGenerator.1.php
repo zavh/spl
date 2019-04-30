@@ -10,7 +10,7 @@ trait SalaryGenerator {
 
     private function yearly_generator($user, $fromYear, $toYear){
         
-        $structure = json_decode($user->salarystructure->structure, true);
+        $structure = json_decode($user->salarystructure->structure);
         $profile = json_decode($user->salary->salaryinfo);
         $profile->id = $user->id;
         $profile->employee_id = $user->name;
@@ -18,6 +18,7 @@ trait SalaryGenerator {
 
         $response['structure'] = $structure;
         $response['profile'] = $profile;
+        $loans = Loan::active()->where('salary_id', $user->salary->id)->get();
 
         $from = Carbon::parse($fromYear);
         $to = Carbon::parse($toYear);
@@ -30,24 +31,16 @@ trait SalaryGenerator {
             $fraction = $this->fraction_generator($profile, $from->copy(), $join_date->copy());
             $response['salary'][$count]['fraction'] = $fraction;
             $response['salary'][$count]['month'] = $from->copy()->toDateString();
+            $response['salary'][$count]['basic'] = (float)$basic;
             
-            foreach($structure as $key=>$value){
-                if($structure[$key]['default_valuetype'] == 0){
-                    $response['salary'][$count][$key] = $profile->{$structure[$key]['profile_field']} * $fraction;
-                }
-                if($structure[$key]['default_valuetype'] == 1){
-                    $response['salary'][$count][$key] = $basic * $structure[$key]['percentage']/100 * $fraction;
-                    if($structure[$key]['threshold'] > 0 && $response['salary'][$count][$key] > $structure[$key]['threshold'])
-                    $response['salary'][$count][$key] = $structure[$key]['threshold'];
-                }
-                if($structure[$key]['default_valuetype'] == 2)
-                    $response['salary'][$count][$key] = $structure[$key]['fixed_value'];
-                if($structure[$key]['default_valuetype'] == 3)
-                    $response['salary'][$count][$key] = 0;
-                if($structure[$key]['default_valuetype'] == 4)
-                    $response['salary'][$count][$key] = $this->{$structure[$key]['fnname']}($user->salary->id, $from->copy());
+            for($i=0;$i<count($structure);$i++){
+                $response['salary'][$count][$structure[$i]->param_name] = $basic * ( $structure[$i]->value / 100 )* $fraction;
+                ### DELETE OR MODIFY ###
+                isset($response['taxconfig'][$structure[$i]->param_name]) ? $response['taxconfig'][$structure[$i]->param_name] += $response['salary'][$count][$structure[$i]->param_name] : $response['taxconfig'][$structure[$i]->param_name] = $response['salary'][$count][$structure[$i]->param_name];
+                ### DELETE OR MODIFY ###
             }
-
+            if(count($loans) > 0)
+                $response['salary'][$count]['loan'] = $this->loan_manager($loans, $from->copy());
             $count++;
             $from = $from->addMonth();
         }while($from < $to);
@@ -75,24 +68,25 @@ trait SalaryGenerator {
         return ($daysInMonth - $deduction)/$daysInMonth;
     }
 
-    private function loan_manager($id, $target_month){
-        $loans = Loan::active()->where('salary_id', $id)->get();
+    private function loan_manager($loans, $target_month){
+        $target_month = $target_month->endOfMonth();
+        $loanarr = array();
         $loansum = 0;
-        if(count($loans)>0){
-            $target_month = $target_month->endOfMonth();
-            for($i=0;$i<count($loans);$i++){
-                $start =  Carbon::parse($loans[$i]->start_date);
-                $expiry = Carbon::parse($loans[$i]->end_date);
-                if($start->gt($target_month)) continue;
-                if($expiry->gt($target_month->copy()->startOfMonth()) && $expiry->lt($target_month->copy()->endOfMonth()))
-                    $inBetween = true;
-                else $inBetween = false;
-                if($expiry->gte($target_month) || $inBetween){
-                    $loansum += $loans[$i]->amount/$loans[$i]->tenure;
-                }
+        for($i=0;$i<count($loans);$i++){
+            $start =  Carbon::parse($loans[$i]->start_date);
+            $expiry = Carbon::parse($loans[$i]->end_date);
+            if($start->gt($target_month)) continue;
+            if($expiry->gt($target_month->copy()->startOfMonth()) && $expiry->lt($target_month->copy()->endOfMonth()))
+                $inBetween = true;
+            else $inBetween = false;
+            if($expiry->gte($target_month) || $inBetween){
+                $loanarr[count($loanarr)] = $loans[$i];
+                $loansum += $loans[$i]->amount/$loans[$i]->tenure;
             }
         }
-        return $loansum;
+        $userloans['sum'] = $loansum;
+        $userloans['loans'] = $loanarr;
+        return $userloans;
     }
 
     private function generate_monthly_tax($s, $yt){ //$s = salary array $yt = yearly tax

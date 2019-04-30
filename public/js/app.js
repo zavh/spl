@@ -22062,7 +22062,7 @@ var SingleInput = function (_Component) {
                             this.props.label
                         )
                     ),
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { type: this.props.type, className: 'form-control', name: this.props.name, onChange: this.inputChange, value: this.props.value }),
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { type: this.props.type, className: 'form-control', name: this.props.name, onChange: this.inputChange, value: this.props.value, required: true }),
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                         'div',
                         { className: 'input-group-append' },
@@ -84499,7 +84499,7 @@ var ConnectedAddStructure = function (_Component) {
                                 "Profile Field"
                             )
                         ),
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("input", { type: "text", value: s.profile_field, onChange: this.handleValueChange, "data-index": key, name: "profile_field" })
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("input", { type: "text", value: s.profile_field, onChange: this.handleValueChange, "data-index": key, name: "profile_field", required: true })
                     );
                 } else if (dv == 1) return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.Fragment,
@@ -84513,7 +84513,7 @@ var ConnectedAddStructure = function (_Component) {
                             "Percentage"
                         )
                     ),
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("input", { type: "text", value: s.percentage, onChange: this.handleValueChange, "data-index": key, name: "percentage" }),
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("input", { type: "text", value: s.percentage, onChange: this.handleValueChange, "data-index": key, name: "percentage", required: true }),
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                         "div",
                         { className: "input-group-append" },
@@ -84532,7 +84532,7 @@ var ConnectedAddStructure = function (_Component) {
                             "Max Value"
                         )
                     ),
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("input", { type: "number", value: s.threshold, onChange: this.handleValueChange, "data-index": key, style: { MozAppearance: 'textfield' }, min: 0, name: "threshold" })
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("input", { type: "number", value: s.threshold, onChange: this.handleValueChange, "data-index": key, style: { MozAppearance: 'textfield' }, min: 0, name: "threshold", required: true })
                 );else if (dv == 2) return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.Fragment,
                     null,
@@ -84545,7 +84545,7 @@ var ConnectedAddStructure = function (_Component) {
                             "Fixed Value"
                         )
                     ),
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("input", { type: "text", value: s.fixed_value, onChange: this.handleValueChange, "data-index": key, name: "fixed_value" })
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("input", { type: "text", value: s.fixed_value, onChange: this.handleValueChange, "data-index": key, name: "fixed_value", required: true })
                 );else if (dv == 4) return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.Fragment,
                     null,
@@ -84555,10 +84555,10 @@ var ConnectedAddStructure = function (_Component) {
                         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                             "span",
                             { className: "input-group-text", style: { width: '120px' } },
-                            "Fixed Value"
+                            "Function Name"
                         )
                     ),
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("input", { type: "text", value: s.fnname, onChange: this.handleValueChange, "data-index": key, name: "fnname" })
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement("input", { type: "text", value: s.fnname, onChange: this.handleValueChange, "data-index": key, name: "fnname", required: true })
                 );
             }
         }
@@ -84608,7 +84608,7 @@ var ConnectedAddStructure = function (_Component) {
                             ),
                             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                                 "select",
-                                { value: c[key].default_valuetype, onChange: _this3.handleValueChange, "data-index": key, name: "default_valuetype" },
+                                { value: c[key].default_valuetype, onChange: _this3.handleValueChange, "data-index": key, name: "default_valuetype", required: true },
                                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                                     "option",
                                     { disabled: true, value: -1, key: -1 },

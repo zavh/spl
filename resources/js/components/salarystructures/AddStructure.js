@@ -104,7 +104,7 @@ class ConnectedAddStructure extends Component{
                                 Profile Field
                             </span>
                         </div>
-                        <input type='text' value={s.profile_field} onChange={this.handleValueChange} data-index={key} name='profile_field'/>                        
+                        <input type='text' value={s.profile_field} onChange={this.handleValueChange} data-index={key} name='profile_field' required/>
                     </React.Fragment>
                 )
             }
@@ -116,7 +116,7 @@ class ConnectedAddStructure extends Component{
                                 Percentage
                             </span>
                         </div>
-                        <input type='text' value={s.percentage} onChange={this.handleValueChange} data-index={key} name='percentage'/>
+                        <input type='text' value={s.percentage} onChange={this.handleValueChange} data-index={key} name='percentage' required/>
                         <div className="input-group-append">
                             <span className="input-group-text">
                                 %
@@ -127,7 +127,7 @@ class ConnectedAddStructure extends Component{
                                 Max Value
                             </span>
                         </div>
-                        <input type='number' value={s.threshold} onChange={this.handleValueChange} data-index={key} style={{MozAppearance:'textfield'}} min={0} name='threshold'/>
+                        <input type='number' value={s.threshold} onChange={this.handleValueChange} data-index={key} style={{MozAppearance:'textfield'}} min={0} name='threshold' required/>
                     </React.Fragment>
                 );
             else if (dv == 2)
@@ -138,7 +138,7 @@ class ConnectedAddStructure extends Component{
                                 Fixed Value
                             </span>
                         </div>
-                        <input type='text' value={s.fixed_value} onChange={this.handleValueChange} data-index={key} name='fixed_value'/>
+                        <input type='text' value={s.fixed_value} onChange={this.handleValueChange} data-index={key} name='fixed_value' required/>
                     </React.Fragment>
                 )
             else if (dv == 4)
@@ -146,10 +146,10 @@ class ConnectedAddStructure extends Component{
                 <React.Fragment>
                     <div className="input-group-append">
                         <span className="input-group-text" style={{width:'120px'}}>
-                            Fixed Value
+                            Function Name
                         </span>
                     </div>
-                    <input type='text' value={s.fnname} onChange={this.handleValueChange} data-index={key} name='fnname'/>
+                    <input type='text' value={s.fnname} onChange={this.handleValueChange} data-index={key} name='fnname' required/>
                 </React.Fragment>
             )
         }
@@ -192,7 +192,7 @@ class ConnectedAddStructure extends Component{
                                             {c[key].presentation}
                                         </span>
                                     </div>
-                                    <select value={c[key].default_valuetype} onChange={this.handleValueChange} data-index={key} name='default_valuetype'>
+                                    <select value={c[key].default_valuetype} onChange={this.handleValueChange} data-index={key} name='default_valuetype' required>
                                         <option disabled={true} value={-1} key={-1}>Select One</option>
                                         {c[key].valuetype.map((value, index)=>{
                                             return <option key={index} value={index}>{value}</option>

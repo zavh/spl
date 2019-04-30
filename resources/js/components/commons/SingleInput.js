@@ -40,7 +40,7 @@ export default class SingleInput extends Component {
                     <div className="input-group-prepend">
                         <span className="input-group-text" style={labelSize}>{this.props.label}</span>
                     </div>
-                    <input type={this.props.type} className="form-control" name={this.props.name} onChange={this.inputChange} value={this.props.value}/>
+                    <input type={this.props.type} className="form-control" name={this.props.name} onChange={this.inputChange} value={this.props.value} required/>
                     <div className="input-group-append">
                         <button className="btn btn-outline-secondary" type="button" id="button-addon2" onClick={this.onInsert}>Add</button>
                     </div>
