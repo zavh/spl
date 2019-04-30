@@ -70322,11 +70322,10 @@ if (document.getElementById('react')) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__mainPanel__ = __webpack_require__(128);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__IndvTaxCalc__ = __webpack_require__(245);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__TaxConfig__ = __webpack_require__(246);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_react_redux__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__redux_actions_index__ = __webpack_require__(15);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_axios__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6_axios__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_react_redux__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__redux_actions_index__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_axios__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_axios__);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -70334,7 +70333,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
 
 
 
@@ -70352,25 +70350,25 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         setMainPanel: function setMainPanel(panel) {
-            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_5__redux_actions_index__["e" /* setMainPanel */])(panel));
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__redux_actions_index__["e" /* setMainPanel */])(panel));
         },
         setPayYear: function setPayYear(timeline) {
-            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_5__redux_actions_index__["f" /* setPayYear */])(timeline));
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__redux_actions_index__["f" /* setPayYear */])(timeline));
         },
         setRefTimeline: function setRefTimeline(timeline) {
-            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_5__redux_actions_index__["g" /* setRefTimeline */])(timeline));
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__redux_actions_index__["g" /* setRefTimeline */])(timeline));
         },
         setTabHeads: function setTabHeads(tabheads) {
-            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_5__redux_actions_index__["i" /* setTabHeads */])(tabheads));
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__redux_actions_index__["i" /* setTabHeads */])(tabheads));
         },
         setSalaryRows: function setSalaryRows(salaryrows) {
-            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_5__redux_actions_index__["h" /* setSalaryRows */])(salaryrows));
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__redux_actions_index__["h" /* setSalaryRows */])(salaryrows));
         },
         setIndexing: function setIndexing(indexing) {
-            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_5__redux_actions_index__["d" /* setIndexing */])(indexing));
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__redux_actions_index__["d" /* setIndexing */])(indexing));
         },
         setBankAccounts: function setBankAccounts(bankaccounts) {
-            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_5__redux_actions_index__["a" /* setBankAccounts */])(bankaccounts));
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__redux_actions_index__["a" /* setBankAccounts */])(bankaccounts));
         }
     };
 }
@@ -70384,7 +70382,6 @@ var ConnectedSalarySPA = function (_Component) {
         var _this = _possibleConstructorReturn(this, (ConnectedSalarySPA.__proto__ || Object.getPrototypeOf(ConnectedSalarySPA)).call(this, props));
 
         _this.state = {
-            taxcfg: {},
             status: '',
             message: ''
         };
@@ -70400,7 +70397,7 @@ var ConnectedSalarySPA = function (_Component) {
                 this.props.setMainPanel('Main');
             }
 
-            __WEBPACK_IMPORTED_MODULE_6_axios___default.a.get('/salaries/dbcheck').then(function (response) {
+            __WEBPACK_IMPORTED_MODULE_5_axios___default.a.get('/salaries/dbcheck').then(function (response) {
                 if (response.data.status == 'success') {
                     console.log(response);
                     var timeline = {
@@ -70444,10 +70441,6 @@ var ConnectedSalarySPA = function (_Component) {
                 'div',
                 { className: 'container-fluid' },
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__IndvTaxCalc__["a" /* default */], null)
-            );else if (this.props.mainPanel === 'TaxConfig') return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                'div',
-                { className: 'container-fluid' },
-                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__TaxConfig__["a" /* default */], null)
             );else return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 'div',
                 null,
@@ -70459,7 +70452,7 @@ var ConnectedSalarySPA = function (_Component) {
     return ConnectedSalarySPA;
 }(__WEBPACK_IMPORTED_MODULE_0_react__["Component"]);
 
-var SalarySPA = Object(__WEBPACK_IMPORTED_MODULE_4_react_redux__["b" /* connect */])(mapStateToProps, mapDispatchToProps)(ConnectedSalarySPA);
+var SalarySPA = Object(__WEBPACK_IMPORTED_MODULE_3_react_redux__["b" /* connect */])(mapStateToProps, mapDispatchToProps)(ConnectedSalarySPA);
 /* harmony default export */ __webpack_exports__["a"] = (SalarySPA);
 
 /***/ }),
@@ -70546,7 +70539,7 @@ var ConnectedMainPanel = function (_Component) {
         _this.handleYearChange = _this.handleYearChange.bind(_this);
         _this.handleTimelineChange = _this.handleTimelineChange.bind(_this);
         _this.handleFilterChange = _this.handleFilterChange.bind(_this);
-        _this.yearlyTaxConfig = _this.yearlyTaxConfig.bind(_this);
+        // this.yearlyTaxConfig = this.yearlyTaxConfig.bind(this);
         _this.toggle = _this.toggle.bind(_this);
         return _this;
     }
@@ -70560,11 +70553,11 @@ var ConnectedMainPanel = function (_Component) {
                 };
             });
         }
-    }, {
-        key: 'yearlyTaxConfig',
-        value: function yearlyTaxConfig() {
-            this.props.setMainPanel('TaxConfig');
-        }
+
+        // yearlyTaxConfig(){
+        //     this.props.setMainPanel('TaxConfig');
+        // }
+
     }, {
         key: 'handleMonthChange',
         value: function handleMonthChange(month) {
@@ -70657,13 +70650,10 @@ var ConnectedMainPanel = function (_Component) {
                         }
                     }
                 }
-
                 this.setState({
                     filteredrows: result
                 });
             }
-
-            // console.log(result);
         }
     }, {
         key: 'componentDidMount',
@@ -70708,19 +70698,7 @@ var ConnectedMainPanel = function (_Component) {
                         ),
                         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__monthSelect__["a" /* default */], { fromYear: this.props.timeline.fromYear, toYear: this.props.timeline.toYear, month: this.props.timeline.month, onChange: this.handleMonthChange })
                     ),
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__UploadMonthData__["a" /* default */], { status: this.state.allowupload, timeline: this.props.timeline, onFnishing: this.handleTimelineChange }),
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                        'div',
-                        { className: 'input-group input-group-sm col-md-2' },
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                            'button',
-                            {
-                                className: 'btn btn-sm btn-outline-success badge badge-pill',
-                                onClick: this.yearlyTaxConfig
-                            },
-                            'Yearly Tax Configuration'
-                        )
-                    )
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__UploadMonthData__["a" /* default */], { status: this.state.allowupload, timeline: this.props.timeline, onFnishing: this.handleTimelineChange })
                 ),
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_6__SalaryOutput__["a" /* default */], { timeline: this.state.validtimeline, salaryrows: this.state.filteredrows, handleFilterChange: this.handleFilterChange })
             );
@@ -72648,7 +72626,8 @@ function mapStateToProps(state) {
     return {
         tabheads: state.tabheads,
         filters: state.filters,
-        bankaccounts: state.bankaccounts
+        bankaccounts: state.bankaccounts,
+        indexing: state.indexing
     };
 }
 
@@ -72711,12 +72690,14 @@ var ConnectedSalaryOutput = function (_Component) {
     }, {
         key: 'handleDepartmentChange',
         value: function handleDepartmentChange(value) {
-            var filters = {
-                department: value,
-                pay_out_mode: this.props.filters.pay_out_mode
-            };
-            this.props.setFilters(filters);
-            this.props.handleFilterChange(filters);
+            if (value in this.props.indexing) {
+                var filters = {
+                    department: value,
+                    pay_out_mode: this.props.filters.pay_out_mode
+                };
+                this.props.setFilters(filters);
+                this.props.handleFilterChange(filters);
+            } else alert('Department does not have any users');
         }
     }, {
         key: 'handlePOMChange',
@@ -81281,142 +81262,7 @@ var IndvTaxCalc = Object(__WEBPACK_IMPORTED_MODULE_2_react_redux__["b" /* connec
 /* harmony default export */ __webpack_exports__["a"] = (IndvTaxCalc);
 
 /***/ }),
-/* 246 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_axios__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_axios__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_react_redux__ = __webpack_require__(8);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__redux_actions_index__ = __webpack_require__(15);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_react_router_dom__ = __webpack_require__(17);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__tccomponents_StyledLi__ = __webpack_require__(253);
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-
-
-
-
-
-
-
-function mapStateToProps(state) {
-    return {
-        tabheads: state.tabheads,
-        timeline: state.timeline,
-        targetEmployee: state.targetEmployee
-    };
-}
-
-function mapDispatchToProps(dispatch) {
-    return {
-        setMainPanel: function setMainPanel(panel) {
-            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_3__redux_actions_index__["e" /* setMainPanel */])(panel));
-        }
-    };
-}
-
-var ConnectedTaxConfig = function (_Component) {
-    _inherits(ConnectedTaxConfig, _Component);
-
-    function ConnectedTaxConfig(props) {
-        _classCallCheck(this, ConnectedTaxConfig);
-
-        var _this = _possibleConstructorReturn(this, (ConnectedTaxConfig.__proto__ || Object.getPrototypeOf(ConnectedTaxConfig)).call(this, props));
-
-        _this.state = {
-            panel: 'Pi Configuration',
-            menuItems: ['Slab Configuration', 'Tax Exemption Configuration', 'Investment Configuration'],
-            links: ['/config/slabs', '/config/exemptions', '/config/investment']
-        };
-        _this.activeLinkChange = _this.activeLinkChange.bind(_this);
-        _this.backToMain = _this.backToMain.bind(_this);
-        return _this;
-    }
-
-    _createClass(ConnectedTaxConfig, [{
-        key: 'activeLinkChange',
-        value: function activeLinkChange(al) {
-            this.setState({ panel: al });
-        }
-    }, {
-        key: 'backToMain',
-        value: function backToMain() {
-            this.props.setMainPanel("Main");
-        }
-    }, {
-        key: 'render',
-        value: function render() {
-            var _this2 = this;
-
-            return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                'div',
-                null,
-                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                    __WEBPACK_IMPORTED_MODULE_4_react_router_dom__["a" /* BrowserRouter */],
-                    null,
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                        'div',
-                        { className: 'row my-1 small' },
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                            'div',
-                            { className: 'col-md-4' },
-                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                'ul',
-                                { className: 'list-group' },
-                                this.state.menuItems.map(function (item, index) {
-                                    return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_5__tccomponents_StyledLi__["a" /* default */], {
-                                        item: item,
-                                        target: _this2.state.panel,
-                                        key: index,
-                                        linkto: _this2.state.links[index],
-                                        onClick: _this2.activeLinkChange
-                                    });
-                                })
-                            )
-                        ),
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                            'div',
-                            { className: 'col-md-8' },
-                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                __WEBPACK_IMPORTED_MODULE_4_react_router_dom__["d" /* Switch */],
-                                null,
-                                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4_react_router_dom__["c" /* Route */], { path: '/salaries', component: test, exact: true })
-                            )
-                        )
-                    )
-                ),
-                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                    'a',
-                    { href: 'javascript:void(0)', onClick: this.backToMain },
-                    'Back'
-                )
-            );
-        }
-    }]);
-
-    return ConnectedTaxConfig;
-}(__WEBPACK_IMPORTED_MODULE_0_react__["Component"]);
-
-var TaxConfig = Object(__WEBPACK_IMPORTED_MODULE_2_react_redux__["b" /* connect */])(mapStateToProps, mapDispatchToProps)(ConnectedTaxConfig);
-/* harmony default export */ __webpack_exports__["a"] = (TaxConfig);
-function test() {
-    return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-        'div',
-        null,
-        'Test'
-    );
-}
-
-/***/ }),
+/* 246 */,
 /* 247 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -82202,78 +82048,7 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ }),
-/* 253 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_react_router_dom__ = __webpack_require__(17);
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-
-
-
-var StyledLi = function (_Component) {
-    _inherits(StyledLi, _Component);
-
-    function StyledLi(props) {
-        _classCallCheck(this, StyledLi);
-
-        var _this = _possibleConstructorReturn(this, (StyledLi.__proto__ || Object.getPrototypeOf(StyledLi)).call(this, props));
-
-        _this.onClick = _this.onClick.bind(_this);
-        return _this;
-    }
-
-    _createClass(StyledLi, [{
-        key: "onClick",
-        value: function onClick() {
-            this.props.onClick(this.props.item);
-        }
-    }, {
-        key: "render",
-        value: function render() {
-            if (this.props.item === this.props.target) {
-                return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                    "li",
-                    { className: "list-group-item bg-success" },
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                        __WEBPACK_IMPORTED_MODULE_1_react_router_dom__["b" /* Link */],
-                        { to: this.props.linkto, className: "text-white" },
-                        " ",
-                        this.props.item,
-                        " "
-                    )
-                );
-            } else {
-                return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                    "li",
-                    { className: "list-group-item" },
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                        __WEBPACK_IMPORTED_MODULE_1_react_router_dom__["b" /* Link */],
-                        { to: this.props.linkto, onClick: this.onClick },
-                        " ",
-                        this.props.item,
-                        " "
-                    )
-                );
-            }
-        }
-    }]);
-
-    return StyledLi;
-}(__WEBPACK_IMPORTED_MODULE_0_react__["Component"]);
-
-/* harmony default export */ __webpack_exports__["a"] = (StyledLi);
-
-/***/ }),
+/* 253 */,
 /* 254 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 

@@ -45,7 +45,7 @@ class ConnectedMainPanel extends Component {
         this.handleYearChange = this.handleYearChange.bind(this);
         this.handleTimelineChange = this.handleTimelineChange.bind(this);
         this.handleFilterChange = this.handleFilterChange.bind(this);
-        this.yearlyTaxConfig = this.yearlyTaxConfig.bind(this);
+        // this.yearlyTaxConfig = this.yearlyTaxConfig.bind(this);
         this.toggle = this.toggle.bind(this);
     }
 
@@ -55,9 +55,9 @@ class ConnectedMainPanel extends Component {
         }));
     }
 
-    yearlyTaxConfig(){
-        this.props.setMainPanel('TaxConfig');
-    }
+    // yearlyTaxConfig(){
+    //     this.props.setMainPanel('TaxConfig');
+    // }
     
     handleMonthChange(month){
         let timeline = {
@@ -145,17 +145,14 @@ class ConnectedMainPanel extends Component {
                     if (indexing.hasOwnProperty(k)) {
                         let pom = indexing[k][filters.pay_out_mode];
                         for(var j=0;j<pom.length;j++)
-                         result[i++] = rows[pom[j]];
+                            result[i++] = rows[pom[j]];
                     }
                 }
-            }
-            
+            }       
             this.setState({
                 filteredrows:result,
-            });            
+            }); 
         }
-
-        // console.log(result);
     }
     componentDidMount(){
         this.setState({
@@ -180,14 +177,14 @@ class ConnectedMainPanel extends Component {
                         <MonthSelect fromYear={this.props.timeline.fromYear} toYear={this.props.timeline.toYear} month={this.props.timeline.month} onChange={this.handleMonthChange}/>
                     </div>
                     <FileUpload status={this.state.allowupload} timeline={this.props.timeline} onFnishing={this.handleTimelineChange}/>
-                    <div className="input-group input-group-sm col-md-2">
+                    {/* <div className="input-group input-group-sm col-md-2">
                         <button
                             className='btn btn-sm btn-outline-success badge badge-pill'
                             onClick={this.yearlyTaxConfig}
                             >
                             Yearly Tax Configuration
                         </button>
-                    </div>
+                    </div> */}
                 </div>
                 <SalaryOutput timeline={this.state.validtimeline} salaryrows={this.state.filteredrows} handleFilterChange={this.handleFilterChange}/>
             </div>

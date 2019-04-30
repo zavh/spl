@@ -12,6 +12,7 @@ function mapStateToProps (state)
       tabheads: state.tabheads,
       filters: state.filters,
       bankaccounts: state.bankaccounts,
+      indexing: state.indexing,
     };
 }
 
@@ -52,12 +53,15 @@ class ConnectedSalaryOutput extends Component {
         this.props.setMainPanel("IndvTaxCalc");
     }
     handleDepartmentChange(value){
-        let filters = {
-            department: value,
-            pay_out_mode: this.props.filters.pay_out_mode
-        };
-        this.props.setFilters(filters);
-        this.props.handleFilterChange(filters);
+        if(value in this.props.indexing){
+            let filters = {
+                department: value,
+                pay_out_mode: this.props.filters.pay_out_mode
+            };
+            this.props.setFilters(filters);
+            this.props.handleFilterChange(filters);
+        }
+        else alert('Department does not have any users');
     }
     handlePOMChange(value){
         let filters = {

@@ -41,7 +41,7 @@ trait SalaryGenerator {
                     $response['salary'][$count][$key] = $structure[$key]['threshold'];
                 }
                 if($structure[$key]['default_valuetype'] == 2)
-                    $response['salary'][$count][$key] = $structure[$key]['fixed_value'];
+                    $response['salary'][$count][$key] = $structure[$key]['fixed_value'] * $fraction;
                 if($structure[$key]['default_valuetype'] == 3)
                     $response['salary'][$count][$key] = 0;
                 if($structure[$key]['default_valuetype'] == 4)
@@ -206,9 +206,7 @@ trait SalaryGenerator {
         $age = Carbon::parse($ysd['profile']->date_of_birth)->age;
         for($i=0;$i<count($ysd['salary']);$i++){
             foreach($cysd as $key=>$value){
-                if($key == 'basic')
-                    $cysd[$key] += $ysd['salary'][$i][$key] * $ysd['salary'][$i]['fraction'];
-                else $cysd[$key] += $ysd['salary'][$i][$key];
+                $cysd[$key] += $ysd['salary'][$i][$key];
             }
         }
         

@@ -152,7 +152,7 @@ class SalariesController extends Controller
             $response['data'][$i]['employee_id'] = $d[$i]->profile->employee_id;
             $response['data'][$i]['name'] = $d[$i]->profile->name;
             $response['data'][$i]['join_date'] = $d[$i]->profile->join_date;
-            $response['data'][$i]['basic'] = number_format($d[$i]->salary[$month]->basic * $d[$i]->salary[$month]->fraction, 2);
+            $response['data'][$i]['basic'] = number_format($d[$i]->salary[$month]->basic, 2);
             $response['data'][$i]['house_rent'] = number_format($d[$i]->salary[$month]->house_rent, 2);
             $response['data'][$i]['conveyance'] = number_format($d[$i]->salary[$month]->conveyance, 2);
             $response['data'][$i]['medical_allowance'] = number_format($d[$i]->salary[$month]->medical_allowance, 2);
@@ -172,7 +172,7 @@ class SalariesController extends Controller
                         ;
             $response['data'][$i]['deduction_total'] = number_format($deduction_total, 2);
             $gross_salary = 
-                        $d[$i]->salary[$month]->basic * $d[$i]->salary[$month]->fraction+
+                        $d[$i]->salary[$month]->basic+
                         $d[$i]->salary[$month]->house_rent +
                         $d[$i]->salary[$month]->conveyance +
                         $d[$i]->salary[$month]->medical_allowance +
@@ -412,19 +412,5 @@ class SalariesController extends Controller
         $tax_config = json_decode($db->tax_config, true);
         $s = new TaxConfig($salary, $tax_config);
         return response()->json($s->summary());
-    }
-
-    public function test(){
-        $config = Configuration::where('name','taxconfig')->first();
-        $data = json_decode($config->data, true);
-
-        $slabs = $data['slabs'];
-        for($i=0;$i<count($slabs);$i++){
-            $slab[$i] = floatval($slabs[$i]['slabval']);
-            $slabperc[$i] = floatval($slabs[$i]['percval']);
-        }
-        array_pop($slab);
-        $slabperc = array_merge([0], $slabperc);
-        dd($slabperc);
     }
 }

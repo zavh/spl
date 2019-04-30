@@ -83,8 +83,6 @@ Route::get('/salaries/taxtable/{user_id?}', 'SalariesController@taxtable');
 Route::get('/salaries/dbcheck/{year?}', 'SalariesController@dbcheck');
 Route::get('/salaries/taxconfig/{table?}/{name?}', 'SalariesController@taxconfig');
 
-Route::get('/salaries/test', 'SalariesController@test');
-
 Route::post('/appmodules/addmod', 'AppModulesController@addmod')->name('addModule');
 Route::post('/appmodules/defaultconfig', 'AppModulesController@defaultconfig')->name('appDefaultConfiguration');
 Route::post('/appmodules/changedefaultcfg', 'AppModulesController@changedefaultcfg')->name('changeDefaultCfg');

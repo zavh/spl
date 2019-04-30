@@ -19,7 +19,7 @@ class TaxConfig{
         for($i=0;$i<count($salary);$i++){
             $monthdata[$i] = new \stdClass;
             $monthdata[$i]->month = Carbon::parse($salary[$i]->month)->format("M-Y");
-            $monthdata[$i]->basic = $this->cf($salary[$i]->basic * $salary[$i]->fraction);
+            $monthdata[$i]->basic = $this->cf($salary[$i]->basic);
             $monthdata[$i]->house_rent = $this->cf($salary[$i]->house_rent);
             $monthdata[$i]->conveyance = $this->cf($salary[$i]->conveyance);
             $monthdata[$i]->medical_allowance = $this->cf($salary[$i]->medical_allowance);

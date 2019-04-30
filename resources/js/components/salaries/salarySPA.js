@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import MainPanel from './mainPanel';
 import IndvTaxCalc from './IndvTaxCalc';
-import TaxConfig from './TaxConfig';
 import { connect } from "react-redux";
 import { setMainPanel, setPayYear, setTabHeads, setSalaryRows, setRefTimeline, setIndexing, setBankAccounts} from "./redux/actions/index";
 import axios from 'axios';
@@ -29,7 +28,6 @@ class ConnectedSalarySPA extends Component {
     constructor(props){
         super(props);
         this.state = {
-            taxcfg:{},
             status:'',
             message:'',
         };
@@ -93,13 +91,6 @@ class ConnectedSalarySPA extends Component {
             return (
                 <div className="container-fluid">
                     <IndvTaxCalc />
-                </div> 
-            );
-
-        else if(this.props.mainPanel === 'TaxConfig')
-            return (
-                <div className="container-fluid">
-                    <TaxConfig />
                 </div> 
             );
         else return <div>Loading</div>
