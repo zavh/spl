@@ -103,10 +103,10 @@
                                     <span class="input-group-text" style="font-size:12px;width:150px">Gender</span>
                                 </div>
                             <select name="gender" id="gender" class="form-control salary" required>
-                            <option value="" disabled selected>Select One</option>
-                            <option value="male" >Male</option>
-                            <option value="female" >Female</option>
-                            <option value="o" >Other</option>
+                                    <option value="" disabled selected>Select One</option>
+                                @foreach ($salary_categories as $category=>$presentation)
+                                    <option value={{$category}}>{{$presentation}}</option>        
+                                @endforeach
                             </select>
                         </div>
                     </div>

@@ -102,10 +102,10 @@
                                     <span class="input-group-text" style="font-size:12px;width:150px">Gender</span>
                                 </div>
                             <select name="gender" id="gender" class="form-control salary" required>
-                            <option value="" disabled selected>Select One</option>
-                            <option value="m" {{$salaryinfo->gender == "male" ? 'selected' : ''}}>Male</option>
-                            <option value="f" {{$salaryinfo->gender == "female" ? 'selected' : ''}}>Female</option>
-                            <option value="o" {{$salaryinfo->gender == "other" ? 'selected' : ''}}>Other</option>
+                                    <option value="" disabled selected>Select One</option>
+                                @foreach ($salary_categories as $category=>$presentation)
+                                    <option value={{$category}} {{$salaryinfo->gender == $category ? 'selected' : ''}}>{{$presentation}}</option>        
+                                @endforeach
                             </select>
                         </div>
                     </div>

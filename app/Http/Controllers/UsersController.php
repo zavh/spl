@@ -11,6 +11,7 @@ use App\Role;
 use App\Department;
 use App\Designation;
 use App\Salary;
+use App\Configuration;
 use App\Http\Traits\SalaryGenerator;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -42,7 +43,15 @@ class UsersController extends Controller
         $departments = Department::all();
         $designations = Designation::all();
         $salarystructures = SalaryStructure::all();
-        return view('users.create', ['roles'=>$roles,'departments'=>$departments,'designations'=>$designations,'salarystructures'=>$salarystructures]);
+        $config = Configuration::select('data')->where('name', 'taxconfig')->first();
+        $salary_categories = json_decode($config->data)->categories;
+        return view('users.create', [
+            'roles'=>$roles,
+            'departments'=>$departments,
+            'designations'=>$designations,
+            'salarystructures'=>$salarystructures,
+            'salary_categories'=>$salary_categories,
+            ]);
     }
     
     public function store(Request $request)
@@ -166,6 +175,9 @@ class UsersController extends Controller
     {   
         if(Auth::Check()){
             if(Auth::User()->role_id == 1 || $user->id == Auth::User()->id){
+                $config = Configuration::select('data')->where('name', 'taxconfig')->first();
+                $salary_categories = json_decode($config->data)->categories;
+
                 $roles = DB::table('roles')->get();
                 $departments = Department::all();
                 $designations = Designation::all();
@@ -191,7 +203,17 @@ class UsersController extends Controller
                     $salary = $user->salary;
                     $salaryinfo = json_decode($salary->salaryinfo);
                 }
-                return view('users.edit', ['salary'=>$salary,'salaryinfo'=>$salaryinfo,'user'=>$user, 'roles'=>$roles, 'departments'=>$departments, 'designations'=>$designations,'salarystructures'=>$salarystructures]);
+                return view('users.edit', [
+                    'salary'=>$salary,
+                    'salaryinfo'=>$salaryinfo,
+                    'user'=>$user,
+                    'roles'=>$roles,
+                    'departments'=>$departments,
+                    'designations'=>$designations,
+                    'salarystructures'=>$salarystructures,
+                    'salary_categories'=>$salary_categories,
+                    ]
+                );
             }
             else return redirect('/home');
         }
