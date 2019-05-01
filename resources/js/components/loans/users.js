@@ -14,16 +14,19 @@ export default class Users extends Component {
 
     prepareSelect(){
         if(this.props.department > 0){
-            return (
-                <select value={this.props.selected} name={this.props.name} className='form-control' onChange={this.inputChange}>
-                    <option key='0' value='0' disabled>Select One</option>
-                    {this.props.users.map((user, index) => (
-                        <option key={index} value={user.sid}>
-                            {user.username} - {user.name}
-                        </option>
-                    ))}
-                </select>
-            );
+            if(this.props.users.length > 0)
+                return (
+                    <select value={this.props.selected} name={this.props.name} className='form-control' onChange={this.inputChange}>
+                        <option key='0' value='0' disabled>Select One</option>
+                        {this.props.users.map((user, index) => (
+                            <option key={index} value={user.sid}>
+                                {user.username} - {user.name}
+                            </option>
+                        ))}
+                    </select>
+                );
+            else 
+            return (<div className='form-control text-danger'>Department does not have any user defined yet.</div>);
         }
         return (<div className='form-control'>Please select a department to access Employee</div>);
     }

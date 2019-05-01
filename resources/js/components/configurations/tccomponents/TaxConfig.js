@@ -96,8 +96,8 @@ class ConnectedTaxConfig extends Component{
                   this.props.setCategories(response.data.data.categories);
                   this.props.setFSData(response.data.data.fsdata);
                   this.props.setSlabDBStatus(true);
-                  this.props.setSlabInitiation(true);
               }
+              this.props.setSlabInitiation(true);
             })
             .catch(function (error) {
               console.log(error);

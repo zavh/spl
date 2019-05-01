@@ -141,10 +141,13 @@ class DepartmentsController extends Controller
 
     public function getUsers($id){
         $department = Department::find($id);
-        foreach($department->users as $index=>$user){
-            $users[$index]['username'] = $user->name;
-            $users[$index]['name'] = $user->fname.' '.$user->sname;
-            $users[$index]['sid'] = $user->salary->id;
+        $users = array();
+        if($id > 1){
+            foreach($department->users as $index=>$user){
+                $users[$index]['username'] = $user->name;
+                $users[$index]['name'] = $user->fname.' '.$user->sname;
+                $users[$index]['sid'] = $user->salary->id;
+            }
         }
         return response()->json(['users'=>$users]);
     }

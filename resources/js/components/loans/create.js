@@ -27,7 +27,7 @@ export default class Create extends Component {
                 interest:[],
                 loan_type:[],
             },
-            creaetErrorState:false,
+            createErrorState:false,
             users:[],
         };
 
@@ -80,7 +80,7 @@ export default class Create extends Component {
 
     handleSubmit(event){
         event.preventDefault();
-        if(this.state.creaetErrorState)
+        if(this.state.createErrorState)
             this.clearErrorBag();
         let status = 'success';
         axios.post('/loans', {
@@ -95,7 +95,7 @@ export default class Create extends Component {
           .then((response)=>{
             status = response.data.status;
             if(status == 'failed'){
-                this.setState({creaetErrorState:true});
+                this.setState({createErrorState:true});
                 let e = response.data.errors;
                 let errors = Object.assign({}, this.state.errors);
                 for(var key in errors){
@@ -119,7 +119,7 @@ export default class Create extends Component {
     }
 
     reset(){
-        if(this.state.creaetErrorState)
+        if(this.state.createErrorState)
             this.clearErrorBag();
         this.setState(
             {
@@ -135,7 +135,7 @@ export default class Create extends Component {
         );
     }
     clearErrorBag(){
-        this.setState({creaetErrorState:false});
+        this.setState({createErrorState:false});
         let errors = Object.assign({}, this.state.errors);
         for(var key in errors){
             errors[key] = [];
@@ -146,7 +146,7 @@ export default class Create extends Component {
     getUsers(id){
         axios.get('/departments/users/'+id)
             .then((response)=>this.setState({
-                users:[...response.data.users]
+                users:response.data.users,
             })
         );
     }

@@ -69439,8 +69439,6 @@ var LoanSPA = function (_Component) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__loantype__ = __webpack_require__(51);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -69481,7 +69479,7 @@ var Create = function (_Component) {
                 interest: [],
                 loan_type: []
             },
-            creaetErrorState: false,
+            createErrorState: false,
             users: []
         };
 
@@ -69547,7 +69545,7 @@ var Create = function (_Component) {
             var _this2 = this;
 
             event.preventDefault();
-            if (this.state.creaetErrorState) this.clearErrorBag();
+            if (this.state.createErrorState) this.clearErrorBag();
             var status = 'success';
             axios.post('/loans', {
                 salary_id: this.state.salary_id,
@@ -69560,7 +69558,7 @@ var Create = function (_Component) {
             }).then(function (response) {
                 status = response.data.status;
                 if (status == 'failed') {
-                    _this2.setState({ creaetErrorState: true });
+                    _this2.setState({ createErrorState: true });
                     var e = response.data.errors;
                     var errors = Object.assign({}, _this2.state.errors);
                     for (var key in errors) {
@@ -69584,7 +69582,7 @@ var Create = function (_Component) {
     }, {
         key: 'reset',
         value: function reset() {
-            if (this.state.creaetErrorState) this.clearErrorBag();
+            if (this.state.createErrorState) this.clearErrorBag();
             this.setState({
                 department: 0,
                 salary_id: 0,
@@ -69599,7 +69597,7 @@ var Create = function (_Component) {
     }, {
         key: 'clearErrorBag',
         value: function clearErrorBag() {
-            this.setState({ creaetErrorState: false });
+            this.setState({ createErrorState: false });
             var errors = Object.assign({}, this.state.errors);
             for (var key in errors) {
                 errors[key] = [];
@@ -69613,7 +69611,7 @@ var Create = function (_Component) {
 
             axios.get('/departments/users/' + id).then(function (response) {
                 return _this3.setState({
-                    users: [].concat(_toConsumableArray(response.data.users))
+                    users: response.data.users
                 });
             });
         }
@@ -69794,7 +69792,7 @@ var Users = function (_Component) {
         key: 'prepareSelect',
         value: function prepareSelect() {
             if (this.props.department > 0) {
-                return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                if (this.props.users.length > 0) return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     'select',
                     { value: this.props.selected, name: this.props.name, className: 'form-control', onChange: this.inputChange },
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
@@ -69811,6 +69809,10 @@ var Users = function (_Component) {
                             user.name
                         );
                     })
+                );else return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'div',
+                    { className: 'form-control text-danger' },
+                    'Department does not have any user defined yet.'
                 );
             }
             return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
@@ -82519,8 +82521,8 @@ var ConnectedTaxConfig = function (_Component) {
                         _this3.props.setCategories(response.data.data.categories);
                         _this3.props.setFSData(response.data.data.fsdata);
                         _this3.props.setSlabDBStatus(true);
-                        _this3.props.setSlabInitiation(true);
                     }
+                    _this3.props.setSlabInitiation(true);
                 }).catch(function (error) {
                     console.log(error);
                 });
