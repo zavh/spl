@@ -53,7 +53,7 @@ class ConnectedSalaryOutput extends Component {
         this.props.setMainPanel("IndvTaxCalc");
     }
     handleDepartmentChange(value){
-        if(value in this.props.indexing){
+        if(value in this.props.indexing || value == 0){
             let filters = {
                 department: value,
                 pay_out_mode: this.props.filters.pay_out_mode

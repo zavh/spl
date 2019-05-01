@@ -174,14 +174,6 @@ class ConnectedMainPanel extends Component {
                         <MonthSelect fromYear={this.props.timeline.fromYear} toYear={this.props.timeline.toYear} month={this.props.timeline.month} onChange={this.handleMonthChange}/>
                     </div>
                     <FileUpload status={this.state.allowupload} timeline={this.props.timeline} onFnishing={this.handleTimelineChange}/>
-                    {/* <div className="input-group input-group-sm col-md-2">
-                        <button
-                            className='btn btn-sm btn-outline-success badge badge-pill'
-                            onClick={this.yearlyTaxConfig}
-                            >
-                            Yearly Tax Configuration
-                        </button>
-                    </div> */}
                 </div>
                 <SalaryOutput timeline={this.state.validtimeline} salaryrows={this.state.filteredrows} handleFilterChange={this.handleFilterChange}/>
             </div>

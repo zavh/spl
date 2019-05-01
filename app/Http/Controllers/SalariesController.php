@@ -56,12 +56,8 @@ class SalariesController extends Controller
         // This index determines data of which array element should be shown
         // July this year (7th month of year) has the array index of 0
         // and June next year (6th month of year) has the array index of 12 of 
-        if($thisMonth > 6 ){
-            $month = $thisMonth - 7;
-        }
-        else {
-            $month = 5 + $thisMonth;
-        }
+        $thisMonth > 6 ? $month = $thisMonth - 7 : $month = $thisMonth + 5;
+
         $db_table_name = 'yearly_income_'.$fromYear."_".$toYear;
 
         if(Schema::hasTable($db_table_name)){
@@ -83,17 +79,10 @@ class SalariesController extends Controller
             else {                
                 // save this $db into database 
                 $d = $this->initial_salary_generator("$fromYear-07-01", "$toYear-06-30");
-                // ############################## DELETE THIS ##################################
-                // $response['status'] = 'fail';
-                // $response['message'] = 'Probably no Employee defined yet';
-                // $response['salaries'] = $d;
-                // return response()->json($response);
-                #############################################################################
                 // call yearly_income_table_generator and yearly_income_table_data_entry
                 $this->yearly_income_table_generator($db_table_name);
-                for($i=0;$i<count($d);$i++){
+                for($i=0;$i<count($d);$i++)
                     $this->yearly_income_table_data_entry($d[$i],$db_table_name);
-                }
                 // then send this reponse to prepare presentation
             }
         }
@@ -318,10 +307,6 @@ class SalariesController extends Controller
         return(['salary'=>$ts, 'edata'=>$d['edata']]);
     }
 
-    private function getIndex($month){
-        $month > 6 ? $index = $month - 7 : $index = $month + 5;
-        return $index;
-    }
     public function upload(Request $request)
     {
         $dataarray = array();
@@ -335,7 +320,7 @@ class SalariesController extends Controller
             $table = "yearly_income_".$request->fromYear."_".$request->toYear;
             $tax_changer = $this->taxable_income_changers();
             $tax_change_flag = false;
-            $index = $this->getIndex($request->month);
+            $month > 6 ? $index = $month - 7 : $index = $month + 5;
             
             for($i=0;$i<count($changes['data']);$i++){
                 $e = DB::table($table)->where('name', $changes['data'][$i]['employee_id'])->first();

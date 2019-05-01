@@ -72685,7 +72685,7 @@ var ConnectedSalaryOutput = function (_Component) {
     }, {
         key: 'handleDepartmentChange',
         value: function handleDepartmentChange(value) {
-            if (value in this.props.indexing) {
+            if (value in this.props.indexing || value == 0) {
                 var filters = {
                     department: value,
                     pay_out_mode: this.props.filters.pay_out_mode
