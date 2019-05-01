@@ -70553,11 +70553,6 @@ var ConnectedMainPanel = function (_Component) {
                 };
             });
         }
-
-        // yearlyTaxConfig(){
-        //     this.props.setMainPanel('TaxConfig');
-        // }
-
     }, {
         key: 'handleMonthChange',
         value: function handleMonthChange(month) {
@@ -70592,7 +70587,7 @@ var ConnectedMainPanel = function (_Component) {
             var month = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.props.timeline.month;
 
             __WEBPACK_IMPORTED_MODULE_1_axios___default.a.get('/salaries/dbcheck/' + fromYear + '-' + month).then(function (response) {
-                console.log(response);
+                // console.log(response);
                 status = response.data.status;
                 _this2.setState({ status: status });
                 if (status === 'success') {
@@ -70601,7 +70596,7 @@ var ConnectedMainPanel = function (_Component) {
                     _this2.setState({
                         validtimeline: _this2.props.timeline
                     });
-                    console.log(_this2.props.salaryrows);
+                    // console.log(this.props.salaryrows);
                     _this2.handleFilterChange(_this2.props.filters);
                 } else if (status === 'fail') {
                     // If db table for target month does not exist, set the current timeline same as the last valid timeline

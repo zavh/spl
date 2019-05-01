@@ -15,9 +15,7 @@ trait SalaryGenerator {
         $profile->id = $user->id;
         $profile->employee_id = $user->name;
         $profile->name = $user->fname." ".$user->sname;
-
-        $response['structure'] = $structure;
-        $response['profile'] = $profile;
+        $response = array();
 
         $from = Carbon::parse($fromYear);
         $to = Carbon::parse($toYear);
@@ -26,35 +24,46 @@ trait SalaryGenerator {
         /****** The Great Do While Loop Starts ******/
         $count = 0;
         do{
-            $basic = $profile->basic;
             $fraction = $this->fraction_generator($profile, $from->copy(), $join_date->copy());
+            $response['salary'][$count] = $this->structure_calculator(['structure'=>$structure, 'profile'=>$profile, 'fraction'=>$fraction, 'salary_id'=>$user->salary->id, 'from'=>$from]);
             $response['salary'][$count]['fraction'] = $fraction;
             $response['salary'][$count]['month'] = $from->copy()->toDateString();
             
-            foreach($structure as $key=>$value){
-                if($structure[$key]['default_valuetype'] == 0){
-                    $response['salary'][$count][$key] = $profile->{$structure[$key]['profile_field']} * $fraction;
-                }
-                if($structure[$key]['default_valuetype'] == 1){
-                    $response['salary'][$count][$key] = $basic * $structure[$key]['percentage']/100 * $fraction;
-                    if($structure[$key]['threshold'] > 0 && $response['salary'][$count][$key] > $structure[$key]['threshold'])
-                    $response['salary'][$count][$key] = $structure[$key]['threshold'];
-                }
-                if($structure[$key]['default_valuetype'] == 2)
-                    $response['salary'][$count][$key] = $structure[$key]['fixed_value'] * $fraction;
-                if($structure[$key]['default_valuetype'] == 3)
-                    $response['salary'][$count][$key] = 0;
-                if($structure[$key]['default_valuetype'] == 4)
-                    $response['salary'][$count][$key] = $this->{$structure[$key]['fnname']}($user->salary->id, $from->copy());
-            }
-
             $count++;
             $from = $from->addMonth();
         }while($from < $to);
         /****** The Great Do While Loop Ends ******/
+        $response['structure'] = $structure;
+        $response['profile'] = $profile;
         return $response;
     }
 
+    private function structure_calculator($c){
+        $structure = $c['structure'];
+        $profile = $c['profile'];
+        $fraction = $c['fraction'];
+        $salary_id = $c['salary_id'];
+        $from = $c['from'];
+        $response = array();
+        foreach($structure as $key=>$value){
+            if($structure[$key]['default_valuetype'] == 0){
+                $response[$key] = $profile->{$structure[$key]['profile_field']} * $fraction;
+            }
+            if($structure[$key]['default_valuetype'] == 1){
+                $response[$key] = $profile->basic * $structure[$key]['percentage']/100 * $fraction;
+                if($structure[$key]['threshold'] > 0 && $response[$key] > $structure[$key]['threshold'])
+                $response[$key] = $structure[$key]['threshold'];
+            }
+            if($structure[$key]['default_valuetype'] == 2)
+                $response[$key] = $structure[$key]['fixed_value'] * $fraction;
+            if($structure[$key]['default_valuetype'] == 3)
+                $response[$key] = 0;
+            if($structure[$key]['default_valuetype'] == 4)
+                $response[$key] = $this->{$structure[$key]['fnname']}($salary_id, $from->copy());
+        }
+
+        return $response;
+    }
     private function fraction_generator($profile, $from, $join_date){
         $daysInMonth = $from->daysInMonth;
         $deduction = 0;

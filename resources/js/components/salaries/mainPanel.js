@@ -55,9 +55,6 @@ class ConnectedMainPanel extends Component {
         }));
     }
 
-    // yearlyTaxConfig(){
-    //     this.props.setMainPanel('TaxConfig');
-    // }
     
     handleMonthChange(month){
         let timeline = {
@@ -87,7 +84,7 @@ class ConnectedMainPanel extends Component {
         axios.get(`/salaries/dbcheck/${fromYear}-${month}`)
         .then(
             (response)=>{
-                console.log(response);
+                // console.log(response);
                 status = response.data.status;
                 this.setState({status:status})
                 if(status === 'success'){
@@ -96,7 +93,7 @@ class ConnectedMainPanel extends Component {
                     this.setState({
                         validtimeline:this.props.timeline,
                     });
-                    console.log(this.props.salaryrows);
+                    // console.log(this.props.salaryrows);
                     this.handleFilterChange(this.props.filters)
                 }
                 else if(status === 'fail'){

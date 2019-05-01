@@ -286,27 +286,41 @@ class SalariesController extends Controller
         $newbasic =  floatval($d['basic']);
         $salary = json_decode($d['edata']->salary, true);
         $profile = $d['edata']->profile;
-        $structure = json_decode($d['edata']->structure);
+        $structure = json_decode($d['edata']->structure, true);
         $tax_config = json_decode($d['edata']->tax_config);
         $index = $d['index'];
+        $temp = array();
 
+        $tp = json_decode($profile); //temp profile
+        $tp->basic = $newbasic;
+        $ts = $salary; //temp salary
         for($i=$index;$i<12;$i++){
-            $salary[$i]['basic'] = $newbasic * $salary[$i]['fraction'];
-            for($k=0;$k<count($structure);$k++){
-                if($structure[$k]->value == 0) continue;
-                $param_name = $structure[$k]->param_name; 
-                $salary[$i][$param_name] = $structure[$k]->value * $newbasic * $salary[$i]['fraction'] /100;
+            $ts[$i]['basic'] = $newbasic * $ts[$i]['fraction'];
+            
+            foreach($structure as $key=>$value){
+                if($structure[$key]['default_valuetype'] == 1)
+                    $temp[$key] = $structure[$key];
+            }
+            if(count($temp)>0){
+                $modstruct = $this->structure_calculator(['structure'=>$temp, 'profile'=>$tp, 'fraction'=>$ts[$i]['fraction'], 'salary_id'=>null, 'from'=>null]);
+                foreach($modstruct as $key=>$value)
+                    $ts[$i][$key] = $value;
             }
         }
-        $newtaxconfig = $this->tax_change_preparation($salary, $profile);
+        $newtaxconfig = $this->tax_change_preparation($ts, $profile);
         $taxdiff = $newtaxconfig['finalTax'] - $tax_config->finalTax;
         $taxdelta = $taxdiff/(12-$index);
         for($i=$index;$i<12;$i++){
-            $salary[$i]['monthly_tax'] += $taxdelta; 
+            $ts[$i]['monthly_tax'] += $taxdelta; 
         }
         $d['edata']->tax_config = json_encode($newtaxconfig);
         $d['edata']->salary = json_encode($newtaxconfig);
-        return(['salary'=>$salary, 'edata'=>$d['edata']]);
+        return(['salary'=>$ts, 'edata'=>$d['edata']]);
+    }
+
+    private function getIndex($month){
+        $month > 6 ? $index = $month - 7 : $index = $month + 5;
+        return $index;
     }
     public function upload(Request $request)
     {
@@ -321,10 +335,7 @@ class SalariesController extends Controller
             $table = "yearly_income_".$request->fromYear."_".$request->toYear;
             $tax_changer = $this->taxable_income_changers();
             $tax_change_flag = false;
-            if($request->month > 6)
-                $index = $request->month - 7;
-            else 
-                $index = $request->month + 5;
+            $index = $this->getIndex($request->month);
             
             for($i=0;$i<count($changes['data']);$i++){
                 $e = DB::table($table)->where('name', $changes['data'][$i]['employee_id'])->first();
@@ -366,11 +377,8 @@ class SalariesController extends Controller
                 $this->yearly_income_table_data_update($changes['data'][$i]['employee_id'], $table, $updates);
                 $salaries[$i] = $s[$index];
             }
-            return response()->json($response);
         }
-        else {
-            return response()->json($response);
-        }
+        return response()->json($response);
     }
 
     private function filevalidate($filename){
