@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Departments from '../commons/Departments';
 import Input from '../commons/Input';
-import Submit from '../commons/submit';
+// import Submit from '../commons/submit';
 import Card from '../commons/Card';
 import Users from './users';
 import LoanType from './loantype';
@@ -46,7 +46,10 @@ export default class Create extends Component {
     }
 
     handleDeptChange(id){
-        this.setState({department:id});
+        this.setState({
+            department:id,
+            salary_id:0
+        });
         this.getUsers(id);
     }
 
@@ -95,6 +98,7 @@ export default class Create extends Component {
           .then((response)=>{
             status = response.data.status;
             if(status == 'failed'){
+                // console.log(response)
                 this.setState({createErrorState:true});
                 let e = response.data.errors;
                 let errors = Object.assign({}, this.state.errors);
@@ -119,6 +123,7 @@ export default class Create extends Component {
     }
 
     reset(){
+        console.log(this.state);
         if(this.state.createErrorState)
             this.clearErrorBag();
         this.setState(
@@ -158,16 +163,36 @@ export default class Create extends Component {
                     <form onSubmit={this.handleSubmit}>
                         <Departments onChange={this.handleDeptChange} name='department' selected={this.state.department} labelSize='90px'/>
                         <Users onChange={this.handleUserChange} name='users' department={this.state.department} users={this.state.users} selected={this.state.salary_id} labelSize='90px' errors={this.state.errors.salary_id}/>
-                        <Input onChange={this.handleNameChange} value={this.state.loan_name}  name='loan_name'  type='text'   labelSize='90px' label='Loan title'  errors={this.state.errors.loan_name}/>
+                        <Input onChange={this.handleNameChange} value={this.state.loan_name}  name='loan_name'  type='text'   labelSize='90px' label='Loan title'  errors={this.state.errors.loan_name} />
                         <Input onChange={this.handleAmntChange} value={this.state.amount}     name='amount'     type='number' labelSize='90px' label='Amount'      errors={this.state.errors.amount}/>
                         <Input onChange={this.handleDateChange} value={this.state.start_date} name='start_date' type='date'   labelSize='90px' label='Start Date'  errors={this.state.errors.start_date}/>
                         <Input onChange={this.handleTenuChange} value={this.state.tenure}     name='tenure'     type='number' labelSize='90px' label='Tenure'      errors={this.state.errors.tenure}/>
                         <Input onChange={this.handleIntrChange} value={this.state.interest}   name='interest'   type='text' labelSize='90px' label='Interest Rate' errors={this.state.errors.interest}/>
                         <LoanType onChange={this.handleLtpeChange} name='loan_type' selected={this.state.loan_type} labelSize='90px' errors={this.state.errors.loan_type} />
-                        <Submit submitLabel='Submit' cancelLabel='Reset' onCancel={this.handleCancel}/>
+                        <Submit submitLabel='Submit' cancelLabel='Reset' onCancel={this.reset} salary_id={this.state.salary_id} />
                     </form>
                     </div>
                 </Card>
         );
     }
+}
+
+function Submit(props){
+    function handleCancel(){
+        props.onCancel();
+    }
+    if(props.salary_id == 0){
+        return null
+    }
+    else 
+    return(
+        <div className="row">
+            <div className="col-6 m-0 pr-1"> 
+                <input type="submit" className="btn btn-outline-primary btn-sm btn-block" value={props.submitLabel}/>
+            </div>
+            <div className="col-6 pl-1"> 
+                <button type='button' className="btn btn-outline-dark btn-sm btn-block" onClick={handleCancel}>{props.cancelLabel}</button>
+            </div>
+        </div>
+    );
 }

@@ -5,13 +5,35 @@ export default class Input extends Component {
         super(props);
         this.state = {
             value:'',
+            required:true
         }
         this.inputChange = this.inputChange.bind(this);
         this.errorProcess = this.errorProcess.bind(this);
+        this.getInput = this.getInput.bind(this);
+    }
+    getInput(){
+        if(this.state.required){
+            return(
+                <input type={this.props.type} className="form-control" name={this.props.name} onChange={this.inputChange} value={this.props.value} required />
+            )
+        }
+        else{
+            return(
+                <input type={this.props.type} className="form-control" name={this.props.name} onChange={this.inputChange} value={this.props.value}/>
+            )}
     }
 
     inputChange(e){
         this.props.onChange(e.target.value);
+    }
+
+    componentDidMount(){
+        
+        if(this.props.required !== undefined){
+            if(this.props.required == false){
+                this.setState({required:false});
+            }
+        }
     }
 
     errorProcess(){
@@ -36,7 +58,7 @@ export default class Input extends Component {
                     <div className="input-group-prepend">
                         <span className="input-group-text" style={labelSize}>{this.props.label}</span>
                     </div>
-                    <input type={this.props.type} className="form-control" name={this.props.name} onChange={this.inputChange} value={this.props.value}/>
+                    {this.getInput()}
                     {this.errorProcess()}
                 </div>
             </div>

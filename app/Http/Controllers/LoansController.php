@@ -82,29 +82,31 @@ class LoansController extends Controller
                 $schedule[$month->format('Y-m')] = $request->amount/$tenure;
                 $month->addMonth();
             }            
-            $loanCreate = Loan::create([
-                'salary_id' => $request->salary_id,
-                'loan_name' => $request->loan_name,
-                'amount' => $request->amount,
-                'start_date' => $start_date,
-                'end_date' => $end_date,
-                'loan_type' => $request->loan_type,
-                'interest' => $request->interest,
-                'tenure' => $tenure,
-                'schedule' => json_encode($schedule),
-                ]);
+            // $loanCreate = Loan::create([
+            //     'salary_id' => $request->salary_id,
+            //     'loan_name' => $request->loan_name,
+            //     'amount' => $request->amount,
+            //     'start_date' => $start_date,
+            //     'end_date' => $end_date,
+            //     'loan_type' => $request->loan_type,
+            //     'interest' => $request->interest,
+            //     'tenure' => $tenure,
+            //     'schedule' => json_encode($schedule),
+            //     ]);
 
-            $response['status'] = 'success';
-            $response['loan']['name'] = $loanCreate->salary->user->name." - ".$loanCreate->salary->user->fname." ".$loanCreate->salary->user->sname;
-            $response['loan']['id'] = $loanCreate->id;
-            $response['loan']['params']['Loan Title'] = $loanCreate->loan_name;
-            $response['loan']['params']['Amount'] = $loanCreate->amount;
-            $response['loan']['params']['Start Date'] = $loanCreate->start_date;
-            $response['loan']['params']['End Date'] = $loanCreate->end_date;
-            $response['loan']['params']['Tenure'] = $loanCreate->tenure;
-            $response['loan']['params']['Interest'] = $loanCreate->interest;
-            $response['loan']['params']['Lone Type'] = $loanCreate->loan_type;
-            $response['loan']['schedule'] = $schedule;
+            // $response['status'] = 'success';
+            // $response['loan']['name'] = $loanCreate->salary->user->name." - ".$loanCreate->salary->user->fname." ".$loanCreate->salary->user->sname;
+            // $response['loan']['id'] = $loanCreate->id;
+            // $response['loan']['params']['Loan Title'] = $loanCreate->loan_name;
+            // $response['loan']['params']['Amount'] = $loanCreate->amount;
+            // $response['loan']['params']['Start Date'] = $loanCreate->start_date;
+            // $response['loan']['params']['End Date'] = $loanCreate->end_date;
+            // $response['loan']['params']['Tenure'] = $loanCreate->tenure;
+            // $response['loan']['params']['Interest'] = $loanCreate->interest;
+            // $response['loan']['params']['Lone Type'] = $loanCreate->loan_type;
+            // $response['loan']['schedule'] = $schedule;
+
+            $response = ['status'=>'failed','schedule'=>$schedule];
             
         }
         return response()->json($response);
