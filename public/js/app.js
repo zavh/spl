@@ -16872,24 +16872,20 @@ var Input = function (_Component) {
 function Card(props) {
     return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
         "div",
-        { className: "col-md-6 mb-2" },
+        { className: "card shadow-sm" },
         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
             "div",
-            { className: "card shadow-sm" },
+            { className: "card-header d-flex justify-content-between align-items-center m-0 p-0 border-bottom bg-light" },
             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                "div",
-                { className: "card-header d-flex justify-content-between align-items-center m-0 p-0 border-bottom bg-light" },
-                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                    "span",
-                    { className: "mx-2 font-weight-normal text-primary" },
-                    props.title
-                )
-            ),
-            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                "div",
-                { className: "card-body p-0 m-0 small" },
-                props.children
+                "span",
+                { className: "mx-2 font-weight-normal text-primary" },
+                props.title
             )
+        ),
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            "div",
+            { className: "card-body p-0 m-0 small" },
+            props.children
         )
     );
 }
@@ -44932,6 +44928,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_react_dom__ = __webpack_require__(12);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_react_dom___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_react_dom__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__loanSPA__ = __webpack_require__(120);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_react_redux__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__redux_store_index__ = __webpack_require__(276);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -44939,6 +44937,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+
 
 
 
@@ -44956,7 +44956,11 @@ var Loans = function (_Component) {
     _createClass(Loans, [{
         key: 'render',
         value: function render() {
-            return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__loanSPA__["a" /* default */], null);
+            return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                __WEBPACK_IMPORTED_MODULE_3_react_redux__["a" /* Provider */],
+                { store: __WEBPACK_IMPORTED_MODULE_4__redux_store_index__["a" /* default */] },
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__loanSPA__["a" /* default */], null)
+            );
         }
     }]);
 
@@ -69335,10 +69339,16 @@ exports.unstable_unsubscribe = unstable_unsubscribe;
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__create__ = __webpack_require__(121);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__xrud__ = __webpack_require__(124);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__Create__ = __webpack_require__(282);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__LoanList__ = __webpack_require__(281);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_axios__ = __webpack_require__(11);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_axios__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_react_router_dom__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_react_redux__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__LoanEdit__ = __webpack_require__(280);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__redux_actions_index__ = __webpack_require__(283);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
@@ -69354,13 +69364,30 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 
 
-var LoanSPA = function (_Component) {
-    _inherits(LoanSPA, _Component);
 
-    function LoanSPA(props) {
-        _classCallCheck(this, LoanSPA);
 
-        var _this = _possibleConstructorReturn(this, (LoanSPA.__proto__ || Object.getPrototypeOf(LoanSPA)).call(this, props));
+
+function mapStateToProps(state) {
+    return {
+        activeloans: state.activeloans
+    };
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        setActiveLoans: function setActiveLoans(loans) {
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_7__redux_actions_index__["a" /* setActiveLoans */])(loans));
+        }
+    };
+}
+
+var ConnectedLoanSPA = function (_Component) {
+    _inherits(ConnectedLoanSPA, _Component);
+
+    function ConnectedLoanSPA(props) {
+        _classCallCheck(this, ConnectedLoanSPA);
+
+        var _this = _possibleConstructorReturn(this, (ConnectedLoanSPA.__proto__ || Object.getPrototypeOf(ConnectedLoanSPA)).call(this, props));
 
         _this.state = {
             activeloans: []
@@ -69371,15 +69398,14 @@ var LoanSPA = function (_Component) {
         return _this;
     }
 
-    _createClass(LoanSPA, [{
+    _createClass(ConnectedLoanSPA, [{
         key: 'getLoans',
         value: function getLoans() {
             var _this2 = this;
 
             __WEBPACK_IMPORTED_MODULE_3_axios___default.a.get('/loans/active').then(function (response) {
-                return _this2.setState({
-                    activeloans: [].concat(_toConsumableArray(response.data))
-                });
+                _this2.setState({ activeloans: [].concat(_toConsumableArray(response.data)) });
+                _this2.props.setActiveLoans(response.data);
             });
         }
     }, {
@@ -69406,248 +69432,63 @@ var LoanSPA = function (_Component) {
     }, {
         key: 'render',
         value: function render() {
+            var _this3 = this;
+
             return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 'div',
                 { className: 'container' },
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     'div',
                     { className: 'row justify-content-between' },
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__xrud__["a" /* default */], { bridge: this.loanModified, loans: this.state.activeloans }),
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__create__["a" /* default */], { bridge: this.loanArrived })
-                )
-            );
-        }
-    }]);
-
-    return LoanSPA;
-}(__WEBPACK_IMPORTED_MODULE_0_react__["Component"]);
-
-/* harmony default export */ __webpack_exports__["a"] = (LoanSPA);
-
-/***/ }),
-/* 121 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__commons_Departments__ = __webpack_require__(122);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__commons_Input__ = __webpack_require__(49);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__commons_submit__ = __webpack_require__(27);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__commons_Card__ = __webpack_require__(50);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__users__ = __webpack_require__(123);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__loantype__ = __webpack_require__(51);
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-
-
-
-
-
-
-
-
-var Create = function (_Component) {
-    _inherits(Create, _Component);
-
-    function Create(props) {
-        _classCallCheck(this, Create);
-
-        var _this = _possibleConstructorReturn(this, (Create.__proto__ || Object.getPrototypeOf(Create)).call(this, props));
-
-        _this.state = {
-            department: 0,
-            salary_id: 0,
-            loan_name: '',
-            amount: '',
-            start_date: '',
-            tenure: '',
-            interest: '',
-            loan_type: '0',
-            errors: {
-                salary_id: [],
-                loan_name: [],
-                amount: [],
-                start_date: [],
-                tenure: [],
-                interest: [],
-                loan_type: []
-            },
-            createErrorState: false,
-            users: []
-        };
-
-        _this.handleDeptChange = _this.handleDeptChange.bind(_this);
-        _this.handleUserChange = _this.handleUserChange.bind(_this);
-        _this.handleNameChange = _this.handleNameChange.bind(_this);
-        _this.handleAmntChange = _this.handleAmntChange.bind(_this);
-        _this.handleDateChange = _this.handleDateChange.bind(_this);
-        _this.handleTenuChange = _this.handleTenuChange.bind(_this);
-        _this.handleIntrChange = _this.handleIntrChange.bind(_this);
-        _this.handleLtpeChange = _this.handleLtpeChange.bind(_this);
-        _this.handleCancel = _this.handleCancel.bind(_this);
-        _this.handleSubmit = _this.handleSubmit.bind(_this);
-        _this.clearErrorBag = _this.clearErrorBag.bind(_this);
-        _this.reset = _this.reset.bind(_this);
-        return _this;
-    }
-
-    _createClass(Create, [{
-        key: 'handleDeptChange',
-        value: function handleDeptChange(id) {
-            this.setState({ department: id });
-            this.getUsers(id);
-        }
-    }, {
-        key: 'handleUserChange',
-        value: function handleUserChange(id) {
-            this.setState({ salary_id: id });
-        }
-    }, {
-        key: 'handleNameChange',
-        value: function handleNameChange(value) {
-            this.setState({ loan_name: value });
-        }
-    }, {
-        key: 'handleAmntChange',
-        value: function handleAmntChange(value) {
-            this.setState({ amount: value });
-        }
-    }, {
-        key: 'handleDateChange',
-        value: function handleDateChange(value) {
-            this.setState({ start_date: value });
-        }
-    }, {
-        key: 'handleTenuChange',
-        value: function handleTenuChange(value) {
-            this.setState({ tenure: value });
-        }
-    }, {
-        key: 'handleIntrChange',
-        value: function handleIntrChange(value) {
-            this.setState({ interest: value });
-        }
-    }, {
-        key: 'handleLtpeChange',
-        value: function handleLtpeChange(value) {
-            this.setState({ loan_type: value });
-        }
-    }, {
-        key: 'handleSubmit',
-        value: function handleSubmit(event) {
-            var _this2 = this;
-
-            event.preventDefault();
-            if (this.state.createErrorState) this.clearErrorBag();
-            var status = 'success';
-            axios.post('/loans', {
-                salary_id: this.state.salary_id,
-                loan_name: this.state.loan_name,
-                amount: this.state.amount,
-                start_date: this.state.start_date,
-                tenure: this.state.tenure,
-                interest: this.state.interest,
-                loan_type: this.state.loan_type
-            }).then(function (response) {
-                status = response.data.status;
-                if (status == 'failed') {
-                    _this2.setState({ createErrorState: true });
-                    var e = response.data.errors;
-                    var errors = Object.assign({}, _this2.state.errors);
-                    for (var key in errors) {
-                        errors[key] = key in e ? e[key] : [];
-                    }
-                    _this2.setState({ errors: errors });
-                } else if (status == 'success') {
-                    _this2.props.bridge(response.data.loan);
-                    _this2.reset();
-                }
-            }).catch(function (error) {
-                console.log(error);
-            });
-        }
-    }, {
-        key: 'handleCancel',
-        value: function handleCancel(event) {
-            event.preventDefault();
-            this.reset();
-        }
-    }, {
-        key: 'reset',
-        value: function reset() {
-            if (this.state.createErrorState) this.clearErrorBag();
-            this.setState({
-                department: 0,
-                salary_id: 0,
-                loan_name: '',
-                amount: '',
-                start_date: '',
-                tenure: '',
-                interest: '',
-                loan_type: 0
-            });
-        }
-    }, {
-        key: 'clearErrorBag',
-        value: function clearErrorBag() {
-            this.setState({ createErrorState: false });
-            var errors = Object.assign({}, this.state.errors);
-            for (var key in errors) {
-                errors[key] = [];
-            }
-            this.setState({ errors: errors });
-        }
-    }, {
-        key: 'getUsers',
-        value: function getUsers(id) {
-            var _this3 = this;
-
-            axios.get('/departments/users/' + id).then(function (response) {
-                return _this3.setState({
-                    users: response.data.users
-                });
-            });
-        }
-    }, {
-        key: 'render',
-        value: function render() {
-            return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                __WEBPACK_IMPORTED_MODULE_4__commons_Card__["a" /* default */],
-                { title: 'Create New Loan' },
-                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                    'div',
-                    { className: 'm-2' },
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                        'form',
-                        { onSubmit: this.handleSubmit },
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__commons_Departments__["a" /* default */], { onChange: this.handleDeptChange, name: 'department', selected: this.state.department, labelSize: '90px' }),
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_5__users__["a" /* default */], { onChange: this.handleUserChange, name: 'users', department: this.state.department, users: this.state.users, selected: this.state.salary_id, labelSize: '90px', errors: this.state.errors.salary_id }),
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__commons_Input__["a" /* default */], { onChange: this.handleNameChange, value: this.state.loan_name, name: 'loan_name', type: 'text', labelSize: '90px', label: 'Loan title', errors: this.state.errors.loan_name }),
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__commons_Input__["a" /* default */], { onChange: this.handleAmntChange, value: this.state.amount, name: 'amount', type: 'number', labelSize: '90px', label: 'Amount', errors: this.state.errors.amount }),
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__commons_Input__["a" /* default */], { onChange: this.handleDateChange, value: this.state.start_date, name: 'start_date', type: 'date', labelSize: '90px', label: 'Start Date', errors: this.state.errors.start_date }),
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__commons_Input__["a" /* default */], { onChange: this.handleTenuChange, value: this.state.tenure, name: 'tenure', type: 'number', labelSize: '90px', label: 'Tenure', errors: this.state.errors.tenure }),
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__commons_Input__["a" /* default */], { onChange: this.handleIntrChange, value: this.state.interest, name: 'interest', type: 'text', labelSize: '90px', label: 'Interest Rate', errors: this.state.errors.interest }),
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_6__loantype__["a" /* default */], { onChange: this.handleLtpeChange, name: 'loan_type', selected: this.state.loan_type, labelSize: '90px', errors: this.state.errors.loan_type }),
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__commons_submit__["a" /* default */], { submitLabel: 'Submit', cancelLabel: 'Reset', onCancel: this.handleCancel })
+                        __WEBPACK_IMPORTED_MODULE_4_react_router_dom__["a" /* BrowserRouter */],
+                        null,
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            'div',
+                            { className: 'col-md-6 mb-2' },
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                __WEBPACK_IMPORTED_MODULE_4_react_router_dom__["d" /* Switch */],
+                                null,
+                                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4_react_router_dom__["c" /* Route */], { exact: true, path: '/loans', render: function render(props) {
+                                        return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__LoanList__["a" /* default */], _extends({}, props, { loans: _this3.state.activeloans }));
+                                    } }),
+                                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4_react_router_dom__["c" /* Route */], { path: '/loans/edit/:id/:index', render: function render(props) {
+                                        return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_6__LoanEdit__["a" /* default */], props);
+                                    } })
+                            )
+                        ),
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            'div',
+                            { className: 'col-md-6 mb-2' },
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                __WEBPACK_IMPORTED_MODULE_4_react_router_dom__["d" /* Switch */],
+                                null,
+                                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4_react_router_dom__["c" /* Route */], { exact: true, path: '/loans', component: __WEBPACK_IMPORTED_MODULE_1__Create__["a" /* default */] }),
+                                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4_react_router_dom__["c" /* Route */], { path: '/loans/edit/:id/:index', component: Test })
+                            )
+                        )
                     )
                 )
             );
         }
     }]);
 
-    return Create;
+    return ConnectedLoanSPA;
 }(__WEBPACK_IMPORTED_MODULE_0_react__["Component"]);
 
-/* harmony default export */ __webpack_exports__["a"] = (Create);
+var LoanSPA = Object(__WEBPACK_IMPORTED_MODULE_5_react_redux__["b" /* connect */])(mapStateToProps, mapDispatchToProps)(ConnectedLoanSPA);
+/* harmony default export */ __webpack_exports__["a"] = (LoanSPA);
+
+function Test() {
+    return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+        'div',
+        null,
+        'Test'
+    );
+}
 
 /***/ }),
+/* 121 */,
 /* 122 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -69876,97 +69717,7 @@ var Users = function (_Component) {
 /* harmony default export */ __webpack_exports__["a"] = (Users);
 
 /***/ }),
-/* 124 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__commons_Card__ = __webpack_require__(50);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__commons_Accordion__ = __webpack_require__(125);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__edit__ = __webpack_require__(126);
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-
-
-
-
-
-var Modify = function (_Component) {
-    _inherits(Modify, _Component);
-
-    function Modify(props) {
-        _classCallCheck(this, Modify);
-
-        var _this = _possibleConstructorReturn(this, (Modify.__proto__ || Object.getPrototypeOf(Modify)).call(this, props));
-
-        _this.state = {
-            leftpane: 'viewList',
-            targetid: 0,
-            targetindex: -1
-        };
-
-        _this.handleEdit = _this.handleEdit.bind(_this);
-        _this.handleCancel = _this.handleCancel.bind(_this);
-        _this.editStatus = _this.editStatus.bind(_this);
-        return _this;
-    }
-
-    _createClass(Modify, [{
-        key: 'handleEdit',
-        value: function handleEdit(id, index) {
-            this.setState({
-                leftpane: 'editLoan',
-                targetid: id,
-                targetindex: index
-            });
-        }
-    }, {
-        key: 'handleCancel',
-        value: function handleCancel() {
-            this.setState({ leftpane: 'viewList' });
-        }
-    }, {
-        key: 'editStatus',
-        value: function editStatus(loan) {
-            this.setState({ leftpane: 'viewList' });
-            this.props.bridge(loan, this.state.targetindex);
-        }
-    }, {
-        key: 'render',
-        value: function render() {
-            if (this.state.leftpane == 'viewList') {
-                return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                    __WEBPACK_IMPORTED_MODULE_1__commons_Card__["a" /* default */],
-                    { title: 'Currently Running Loans' },
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__commons_Accordion__["a" /* default */], { accid: 'loansAccordion', data: this.props.loans, edit: this.handleEdit })
-                );
-            } else if (this.state.leftpane == 'editLoan') {
-                return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                    __WEBPACK_IMPORTED_MODULE_1__commons_Card__["a" /* default */],
-                    { title: 'Edit Loan' },
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__edit__["a" /* default */], {
-                        id: this.state.targetid,
-                        cancel: this.handleCancel,
-                        bridge: this.editStatus
-                    })
-                );
-            }
-        }
-    }]);
-
-    return Modify;
-}(__WEBPACK_IMPORTED_MODULE_0_react__["Component"]);
-
-/* harmony default export */ __webpack_exports__["a"] = (Modify);
-
-/***/ }),
+/* 124 */,
 /* 125 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -70080,202 +69831,7 @@ var Accordion = function (_Component) {
 /* harmony default export */ __webpack_exports__["a"] = (Accordion);
 
 /***/ }),
-/* 126 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__commons_Input__ = __webpack_require__(49);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__commons_submit__ = __webpack_require__(27);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__loantype__ = __webpack_require__(51);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__commons_Readonly__ = __webpack_require__(127);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_axios__ = __webpack_require__(11);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_axios__);
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-
-
-
-
-
-
-
-var LoanEdit = function (_Component) {
-    _inherits(LoanEdit, _Component);
-
-    function LoanEdit(props) {
-        _classCallCheck(this, LoanEdit);
-
-        var _this = _possibleConstructorReturn(this, (LoanEdit.__proto__ || Object.getPrototypeOf(LoanEdit)).call(this, props));
-
-        _this.state = {
-            user: '',
-            department: '',
-            loan_name: '',
-            amount: '',
-            start_date: '',
-            tenure: '',
-            interest: '',
-            loan_type: '0',
-            errors: {
-                loan_name: [],
-                amount: [],
-                start_date: [],
-                tenure: [],
-                interest: [],
-                loan_type: []
-            },
-            editErrorState: false
-        };
-        _this.handleNameChange = _this.handleNameChange.bind(_this);
-        _this.handleAmntChange = _this.handleAmntChange.bind(_this);
-        _this.handleDateChange = _this.handleDateChange.bind(_this);
-        _this.handleTenuChange = _this.handleTenuChange.bind(_this);
-        _this.handleIntrChange = _this.handleIntrChange.bind(_this);
-        _this.handleLtpeChange = _this.handleLtpeChange.bind(_this);
-        _this.handleSubmit = _this.handleSubmit.bind(_this);
-        _this.handleCancel = _this.handleCancel.bind(_this);
-        return _this;
-    }
-
-    _createClass(LoanEdit, [{
-        key: 'getLoan',
-        value: function getLoan() {
-            var _this2 = this;
-
-            __WEBPACK_IMPORTED_MODULE_5_axios___default.a.get('/loans/' + this.props.id + '/edit').then(function (response) {
-                return _this2.setState({
-                    user: response.data.name,
-                    department: response.data.department,
-                    loan_name: response.data.data.loan_name,
-                    amount: response.data.data.amount,
-                    start_date: response.data.data.start_date,
-                    tenure: response.data.data.tenure,
-                    interest: response.data.data.interest,
-                    loan_type: response.data.data.loan_type
-                });
-            });
-        }
-    }, {
-        key: 'componentDidMount',
-        value: function componentDidMount() {
-            this.getLoan();
-        }
-    }, {
-        key: 'handleNameChange',
-        value: function handleNameChange(value) {
-            this.setState({ loan_name: value });
-        }
-    }, {
-        key: 'handleAmntChange',
-        value: function handleAmntChange(value) {
-            this.setState({ amount: value });
-        }
-    }, {
-        key: 'handleDateChange',
-        value: function handleDateChange(value) {
-            this.setState({ start_date: value });
-        }
-    }, {
-        key: 'handleTenuChange',
-        value: function handleTenuChange(value) {
-            this.setState({ tenure: value });
-        }
-    }, {
-        key: 'handleIntrChange',
-        value: function handleIntrChange(value) {
-            this.setState({ interest: value });
-        }
-    }, {
-        key: 'handleLtpeChange',
-        value: function handleLtpeChange(value) {
-            this.setState({ loan_type: value });
-        }
-    }, {
-        key: 'handleSubmit',
-        value: function handleSubmit(e) {
-            var _this3 = this;
-
-            e.preventDefault();
-            if (this.state.editErrorState) this.clearErrorBag();
-            var status = 'success';
-            __WEBPACK_IMPORTED_MODULE_5_axios___default.a.put('/loans/' + this.props.id, {
-                loan_name: this.state.loan_name,
-                amount: this.state.amount,
-                start_date: this.state.start_date,
-                tenure: this.state.tenure,
-                interest: this.state.interest,
-                loan_type: this.state.loan_type
-            }).then(function (response) {
-                console.log(response);
-                status = response.data.status;
-                if (status == 'failed') {
-                    _this3.setState({ editErrorState: true });
-                    var _e = response.data.errors;
-                    var errors = Object.assign({}, _this3.state.errors);
-                    for (var key in errors) {
-                        errors[key] = key in _e ? _e[key] : [];
-                    }
-                    _this3.setState({ errors: errors });
-                } else if (status == 'success') {
-                    _this3.props.bridge(response.data.loan);
-                }
-            }).catch(function (error) {
-                console.log(error);
-            });
-        }
-    }, {
-        key: 'handleCancel',
-        value: function handleCancel(e) {
-            e.preventDefault();
-            this.props.cancel();
-        }
-    }, {
-        key: 'clearErrorBag',
-        value: function clearErrorBag() {
-            this.setState({ editErrorState: false });
-            var errors = Object.assign({}, this.state.errors);
-            for (var key in errors) {
-                errors[key] = [];
-            }
-            this.setState({ errors: errors });
-        }
-    }, {
-        key: 'render',
-        value: function render() {
-            return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                'div',
-                { className: 'm-2' },
-                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4__commons_Readonly__["a" /* default */], { labelSize: '90px', label: 'Department', value: this.state.department }),
-                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4__commons_Readonly__["a" /* default */], { labelSize: '90px', label: 'Employee', value: this.state.user }),
-                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                    'form',
-                    { onSubmit: this.handleSubmit },
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__commons_Input__["a" /* default */], { onChange: this.handleNameChange, value: this.state.loan_name, name: 'loan_name', type: 'text', labelSize: '90px', label: 'Loan title', errors: this.state.errors.loan_name }),
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__commons_Input__["a" /* default */], { onChange: this.handleAmntChange, value: this.state.amount, name: 'amount', type: 'number', labelSize: '90px', label: 'Amount', errors: this.state.errors.amount }),
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__commons_Input__["a" /* default */], { onChange: this.handleDateChange, value: this.state.start_date, name: 'start_date', type: 'date', labelSize: '90px', label: 'Start Date', errors: this.state.errors.start_date }),
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__commons_Input__["a" /* default */], { onChange: this.handleTenuChange, value: this.state.tenure, name: 'tenure', type: 'number', labelSize: '90px', label: 'Tenure', errors: this.state.errors.tenure }),
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__commons_Input__["a" /* default */], { onChange: this.handleIntrChange, value: this.state.interest, name: 'interest', type: 'text', labelSize: '90px', label: 'Interest Rate', errors: this.state.errors.interest }),
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__loantype__["a" /* default */], { onChange: this.handleLtpeChange, name: 'loan_type', selected: this.state.loan_type, labelSize: '90px', errors: this.state.errors.loan_type }),
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__commons_submit__["a" /* default */], { submitLabel: 'Save', cancelLabel: 'Cancel Edit', onCancel: this.handleCancel })
-                )
-            );
-        }
-    }]);
-
-    return LoanEdit;
-}(__WEBPACK_IMPORTED_MODULE_0_react__["Component"]);
-
-/* harmony default export */ __webpack_exports__["a"] = (LoanEdit);
-
-/***/ }),
+/* 126 */,
 /* 127 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -84426,6 +83982,585 @@ function rootReducer() {
 /***/ (function(module, exports) {
 
 // removed by extract-text-webpack-plugin
+
+/***/ }),
+/* 272 */,
+/* 273 */,
+/* 274 */,
+/* 275 */,
+/* 276 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_redux__ = __webpack_require__(19);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__reducers_index__ = __webpack_require__(277);
+
+
+var store = Object(__WEBPACK_IMPORTED_MODULE_0_redux__["b" /* createStore */])(__WEBPACK_IMPORTED_MODULE_1__reducers_index__["a" /* default */], window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
+/* harmony default export */ __webpack_exports__["a"] = (store);
+
+/***/ }),
+/* 277 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__constants_action_types__ = __webpack_require__(278);
+
+
+var initialState = {
+  activeloans: []
+};
+function rootReducer() {
+  var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
+  var action = arguments[1];
+
+  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["a" /* SET_ACTIVE_LOANS */]) {
+    return Object.assign({}, state, {
+      activeloans: action.payload
+    });
+  }
+
+  return state;
+}
+/* harmony default export */ __webpack_exports__["a"] = (rootReducer);
+
+/***/ }),
+/* 278 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return SET_ACTIVE_LOANS; });
+var SET_ACTIVE_LOANS = "SET_ACTIVE_LOANS";
+
+/***/ }),
+/* 279 */,
+/* 280 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__commons_Input__ = __webpack_require__(49);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__commons_submit__ = __webpack_require__(27);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__loantype__ = __webpack_require__(51);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__commons_Readonly__ = __webpack_require__(127);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_axios__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_axios___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_axios__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__commons_Card__ = __webpack_require__(50);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_react_redux__ = __webpack_require__(8);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+
+
+
+
+
+
+
+
+// import {  } from "./redux/actions/index";
+
+function mapStateToProps(state) {
+    return {
+        activeloans: state.activeloans
+    };
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        // setActiveLoans: loans=> dispatch(setActiveLoans(loans)),
+    };
+}
+
+var ConnectedLoanEdit = function (_Component) {
+    _inherits(ConnectedLoanEdit, _Component);
+
+    function ConnectedLoanEdit(props) {
+        _classCallCheck(this, ConnectedLoanEdit);
+
+        var _this = _possibleConstructorReturn(this, (ConnectedLoanEdit.__proto__ || Object.getPrototypeOf(ConnectedLoanEdit)).call(this, props));
+
+        _this.state = {
+            user: '',
+            department: '',
+            loan_name: '',
+            amount: '',
+            start_date: '',
+            tenure: '',
+            interest: '',
+            loan_type: '0',
+            errors: {
+                loan_name: [],
+                amount: [],
+                start_date: [],
+                tenure: [],
+                interest: [],
+                loan_type: []
+            },
+            editErrorState: false
+        };
+        _this.handleNameChange = _this.handleNameChange.bind(_this);
+        _this.handleAmntChange = _this.handleAmntChange.bind(_this);
+        _this.handleDateChange = _this.handleDateChange.bind(_this);
+        _this.handleTenuChange = _this.handleTenuChange.bind(_this);
+        _this.handleIntrChange = _this.handleIntrChange.bind(_this);
+        _this.handleLtpeChange = _this.handleLtpeChange.bind(_this);
+        _this.handleSubmit = _this.handleSubmit.bind(_this);
+        _this.handleCancel = _this.handleCancel.bind(_this);
+        return _this;
+    }
+
+    _createClass(ConnectedLoanEdit, [{
+        key: 'getLoan',
+        value: function getLoan() {
+            var _this2 = this;
+
+            __WEBPACK_IMPORTED_MODULE_5_axios___default.a.get('/loans/' + this.props.match.params.id + '/edit').then(function (response) {
+                return _this2.setState({
+                    user: response.data.name,
+                    department: response.data.department,
+                    loan_name: response.data.data.loan_name,
+                    amount: response.data.data.amount,
+                    start_date: response.data.data.start_date,
+                    tenure: response.data.data.tenure,
+                    interest: response.data.data.interest,
+                    loan_type: response.data.data.loan_type
+                });
+            });
+        }
+    }, {
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            this.getLoan();
+        }
+    }, {
+        key: 'handleNameChange',
+        value: function handleNameChange(value) {
+            this.setState({ loan_name: value });
+        }
+    }, {
+        key: 'handleAmntChange',
+        value: function handleAmntChange(value) {
+            this.setState({ amount: value });
+        }
+    }, {
+        key: 'handleDateChange',
+        value: function handleDateChange(value) {
+            this.setState({ start_date: value });
+        }
+    }, {
+        key: 'handleTenuChange',
+        value: function handleTenuChange(value) {
+            this.setState({ tenure: value });
+        }
+    }, {
+        key: 'handleIntrChange',
+        value: function handleIntrChange(value) {
+            this.setState({ interest: value });
+        }
+    }, {
+        key: 'handleLtpeChange',
+        value: function handleLtpeChange(value) {
+            this.setState({ loan_type: value });
+        }
+    }, {
+        key: 'handleSubmit',
+        value: function handleSubmit(e) {
+            var _this3 = this;
+
+            e.preventDefault();
+            if (this.state.editErrorState) this.clearErrorBag();
+            var status = 'success';
+            __WEBPACK_IMPORTED_MODULE_5_axios___default.a.put('/loans/' + this.props.id, {
+                loan_name: this.state.loan_name,
+                amount: this.state.amount,
+                start_date: this.state.start_date,
+                tenure: this.state.tenure,
+                interest: this.state.interest,
+                loan_type: this.state.loan_type
+            }).then(function (response) {
+                console.log(response);
+                status = response.data.status;
+                if (status == 'failed') {
+                    _this3.setState({ editErrorState: true });
+                    var _e = response.data.errors;
+                    var errors = Object.assign({}, _this3.state.errors);
+                    for (var key in errors) {
+                        errors[key] = key in _e ? _e[key] : [];
+                    }
+                    _this3.setState({ errors: errors });
+                } else if (status == 'success') {
+                    _this3.props.bridge(response.data.loan);
+                }
+            }).catch(function (error) {
+                console.log(error);
+            });
+        }
+    }, {
+        key: 'handleCancel',
+        value: function handleCancel(e) {
+            e.preventDefault();
+            this.props.history.push('/loans');
+        }
+    }, {
+        key: 'clearErrorBag',
+        value: function clearErrorBag() {
+            this.setState({ editErrorState: false });
+            var errors = Object.assign({}, this.state.errors);
+            for (var key in errors) {
+                errors[key] = [];
+            }
+            this.setState({ errors: errors });
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                __WEBPACK_IMPORTED_MODULE_6__commons_Card__["a" /* default */],
+                { title: 'Edit Loan' },
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'div',
+                    { className: 'm-2' },
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4__commons_Readonly__["a" /* default */], { labelSize: '90px', label: 'Department', value: this.state.department }),
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4__commons_Readonly__["a" /* default */], { labelSize: '90px', label: 'Employee', value: this.state.user }),
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        'form',
+                        { onSubmit: this.handleSubmit },
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__commons_Input__["a" /* default */], { onChange: this.handleNameChange, value: this.state.loan_name, name: 'loan_name', type: 'text', labelSize: '90px', label: 'Loan title', errors: this.state.errors.loan_name }),
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__commons_Input__["a" /* default */], { onChange: this.handleAmntChange, value: this.state.amount, name: 'amount', type: 'number', labelSize: '90px', label: 'Amount', errors: this.state.errors.amount }),
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__commons_Input__["a" /* default */], { onChange: this.handleDateChange, value: this.state.start_date, name: 'start_date', type: 'date', labelSize: '90px', label: 'Start Date', errors: this.state.errors.start_date }),
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__commons_Input__["a" /* default */], { onChange: this.handleTenuChange, value: this.state.tenure, name: 'tenure', type: 'number', labelSize: '90px', label: 'Tenure', errors: this.state.errors.tenure }),
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__commons_Input__["a" /* default */], { onChange: this.handleIntrChange, value: this.state.interest, name: 'interest', type: 'text', labelSize: '90px', label: 'Interest Rate', errors: this.state.errors.interest }),
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__loantype__["a" /* default */], { onChange: this.handleLtpeChange, name: 'loan_type', selected: this.state.loan_type, labelSize: '90px', errors: this.state.errors.loan_type }),
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__commons_submit__["a" /* default */], { submitLabel: 'Save', cancelLabel: 'Cancel Edit', onCancel: this.handleCancel })
+                    )
+                )
+            );
+        }
+    }]);
+
+    return ConnectedLoanEdit;
+}(__WEBPACK_IMPORTED_MODULE_0_react__["Component"]);
+
+var LoanEdit = Object(__WEBPACK_IMPORTED_MODULE_7_react_redux__["b" /* connect */])(mapStateToProps, mapDispatchToProps)(ConnectedLoanEdit);
+/* harmony default export */ __webpack_exports__["a"] = (LoanEdit);
+
+/***/ }),
+/* 281 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__commons_Card__ = __webpack_require__(50);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__commons_Accordion__ = __webpack_require__(125);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+
+
+
+
+var LoanList = function (_Component) {
+    _inherits(LoanList, _Component);
+
+    function LoanList(props) {
+        _classCallCheck(this, LoanList);
+
+        var _this = _possibleConstructorReturn(this, (LoanList.__proto__ || Object.getPrototypeOf(LoanList)).call(this, props));
+
+        _this.state = {
+            leftpane: 'viewList',
+            targetid: 0,
+            targetindex: -1
+        };
+
+        _this.handleEdit = _this.handleEdit.bind(_this);
+        _this.handleCancel = _this.handleCancel.bind(_this);
+        _this.editStatus = _this.editStatus.bind(_this);
+        return _this;
+    }
+
+    _createClass(LoanList, [{
+        key: 'handleEdit',
+        value: function handleEdit(id, index) {
+            this.props.history.push('/loans/edit/' + id + '/' + index);
+        }
+    }, {
+        key: 'handleCancel',
+        value: function handleCancel() {
+            this.setState({ leftpane: 'viewList' });
+        }
+    }, {
+        key: 'editStatus',
+        value: function editStatus(loan) {
+            this.setState({ leftpane: 'viewList' });
+            this.props.bridge(loan, this.state.targetindex);
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            if (this.state.leftpane == 'viewList') {
+                return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    __WEBPACK_IMPORTED_MODULE_1__commons_Card__["a" /* default */],
+                    { title: 'Currently Running Loans' },
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__commons_Accordion__["a" /* default */], { accid: 'loansAccordion', data: this.props.loans, edit: this.handleEdit })
+                );
+            }
+        }
+    }]);
+
+    return LoanList;
+}(__WEBPACK_IMPORTED_MODULE_0_react__["Component"]);
+
+/* harmony default export */ __webpack_exports__["a"] = (LoanList);
+
+/***/ }),
+/* 282 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__commons_Departments__ = __webpack_require__(122);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__commons_Input__ = __webpack_require__(49);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__commons_submit__ = __webpack_require__(27);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__commons_Card__ = __webpack_require__(50);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__users__ = __webpack_require__(123);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__loantype__ = __webpack_require__(51);
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+
+
+
+
+
+
+
+
+var Create = function (_Component) {
+    _inherits(Create, _Component);
+
+    function Create(props) {
+        _classCallCheck(this, Create);
+
+        var _this = _possibleConstructorReturn(this, (Create.__proto__ || Object.getPrototypeOf(Create)).call(this, props));
+
+        _this.state = {
+            department: 0,
+            salary_id: 0,
+            loan_name: '',
+            amount: '',
+            start_date: '',
+            tenure: '',
+            interest: '',
+            loan_type: '0',
+            errors: {
+                salary_id: [],
+                loan_name: [],
+                amount: [],
+                start_date: [],
+                tenure: [],
+                interest: [],
+                loan_type: []
+            },
+            createErrorState: false,
+            users: []
+        };
+
+        _this.handleDeptChange = _this.handleDeptChange.bind(_this);
+        _this.handleUserChange = _this.handleUserChange.bind(_this);
+        _this.handleNameChange = _this.handleNameChange.bind(_this);
+        _this.handleAmntChange = _this.handleAmntChange.bind(_this);
+        _this.handleDateChange = _this.handleDateChange.bind(_this);
+        _this.handleTenuChange = _this.handleTenuChange.bind(_this);
+        _this.handleIntrChange = _this.handleIntrChange.bind(_this);
+        _this.handleLtpeChange = _this.handleLtpeChange.bind(_this);
+        _this.handleCancel = _this.handleCancel.bind(_this);
+        _this.handleSubmit = _this.handleSubmit.bind(_this);
+        _this.clearErrorBag = _this.clearErrorBag.bind(_this);
+        _this.reset = _this.reset.bind(_this);
+        return _this;
+    }
+
+    _createClass(Create, [{
+        key: 'handleDeptChange',
+        value: function handleDeptChange(id) {
+            this.setState({ department: id });
+            this.getUsers(id);
+        }
+    }, {
+        key: 'handleUserChange',
+        value: function handleUserChange(id) {
+            this.setState({ salary_id: id });
+        }
+    }, {
+        key: 'handleNameChange',
+        value: function handleNameChange(value) {
+            this.setState({ loan_name: value });
+        }
+    }, {
+        key: 'handleAmntChange',
+        value: function handleAmntChange(value) {
+            this.setState({ amount: value });
+        }
+    }, {
+        key: 'handleDateChange',
+        value: function handleDateChange(value) {
+            this.setState({ start_date: value });
+        }
+    }, {
+        key: 'handleTenuChange',
+        value: function handleTenuChange(value) {
+            this.setState({ tenure: value });
+        }
+    }, {
+        key: 'handleIntrChange',
+        value: function handleIntrChange(value) {
+            this.setState({ interest: value });
+        }
+    }, {
+        key: 'handleLtpeChange',
+        value: function handleLtpeChange(value) {
+            this.setState({ loan_type: value });
+        }
+    }, {
+        key: 'handleSubmit',
+        value: function handleSubmit(event) {
+            var _this2 = this;
+
+            event.preventDefault();
+            if (this.state.createErrorState) this.clearErrorBag();
+            var status = 'success';
+            axios.post('/loans', {
+                salary_id: this.state.salary_id,
+                loan_name: this.state.loan_name,
+                amount: this.state.amount,
+                start_date: this.state.start_date,
+                tenure: this.state.tenure,
+                interest: this.state.interest,
+                loan_type: this.state.loan_type
+            }).then(function (response) {
+                status = response.data.status;
+                if (status == 'failed') {
+                    _this2.setState({ createErrorState: true });
+                    var e = response.data.errors;
+                    var errors = Object.assign({}, _this2.state.errors);
+                    for (var key in errors) {
+                        errors[key] = key in e ? e[key] : [];
+                    }
+                    _this2.setState({ errors: errors });
+                } else if (status == 'success') {
+                    _this2.props.bridge(response.data.loan);
+                    _this2.reset();
+                }
+            }).catch(function (error) {
+                console.log(error);
+            });
+        }
+    }, {
+        key: 'handleCancel',
+        value: function handleCancel(event) {
+            event.preventDefault();
+            this.reset();
+        }
+    }, {
+        key: 'reset',
+        value: function reset() {
+            if (this.state.createErrorState) this.clearErrorBag();
+            this.setState({
+                department: 0,
+                salary_id: 0,
+                loan_name: '',
+                amount: '',
+                start_date: '',
+                tenure: '',
+                interest: '',
+                loan_type: 0
+            });
+        }
+    }, {
+        key: 'clearErrorBag',
+        value: function clearErrorBag() {
+            this.setState({ createErrorState: false });
+            var errors = Object.assign({}, this.state.errors);
+            for (var key in errors) {
+                errors[key] = [];
+            }
+            this.setState({ errors: errors });
+        }
+    }, {
+        key: 'getUsers',
+        value: function getUsers(id) {
+            var _this3 = this;
+
+            axios.get('/departments/users/' + id).then(function (response) {
+                return _this3.setState({
+                    users: response.data.users
+                });
+            });
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                __WEBPACK_IMPORTED_MODULE_4__commons_Card__["a" /* default */],
+                { title: 'Create New Loan' },
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'div',
+                    { className: 'm-2' },
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        'form',
+                        { onSubmit: this.handleSubmit },
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__commons_Departments__["a" /* default */], { onChange: this.handleDeptChange, name: 'department', selected: this.state.department, labelSize: '90px' }),
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_5__users__["a" /* default */], { onChange: this.handleUserChange, name: 'users', department: this.state.department, users: this.state.users, selected: this.state.salary_id, labelSize: '90px', errors: this.state.errors.salary_id }),
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__commons_Input__["a" /* default */], { onChange: this.handleNameChange, value: this.state.loan_name, name: 'loan_name', type: 'text', labelSize: '90px', label: 'Loan title', errors: this.state.errors.loan_name }),
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__commons_Input__["a" /* default */], { onChange: this.handleAmntChange, value: this.state.amount, name: 'amount', type: 'number', labelSize: '90px', label: 'Amount', errors: this.state.errors.amount }),
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__commons_Input__["a" /* default */], { onChange: this.handleDateChange, value: this.state.start_date, name: 'start_date', type: 'date', labelSize: '90px', label: 'Start Date', errors: this.state.errors.start_date }),
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__commons_Input__["a" /* default */], { onChange: this.handleTenuChange, value: this.state.tenure, name: 'tenure', type: 'number', labelSize: '90px', label: 'Tenure', errors: this.state.errors.tenure }),
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__commons_Input__["a" /* default */], { onChange: this.handleIntrChange, value: this.state.interest, name: 'interest', type: 'text', labelSize: '90px', label: 'Interest Rate', errors: this.state.errors.interest }),
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_6__loantype__["a" /* default */], { onChange: this.handleLtpeChange, name: 'loan_type', selected: this.state.loan_type, labelSize: '90px', errors: this.state.errors.loan_type }),
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__commons_submit__["a" /* default */], { submitLabel: 'Submit', cancelLabel: 'Reset', onCancel: this.handleCancel })
+                    )
+                )
+            );
+        }
+    }]);
+
+    return Create;
+}(__WEBPACK_IMPORTED_MODULE_0_react__["Component"]);
+
+/* harmony default export */ __webpack_exports__["a"] = (Create);
+
+/***/ }),
+/* 283 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (immutable) */ __webpack_exports__["a"] = setActiveLoans;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__constants_action_types__ = __webpack_require__(278);
+
+
+function setActiveLoans(payload) {
+  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["a" /* SET_ACTIVE_LOANS */], payload: payload };
+};
 
 /***/ })
 /******/ ]);

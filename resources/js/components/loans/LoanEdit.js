@@ -4,8 +4,23 @@ import Submit from '../commons/submit';
 import LoanType from './loantype';
 import Readonly from '../commons/Readonly';
 import axios from 'axios';
+import Card from '../commons/Card';
+import { connect } from "react-redux";
+// import {  } from "./redux/actions/index";
 
-export default class LoanEdit extends Component {
+function mapStateToProps (state)
+{
+  return {
+      activeloans: state.activeloans,
+     };
+}
+
+function mapDispatchToProps(dispatch) {
+    return {
+        // setActiveLoans: loans=> dispatch(setActiveLoans(loans)),
+     };
+}
+class ConnectedLoanEdit extends Component {
     constructor(props){
         super(props);
         this.state = {
@@ -38,7 +53,7 @@ export default class LoanEdit extends Component {
     }
 
     getLoan(){
-        axios.get('/loans/'+this.props.id+'/edit')
+        axios.get('/loans/'+this.props.match.params.id+'/edit')
             .then((response)=>this.setState({
                 user:response.data.name,
                 department:response.data.department,
@@ -116,7 +131,7 @@ export default class LoanEdit extends Component {
 
     handleCancel(e){
         e.preventDefault();
-        this.props.cancel();
+        this.props.history.push('/loans');
     }
 
     clearErrorBag(){
@@ -130,6 +145,7 @@ export default class LoanEdit extends Component {
 
     render() {
         return (
+            <Card title='Edit Loan'>
             <div className='m-2'>
                 <Readonly labelSize='90px' label='Department' value={this.state.department}/>
                 <Readonly labelSize='90px' label='Employee' value={this.state.user}/>
@@ -142,7 +158,11 @@ export default class LoanEdit extends Component {
                     <LoanType onChange={this.handleLtpeChange} name='loan_type' selected={this.state.loan_type} labelSize='90px' errors={this.state.errors.loan_type} />
                     <Submit submitLabel='Save' cancelLabel='Cancel Edit' onCancel={this.handleCancel}/>
                 </form>
-          </div>
+            </div>
+            </Card>
         );
     }
 }
+
+const LoanEdit = connect(mapStateToProps, mapDispatchToProps)(ConnectedLoanEdit);
+export default LoanEdit;

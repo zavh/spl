@@ -23,6 +23,7 @@ class Loan extends Model
         'loan_type',
         'interest',
         'active',
+        'schedule',
     ];
 
     public function salary(){

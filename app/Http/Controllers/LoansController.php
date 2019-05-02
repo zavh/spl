@@ -73,9 +73,15 @@ class LoansController extends Controller
         }
         else{
             $tenure = $request->tenure;
+            $schedule = array();
             $start_date = date("Y-m-01", strtotime($request->start_date));
             $end_date = date("Y-m-t", strtotime("+$tenure months",strtotime($start_date)));
 
+            $month = Carbon::parse($start_date);
+            for($i=0;$i<$tenure;$i++){
+                $schedule[$month->format('Y-m')] = $request->amount/$tenure;
+                $month->addMonth();
+            }            
             $loanCreate = Loan::create([
                 'salary_id' => $request->salary_id,
                 'loan_name' => $request->loan_name,
@@ -85,12 +91,9 @@ class LoansController extends Controller
                 'loan_type' => $request->loan_type,
                 'interest' => $request->interest,
                 'tenure' => $tenure,
+                'schedule' => json_encode($schedule),
                 ]);
-                $month = Carbon::parse($start_date);
-            for($i=0;$i<$tenure;$i++){
-                $schedule[$month->format('Y-m')] = $loanCreate->amount/$tenure;
-                $month->addMonth();
-            }
+
             $response['status'] = 'success';
             $response['loan']['name'] = $loanCreate->salary->user->name." - ".$loanCreate->salary->user->fname." ".$loanCreate->salary->user->sname;
             $response['loan']['id'] = $loanCreate->id;

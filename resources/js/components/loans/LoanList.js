@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import Card from '../commons/Card';
 import Accordion from '../commons/Accordion';
-import LoanEdit from './edit';
 
-export default class Modify extends Component {
+export default class LoanList extends Component {
     constructor(props){
         super(props);
         this.state = {
@@ -18,13 +17,7 @@ export default class Modify extends Component {
     }
 
     handleEdit(id, index){
-        this.setState(
-            {
-                leftpane:'editLoan',
-                targetid:id,
-                targetindex:index,
-            }
-        );
+        this.props.history.push('/loans/edit/'+id+'/'+index);
     }
 
     handleCancel(){
@@ -41,17 +34,6 @@ export default class Modify extends Component {
             return(
                 <Card title='Currently Running Loans'>
                     <Accordion accid='loansAccordion' data={this.props.loans} edit={this.handleEdit}/>
-                </Card>
-            );
-        }
-        else if(this.state.leftpane == 'editLoan'){
-            return(
-                <Card title='Edit Loan'>
-                    <LoanEdit
-                        id={this.state.targetid}
-                        cancel={this.handleCancel}
-                        bridge={this.editStatus}
-                    />
                 </Card>
             );
         }
