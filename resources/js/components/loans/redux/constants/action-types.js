@@ -1,1 +1,2 @@
 export const SET_ACTIVE_LOANS = "SET_ACTIVE_LOANS";
+export const ADD_ACTIVE_LOAN = "ADD_ACTIVE_LOAN";

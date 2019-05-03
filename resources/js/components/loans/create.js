@@ -1,12 +1,25 @@
 import React, { Component } from 'react';
 import Departments from '../commons/Departments';
 import Input from '../commons/Input';
-// import Submit from '../commons/submit';
 import Card from '../commons/Card';
-import Users from './users';
+import Users from './Users';
 import LoanType from './loantype';
+import { connect } from "react-redux";
+import { addActiveLoan } from "./redux/actions/index";
+function mapStateToProps (state)
+{
+  return {
+      activeloans: state.activeloans,
+     };
+}
 
-export default class Create extends Component {
+function mapDispatchToProps(dispatch) {
+    return {
+        addActiveLoan: loan=> dispatch(addActiveLoan(loan)),
+     };
+}
+
+class ConnectedCreate extends Component {
     constructor(props){
         super(props);
         this.state = {
@@ -32,13 +45,7 @@ export default class Create extends Component {
         };
 
         this.handleDeptChange = this.handleDeptChange.bind(this);
-        this.handleUserChange = this.handleUserChange.bind(this);
-        this.handleNameChange = this.handleNameChange.bind(this);
-        this.handleAmntChange = this.handleAmntChange.bind(this);
-        this.handleDateChange = this.handleDateChange.bind(this);
-        this.handleTenuChange = this.handleTenuChange.bind(this);
-        this.handleIntrChange = this.handleIntrChange.bind(this);
-        this.handleLtpeChange = this.handleLtpeChange.bind(this);
+        this.handleElementChange = this.handleElementChange.bind(this);
         this.handleCancel = this.handleCancel.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.clearErrorBag = this.clearErrorBag.bind(this);
@@ -53,39 +60,15 @@ export default class Create extends Component {
         this.getUsers(id);
     }
 
-    handleUserChange(id){
-        this.setState({salary_id:id});
-    }
-
-    handleNameChange(value){
-        this.setState({loan_name:value});
-    }
-
-    handleAmntChange(value){
-        this.setState({amount:value});
-    }
-
-    handleDateChange(value){
-        this.setState({start_date:value});
-    }
-
-    handleTenuChange(value){
-        this.setState({tenure:value});
-    }
-
-    handleIntrChange(value){
-        this.setState({interest:value});
-    }
-
-    handleLtpeChange(value){
-        this.setState({loan_type:value});
+    handleElementChange(name, value){
+        this.setState({[name]:value});
     }
 
     handleSubmit(event){
         event.preventDefault();
         if(this.state.createErrorState)
             this.clearErrorBag();
-        let status = 'success';
+        let status;
         axios.post('/loans', {
             salary_id:this.state.salary_id,
             loan_name:this.state.loan_name,
@@ -98,7 +81,7 @@ export default class Create extends Component {
           .then((response)=>{
             status = response.data.status;
             if(status == 'failed'){
-                // console.log(response)
+                console.log(response.data)
                 this.setState({createErrorState:true});
                 let e = response.data.errors;
                 let errors = Object.assign({}, this.state.errors);
@@ -108,8 +91,11 @@ export default class Create extends Component {
                 this.setState({errors});
             }
             else if(status == 'success'){
-                this.props.bridge(response.data.loan);
+                this.props.addActiveLoan(response.data.loan);
                 this.reset();
+            }
+            else if(status == 'experimenting'){
+                console.log(response.data)
             }
           })
           .catch(function (error) {
@@ -123,7 +109,6 @@ export default class Create extends Component {
     }
 
     reset(){
-        console.log(this.state);
         if(this.state.createErrorState)
             this.clearErrorBag();
         this.setState(
@@ -162,13 +147,13 @@ export default class Create extends Component {
                     <div className='m-2'>
                     <form onSubmit={this.handleSubmit}>
                         <Departments onChange={this.handleDeptChange} name='department' selected={this.state.department} labelSize='90px'/>
-                        <Users onChange={this.handleUserChange} name='users' department={this.state.department} users={this.state.users} selected={this.state.salary_id} labelSize='90px' errors={this.state.errors.salary_id}/>
-                        <Input onChange={this.handleNameChange} value={this.state.loan_name}  name='loan_name'  type='text'   labelSize='90px' label='Loan title'  errors={this.state.errors.loan_name} />
-                        <Input onChange={this.handleAmntChange} value={this.state.amount}     name='amount'     type='number' labelSize='90px' label='Amount'      errors={this.state.errors.amount}/>
-                        <Input onChange={this.handleDateChange} value={this.state.start_date} name='start_date' type='date'   labelSize='90px' label='Start Date'  errors={this.state.errors.start_date}/>
-                        <Input onChange={this.handleTenuChange} value={this.state.tenure}     name='tenure'     type='number' labelSize='90px' label='Tenure'      errors={this.state.errors.tenure}/>
-                        <Input onChange={this.handleIntrChange} value={this.state.interest}   name='interest'   type='text' labelSize='90px' label='Interest Rate' errors={this.state.errors.interest}/>
-                        <LoanType onChange={this.handleLtpeChange} name='loan_type' selected={this.state.loan_type} labelSize='90px' errors={this.state.errors.loan_type} />
+                        <Users onChange={this.handleElementChange} name='salary_id' department={this.state.department} users={this.state.users} selected={this.state.salary_id} labelSize='90px' errors={this.state.errors.salary_id}/>
+                        <Input onChange={this.handleElementChange} value={this.state.loan_name}  name='loan_name'  type='text'   labelSize='90px' label='Loan title'  errors={this.state.errors.loan_name} />
+                        <Input onChange={this.handleElementChange} value={this.state.amount}     name='amount'     type='number' labelSize='90px' label='Amount'      errors={this.state.errors.amount}/>
+                        <Input onChange={this.handleElementChange} value={this.state.start_date} name='start_date' type='date'   labelSize='90px' label='Start Date'  errors={this.state.errors.start_date}/>
+                        <Input onChange={this.handleElementChange} value={this.state.tenure}     name='tenure'     type='number' labelSize='90px' label='Tenure'      errors={this.state.errors.tenure}/>
+                        <Input onChange={this.handleElementChange} value={this.state.interest}   name='interest'   type='text' labelSize='90px' label='Interest Rate' errors={this.state.errors.interest}/>
+                        <LoanType onChange={this.handleElementChange} name='loan_type' selected={this.state.loan_type} labelSize='90px' errors={this.state.errors.loan_type} />
                         <Submit submitLabel='Submit' cancelLabel='Reset' onCancel={this.reset} salary_id={this.state.salary_id} />
                     </form>
                     </div>
@@ -176,6 +161,9 @@ export default class Create extends Component {
         );
     }
 }
+
+const Create = connect(mapStateToProps, mapDispatchToProps)(ConnectedCreate);
+export default Create;
 
 function Submit(props){
     function handleCancel(){

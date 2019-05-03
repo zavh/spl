@@ -9,7 +9,8 @@ export default class Users extends Component {
     }
 
     inputChange(e){
-        this.props.onChange(e.target.value);
+        this.props.onChange(e.target.name, e.target.value);
+        // console.log(e.target.name);
     }
 
     prepareSelect(){

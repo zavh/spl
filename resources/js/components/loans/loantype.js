@@ -9,7 +9,7 @@ export default class LoanType extends Component {
     }
 
     inputChange(e){
-        this.props.onChange(e.target.value);
+        this.props.onChange(e.target.name, e.target.value);
     }
 
     prepareSelect(){

@@ -6,7 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Response;///////////////
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Schema;
 use App\User;
 use App\Loan;
 use App\Department;
@@ -43,21 +44,16 @@ class LoansController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
+    {   
+        $salary = Salary::find($request->salary_id);
+        $join_date = json_decode($salary->salaryinfo)->join_date;
         $validator = Validator::make($request->all(), [
-            'salary_id' => [
-                'required',
-                'integer',
-                function ($attribute, $value, $fail) {
-                    if ($value < 1) {
-                        $fail('An employee has not been selected');
-                    }
-                }],
+            'salary_id' => 'required|integer|min:1',
             'amount'=>'required|numeric',
             'loan_name'=>'required|max:32',
-            'start_date'=>'required|date',
+            'start_date'=>'required|date|after:'.$join_date,
             'tenure'=>'required|integer',
-            'interest'=>'required|numeric',
+            'interest'=>'required|numeric|min:0',
             'loan_type' => [
                 'required',
                 function ($attribute, $value, $fail) {
@@ -74,40 +70,73 @@ class LoansController extends Controller
         else{
             $tenure = $request->tenure;
             $schedule = array();
+
+            $currentmonth = date('n');
+            if($currentmonth > 6){
+                $payyearstarts = date("Y-07-01");
+                // $payyearends = date("Y")+1;
+            }
+            else {
+                $payyearstarts = date("Y-m-d",mktime(0,0,0,7,1,(date("Y")-1)));
+                // $payyearends = date("Y");
+            }
+            $mapping = array();
+            $pCarbon = Carbon::parse($payyearstarts);
+            for($i=0;$i<12;$i++){
+                $mapping[$pCarbon->format('Y-m')] = $i;
+                $pCarbon->addMonth();
+            }
+            
             $start_date = date("Y-m-01", strtotime($request->start_date));
             $end_date = date("Y-m-t", strtotime("+$tenure months",strtotime($start_date)));
 
             $month = Carbon::parse($start_date);
+            $addloan = array();
             for($i=0;$i<$tenure;$i++){
                 $schedule[$month->format('Y-m')] = $request->amount/$tenure;
+                if(isset($mapping[$month->format('Y-m')]))
+                    $addloan[$mapping[$month->format('Y-m')]] = $schedule[$month->format('Y-m')];
                 $month->addMonth();
-            }            
-            // $loanCreate = Loan::create([
-            //     'salary_id' => $request->salary_id,
-            //     'loan_name' => $request->loan_name,
-            //     'amount' => $request->amount,
-            //     'start_date' => $start_date,
-            //     'end_date' => $end_date,
-            //     'loan_type' => $request->loan_type,
-            //     'interest' => $request->interest,
-            //     'tenure' => $tenure,
-            //     'schedule' => json_encode($schedule),
-            //     ]);
+            }
+            $loanCreate = Loan::create([
+                'salary_id' => $request->salary_id,
+                'loan_name' => $request->loan_name,
+                'amount' => $request->amount,
+                'start_date' => $start_date,
+                'end_date' => $end_date,
+                'loan_type' => $request->loan_type,
+                'interest' => $request->interest,
+                'tenure' => $tenure,
+                'schedule' => json_encode($schedule),
+                ]);
 
-            // $response['status'] = 'success';
-            // $response['loan']['name'] = $loanCreate->salary->user->name." - ".$loanCreate->salary->user->fname." ".$loanCreate->salary->user->sname;
-            // $response['loan']['id'] = $loanCreate->id;
-            // $response['loan']['params']['Loan Title'] = $loanCreate->loan_name;
-            // $response['loan']['params']['Amount'] = $loanCreate->amount;
-            // $response['loan']['params']['Start Date'] = $loanCreate->start_date;
-            // $response['loan']['params']['End Date'] = $loanCreate->end_date;
-            // $response['loan']['params']['Tenure'] = $loanCreate->tenure;
-            // $response['loan']['params']['Interest'] = $loanCreate->interest;
-            // $response['loan']['params']['Lone Type'] = $loanCreate->loan_type;
+            $response['status'] = 'success';
+            $response['loan']['name'] = $loanCreate->salary->user->name." - ".$loanCreate->salary->user->fname." ".$loanCreate->salary->user->sname;
+            $response['loan']['id'] = $loanCreate->id;
+            $response['loan']['params']['Loan Title'] = $loanCreate->loan_name;
+            $response['loan']['params']['Amount'] = $loanCreate->amount;
+            $response['loan']['params']['Start Date'] = $loanCreate->start_date;
+            $response['loan']['params']['End Date'] = $loanCreate->end_date;
+            $response['loan']['params']['Tenure'] = $loanCreate->tenure;
+            $response['loan']['params']['Interest'] = $loanCreate->interest;
+            $response['loan']['params']['Lone Type'] = $loanCreate->loan_type;
             // $response['loan']['schedule'] = $schedule;
-
-            $response = ['status'=>'failed','schedule'=>$schedule];
-            
+            if(count($addloan) > 0){
+                $user_id = $salary->user->id;
+                $db_table_name = 'yearly_income_'.date('Y',strtotime($payyearstarts)).'_'.(date('Y',strtotime($payyearstarts))+1);
+                if(Schema::hasTable($db_table_name)){
+                    $ys = DB::table($db_table_name)->select('salary')->where('user_id', $user_id)->first();
+                    $salary = json_decode($ys->salary);
+                    foreach($addloan as $index=>$loan){
+                        $salary[$index]->loan += $loan;
+                    }
+                    DB::table($db_table_name)->where('user_id', $user_id)->update(['salary'=> json_encode($salary)]);
+                    // $response['salary'] = $salary;
+                }
+            }
+            // $response['schedule'] = $schedule;
+            // $response['mapping'] = $mapping;
+            // $response['addloan'] = $addloan;
         }
         return response()->json($response);
     }
@@ -235,7 +264,6 @@ class LoansController extends Controller
         $status['Installments Remaining'] = $loan->tenure - $months_passed;
         $status['Paid Amount'] = $months_passed * $status['Monthly Installment Amount'];
         $status['Remaining Amount'] = $loan->amount - $status['Paid Amount'];
-
 
         return $status;
     }
