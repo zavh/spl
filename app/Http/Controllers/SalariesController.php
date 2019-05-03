@@ -139,7 +139,7 @@ class SalariesController extends Controller
             $user = User::find($d[$i]->profile->id);
             $salaryinfo = json_decode($user->salary->salaryinfo);
             $response['data'][$i]['employee_id'] = $d[$i]->profile->employee_id;
-            $response['data'][$i]['name'] = $d[$i]->profile->name;
+            $response['data'][$i]['name'] = $user->fname." ".$user->sname;
             $response['data'][$i]['join_date'] = $d[$i]->profile->join_date;
             $response['data'][$i]['basic'] = number_format($d[$i]->salary[$month]->basic, 2);
             $response['data'][$i]['house_rent'] = number_format($d[$i]->salary[$month]->house_rent, 2);
