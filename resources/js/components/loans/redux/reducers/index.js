@@ -12,9 +12,11 @@ function rootReducer(state = initialState, action) {
     });
   }
   if (action.type === ADD_ACTIVE_LOAN){
-    console.log(action.payload);
-    let loans = [...state.activeloans]
-    loans.concat(action.payload)
+    let loans = [...state.activeloans];
+    let newloan = [];
+    newloan[0] = action.payload;
+    loans = loans.concat(newloan);
+    console.log(loans);
     return Object.assign({}, state, {
       activeloans: loans
     });

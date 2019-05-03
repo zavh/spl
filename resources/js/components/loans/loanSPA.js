@@ -24,15 +24,11 @@ class ConnectedLoanSPA extends Component {
         this.state = {
             activeloans:[],
         };
-
-        this.loanArrived = this.loanArrived.bind(this);
-        this.loanModified = this.loanModified.bind(this);
     }
     getLoans(){
         axios.get('/loans/active')            
             .then(
                 (response)=>{
-                    this.setState({activeloans:[...response.data]})
                     this.props.setActiveLoans(response.data);
                 });
     }
@@ -41,17 +37,7 @@ class ConnectedLoanSPA extends Component {
         this.getLoans();
     }
 
-    loanArrived(loan){
-        this.setState(prevState => ({
-            activeloans: [...prevState.activeloans, loan]
-            }));
-    }
 
-    loanModified(loan, index){
-        let activeloans = [...this.state.activeloans];
-        activeloans[index]['params'] = Object.assign({},loan);
-        this.setState(activeloans);
-    }
 
     render() {
         return (
@@ -61,7 +47,7 @@ class ConnectedLoanSPA extends Component {
                     <div className="col-md-6 mb-2">
                         
                             <Switch>
-                                <Route exact path="/loans" render={(props) =>  <LoanList {...props} loans={this.state.activeloans}/>} />
+                                <Route exact path="/loans" render={(props) =>  <LoanList {...props} loans={this.props.activeloans}/>} />
                                 <Route path="/loans/edit/:id/:index" render={(props) =>  <LoanEdit {...props}/>}/>
                             </Switch>
                                   

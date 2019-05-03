@@ -69378,8 +69378,6 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -69419,9 +69417,6 @@ var ConnectedLoanSPA = function (_Component) {
         _this.state = {
             activeloans: []
         };
-
-        _this.loanArrived = _this.loanArrived.bind(_this);
-        _this.loanModified = _this.loanModified.bind(_this);
         return _this;
     }
 
@@ -69431,7 +69426,6 @@ var ConnectedLoanSPA = function (_Component) {
             var _this2 = this;
 
             __WEBPACK_IMPORTED_MODULE_3_axios___default.a.get('/loans/active').then(function (response) {
-                _this2.setState({ activeloans: [].concat(_toConsumableArray(response.data)) });
                 _this2.props.setActiveLoans(response.data);
             });
         }
@@ -69439,22 +69433,6 @@ var ConnectedLoanSPA = function (_Component) {
         key: 'componentDidMount',
         value: function componentDidMount() {
             this.getLoans();
-        }
-    }, {
-        key: 'loanArrived',
-        value: function loanArrived(loan) {
-            this.setState(function (prevState) {
-                return {
-                    activeloans: [].concat(_toConsumableArray(prevState.activeloans), [loan])
-                };
-            });
-        }
-    }, {
-        key: 'loanModified',
-        value: function loanModified(loan, index) {
-            var activeloans = [].concat(_toConsumableArray(this.state.activeloans));
-            activeloans[index]['params'] = Object.assign({}, loan);
-            this.setState(activeloans);
         }
     }, {
         key: 'render',
@@ -69477,7 +69455,7 @@ var ConnectedLoanSPA = function (_Component) {
                                 __WEBPACK_IMPORTED_MODULE_4_react_router_dom__["d" /* Switch */],
                                 null,
                                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4_react_router_dom__["c" /* Route */], { exact: true, path: '/loans', render: function render(props) {
-                                        return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__LoanList__["a" /* default */], _extends({}, props, { loans: _this3.state.activeloans }));
+                                        return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__LoanList__["a" /* default */], _extends({}, props, { loans: _this3.props.activeloans }));
                                     } }),
                                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4_react_router_dom__["c" /* Route */], { path: '/loans/edit/:id/:index', render: function render(props) {
                                         return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_6__LoanEdit__["a" /* default */], props);
@@ -73372,9 +73350,11 @@ function rootReducer() {
     });
   }
   if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["a" /* ADD_ACTIVE_LOAN */]) {
-    console.log(action.payload);
     var loans = [].concat(_toConsumableArray(state.activeloans));
-    loans.concat(action.payload);
+    var newloan = [];
+    newloan[0] = action.payload;
+    loans = loans.concat(newloan);
+    console.log(loans);
     return Object.assign({}, state, {
       activeloans: loans
     });
