@@ -64,8 +64,10 @@ class ConnectedScheduleEdit extends Component {
                 }
             }
             count++;
+            this.setState({[month]:{value:schedule[month], preventUpdate:true}});
         }
-        console.log(schedule);
+        this.props.setSchedule(schedule);
+        this.setState({reschedulePoint:{}});
     }
 
     componentDidUpdate(prev){

@@ -84698,8 +84698,10 @@ var ConnectedScheduleEdit = function (_Component) {
                     }
                 }
                 count++;
+                this.setState(_defineProperty({}, month, { value: schedule[month], preventUpdate: true }));
             }
-            console.log(schedule);
+            this.props.setSchedule(schedule);
+            this.setState({ reschedulePoint: {} });
         }
     }, {
         key: 'componentDidUpdate',
@@ -84724,7 +84726,7 @@ var ConnectedScheduleEdit = function (_Component) {
     }, {
         key: 'handleElementChange',
         value: function handleElementChange(name, value) {
-            var _setState;
+            var _setState2;
 
             if (isNaN(value)) {
                 this.setState({ errors: _defineProperty({}, name, ['Schedule value must be a number']) });
@@ -84747,7 +84749,7 @@ var ConnectedScheduleEdit = function (_Component) {
                     if (name != key) reschedulePoint[key] = key;
                 }
             }
-            this.setState((_setState = {}, _defineProperty(_setState, name, update), _defineProperty(_setState, 'reschedulePoint', reschedulePoint), _setState));
+            this.setState((_setState2 = {}, _defineProperty(_setState2, name, update), _defineProperty(_setState2, 'reschedulePoint', reschedulePoint), _setState2));
 
             var lowest = '';
             for (var sched in reschedulePoint) {
