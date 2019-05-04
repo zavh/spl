@@ -12,7 +12,7 @@ export default class SingleInput extends Component {
     }
 
     inputChange(e){
-        this.props.onChange(e.target.value);
+        this.props.onChange(e.target.name, e.target.value);
     }
 
     errorProcess(){
@@ -27,8 +27,8 @@ export default class SingleInput extends Component {
             )
         }
     }
-    onInsert(){
-        this.props.onInsert(typeof this.props.actionButton);
+    onInsert(e){
+        this.props.onInsert(e.target);
     }
     render() {
         const labelSize = {
@@ -41,16 +41,18 @@ export default class SingleInput extends Component {
                         <span className="input-group-text" style={labelSize}>{this.props.label}</span>
                     </div>
                     <input type={this.props.type} className="form-control" name={this.props.name} onChange={this.inputChange} value={this.props.value} required/>
-                    <div className="input-group-append">
-                        <button className="btn btn-outline-secondary" type="button" id="button-addon2" onClick={this.onInsert}>
-                        {this.props.actionButton === undefined && 
-                                <span>Add</span>
-                        }
-                        {this.props.actionButton !== undefined && 
-                                <span>{this.props.actionButton}</span>
-                        }
-                        </button>
-                    </div>
+                    {!this.props.preventUpdate &&
+                        (<div className="input-group-append">
+                            <button className="btn btn-outline-secondary" type="button" id="button-addon2" data-index={this.props.name} onClick={this.onInsert}>
+                            {this.props.actionButton === undefined ? 
+                                ( <React.Fragment>Add</React.Fragment>
+                                        ):(
+                                <React.Fragment>{this.props.actionButton}</React.Fragment>
+                                )
+                            }
+                            </button>
+                        </div>)
+                    }
                     {this.errorProcess()}
                 </div>
             </div>

@@ -5,6 +5,7 @@ import axios from 'axios';
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import { connect } from "react-redux";
 import LoanEdit from './LoanEdit';
+import ScheduleEdit from './ScheduleEdit';
 import { setActiveLoans } from "./redux/actions/index";
 function mapStateToProps (state)
 {
@@ -19,12 +20,6 @@ function mapDispatchToProps(dispatch) {
      };
 }
 class ConnectedLoanSPA extends Component {
-    constructor(props){
-        super(props);
-        this.state = {
-            activeloans:[],
-        };
-    }
     getLoans(){
         axios.get('/loans/active')            
             .then(
@@ -36,8 +31,6 @@ class ConnectedLoanSPA extends Component {
     componentDidMount(){
         this.getLoans();
     }
-
-
 
     render() {
         return (
@@ -56,22 +49,15 @@ class ConnectedLoanSPA extends Component {
                         
                             <Switch>
                                 <Route exact path="/loans" component={Create}/>
-                                <Route path="/loans/edit/:id/:index" component={Test}/>
+                                <Route path="/loans/edit/:id/:index" component={ScheduleEdit}/>
                             </Switch>
                         
                     </div>
                     </Router>                
                 </div>
-
-                        {/* <Modify bridge={this.loanModified} loans={this.state.activeloans}/> */}
-                        {/* <Create bridge={this.loanArrived}/> */}
             </div>
         );
     }
 }
 const LoanSPA = connect(mapStateToProps, mapDispatchToProps)(ConnectedLoanSPA);
 export default LoanSPA;
-
-function Test(){
-    return <div>Test</div>
-}

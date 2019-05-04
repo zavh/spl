@@ -6,7 +6,6 @@ export default class LoanList extends Component {
     constructor(props){
         super(props);
         this.state = {
-            leftpane:'viewList',
             targetid:0,
             targetindex:-1,
         };
@@ -25,17 +24,14 @@ export default class LoanList extends Component {
     }
 
     editStatus(loan){
-        this.setState({leftpane:'viewList'});
         this.props.bridge(loan, this.state.targetindex);
     }
 
     render() {
-        if(this.state.leftpane == 'viewList'){
-            return(
-                <Card title='Currently Running Loans'>
-                    <Accordion accid='loansAccordion' data={this.props.loans} edit={this.handleEdit}/>
-                </Card>
-            );
-        }
+        return(
+            <Card title='Currently Running Loans'>
+                <Accordion accid='loansAccordion' data={this.props.loans} edit={this.handleEdit}/>
+            </Card>
+        );
     }
 }
