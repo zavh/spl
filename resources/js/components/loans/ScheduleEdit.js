@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Card from '../commons/Card';
 import { connect } from "react-redux";
 import SingleInput from './SingleInput';
-// import {  } from "./redux/actions/index";
+import { setSchedule } from "./redux/actions/index";
 
 function mapStateToProps (state)
 {
@@ -15,7 +15,7 @@ function mapStateToProps (state)
 function mapDispatchToProps(dispatch) {
     return {
         // modActiveLoan: loans=> dispatch(modActiveLoan(loans)),
-        // setSchedule: loans=> dispatch(setSchedule(loans)),
+        setSchedule: loans=> dispatch(setSchedule(loans)),
      };
 }
 class ConnectedScheduleEdit extends Component {
@@ -33,14 +33,41 @@ class ConnectedScheduleEdit extends Component {
     }
 
     onInsert(el){
-        this.props.activeloans[this.props.match.params.index];
+        let loan = this.props.activeloans[this.props.match.params.index];
         let index=el.dataset.index;
-        console.log(this.state[index])
+        let amount = loan.params['Amount'];
+        let tenure = loan.params['Tenure'];
+        let schedule = Object.assign({}, this.props.schedule);
+        
+        let manual_flag = false;
+        let count = 0;
+        let installmnt = 0;
+        for(var month in schedule){
+            if(month != index && !manual_flag) {
+                amount -= this.state[month].value;
+            }
+            else{
+                if(!manual_flag) manual_flag = true;
+                if(month in this.state.reschedulePoint){
+                    schedule[month] = this.state[month].value;
+                    amount -= this.state[month].value;
+                }
+                else{
+                    if(tenure-count != 0){
+                        installmnt = amount/(tenure-count);
+                        schedule[month] = installmnt;
+                        amount -= installmnt;
+                    }
+                    else {
+                        schedule[month] = amount;
+                    }
+                }
+            }
+            count++;
+        }
+        console.log(schedule);
     }
 
-    componentWillUnmount(){
-        // this.props.setSchedule({});
-    }
     componentDidUpdate(prev){
         if(!this.state.scheduleReceived && this.props.schedule != prev.schedule){
             Object.keys(this.props.schedule).map(key=>{
@@ -52,7 +79,18 @@ class ConnectedScheduleEdit extends Component {
             this.setState({scheduleReceived:true});
         }
     }
+
+    componentWillUnmount(){
+        this.props.setSchedule({});
+    }
     handleElementChange(name, value){
+        if(isNaN(value)){
+            this.setState({errors:{[name]:['Schedule value must be a number']}})
+            return;
+        }
+        else {
+            this.setState({errors:{[name]:[]}})
+        }
         let update = {};
         let reschedulePoint = {};
         if(this.props.schedule[name] != value){ //value different, append the element in reschedulePoint
@@ -75,7 +113,6 @@ class ConnectedScheduleEdit extends Component {
         });
 
         let lowest = '';
-        // console.log(reschedulePoint);
         for(var sched in reschedulePoint){
             if(sched != name){
                 this.setState({[sched]:{value:this.state[sched].value,preventUpdate:true}})
@@ -137,15 +174,6 @@ class ConnectedScheduleEdit extends Component {
         this.props.history.push('/loans');
     }
 
-    clearErrorBag(){
-        this.setState({editErrorState:false});
-        let errors = Object.assign({}, this.state.errors);
-        for(var key in errors){
-            errors[key] = [];
-        }
-        this.setState({errors});
-    }
-
     render() {
         return (
             <Card title='Loan Schedule'>
@@ -161,7 +189,7 @@ class ConnectedScheduleEdit extends Component {
                                     name={key} type='text'
                                     labelSize='90px'
                                     label={key}
-                                    errors={this.state.errors}
+                                    errors={this.state.errors[key]}
                                     onInsert={this.onInsert}
                                     actionButton='Re-Schedule This'
                                     preventUpdate={this.state[key]['preventUpdate']}

@@ -84614,6 +84614,7 @@ function rootReducer() {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__commons_Card__ = __webpack_require__(27);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_react_redux__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__SingleInput__ = __webpack_require__(281);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__redux_actions_index__ = __webpack_require__(59);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -84628,7 +84629,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 
 
-// import {  } from "./redux/actions/index";
+
 
 function mapStateToProps(state) {
     return {
@@ -84640,7 +84641,9 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
     return {
         // modActiveLoan: loans=> dispatch(modActiveLoan(loans)),
-        // setSchedule: loans=> dispatch(setSchedule(loans)),
+        setSchedule: function setSchedule(loans) {
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__redux_actions_index__["d" /* setSchedule */])(loans));
+        }
     };
 }
 
@@ -84667,14 +84670,36 @@ var ConnectedScheduleEdit = function (_Component) {
     _createClass(ConnectedScheduleEdit, [{
         key: 'onInsert',
         value: function onInsert(el) {
-            this.props.activeloans[this.props.match.params.index];
+            var loan = this.props.activeloans[this.props.match.params.index];
             var index = el.dataset.index;
-            console.log(this.state[index]);
-        }
-    }, {
-        key: 'componentWillUnmount',
-        value: function componentWillUnmount() {
-            // this.props.setSchedule({});
+            var amount = loan.params['Amount'];
+            var tenure = loan.params['Tenure'];
+            var schedule = Object.assign({}, this.props.schedule);
+
+            var manual_flag = false;
+            var count = 0;
+            var installmnt = 0;
+            for (var month in schedule) {
+                if (month != index && !manual_flag) {
+                    amount -= this.state[month].value;
+                } else {
+                    if (!manual_flag) manual_flag = true;
+                    if (month in this.state.reschedulePoint) {
+                        schedule[month] = this.state[month].value;
+                        amount -= this.state[month].value;
+                    } else {
+                        if (tenure - count != 0) {
+                            installmnt = amount / (tenure - count);
+                            schedule[month] = installmnt;
+                            amount -= installmnt;
+                        } else {
+                            schedule[month] = amount;
+                        }
+                    }
+                }
+                count++;
+            }
+            console.log(schedule);
         }
     }, {
         key: 'componentDidUpdate',
@@ -84692,10 +84717,21 @@ var ConnectedScheduleEdit = function (_Component) {
             }
         }
     }, {
+        key: 'componentWillUnmount',
+        value: function componentWillUnmount() {
+            this.props.setSchedule({});
+        }
+    }, {
         key: 'handleElementChange',
         value: function handleElementChange(name, value) {
             var _setState;
 
+            if (isNaN(value)) {
+                this.setState({ errors: _defineProperty({}, name, ['Schedule value must be a number']) });
+                return;
+            } else {
+                this.setState({ errors: _defineProperty({}, name, []) });
+            }
             var update = {};
             var reschedulePoint = {};
             if (this.props.schedule[name] != value) {
@@ -84714,7 +84750,6 @@ var ConnectedScheduleEdit = function (_Component) {
             this.setState((_setState = {}, _defineProperty(_setState, name, update), _defineProperty(_setState, 'reschedulePoint', reschedulePoint), _setState));
 
             var lowest = '';
-            // console.log(reschedulePoint);
             for (var sched in reschedulePoint) {
                 if (sched != name) {
                     this.setState(_defineProperty({}, sched, { value: this.state[sched].value, preventUpdate: true }));
@@ -84773,16 +84808,6 @@ var ConnectedScheduleEdit = function (_Component) {
             this.props.history.push('/loans');
         }
     }, {
-        key: 'clearErrorBag',
-        value: function clearErrorBag() {
-            this.setState({ editErrorState: false });
-            var errors = Object.assign({}, this.state.errors);
-            for (var key in errors) {
-                errors[key] = [];
-            }
-            this.setState({ errors: errors });
-        }
-    }, {
         key: 'render',
         value: function render() {
             var _this4 = this;
@@ -84804,7 +84829,7 @@ var ConnectedScheduleEdit = function (_Component) {
                                 name: key, type: 'text',
                                 labelSize: '90px',
                                 label: key,
-                                errors: _this4.state.errors,
+                                errors: _this4.state.errors[key],
                                 onInsert: _this4.onInsert,
                                 actionButton: 'Re-Schedule This',
                                 preventUpdate: _this4.state[key]['preventUpdate']
@@ -84871,7 +84896,7 @@ var SingleInput = function (_Component) {
     }, {
         key: 'errorProcess',
         value: function errorProcess() {
-            if (this.props.errors.length > 0) {
+            if (Array.isArray(this.props.errors)) {
                 var divStyle = {
                     display: 'block'
                 };

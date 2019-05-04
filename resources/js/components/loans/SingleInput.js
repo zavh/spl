@@ -16,7 +16,7 @@ export default class SingleInput extends Component {
     }
 
     errorProcess(){
-        if(this.props.errors.length > 0){
+        if(Array.isArray(this.props.errors)){
             const divStyle = {
                 display:'block',
               };
