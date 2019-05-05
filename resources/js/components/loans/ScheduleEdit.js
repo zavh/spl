@@ -28,6 +28,7 @@ class ConnectedScheduleEdit extends Component {
             errors:{},
             reschedulePoint:{},
             saveFlag:false,
+            origschedule:{},
         };
         this.handleSubmit  = this.handleSubmit.bind(this);
         this.onInsert  = this.onInsert.bind(this);
@@ -82,16 +83,20 @@ class ConnectedScheduleEdit extends Component {
             count++;
             this.setState({[month]:{value:schedule[month], preventUpdate:true}});
         }
-        
-        Math.round(amount) != 0 ? this.undoScheduleChanges():this.setState({reschedulePoint:{}, saveFlag:true});
-
+        if(Math.round(amount) != 0)
+            this.undoScheduleChanges()
+        else {
+            this.setState({reschedulePoint:{}, saveFlag:true});
+            this.props.setSchedule(schedule);
+        }
         // this.scrollToBottom(ref);
     }
 
     undoScheduleChanges(){
         this.setState({reschedulePoint:{}, saveFlag:false});
-        for(var month in this.props.schedule){
-            this.setState({[month]:{value:this.props.schedule[month], preventUpdate:true}});
+        this.props.setSchedule(this.state.origschedule);
+        for(var month in this.state.origschedule){
+            this.setState({[month]:{value:this.state.origschedule[month], preventUpdate:true}});
         }
     }
     componentDidUpdate(prev){
@@ -102,7 +107,8 @@ class ConnectedScheduleEdit extends Component {
                     preventUpdate:true,
                 }})
             })
-            this.setState({scheduleReceived:true});
+            let os = Object.assign({},this.props.schedule);
+            this.setState({scheduleReceived:true, origschedule:os});
         }
     }
 
@@ -163,13 +169,9 @@ class ConnectedScheduleEdit extends Component {
 
     handleSubmit(e){
         e.preventDefault();
-        let schedule = {};
-        for(var month in this.props.schedule){
-            schedule[month] = this.state[month].value;
-        }
-        this.props.setSchedule(schedule);
+        
         axios.post(`/loans/scheduleupdate/${this.props.match.params.id}`, {
-            schedule: JSON.stringify(schedule),
+            schedule: JSON.stringify(this.props.schedule),
           })
           .then((response)=>{
             status = response.data.status;

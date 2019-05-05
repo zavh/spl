@@ -84660,7 +84660,8 @@ var ConnectedScheduleEdit = function (_Component) {
             scheduleReceived: false,
             errors: {},
             reschedulePoint: {},
-            saveFlag: false
+            saveFlag: false,
+            origschedule: {}
         };
         _this.handleSubmit = _this.handleSubmit.bind(_this);
         _this.onInsert = _this.onInsert.bind(_this);
@@ -84716,17 +84717,19 @@ var ConnectedScheduleEdit = function (_Component) {
                 count++;
                 this.setState(_defineProperty({}, month, { value: schedule[month], preventUpdate: true }));
             }
-
-            Math.round(amount) != 0 ? this.undoScheduleChanges() : this.setState({ reschedulePoint: {}, saveFlag: true });
-
+            if (Math.round(amount) != 0) this.undoScheduleChanges();else {
+                this.setState({ reschedulePoint: {}, saveFlag: true });
+                this.props.setSchedule(schedule);
+            }
             // this.scrollToBottom(ref);
         }
     }, {
         key: 'undoScheduleChanges',
         value: function undoScheduleChanges() {
             this.setState({ reschedulePoint: {}, saveFlag: false });
-            for (var month in this.props.schedule) {
-                this.setState(_defineProperty({}, month, { value: this.props.schedule[month], preventUpdate: true }));
+            this.props.setSchedule(this.state.origschedule);
+            for (var month in this.state.origschedule) {
+                this.setState(_defineProperty({}, month, { value: this.state.origschedule[month], preventUpdate: true }));
             }
         }
     }, {
@@ -84741,7 +84744,8 @@ var ConnectedScheduleEdit = function (_Component) {
                         preventUpdate: true
                     }));
                 });
-                this.setState({ scheduleReceived: true });
+                var os = Object.assign({}, this.props.schedule);
+                this.setState({ scheduleReceived: true, origschedule: os });
             }
         }
     }, {
@@ -84802,13 +84806,9 @@ var ConnectedScheduleEdit = function (_Component) {
             var _this3 = this;
 
             e.preventDefault();
-            var schedule = {};
-            for (var month in this.props.schedule) {
-                schedule[month] = this.state[month].value;
-            }
-            this.props.setSchedule(schedule);
+
             axios.post('/loans/scheduleupdate/' + this.props.match.params.id, {
-                schedule: JSON.stringify(schedule)
+                schedule: JSON.stringify(this.props.schedule)
             }).then(function (response) {
                 status = response.data.status;
                 if (status == 'failed') {
