@@ -3,6 +3,7 @@ import Card from '../commons/Card';
 import { connect } from "react-redux";
 import SingleInput from './SingleInput';
 import { setSchedule } from "./redux/actions/index";
+import Submit from '../commons/submit'
 
 function mapStateToProps (state)
 {
@@ -32,6 +33,7 @@ class ConnectedScheduleEdit extends Component {
         this.onInsert  = this.onInsert.bind(this);
         this.handleCancel  = this.handleCancel.bind(this);
         this.handleElementChange  = this.handleElementChange.bind(this);
+        this.undoScheduleChanges = this.undoScheduleChanges.bind(this);
         // this.scrollToBottom  = this.scrollToBottom.bind(this);
     }
     
@@ -44,36 +46,54 @@ class ConnectedScheduleEdit extends Component {
         
         let manual_flag = false;
         let count = 0;
-        let installmnt = 0;
+        let installment = 0;
         for(var month in schedule){
             if(month != index && !manual_flag) {
-                amount -= this.state[month].value;
+                amount -= parseFloat(this.state[month].value);
+                console.log('Month', month, 'Installment', this.state[month].value, 'Remaining', amount);
             }
             else{
-                if(!manual_flag) manual_flag = true;
+                if(!manual_flag) {
+                    manual_flag = true;
+                    let x = 0;
+                    let rschcount = 0;
+                    for(var m in this.state.reschedulePoint){
+                        x +=  parseFloat(this.state[m].value);
+                        rschcount++;
+                    }
+                    installment = (amount - x) / (tenure - count - rschcount)
+                    if(installment < 0){
+                        this.undoScheduleChanges();
+                        break;
+                    }
+                    console.log('Amount', amount, 'Reschedule amount', x, 'Rescheduler', rschcount)
+                }
                 if(month in this.state.reschedulePoint){
                     schedule[month] = this.state[month].value;
-                    amount -= this.state[month].value;
+                    amount -= parseFloat(this.state[month].value);
+                    console.log('Month', month, 'Installment', this.state[month].value, 'Remaining', amount);
                 }
                 else{
-                    if(tenure-count != 0){
-                        installmnt = amount/(tenure-count);
-                        schedule[month] = installmnt;
-                        amount -= installmnt;
-                    }
-                    else {
-                        schedule[month] = amount;
-                    }
+                    schedule[month] = installment;
+                    amount -= installment;
+                    console.log('Month', month, 'Installment', installment, 'Remaining', amount);
                 }
             }
             count++;
             this.setState({[month]:{value:schedule[month], preventUpdate:true}});
         }
-        this.props.setSchedule(schedule);
-        this.setState({reschedulePoint:{}, saveFlag:true});
+        
+        Math.round(amount) != 0 ? this.undoScheduleChanges():this.setState({reschedulePoint:{}, saveFlag:true});
+
         // this.scrollToBottom(ref);
     }
 
+    undoScheduleChanges(){
+        this.setState({reschedulePoint:{}, saveFlag:false});
+        for(var month in this.props.schedule){
+            this.setState({[month]:{value:this.props.schedule[month], preventUpdate:true}});
+        }
+    }
     componentDidUpdate(prev){
         if(!this.state.scheduleReceived && this.props.schedule != prev.schedule){
             Object.keys(this.props.schedule).map(key=>{
@@ -143,8 +163,13 @@ class ConnectedScheduleEdit extends Component {
 
     handleSubmit(e){
         e.preventDefault();
+        let schedule = {};
+        for(var month in this.props.schedule){
+            schedule[month] = this.state[month].value;
+        }
+        this.props.setSchedule(schedule);
         axios.post(`/loans/scheduleupdate/${this.props.match.params.id}`, {
-            schedule: JSON.stringify(this.props.schedule),
+            schedule: JSON.stringify(schedule),
           })
           .then((response)=>{
             status = response.data.status;
@@ -202,7 +227,8 @@ class ConnectedScheduleEdit extends Component {
                                     )
                                 })}
                                 { this.state.saveFlag &&
-                                    <button type="submit" className="btn btn-primary btn-sm btn-block" onClick={this.handleSubmit}>Save</button>
+                                    // <button type="submit" className="btn btn-primary btn-sm btn-block" onClick={this.handleSubmit}>Save</button>
+                                    <Submit submitLabel='Save Schedule' cancelLabel='Undo Changes' onCancel={this.undoScheduleChanges}/>
                                 }
                         </form>
                     }

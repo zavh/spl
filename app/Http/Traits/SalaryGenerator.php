@@ -83,6 +83,7 @@ trait SalaryGenerator {
         }
         return ($daysInMonth - $deduction)/$daysInMonth;
     }
+    
     private function loan_manager($id, $target_month){
         $loans = Loan::active()->where('salary_id', $id)->get();
         $loansum = 0;

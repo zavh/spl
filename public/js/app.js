@@ -84615,6 +84615,7 @@ function rootReducer() {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_react_redux__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__SingleInput__ = __webpack_require__(281);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__redux_actions_index__ = __webpack_require__(59);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__commons_submit__ = __webpack_require__(65);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -84624,6 +84625,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
 
 
 
@@ -84664,6 +84666,7 @@ var ConnectedScheduleEdit = function (_Component) {
         _this.onInsert = _this.onInsert.bind(_this);
         _this.handleCancel = _this.handleCancel.bind(_this);
         _this.handleElementChange = _this.handleElementChange.bind(_this);
+        _this.undoScheduleChanges = _this.undoScheduleChanges.bind(_this);
         // this.scrollToBottom  = this.scrollToBottom.bind(this);
         return _this;
     }
@@ -84679,31 +84682,52 @@ var ConnectedScheduleEdit = function (_Component) {
 
             var manual_flag = false;
             var count = 0;
-            var installmnt = 0;
+            var installment = 0;
             for (var month in schedule) {
                 if (month != index && !manual_flag) {
-                    amount -= this.state[month].value;
+                    amount -= parseFloat(this.state[month].value);
+                    console.log('Month', month, 'Installment', this.state[month].value, 'Remaining', amount);
                 } else {
-                    if (!manual_flag) manual_flag = true;
+                    if (!manual_flag) {
+                        manual_flag = true;
+                        var x = 0;
+                        var rschcount = 0;
+                        for (var m in this.state.reschedulePoint) {
+                            x += parseFloat(this.state[m].value);
+                            rschcount++;
+                        }
+                        installment = (amount - x) / (tenure - count - rschcount);
+                        if (installment < 0) {
+                            this.undoScheduleChanges();
+                            break;
+                        }
+                        console.log('Amount', amount, 'Reschedule amount', x, 'Rescheduler', rschcount);
+                    }
                     if (month in this.state.reschedulePoint) {
                         schedule[month] = this.state[month].value;
-                        amount -= this.state[month].value;
+                        amount -= parseFloat(this.state[month].value);
+                        console.log('Month', month, 'Installment', this.state[month].value, 'Remaining', amount);
                     } else {
-                        if (tenure - count != 0) {
-                            installmnt = amount / (tenure - count);
-                            schedule[month] = installmnt;
-                            amount -= installmnt;
-                        } else {
-                            schedule[month] = amount;
-                        }
+                        schedule[month] = installment;
+                        amount -= installment;
+                        console.log('Month', month, 'Installment', installment, 'Remaining', amount);
                     }
                 }
                 count++;
                 this.setState(_defineProperty({}, month, { value: schedule[month], preventUpdate: true }));
             }
-            this.props.setSchedule(schedule);
-            this.setState({ reschedulePoint: {}, saveFlag: true });
+
+            Math.round(amount) != 0 ? this.undoScheduleChanges() : this.setState({ reschedulePoint: {}, saveFlag: true });
+
             // this.scrollToBottom(ref);
+        }
+    }, {
+        key: 'undoScheduleChanges',
+        value: function undoScheduleChanges() {
+            this.setState({ reschedulePoint: {}, saveFlag: false });
+            for (var month in this.props.schedule) {
+                this.setState(_defineProperty({}, month, { value: this.props.schedule[month], preventUpdate: true }));
+            }
         }
     }, {
         key: 'componentDidUpdate',
@@ -84728,7 +84752,7 @@ var ConnectedScheduleEdit = function (_Component) {
     }, {
         key: 'handleElementChange',
         value: function handleElementChange(name, value) {
-            var _setState2;
+            var _setState3;
 
             if (isNaN(value)) {
                 this.setState({ errors: _defineProperty({}, name, ['Schedule value must be a number']) });
@@ -84751,7 +84775,7 @@ var ConnectedScheduleEdit = function (_Component) {
                     if (name != key) reschedulePoint[key] = key;
                 }
             }
-            this.setState((_setState2 = {}, _defineProperty(_setState2, name, update), _defineProperty(_setState2, 'reschedulePoint', reschedulePoint), _setState2));
+            this.setState((_setState3 = {}, _defineProperty(_setState3, name, update), _defineProperty(_setState3, 'reschedulePoint', reschedulePoint), _setState3));
 
             var lowest = '';
             for (var sched in reschedulePoint) {
@@ -84778,8 +84802,13 @@ var ConnectedScheduleEdit = function (_Component) {
             var _this3 = this;
 
             e.preventDefault();
+            var schedule = {};
+            for (var month in this.props.schedule) {
+                schedule[month] = this.state[month].value;
+            }
+            this.props.setSchedule(schedule);
             axios.post('/loans/scheduleupdate/' + this.props.match.params.id, {
-                schedule: JSON.stringify(this.props.schedule)
+                schedule: JSON.stringify(schedule)
             }).then(function (response) {
                 status = response.data.status;
                 if (status == 'failed') {
@@ -84853,11 +84882,9 @@ var ConnectedScheduleEdit = function (_Component) {
                                 preventUpdate: _this4.state[key]['preventUpdate']
                             });
                         }),
-                        this.state.saveFlag && __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                            'button',
-                            { type: 'submit', className: 'btn btn-primary btn-sm btn-block', onClick: this.handleSubmit },
-                            'Save'
-                        )
+                        this.state.saveFlag &&
+                        // <button type="submit" className="btn btn-primary btn-sm btn-block" onClick={this.handleSubmit}>Save</button>
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_5__commons_submit__["a" /* default */], { submitLabel: 'Save Schedule', cancelLabel: 'Undo Changes', onCancel: this.undoScheduleChanges })
                     ),
                     !this.state.scheduleReceived && __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                         'div',
