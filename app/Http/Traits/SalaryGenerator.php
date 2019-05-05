@@ -83,22 +83,15 @@ trait SalaryGenerator {
         }
         return ($daysInMonth - $deduction)/$daysInMonth;
     }
-
     private function loan_manager($id, $target_month){
         $loans = Loan::active()->where('salary_id', $id)->get();
         $loansum = 0;
         if(count($loans)>0){
-            $target_month = $target_month->endOfMonth();
+            $target = $target_month->format('Y-m');
             for($i=0;$i<count($loans);$i++){
-                $start =  Carbon::parse($loans[$i]->start_date);
-                $expiry = Carbon::parse($loans[$i]->end_date);
-                if($start->gt($target_month)) continue;
-                if($expiry->gt($target_month->copy()->startOfMonth()) && $expiry->lt($target_month->copy()->endOfMonth()))
-                    $inBetween = true;
-                else $inBetween = false;
-                if($expiry->gte($target_month) || $inBetween){
-                    $loansum += $loans[$i]->amount/$loans[$i]->tenure;
-                }
+                $sc = json_decode($loans[$i]->schedule);
+                if(isset($sc->$target))
+                    $loansum += $sc->$target;
             }
         }
         return $loansum;

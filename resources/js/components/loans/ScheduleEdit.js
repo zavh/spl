@@ -14,24 +14,27 @@ function mapStateToProps (state)
 
 function mapDispatchToProps(dispatch) {
     return {
-        // modActiveLoan: loans=> dispatch(modActiveLoan(loans)),
         setSchedule: loans=> dispatch(setSchedule(loans)),
      };
 }
+
 class ConnectedScheduleEdit extends Component {
+    
     constructor(props){
         super(props);
         this.state = {
             scheduleReceived:false,
             errors:{},
             reschedulePoint:{},
+            saveFlag:false,
         };
         this.handleSubmit  = this.handleSubmit.bind(this);
         this.onInsert  = this.onInsert.bind(this);
         this.handleCancel  = this.handleCancel.bind(this);
         this.handleElementChange  = this.handleElementChange.bind(this);
+        // this.scrollToBottom  = this.scrollToBottom.bind(this);
     }
-
+    
     onInsert(el){
         let loan = this.props.activeloans[this.props.match.params.index];
         let index=el.dataset.index;
@@ -67,7 +70,8 @@ class ConnectedScheduleEdit extends Component {
             this.setState({[month]:{value:schedule[month], preventUpdate:true}});
         }
         this.props.setSchedule(schedule);
-        this.setState({reschedulePoint:{}});
+        this.setState({reschedulePoint:{}, saveFlag:true});
+        // this.scrollToBottom(ref);
     }
 
     componentDidUpdate(prev){
@@ -139,13 +143,8 @@ class ConnectedScheduleEdit extends Component {
 
     handleSubmit(e){
         e.preventDefault();
-        axios.put(`/loans/${this.props.match.params.id}`, {
-            loan_name:this.state.loan_name,
-            amount:this.state.amount,
-            start_date:this.state.start_date,
-            tenure:this.state.tenure,
-            interest:this.state.interest,
-            loan_type:this.state.loan_type,
+        axios.post(`/loans/scheduleupdate/${this.props.match.params.id}`, {
+            schedule: JSON.stringify(this.props.schedule),
           })
           .then((response)=>{
             status = response.data.status;
@@ -165,6 +164,8 @@ class ConnectedScheduleEdit extends Component {
                     loan:response.data,
                 });
             }
+            else 
+                console.log(response.data);
           })
           .catch(function (error) {
             console.log(error);
@@ -175,41 +176,43 @@ class ConnectedScheduleEdit extends Component {
         e.preventDefault();
         this.props.history.push('/loans');
     }
-
+    // scrollToBottom(ref) {
+    //     ref.scrollIntoView({ behavior: 'smooth' })
+    //   }
     render() {
         return (
             <Card title='Loan Schedule'>
-            <div className='m-2' style={{maxHeight:'500px',overflow:'auto'}}>
-                { this.state.scheduleReceived &&
-                    <form onSubmit={this.handleSubmit} className='mx-4'>
-                        {Object.keys(this.props.schedule).map((key,index)=>{
-                            return(
-                                <SingleInput 
-                                    key={index}
-                                    onChange={this.handleElementChange}
-                                    value={this.state[key]['value']}
-                                    name={key} type='text'
-                                    labelSize='90px'
-                                    label={key}
-                                    errors={this.state.errors[key]}
-                                    onInsert={this.onInsert}
-                                    actionButton='Re-Schedule This'
-                                    preventUpdate={this.state[key]['preventUpdate']}
-                                    />
-                            )
-                        })}
-                    </form>
-                }
-                { !this.state.scheduleReceived && 
-                    <div>Loading</div>
-                }
-            </div>
+                <div className='m-2' style={{maxHeight:'500px',overflow:'auto'}}>
+                    { this.state.scheduleReceived &&
+                        <form onSubmit={this.handleSubmit} className='mx-4'>
+                            {Object.keys(this.props.schedule).map((key,index)=>{
+                                return(
+                                    <SingleInput 
+                                        key={index}
+                                        onChange={this.handleElementChange}
+                                        value={this.state[key]['value']}
+                                        name={key} type='text'
+                                        labelSize='110px'
+                                        label= {<React.Fragment><span>{key}</span> <span className='badge badge-pill badge-light border shadow-sm mx-2'> {index + 1}</span></React.Fragment>}
+                                        errors={this.state.errors[key]}
+                                        onInsert={this.onInsert}
+                                        actionButton='Re-Schedule This'
+                                        preventUpdate={this.state[key]['preventUpdate']}
+                                        />
+                                    )
+                                })}
+                                { this.state.saveFlag &&
+                                    <button type="submit" className="btn btn-primary btn-sm btn-block" onClick={this.handleSubmit}>Save</button>
+                                }
+                        </form>
+                    }
+                    { !this.state.scheduleReceived && 
+                        <div>Loading</div>
+                    }
+                </div>
             </Card>
         );
-    //   else 
-        // return();
     }
 }
-
 const ScheduleEdit = connect(mapStateToProps, mapDispatchToProps)(ConnectedScheduleEdit);
 export default ScheduleEdit;

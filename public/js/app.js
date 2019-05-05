@@ -84640,7 +84640,6 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        // modActiveLoan: loans=> dispatch(modActiveLoan(loans)),
         setSchedule: function setSchedule(loans) {
             return dispatch(Object(__WEBPACK_IMPORTED_MODULE_4__redux_actions_index__["d" /* setSchedule */])(loans));
         }
@@ -84658,12 +84657,14 @@ var ConnectedScheduleEdit = function (_Component) {
         _this.state = {
             scheduleReceived: false,
             errors: {},
-            reschedulePoint: {}
+            reschedulePoint: {},
+            saveFlag: false
         };
         _this.handleSubmit = _this.handleSubmit.bind(_this);
         _this.onInsert = _this.onInsert.bind(_this);
         _this.handleCancel = _this.handleCancel.bind(_this);
         _this.handleElementChange = _this.handleElementChange.bind(_this);
+        // this.scrollToBottom  = this.scrollToBottom.bind(this);
         return _this;
     }
 
@@ -84701,7 +84702,8 @@ var ConnectedScheduleEdit = function (_Component) {
                 this.setState(_defineProperty({}, month, { value: schedule[month], preventUpdate: true }));
             }
             this.props.setSchedule(schedule);
-            this.setState({ reschedulePoint: {} });
+            this.setState({ reschedulePoint: {}, saveFlag: true });
+            // this.scrollToBottom(ref);
         }
     }, {
         key: 'componentDidUpdate',
@@ -84776,13 +84778,8 @@ var ConnectedScheduleEdit = function (_Component) {
             var _this3 = this;
 
             e.preventDefault();
-            axios.put('/loans/' + this.props.match.params.id, {
-                loan_name: this.state.loan_name,
-                amount: this.state.amount,
-                start_date: this.state.start_date,
-                tenure: this.state.tenure,
-                interest: this.state.interest,
-                loan_type: this.state.loan_type
+            axios.post('/loans/scheduleupdate/' + this.props.match.params.id, {
+                schedule: JSON.stringify(this.props.schedule)
             }).then(function (response) {
                 status = response.data.status;
                 if (status == 'failed') {
@@ -84798,7 +84795,7 @@ var ConnectedScheduleEdit = function (_Component) {
                         index: _this3.props.match.params.index,
                         loan: response.data
                     });
-                }
+                } else console.log(response.data);
             }).catch(function (error) {
                 console.log(error);
             });
@@ -84809,6 +84806,10 @@ var ConnectedScheduleEdit = function (_Component) {
             e.preventDefault();
             this.props.history.push('/loans');
         }
+        // scrollToBottom(ref) {
+        //     ref.scrollIntoView({ behavior: 'smooth' })
+        //   }
+
     }, {
         key: 'render',
         value: function render() {
@@ -84829,14 +84830,34 @@ var ConnectedScheduleEdit = function (_Component) {
                                 onChange: _this4.handleElementChange,
                                 value: _this4.state[key]['value'],
                                 name: key, type: 'text',
-                                labelSize: '90px',
-                                label: key,
+                                labelSize: '110px',
+                                label: __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.Fragment,
+                                    null,
+                                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                        'span',
+                                        null,
+                                        key
+                                    ),
+                                    ' ',
+                                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                        'span',
+                                        { className: 'badge badge-pill badge-light border shadow-sm mx-2' },
+                                        ' ',
+                                        index + 1
+                                    )
+                                ),
                                 errors: _this4.state.errors[key],
                                 onInsert: _this4.onInsert,
                                 actionButton: 'Re-Schedule This',
                                 preventUpdate: _this4.state[key]['preventUpdate']
                             });
-                        })
+                        }),
+                        this.state.saveFlag && __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            'button',
+                            { type: 'submit', className: 'btn btn-primary btn-sm btn-block', onClick: this.handleSubmit },
+                            'Save'
+                        )
                     ),
                     !this.state.scheduleReceived && __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                         'div',
@@ -84845,8 +84866,6 @@ var ConnectedScheduleEdit = function (_Component) {
                     )
                 )
             );
-            //   else 
-            // return();
         }
     }]);
 

@@ -74,11 +74,9 @@ class LoansController extends Controller
             $currentmonth = date('n');
             if($currentmonth > 6){
                 $payyearstarts = date("Y-07-01");
-                // $payyearends = date("Y")+1;
             }
             else {
                 $payyearstarts = date("Y-m-d",mktime(0,0,0,7,1,(date("Y")-1)));
-                // $payyearends = date("Y");
             }
             $mapping = array();
             $pCarbon = Carbon::parse($payyearstarts);
@@ -137,6 +135,24 @@ class LoansController extends Controller
         return response()->json($response);
     }
 
+    private function getCurrentSalaryParams(){
+        $currentmonth = date('n');
+
+        if($currentmonth > 6){
+            $payyearstarts = date("Y-07-01");
+        }
+        else {
+            $payyearstarts = date("Y-m-d",mktime(0,0,0,7,1,(date("Y")-1)));
+        }
+        $mapping = array();
+        $pCarbon = Carbon::parse($payyearstarts);
+        for($i=0;$i<12;$i++){
+            $mapping[$pCarbon->format('Y-m')] = $i;
+            $pCarbon->addMonth();
+        }
+        $db_table_name = 'yearly_income_'.date('Y',strtotime($payyearstarts)).'_'.(date('Y',strtotime($payyearstarts))+1);
+        return ['db_table_name'=>$db_table_name, 'mapping'=>$mapping];
+    }
     /**
      * Display the specified resource.
      *
@@ -215,17 +231,24 @@ class LoansController extends Controller
         return response()->json($response);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    public function updateSchedule(Request $request, $id){
+        $loan = Loan::find($id);
+        $loan->schedule = $request->schedule;
+        $loan->save();
+        $salaryParams = $this->getCurrentSalaryParams();
+        $db_table_name = $salaryParams['db_table_name'];
+        if(Schema::hasTable($db_table_name)){
+            
+        }
+        $response['status'] = 'testing';
+        $response['data'] = $loan;
+        $response['salary_params'] = $salaryParams;
+        return response()->json($response);
+    }
+
     public function destroy($id)
     {
-        //
         $loan = Loan::find($id);
-        // dd($department);
         if($loan->delete())
         {
             return redirect('/loans')->with('success', 'Loan Deleted');

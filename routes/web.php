@@ -95,7 +95,7 @@ Route::get('/departments/getall', 'DepartmentsController@getDepartments');
 Route::get('/departments/users/{id}', 'DepartmentsController@getUsers');
 
 Route::get('/loans/active', 'LoansController@active');
-
+Route::post('/loans/scheduleupdate/{salary_id?}', 'LoansController@updateSchedule');
 
 Route::resource('clients','ClientsController');
 Route::resource('projects','ProjectsController');
