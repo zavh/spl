@@ -29,15 +29,18 @@ class ConnectedScheduleEdit extends Component {
             reschedulePoint:{},
             saveFlag:false,
             origschedule:{},
+            panelAlert:{message:'',type:''},
         };
         this.handleSubmit  = this.handleSubmit.bind(this);
         this.onInsert  = this.onInsert.bind(this);
         this.handleCancel  = this.handleCancel.bind(this);
         this.handleElementChange  = this.handleElementChange.bind(this);
         this.undoScheduleChanges = this.undoScheduleChanges.bind(this);
-        // this.scrollToBottom  = this.scrollToBottom.bind(this);
+        this.refreshMessage = this.refreshMessage.bind(this);
     }
-    
+    refreshMessage(){
+        this.setState({panelAlert:{message:'',type:''}});
+    }
     onInsert(el){
         let loan = this.props.activeloans[this.props.match.params.index];
         let index=el.dataset.index;
@@ -83,13 +86,14 @@ class ConnectedScheduleEdit extends Component {
             count++;
             this.setState({[month]:{value:schedule[month], preventUpdate:true}});
         }
-        if(Math.round(amount) != 0)
-            this.undoScheduleChanges()
+        if(Math.round(amount) != 0){
+            this.undoScheduleChanges();
+            this.setState({panelAlert:{message:'Error! Generating negative installment or incomplete schedule',type:'danger'}});
+        }   
         else {
             this.setState({reschedulePoint:{}, saveFlag:true});
             this.props.setSchedule(schedule);
         }
-        // this.scrollToBottom(ref);
     }
 
     undoScheduleChanges(){
@@ -203,44 +207,70 @@ class ConnectedScheduleEdit extends Component {
         e.preventDefault();
         this.props.history.push('/loans');
     }
-    // scrollToBottom(ref) {
-    //     ref.scrollIntoView({ behavior: 'smooth' })
-    //   }
     render() {
         return (
             <Card title='Loan Schedule'>
-                <div className='m-2' style={{maxHeight:'500px',overflow:'auto'}}>
-                    { this.state.scheduleReceived &&
-                        <form onSubmit={this.handleSubmit} className='mx-4'>
-                            {Object.keys(this.props.schedule).map((key,index)=>{
-                                return(
-                                    <SingleInput 
-                                        key={index}
-                                        onChange={this.handleElementChange}
-                                        value={this.state[key]['value']}
-                                        name={key} type='text'
-                                        labelSize='110px'
-                                        label= {<React.Fragment><span>{key}</span> <span className='badge badge-pill badge-light border shadow-sm mx-2'> {index + 1}</span></React.Fragment>}
-                                        errors={this.state.errors[key]}
-                                        onInsert={this.onInsert}
-                                        actionButton='Re-Schedule This'
-                                        preventUpdate={this.state[key]['preventUpdate']}
-                                        />
-                                    )
-                                })}
-                                { this.state.saveFlag &&
-                                    // <button type="submit" className="btn btn-primary btn-sm btn-block" onClick={this.handleSubmit}>Save</button>
-                                    <Submit submitLabel='Save Schedule' cancelLabel='Undo Changes' onCancel={this.undoScheduleChanges}/>
-                                }
-                        </form>
+                <form onSubmit={this.handleSubmit}>
+                    <div className='m-2' style={{maxHeight:'500px',overflow:'auto'}}>
+                        { this.state.scheduleReceived &&
+                            <React.Fragment>
+                                {Object.keys(this.props.schedule).map((key,index)=>{
+                                    return(
+                                        <SingleInput 
+                                            key={index}
+                                            onChange={this.handleElementChange}
+                                            value={this.state[key]['value']}
+                                            name={key} type='text'
+                                            labelSize='110px'
+                                            label= {<React.Fragment><span>{key}</span> <span className='badge badge-pill badge-light border shadow-sm mx-2'> {index + 1}</span></React.Fragment>}
+                                            errors={this.state.errors[key]}
+                                            onInsert={this.onInsert}
+                                            actionButton='Re-Schedule This'
+                                            preventUpdate={this.state[key]['preventUpdate']}
+                                            />
+                                        )
+                                    })}
+                            </React.Fragment>
+                        }
+                        { !this.state.scheduleReceived && 
+                            <div>Loading</div>
+                        }
+                    </div>
+                    { this.state.saveFlag &&
+                        <div className='mx-4 mt-1 mb-2'>
+                            <Submit submitLabel='Save Schedule' cancelLabel='Undo Changes' onCancel={this.undoScheduleChanges}/>
+                        </div>
                     }
-                    { !this.state.scheduleReceived && 
-                        <div>Loading</div>
-                    }
-                </div>
+                </form>
+                <Alert alert={this.state.panelAlert} refreshMessage={this.refreshMessage}/>
             </Card>
         );
     }
 }
 const ScheduleEdit = connect(mapStateToProps, mapDispatchToProps)(ConnectedScheduleEdit);
 export default ScheduleEdit;
+
+function Alert(props){
+    function refreshMessage(){
+        props.refreshMessage();
+    }
+    var styleType = '';
+    if(props.alert.type == '') return null;
+    if(props.alert.type == 'warning')
+        styleType = 'alert-warning'
+    if(props.alert.type == 'danger')
+        styleType = 'alert-danger'
+    if(props.alert.type == 'success')
+        styleType = 'alert-success'
+
+    return(
+        <div className={`alert ${styleType} mx-4 p-0`} role="alert">
+            <div className='d-flex justify-content-between'>
+                <span>{props.alert.message}</span>
+                <button type="button" className="btn btn-sm " onClick={refreshMessage}>
+                    <span>&times;</span>
+                </button>
+            </div>
+        </div>
+    );
+}

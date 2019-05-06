@@ -29,7 +29,7 @@ export default class LoanList extends Component {
 
     render() {
         return(
-            <Card title='Currently Running Loans'>
+            <Card title='Currently Active Loans'>
                 <Accordion accid='loansAccordion' data={this.props.loans} edit={this.handleEdit}/>
             </Card>
         );

@@ -71678,7 +71678,7 @@ var LoanList = function (_Component) {
         value: function render() {
             return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 __WEBPACK_IMPORTED_MODULE_1__commons_Card__["a" /* default */],
-                { title: 'Currently Running Loans' },
+                { title: 'Currently Active Loans' },
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__commons_Accordion__["a" /* default */], { accid: 'loansAccordion', data: this.props.loans, edit: this.handleEdit })
             );
         }
@@ -84661,18 +84661,24 @@ var ConnectedScheduleEdit = function (_Component) {
             errors: {},
             reschedulePoint: {},
             saveFlag: false,
-            origschedule: {}
+            origschedule: {},
+            panelAlert: { message: '', type: '' }
         };
         _this.handleSubmit = _this.handleSubmit.bind(_this);
         _this.onInsert = _this.onInsert.bind(_this);
         _this.handleCancel = _this.handleCancel.bind(_this);
         _this.handleElementChange = _this.handleElementChange.bind(_this);
         _this.undoScheduleChanges = _this.undoScheduleChanges.bind(_this);
-        // this.scrollToBottom  = this.scrollToBottom.bind(this);
+        _this.refreshMessage = _this.refreshMessage.bind(_this);
         return _this;
     }
 
     _createClass(ConnectedScheduleEdit, [{
+        key: 'refreshMessage',
+        value: function refreshMessage() {
+            this.setState({ panelAlert: { message: '', type: '' } });
+        }
+    }, {
         key: 'onInsert',
         value: function onInsert(el) {
             var loan = this.props.activeloans[this.props.match.params.index];
@@ -84717,11 +84723,13 @@ var ConnectedScheduleEdit = function (_Component) {
                 count++;
                 this.setState(_defineProperty({}, month, { value: schedule[month], preventUpdate: true }));
             }
-            if (Math.round(amount) != 0) this.undoScheduleChanges();else {
+            if (Math.round(amount) != 0) {
+                this.undoScheduleChanges();
+                this.setState({ panelAlert: { message: 'Error! Generating negative installment or incomplete schedule', type: 'danger' } });
+            } else {
                 this.setState({ reschedulePoint: {}, saveFlag: true });
                 this.props.setSchedule(schedule);
             }
-            // this.scrollToBottom(ref);
         }
     }, {
         key: 'undoScheduleChanges',
@@ -84835,10 +84843,6 @@ var ConnectedScheduleEdit = function (_Component) {
             e.preventDefault();
             this.props.history.push('/loans');
         }
-        // scrollToBottom(ref) {
-        //     ref.scrollIntoView({ behavior: 'smooth' })
-        //   }
-
     }, {
         key: 'render',
         value: function render() {
@@ -84848,50 +84852,57 @@ var ConnectedScheduleEdit = function (_Component) {
                 __WEBPACK_IMPORTED_MODULE_1__commons_Card__["a" /* default */],
                 { title: 'Loan Schedule' },
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                    'div',
-                    { className: 'm-2', style: { maxHeight: '500px', overflow: 'auto' } },
-                    this.state.scheduleReceived && __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                        'form',
-                        { onSubmit: this.handleSubmit, className: 'mx-4' },
-                        Object.keys(this.props.schedule).map(function (key, index) {
-                            return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__SingleInput__["a" /* default */], {
-                                key: index,
-                                onChange: _this4.handleElementChange,
-                                value: _this4.state[key]['value'],
-                                name: key, type: 'text',
-                                labelSize: '110px',
-                                label: __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.Fragment,
-                                    null,
-                                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                        'span',
-                                        null,
-                                        key
-                                    ),
-                                    ' ',
-                                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                        'span',
-                                        { className: 'badge badge-pill badge-light border shadow-sm mx-2' },
-                                        ' ',
-                                        index + 1
-                                    )
-                                ),
-                                errors: _this4.state.errors[key],
-                                onInsert: _this4.onInsert,
-                                actionButton: 'Re-Schedule This',
-                                preventUpdate: _this4.state[key]['preventUpdate']
-                            });
-                        }),
-                        this.state.saveFlag &&
-                        // <button type="submit" className="btn btn-primary btn-sm btn-block" onClick={this.handleSubmit}>Save</button>
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_5__commons_submit__["a" /* default */], { submitLabel: 'Save Schedule', cancelLabel: 'Undo Changes', onCancel: this.undoScheduleChanges })
-                    ),
-                    !this.state.scheduleReceived && __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'form',
+                    { onSubmit: this.handleSubmit },
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                         'div',
-                        null,
-                        'Loading'
+                        { className: 'm-2', style: { maxHeight: '500px', overflow: 'auto' } },
+                        this.state.scheduleReceived && __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.Fragment,
+                            null,
+                            Object.keys(this.props.schedule).map(function (key, index) {
+                                return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__SingleInput__["a" /* default */], {
+                                    key: index,
+                                    onChange: _this4.handleElementChange,
+                                    value: _this4.state[key]['value'],
+                                    name: key, type: 'text',
+                                    labelSize: '110px',
+                                    label: __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.Fragment,
+                                        null,
+                                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                            'span',
+                                            null,
+                                            key
+                                        ),
+                                        ' ',
+                                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                            'span',
+                                            { className: 'badge badge-pill badge-light border shadow-sm mx-2' },
+                                            ' ',
+                                            index + 1
+                                        )
+                                    ),
+                                    errors: _this4.state.errors[key],
+                                    onInsert: _this4.onInsert,
+                                    actionButton: 'Re-Schedule This',
+                                    preventUpdate: _this4.state[key]['preventUpdate']
+                                });
+                            })
+                        ),
+                        !this.state.scheduleReceived && __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            'div',
+                            null,
+                            'Loading'
+                        )
+                    ),
+                    this.state.saveFlag && __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        'div',
+                        { className: 'mx-4 mt-1 mb-2' },
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_5__commons_submit__["a" /* default */], { submitLabel: 'Save Schedule', cancelLabel: 'Undo Changes', onCancel: this.undoScheduleChanges })
                     )
-                )
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(Alert, { alert: this.state.panelAlert, refreshMessage: this.refreshMessage })
             );
         }
     }]);
@@ -84901,6 +84912,40 @@ var ConnectedScheduleEdit = function (_Component) {
 
 var ScheduleEdit = Object(__WEBPACK_IMPORTED_MODULE_2_react_redux__["b" /* connect */])(mapStateToProps, mapDispatchToProps)(ConnectedScheduleEdit);
 /* harmony default export */ __webpack_exports__["a"] = (ScheduleEdit);
+
+function Alert(props) {
+    function refreshMessage() {
+        props.refreshMessage();
+    }
+    var styleType = '';
+    if (props.alert.type == '') return null;
+    if (props.alert.type == 'warning') styleType = 'alert-warning';
+    if (props.alert.type == 'danger') styleType = 'alert-danger';
+    if (props.alert.type == 'success') styleType = 'alert-success';
+
+    return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+        'div',
+        { className: 'alert ' + styleType + ' mx-4 p-0', role: 'alert' },
+        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+            'div',
+            { className: 'd-flex justify-content-between' },
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'span',
+                null,
+                props.alert.message
+            ),
+            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                'button',
+                { type: 'button', className: 'btn btn-sm ', onClick: refreshMessage },
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'span',
+                    null,
+                    '\xD7'
+                )
+            )
+        )
+    );
+}
 
 /***/ }),
 /* 281 */
@@ -84975,7 +85020,7 @@ var SingleInput = function (_Component) {
             };
             return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 'div',
-                { className: 'form-group row my-1' },
+                { className: 'form-group row my-1 mx-2' },
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     'div',
                     { className: 'input-group input-group-sm col-md-12' },

@@ -271,13 +271,21 @@ class LoansController extends Controller
     }
 
     public function active(){
-        $loans = Loan::where('end_date', ">", date("Y-m-d"))->orderBy('id', 'desc')->get();
+        // $loans = Loan::where('end_date', ">", date("Y-m-d"))->orderBy('id', 'desc')->get();
+        $loans = Loan::where('active', 1)->orderBy('id', 'desc')->get();
         $response = [];
+        $activecount = 0;
         for($i=0;$i<count($loans);$i++){
-            $response[$i]['name'] = $loans[$i]->salary->user->name." - ".$loans[$i]->salary->user->fname." ".$loans[$i]->salary->user->sname;;
-            $response[$i]['id'] = $loans[$i]->id;
-            $response[$i]['params'] = array();
-            $response[$i]['params'] = $this->loanStatus($loans[$i], $response[$i]['params']);
+            if($loans[$i]->end_date < date("Y-m-d")){
+                $loans[$i]->active = 0;
+                $loans[$i]->save();
+                continue;
+            }
+            $response[$activecount]['name'] = $loans[$i]->salary->user->name." - ".$loans[$i]->salary->user->fname." ".$loans[$i]->salary->user->sname;;
+            $response[$activecount]['id'] = $loans[$i]->id;
+            $response[$activecount]['params'] = array();
+            $response[$activecount]['params'] = $this->loanStatus($loans[$i], $response[$i]['params']);
+            $activecount++;
         }
         return response()->json($response);
     }
