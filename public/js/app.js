@@ -69481,7 +69481,7 @@ var ConnectedLoanSPA = function (_Component) {
 
             return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 'div',
-                { className: 'container' },
+                { className: 'container-fluid' },
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     'div',
                     { className: 'row justify-content-between' },
@@ -69490,7 +69490,7 @@ var ConnectedLoanSPA = function (_Component) {
                         null,
                         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                             'div',
-                            { className: 'col-md-6 mb-2' },
+                            { className: 'col-md-8' },
                             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                                 __WEBPACK_IMPORTED_MODULE_4_react_router_dom__["d" /* Switch */],
                                 null,
@@ -69504,7 +69504,7 @@ var ConnectedLoanSPA = function (_Component) {
                         ),
                         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                             'div',
-                            { className: 'col-md-6 mb-2' },
+                            { className: 'col-md-4' },
                             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                                 __WEBPACK_IMPORTED_MODULE_4_react_router_dom__["d" /* Switch */],
                                 null,
@@ -71626,7 +71626,6 @@ function verifySubselectors(mapStateToProps, mapDispatchToProps, mergeProps, dis
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__commons_Card__ = __webpack_require__(27);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__commons_Accordion__ = __webpack_require__(147);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -71634,7 +71633,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
 
 
 
@@ -71660,7 +71658,9 @@ var LoanList = function (_Component) {
 
     _createClass(LoanList, [{
         key: 'handleEdit',
-        value: function handleEdit(id, index) {
+        value: function handleEdit(e) {
+            var id = e.target.dataset.id;
+            var index = e.target.dataset.index;
             this.props.history.push('/loans/edit/' + id + '/' + index);
         }
     }, {
@@ -71676,10 +71676,123 @@ var LoanList = function (_Component) {
     }, {
         key: 'render',
         value: function render() {
+            var _this2 = this;
+
             return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 __WEBPACK_IMPORTED_MODULE_1__commons_Card__["a" /* default */],
                 { title: 'Currently Active Loans' },
-                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__commons_Accordion__["a" /* default */], { accid: 'loansAccordion', data: this.props.loans, edit: this.handleEdit })
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'div',
+                    { className: 'm-2' },
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        'table',
+                        { className: 'table text-center table-hover table-striped table-bordered mb-0' },
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            'tbody',
+                            null,
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                'tr',
+                                null,
+                                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                    'th',
+                                    null,
+                                    'Employee Name'
+                                ),
+                                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                    'th',
+                                    null,
+                                    'Employee ID'
+                                ),
+                                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                    'th',
+                                    null,
+                                    'Loan ID'
+                                ),
+                                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                    'th',
+                                    null,
+                                    'Tenure'
+                                ),
+                                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                    'th',
+                                    null,
+                                    'Amount'
+                                ),
+                                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                    'th',
+                                    null,
+                                    'Start'
+                                ),
+                                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                    'th',
+                                    null,
+                                    'End'
+                                ),
+                                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                    'th',
+                                    null,
+                                    'Action'
+                                )
+                            ),
+                            this.props.loans.map(function (loan, index) {
+                                return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                    'tr',
+                                    { className: 'm-0 p-0', key: index },
+                                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                        'td',
+                                        { className: 'm-0 p-0' },
+                                        loan.name
+                                    ),
+                                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                        'td',
+                                        { className: 'm-0 p-0' },
+                                        loan.employee_id
+                                    ),
+                                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                        'td',
+                                        { className: 'm-0 p-0' },
+                                        loan.id
+                                    ),
+                                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                        'td',
+                                        { className: 'm-0 p-0' },
+                                        loan.tenure
+                                    ),
+                                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                        'td',
+                                        { className: 'm-0 p-0' },
+                                        loan.amount
+                                    ),
+                                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                        'td',
+                                        { className: 'm-0 p-0' },
+                                        loan.start_date
+                                    ),
+                                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                        'td',
+                                        { className: 'm-0 p-0' },
+                                        loan.end_date
+                                    ),
+                                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                        'td',
+                                        { className: 'm-0 p-0' },
+                                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                            'a',
+                                            {
+                                                href: 'javascript:void(0)',
+                                                onClick: _this2.handleEdit,
+                                                'data-id': loan.id,
+                                                'data-index': index,
+                                                className: 'text-dark'
+                                            },
+                                            'Details'
+                                        )
+                                    )
+                                );
+                            })
+                        )
+                    )
+                )
             );
         }
     }]);
@@ -71690,119 +71803,7 @@ var LoanList = function (_Component) {
 /* harmony default export */ __webpack_exports__["a"] = (LoanList);
 
 /***/ }),
-/* 147 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react__ = __webpack_require__(0);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_react___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_react__);
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-
-
-var Accordion = function (_Component) {
-    _inherits(Accordion, _Component);
-
-    function Accordion(props) {
-        _classCallCheck(this, Accordion);
-
-        var _this = _possibleConstructorReturn(this, (Accordion.__proto__ || Object.getPrototypeOf(Accordion)).call(this, props));
-
-        _this.renderParams = _this.renderParams.bind(_this);
-        _this.handleEdit = _this.handleEdit.bind(_this);
-        return _this;
-    }
-
-    _createClass(Accordion, [{
-        key: "renderParams",
-        value: function renderParams(params) {
-            var pList = Object.entries(params).map(function (_ref) {
-                var _ref2 = _slicedToArray(_ref, 2),
-                    key = _ref2[0],
-                    value = _ref2[1];
-
-                return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                    "div",
-                    { className: "small ml-4 mr-4 border-bottom text-success", key: key },
-                    key,
-                    " : ",
-                    value.toString()
-                );
-            });
-            return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                "div",
-                null,
-                pList
-            );
-        }
-    }, {
-        key: "handleEdit",
-        value: function handleEdit(e) {
-            this.props.edit(e.target.dataset.id, e.target.dataset.index);
-        }
-    }, {
-        key: "render",
-        value: function render() {
-            var _this2 = this;
-
-            return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                "div",
-                { className: "accordion", id: this.props.accid },
-                this.props.data.map(function (d, index) {
-                    return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                        "div",
-                        { id: "contact-item-" + index, key: index },
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                            "div",
-                            { className: "media text-muted", id: "heading" + index },
-                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                "div",
-                                { className: "media-body p-0 m-0 small lh-125" },
-                                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                    "div",
-                                    { className: "d-flex justify-content-between align-items-center w-100 border-bottom pr-2 bg-light" },
-                                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                        "button",
-                                        { className: "btn btn-link", type: "button", "data-toggle": "collapse", "data-target": "#collapse" + index, "aria-expanded": "false", "aria-controls": "collapse" + index },
-                                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                            "span",
-                                            { className: "small" },
-                                            d.name
-                                        )
-                                    ),
-                                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                                        "a",
-                                        { href: "javascript:void(0)", onClick: _this2.handleEdit, "data-id": d.id, "data-index": index },
-                                        "Edit"
-                                    )
-                                )
-                            )
-                        ),
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                            "div",
-                            { id: "collapse" + index, className: "collapse", "aria-labelledby": "heading" + index, "data-parent": "#" + _this2.props.accid },
-                            _this2.renderParams(d.params)
-                        )
-                    );
-                })
-            );
-        }
-    }]);
-
-    return Accordion;
-}(__WEBPACK_IMPORTED_MODULE_0_react__["Component"]);
-
-/* harmony default export */ __webpack_exports__["a"] = (Accordion);
-
-/***/ }),
+/* 147 */,
 /* 148 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -73253,7 +73254,8 @@ var ConnectedLoanEdit = function (_Component) {
         var _this = _possibleConstructorReturn(this, (ConnectedLoanEdit.__proto__ || Object.getPrototypeOf(ConnectedLoanEdit)).call(this, props));
 
         _this.state = {
-            user: '',
+            name: '',
+            employee_id: '',
             department: '',
             loan_name: '',
             amount: '',
@@ -73284,8 +73286,10 @@ var ConnectedLoanEdit = function (_Component) {
             var _this2 = this;
 
             __WEBPACK_IMPORTED_MODULE_5_axios___default.a.get('/loans/' + this.props.match.params.id + '/edit').then(function (response) {
+                var index = _this2.props.match.params.index;
                 _this2.setState({
-                    user: response.data.name,
+                    name: _this2.props.activeloans[index].name,
+                    employee_id: _this2.props.activeloans[index].employee_id,
                     department: response.data.department,
                     loan_name: response.data.data.loan_name,
                     amount: response.data.data.amount,
@@ -73378,17 +73382,18 @@ var ConnectedLoanEdit = function (_Component) {
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     'div',
                     { className: 'm-2' },
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4__commons_Readonly__["a" /* default */], { labelSize: '90px', label: 'Department', value: this.state.department }),
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4__commons_Readonly__["a" /* default */], { labelSize: '90px', label: 'Employee', value: this.state.user }),
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4__commons_Readonly__["a" /* default */], { labelSize: '120px', label: 'Department', value: this.state.department }),
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4__commons_Readonly__["a" /* default */], { labelSize: '120px', label: 'Employee ID', value: this.state.employee_id }),
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4__commons_Readonly__["a" /* default */], { labelSize: '120px', label: 'Employee Name', value: this.state.name }),
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                         'form',
                         { onSubmit: this.handleSubmit },
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__commons_Input__["a" /* default */], { onChange: this.handleElementChange, value: this.state.loan_name, name: 'loan_name', type: 'text', labelSize: '90px', label: 'Loan title', errors: this.state.errors.loan_name }),
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__commons_Input__["a" /* default */], { onChange: this.handleElementChange, value: this.state.amount, name: 'amount', type: 'number', labelSize: '90px', label: 'Amount', errors: this.state.errors.amount }),
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__commons_Input__["a" /* default */], { onChange: this.handleElementChange, value: this.state.start_date, name: 'start_date', type: 'date', labelSize: '90px', label: 'Start Date', errors: this.state.errors.start_date }),
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__commons_Input__["a" /* default */], { onChange: this.handleElementChange, value: this.state.tenure, name: 'tenure', type: 'number', labelSize: '90px', label: 'Tenure', errors: this.state.errors.tenure }),
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__commons_Input__["a" /* default */], { onChange: this.handleElementChange, value: this.state.interest, name: 'interest', type: 'text', labelSize: '90px', label: 'Interest Rate', errors: this.state.errors.interest }),
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__loantype__["a" /* default */], { onChange: this.handleLtpeChange, name: 'loan_type', selected: this.state.loan_type, labelSize: '90px', errors: this.state.errors.loan_type }),
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__commons_Input__["a" /* default */], { onChange: this.handleElementChange, value: this.state.loan_name, name: 'loan_name', type: 'text', labelSize: '120px', label: 'Loan title', errors: this.state.errors.loan_name }),
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__commons_Input__["a" /* default */], { onChange: this.handleElementChange, value: this.state.amount, name: 'amount', type: 'number', labelSize: '120px', label: 'Amount', errors: this.state.errors.amount }),
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__commons_Input__["a" /* default */], { onChange: this.handleElementChange, value: this.state.start_date, name: 'start_date', type: 'date', labelSize: '120px', label: 'Start Date', errors: this.state.errors.start_date }),
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__commons_Input__["a" /* default */], { onChange: this.handleElementChange, value: this.state.tenure, name: 'tenure', type: 'number', labelSize: '120px', label: 'Tenure', errors: this.state.errors.tenure }),
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__commons_Input__["a" /* default */], { onChange: this.handleElementChange, value: this.state.interest, name: 'interest', type: 'text', labelSize: '120px', label: 'Interest Rate', errors: this.state.errors.interest }),
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__loantype__["a" /* default */], { onChange: this.handleLtpeChange, name: 'loan_type', selected: this.state.loan_type, labelSize: '120px', errors: this.state.errors.loan_type }),
                         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__commons_submit__["a" /* default */], { submitLabel: 'Save', cancelLabel: 'Cancel Edit', onCancel: this.handleCancel })
                     )
                 )
@@ -84683,8 +84688,8 @@ var ConnectedScheduleEdit = function (_Component) {
         value: function onInsert(el) {
             var loan = this.props.activeloans[this.props.match.params.index];
             var index = el.dataset.index;
-            var amount = loan.params['Amount'];
-            var tenure = loan.params['Tenure'];
+            var amount = loan.amount;
+            var tenure = loan.tenure;
             var schedule = Object.assign({}, this.props.schedule);
 
             var manual_flag = false;

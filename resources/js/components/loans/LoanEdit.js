@@ -25,7 +25,8 @@ class ConnectedLoanEdit extends Component {
     constructor(props){
         super(props);
         this.state = {
-            user:'',
+            name:'',
+            employee_id:'',
             department:'',
             loan_name:'',
             amount:'',
@@ -52,8 +53,10 @@ class ConnectedLoanEdit extends Component {
     getLoan(){
         axios.get('/loans/'+this.props.match.params.id+'/edit')
             .then((response)=>{
+                let index = this.props.match.params.index;
                 this.setState({
-                    user:response.data.name,
+                    name:this.props.activeloans[index].name,
+                    employee_id:this.props.activeloans[index].employee_id,
                     department:response.data.department,
                     loan_name:response.data.data.loan_name,
                     amount:response.data.data.amount,
@@ -137,15 +140,16 @@ class ConnectedLoanEdit extends Component {
         return (
             <Card title='Edit Loan'>
             <div className='m-2'>
-                <Readonly labelSize='90px' label='Department' value={this.state.department}/>
-                <Readonly labelSize='90px' label='Employee' value={this.state.user}/>
+                <Readonly labelSize='120px' label='Department' value={this.state.department}/>
+                <Readonly labelSize='120px' label='Employee ID' value={this.state.employee_id}/>
+                <Readonly labelSize='120px' label='Employee Name' value={this.state.name}/>
                 <form onSubmit={this.handleSubmit}>
-                    <Input onChange={this.handleElementChange} value={this.state.loan_name}  name='loan_name'  type='text'   labelSize='90px' label='Loan title'  errors={this.state.errors.loan_name}/>
-                    <Input onChange={this.handleElementChange} value={this.state.amount}     name='amount'     type='number' labelSize='90px' label='Amount'      errors={this.state.errors.amount}/>
-                    <Input onChange={this.handleElementChange} value={this.state.start_date} name='start_date' type='date'   labelSize='90px' label='Start Date'  errors={this.state.errors.start_date}/>
-                    <Input onChange={this.handleElementChange} value={this.state.tenure}     name='tenure'     type='number' labelSize='90px' label='Tenure'      errors={this.state.errors.tenure}/>
-                    <Input onChange={this.handleElementChange} value={this.state.interest}   name='interest'   type='text' labelSize='90px' label='Interest Rate' errors={this.state.errors.interest}/>
-                    <LoanType onChange={this.handleLtpeChange} name='loan_type' selected={this.state.loan_type} labelSize='90px' errors={this.state.errors.loan_type} />
+                    <Input onChange={this.handleElementChange} value={this.state.loan_name}  name='loan_name'  type='text'   labelSize='120px' label='Loan title'  errors={this.state.errors.loan_name}/>
+                    <Input onChange={this.handleElementChange} value={this.state.amount}     name='amount'     type='number' labelSize='120px' label='Amount'      errors={this.state.errors.amount}/>
+                    <Input onChange={this.handleElementChange} value={this.state.start_date} name='start_date' type='date'   labelSize='120px' label='Start Date'  errors={this.state.errors.start_date}/>
+                    <Input onChange={this.handleElementChange} value={this.state.tenure}     name='tenure'     type='number' labelSize='120px' label='Tenure'      errors={this.state.errors.tenure}/>
+                    <Input onChange={this.handleElementChange} value={this.state.interest}   name='interest'   type='text' labelSize='120px' label='Interest Rate' errors={this.state.errors.interest}/>
+                    <LoanType onChange={this.handleLtpeChange} name='loan_type' selected={this.state.loan_type} labelSize='120px' errors={this.state.errors.loan_type} />
                     <Submit submitLabel='Save' cancelLabel='Cancel Edit' onCancel={this.handleCancel}/>
                 </form>
             </div>

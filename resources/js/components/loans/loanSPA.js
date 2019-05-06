@@ -34,10 +34,10 @@ class ConnectedLoanSPA extends Component {
 
     render() {
         return (
-            <div className="container">
+            <div className="container-fluid">
                 <div className="row justify-content-between">
                     <Router>
-                    <div className="col-md-6 mb-2">
+                    <div className="col-md-8">
                         
                             <Switch>
                                 <Route exact path="/loans" render={(props) =>  <LoanList {...props} loans={this.props.activeloans}/>} />
@@ -45,7 +45,7 @@ class ConnectedLoanSPA extends Component {
                             </Switch>
                                   
                     </div>
-                    <div className="col-md-6 mb-2">
+                    <div className="col-md-4">
                         
                             <Switch>
                                 <Route exact path="/loans" component={Create}/>

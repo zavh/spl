@@ -44,8 +44,8 @@ class ConnectedScheduleEdit extends Component {
     onInsert(el){
         let loan = this.props.activeloans[this.props.match.params.index];
         let index=el.dataset.index;
-        let amount = loan.params['Amount'];
-        let tenure = loan.params['Tenure'];
+        let amount = loan.amount;
+        let tenure = loan.tenure;
         let schedule = Object.assign({}, this.props.schedule);
         
         let manual_flag = false;

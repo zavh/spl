@@ -86,7 +86,8 @@ class LoansController extends Controller
             }
             
             $start_date = date("Y-m-01", strtotime($request->start_date));
-            $end_date = date("Y-m-t", strtotime("+$tenure months",strtotime($start_date)));
+            $t = $tenure - 1;
+            $end_date = date("Y-m-t", strtotime("+$t months",strtotime($start_date)));
 
             $month = Carbon::parse($start_date);
             $addloan = array();
@@ -109,15 +110,13 @@ class LoansController extends Controller
                 ]);
 
             $response['status'] = 'success';
-            $response['loan']['name'] = $loanCreate->salary->user->name." - ".$loanCreate->salary->user->fname." ".$loanCreate->salary->user->sname;
+            $response['loan']['name'] = $loanCreate->salary->user->fname." ".$loanCreate->salary->user->sname;
+            $response['loan']['employee_id'] = $loanCreate->salary->user->name;
             $response['loan']['id'] = $loanCreate->id;
-            $response['loan']['params']['Loan Title'] = $loanCreate->loan_name;
-            $response['loan']['params']['Amount'] = $loanCreate->amount;
-            $response['loan']['params']['Start Date'] = $loanCreate->start_date;
-            $response['loan']['params']['End Date'] = $loanCreate->end_date;
-            $response['loan']['params']['Tenure'] = $loanCreate->tenure;
-            $response['loan']['params']['Interest'] = $loanCreate->interest;
-            $response['loan']['params']['Lone Type'] = $loanCreate->loan_type;
+            $response['loan']['amount'] = $loanCreate->amount;
+            $response['loan']['start_date'] = $loanCreate->start_date;
+            $response['loan']['end_date'] = $loanCreate->end_date;
+            $response['loan']['tenure'] = $loanCreate->tenure;
             $response['loan']['schedule'] = $schedule;
             if(count($addloan) > 0){
                 $user_id = $salary->user->id;
@@ -175,7 +174,6 @@ class LoansController extends Controller
     {
         $loan = Loan::find($id);
         $response['department'] = $loan->salary->user->department->name;
-        $response['name'] = "Employee ID : ".$loan->salary->user->name." | Employee Name : ".$loan->salary->user->fname." ".$loan->salary->user->sname;
         $response['data'] = $loan;
         return response()->json($response);
     }
@@ -281,10 +279,15 @@ class LoansController extends Controller
                 $loans[$i]->save();
                 continue;
             }
-            $response[$activecount]['name'] = $loans[$i]->salary->user->name." - ".$loans[$i]->salary->user->fname." ".$loans[$i]->salary->user->sname;;
+            $response[$activecount]['name'] = $loans[$i]->salary->user->fname." ".$loans[$i]->salary->user->sname;
+            $response[$activecount]['employee_id'] = $loans[$i]->salary->user->name;
             $response[$activecount]['id'] = $loans[$i]->id;
-            $response[$activecount]['params'] = array();
-            $response[$activecount]['params'] = $this->loanStatus($loans[$i], $response[$i]['params']);
+            $response[$activecount]['tenure'] = $loans[$i]->tenure;
+            $response[$activecount]['amount'] = $loans[$i]->amount;
+            $response[$activecount]['start_date'] = $loans[$i]->start_date;
+            $response[$activecount]['end_date'] = $loans[$i]->end_date;
+            // $response[$activecount]['params'] = array();
+            // $response[$activecount]['params'] = $this->loanStatus($loans[$i], $response[$i]['params']);
             $activecount++;
         }
         return response()->json($response);
