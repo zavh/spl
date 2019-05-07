@@ -95,7 +95,9 @@ Route::get('/departments/getall', 'DepartmentsController@getDepartments');
 Route::get('/departments/users/{id}', 'DepartmentsController@getUsers');
 
 Route::get('/loans/active', 'LoansController@active');
-Route::post('/loans/scheduleupdate/{salary_id?}', 'LoansController@updateSchedule');
+
+Route::redirect('/loans/edit/{id?}/{index?}', '/loans');
+Route::post('/loans/scheduleupdate/{salary_id?}', 'LoansController@updatedSchedule');
 
 Route::resource('clients','ClientsController');
 Route::resource('projects','ProjectsController');
@@ -110,7 +112,7 @@ Route::resource('reports', 'ReportsController');
 Route::resource('products','ProductsController');
 Route::resource('salarystructures','SalarystructuresController');
 Route::resource('salaries','SalariesController');
-Route::resource('loans','LoansController');
+Route::resource('loans','LoansController')->except('create');
 Route::resource('appmodules','AppModulesController')->only(['index']);
 Route::resource('quotations','QuotationsController')->except('create');
 Route::resource('configurations','ConfigurationsController')->except('show');

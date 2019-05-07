@@ -43,16 +43,19 @@ class ConnectedLoanEdit extends Component {
                 loan_type:[],
             },
             editErrorState:false,
+            loan_status:{},
         };
         this.handleLtpeChange  = this.handleLtpeChange.bind(this);
         this.handleSubmit  = this.handleSubmit.bind(this);
         this.handleCancel  = this.handleCancel.bind(this);
         this.handleElementChange  = this.handleElementChange.bind(this);
+        this.handleDelete  = this.handleDelete.bind(this);
     }
 
     getLoan(){
         axios.get('/loans/'+this.props.match.params.id+'/edit')
             .then((response)=>{
+                console.log(response);
                 let index = this.props.match.params.index;
                 this.setState({
                     name:this.props.activeloans[index].name,
@@ -64,6 +67,7 @@ class ConnectedLoanEdit extends Component {
                     tenure:response.data.data.tenure,
                     interest:response.data.data.interest,
                     loan_type:response.data.data.loan_type,
+                    loan_status:response.data.loan_status,
                 })
                 this.props.setSchedule( JSON.parse(response.data.data.schedule));
             }
@@ -84,6 +88,16 @@ class ConnectedLoanEdit extends Component {
         this.setState({loan_type:value})
     }
 
+    handleDelete(){
+        axios.delete(`/loans/${this.props.match.params.id}`)
+        .then((response)=>{
+            console.log(response);
+        })
+        .catch(function (error) {
+            console.log(error);
+          });
+    }
+    
     handleSubmit(e){
         e.preventDefault();
         if(this.state.editErrorState)
@@ -138,22 +152,52 @@ class ConnectedLoanEdit extends Component {
 
     render() {
         return (
-            <Card title='Edit Loan'>
-            <div className='m-2'>
-                <Readonly labelSize='120px' label='Department' value={this.state.department}/>
-                <Readonly labelSize='120px' label='Employee ID' value={this.state.employee_id}/>
-                <Readonly labelSize='120px' label='Employee Name' value={this.state.name}/>
-                <form onSubmit={this.handleSubmit}>
-                    <Input onChange={this.handleElementChange} value={this.state.loan_name}  name='loan_name'  type='text'   labelSize='120px' label='Loan title'  errors={this.state.errors.loan_name}/>
-                    <Input onChange={this.handleElementChange} value={this.state.amount}     name='amount'     type='number' labelSize='120px' label='Amount'      errors={this.state.errors.amount}/>
-                    <Input onChange={this.handleElementChange} value={this.state.start_date} name='start_date' type='date'   labelSize='120px' label='Start Date'  errors={this.state.errors.start_date}/>
-                    <Input onChange={this.handleElementChange} value={this.state.tenure}     name='tenure'     type='number' labelSize='120px' label='Tenure'      errors={this.state.errors.tenure}/>
-                    <Input onChange={this.handleElementChange} value={this.state.interest}   name='interest'   type='text' labelSize='120px' label='Interest Rate' errors={this.state.errors.interest}/>
-                    <LoanType onChange={this.handleLtpeChange} name='loan_type' selected={this.state.loan_type} labelSize='120px' errors={this.state.errors.loan_type} />
-                    <Submit submitLabel='Save' cancelLabel='Cancel Edit' onCancel={this.handleCancel}/>
-                </form>
+            <div className="row justify-content-between">
+                <div className="col-md-6">
+                    <Card title='Loan Status'>
+                        <table className='table'>
+                            <tbody>
+                                {Object.keys(this.state.loan_status).map((key,index)=>{
+                                    return(
+                                        <tr key={index}>
+                                            <td className='p-0'><span className='mx-2'>{key}</span></td><td className='p-0'>{this.state.loan_status[key]}</td>
+                                        </tr>
+                                    )
+                                })}
+                            </tbody>
+                        </table>
+                        <div className='row m-4'>
+                            <div className="col-4 m-0 pr-1">
+                                <button type="button" className="btn btn-outline-primary btn-sm btn-block">Deactivate</button>
+                            </div>
+                            <div className="col-4 m-0 pr-1">
+                                <button type="button" className="btn btn-outline-primary btn-sm btn-block" onClick={this.handleDelete}>Delete</button>
+                            </div>
+                            <div className="col-4 m-0 pr-1">
+                                <button type="button" className="btn btn-outline-primary btn-sm btn-block">Go Back</button>
+                            </div>
+                        </div>
+                    </Card>
+                </div>
+                <div className="col-md-6">
+                    <Card title='Edit Loan'>
+                        <div className='m-2'>
+                            <Readonly labelSize='120px' label='Department' value={this.state.department}/>
+                            <Readonly labelSize='120px' label='Employee ID' value={this.state.employee_id}/>
+                            <Readonly labelSize='120px' label='Employee Name' value={this.state.name}/>
+                            <form onSubmit={this.handleSubmit}>
+                                <Input onChange={this.handleElementChange} value={this.state.loan_name}  name='loan_name'  type='text'   labelSize='120px' label='Loan title'  errors={this.state.errors.loan_name}/>
+                                <Input onChange={this.handleElementChange} value={this.state.amount}     name='amount'     type='number' labelSize='120px' label='Amount'      errors={this.state.errors.amount}/>
+                                <Input onChange={this.handleElementChange} value={this.state.start_date} name='start_date' type='date'   labelSize='120px' label='Start Date'  errors={this.state.errors.start_date}/>
+                                <Input onChange={this.handleElementChange} value={this.state.tenure}     name='tenure'     type='number' labelSize='120px' label='Tenure'      errors={this.state.errors.tenure}/>
+                                <Input onChange={this.handleElementChange} value={this.state.interest}   name='interest'   type='text' labelSize='120px' label='Interest Rate' errors={this.state.errors.interest}/>
+                                <LoanType onChange={this.handleLtpeChange} name='loan_type' selected={this.state.loan_type} labelSize='120px' errors={this.state.errors.loan_type} />
+                                <Submit submitLabel='Save' cancelLabel='Cancel Edit' onCancel={this.handleCancel}/>
+                            </form>
+                        </div>
+                    </Card>
+                </div>
             </div>
-            </Card>
         );
     }
 }

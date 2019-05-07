@@ -71689,7 +71689,7 @@ var LoanList = function (_Component) {
                         { className: 'table text-center table-hover table-striped table-bordered mb-0' },
                         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                             'tbody',
-                            null,
+                            { className: 'small' },
                             __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                                 'tr',
                                 null,
@@ -73271,12 +73271,14 @@ var ConnectedLoanEdit = function (_Component) {
                 interest: [],
                 loan_type: []
             },
-            editErrorState: false
+            editErrorState: false,
+            loan_status: {}
         };
         _this.handleLtpeChange = _this.handleLtpeChange.bind(_this);
         _this.handleSubmit = _this.handleSubmit.bind(_this);
         _this.handleCancel = _this.handleCancel.bind(_this);
         _this.handleElementChange = _this.handleElementChange.bind(_this);
+        _this.handleDelete = _this.handleDelete.bind(_this);
         return _this;
     }
 
@@ -73286,6 +73288,7 @@ var ConnectedLoanEdit = function (_Component) {
             var _this2 = this;
 
             __WEBPACK_IMPORTED_MODULE_5_axios___default.a.get('/loans/' + this.props.match.params.id + '/edit').then(function (response) {
+                console.log(response);
                 var index = _this2.props.match.params.index;
                 _this2.setState({
                     name: _this2.props.activeloans[index].name,
@@ -73296,7 +73299,8 @@ var ConnectedLoanEdit = function (_Component) {
                     start_date: response.data.data.start_date,
                     tenure: response.data.data.tenure,
                     interest: response.data.data.interest,
-                    loan_type: response.data.data.loan_type
+                    loan_type: response.data.data.loan_type,
+                    loan_status: response.data.loan_status
                 });
                 _this2.props.setSchedule(JSON.parse(response.data.data.schedule));
             });
@@ -73320,6 +73324,15 @@ var ConnectedLoanEdit = function (_Component) {
         key: 'handleLtpeChange',
         value: function handleLtpeChange(value) {
             this.setState({ loan_type: value });
+        }
+    }, {
+        key: 'handleDelete',
+        value: function handleDelete() {
+            __WEBPACK_IMPORTED_MODULE_5_axios___default.a.delete('/loans/' + this.props.match.params.id).then(function (response) {
+                console.log(response);
+            }).catch(function (error) {
+                console.log(error);
+            });
         }
     }, {
         key: 'handleSubmit',
@@ -73376,25 +73389,102 @@ var ConnectedLoanEdit = function (_Component) {
     }, {
         key: 'render',
         value: function render() {
+            var _this4 = this;
+
             return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                __WEBPACK_IMPORTED_MODULE_6__commons_Card__["a" /* default */],
-                { title: 'Edit Loan' },
+                'div',
+                { className: 'row justify-content-between' },
                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                     'div',
-                    { className: 'm-2' },
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4__commons_Readonly__["a" /* default */], { labelSize: '120px', label: 'Department', value: this.state.department }),
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4__commons_Readonly__["a" /* default */], { labelSize: '120px', label: 'Employee ID', value: this.state.employee_id }),
-                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4__commons_Readonly__["a" /* default */], { labelSize: '120px', label: 'Employee Name', value: this.state.name }),
+                    { className: 'col-md-6' },
                     __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
-                        'form',
-                        { onSubmit: this.handleSubmit },
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__commons_Input__["a" /* default */], { onChange: this.handleElementChange, value: this.state.loan_name, name: 'loan_name', type: 'text', labelSize: '120px', label: 'Loan title', errors: this.state.errors.loan_name }),
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__commons_Input__["a" /* default */], { onChange: this.handleElementChange, value: this.state.amount, name: 'amount', type: 'number', labelSize: '120px', label: 'Amount', errors: this.state.errors.amount }),
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__commons_Input__["a" /* default */], { onChange: this.handleElementChange, value: this.state.start_date, name: 'start_date', type: 'date', labelSize: '120px', label: 'Start Date', errors: this.state.errors.start_date }),
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__commons_Input__["a" /* default */], { onChange: this.handleElementChange, value: this.state.tenure, name: 'tenure', type: 'number', labelSize: '120px', label: 'Tenure', errors: this.state.errors.tenure }),
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__commons_Input__["a" /* default */], { onChange: this.handleElementChange, value: this.state.interest, name: 'interest', type: 'text', labelSize: '120px', label: 'Interest Rate', errors: this.state.errors.interest }),
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__loantype__["a" /* default */], { onChange: this.handleLtpeChange, name: 'loan_type', selected: this.state.loan_type, labelSize: '120px', errors: this.state.errors.loan_type }),
-                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__commons_submit__["a" /* default */], { submitLabel: 'Save', cancelLabel: 'Cancel Edit', onCancel: this.handleCancel })
+                        __WEBPACK_IMPORTED_MODULE_6__commons_Card__["a" /* default */],
+                        { title: 'Loan Status' },
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            'table',
+                            { className: 'table' },
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                'tbody',
+                                null,
+                                Object.keys(this.state.loan_status).map(function (key, index) {
+                                    return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                        'tr',
+                                        { key: index },
+                                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                            'td',
+                                            { className: 'p-0' },
+                                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                                'span',
+                                                { className: 'mx-2' },
+                                                key
+                                            )
+                                        ),
+                                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                            'td',
+                                            { className: 'p-0' },
+                                            _this4.state.loan_status[key]
+                                        )
+                                    );
+                                })
+                            )
+                        ),
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            'div',
+                            { className: 'row m-4' },
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                'div',
+                                { className: 'col-4 m-0 pr-1' },
+                                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                    'button',
+                                    { type: 'button', className: 'btn btn-outline-primary btn-sm btn-block' },
+                                    'Deactivate'
+                                )
+                            ),
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                'div',
+                                { className: 'col-4 m-0 pr-1' },
+                                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                    'button',
+                                    { type: 'button', className: 'btn btn-outline-primary btn-sm btn-block', onClick: this.handleDelete },
+                                    'Delete'
+                                )
+                            ),
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                'div',
+                                { className: 'col-4 m-0 pr-1' },
+                                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                    'button',
+                                    { type: 'button', className: 'btn btn-outline-primary btn-sm btn-block' },
+                                    'Go Back'
+                                )
+                            )
+                        )
+                    )
+                ),
+                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                    'div',
+                    { className: 'col-md-6' },
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        __WEBPACK_IMPORTED_MODULE_6__commons_Card__["a" /* default */],
+                        { title: 'Edit Loan' },
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            'div',
+                            { className: 'm-2' },
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4__commons_Readonly__["a" /* default */], { labelSize: '120px', label: 'Department', value: this.state.department }),
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4__commons_Readonly__["a" /* default */], { labelSize: '120px', label: 'Employee ID', value: this.state.employee_id }),
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_4__commons_Readonly__["a" /* default */], { labelSize: '120px', label: 'Employee Name', value: this.state.name }),
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                                'form',
+                                { onSubmit: this.handleSubmit },
+                                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__commons_Input__["a" /* default */], { onChange: this.handleElementChange, value: this.state.loan_name, name: 'loan_name', type: 'text', labelSize: '120px', label: 'Loan title', errors: this.state.errors.loan_name }),
+                                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__commons_Input__["a" /* default */], { onChange: this.handleElementChange, value: this.state.amount, name: 'amount', type: 'number', labelSize: '120px', label: 'Amount', errors: this.state.errors.amount }),
+                                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__commons_Input__["a" /* default */], { onChange: this.handleElementChange, value: this.state.start_date, name: 'start_date', type: 'date', labelSize: '120px', label: 'Start Date', errors: this.state.errors.start_date }),
+                                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__commons_Input__["a" /* default */], { onChange: this.handleElementChange, value: this.state.tenure, name: 'tenure', type: 'number', labelSize: '120px', label: 'Tenure', errors: this.state.errors.tenure }),
+                                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_1__commons_Input__["a" /* default */], { onChange: this.handleElementChange, value: this.state.interest, name: 'interest', type: 'text', labelSize: '120px', label: 'Interest Rate', errors: this.state.errors.interest }),
+                                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_3__loantype__["a" /* default */], { onChange: this.handleLtpeChange, name: 'loan_type', selected: this.state.loan_type, labelSize: '120px', errors: this.state.errors.loan_type }),
+                                __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(__WEBPACK_IMPORTED_MODULE_2__commons_submit__["a" /* default */], { submitLabel: 'Save', cancelLabel: 'Cancel Edit', onCancel: this.handleCancel })
+                            )
+                        )
                     )
                 )
             );

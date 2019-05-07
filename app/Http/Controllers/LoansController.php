@@ -27,22 +27,6 @@ class LoansController extends Controller
         return view('loans.index');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {   
         $salary = Salary::find($request->salary_id);
@@ -134,15 +118,13 @@ class LoansController extends Controller
         return response()->json($response);
     }
 
-    private function getCurrentSalaryParams(){
-        $currentmonth = date('n');
+    private function getCurrentSalaryParams($tdate){
+        $currentmonth = date('n',strtotime($tdate));
+        $currentyear = date('Y',strtotime($tdate));
 
-        if($currentmonth > 6){
-            $payyearstarts = date("Y-07-01");
-        }
-        else {
-            $payyearstarts = date("Y-m-d",mktime(0,0,0,7,1,(date("Y")-1)));
-        }
+        if($currentmonth < 7) $currentyear = $currentyear - 1;
+        $payyearstarts = "$currentyear-07-01";
+        
         $mapping = array();
         $pCarbon = Carbon::parse($payyearstarts);
         for($i=0;$i<12;$i++){
@@ -152,16 +134,12 @@ class LoansController extends Controller
         $db_table_name = 'yearly_income_'.date('Y',strtotime($payyearstarts)).'_'.(date('Y',strtotime($payyearstarts))+1);
         return ['db_table_name'=>$db_table_name, 'mapping'=>$mapping];
     }
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function show($id)
     {
-        //
+
         $loan = Loan::find($id);
+        return response()->json($loan);
     }
 
     /**
@@ -175,6 +153,7 @@ class LoansController extends Controller
         $loan = Loan::find($id);
         $response['department'] = $loan->salary->user->department->name;
         $response['data'] = $loan;
+        $response['loan_status'] = $this->loanStatus($loan);
         return response()->json($response);
     }
 
@@ -229,11 +208,11 @@ class LoansController extends Controller
         return response()->json($response);
     }
 
-    public function updateSchedule(Request $request, $id){
+    public function updatedSchedule(Request $request, $id){
         $loan = Loan::find($id);
         $oldschedule = json_decode($loan->schedule);
         $newschdule = json_decode($request->schedule);
-        $salaryParams = $this->getCurrentSalaryParams();
+        $salaryParams = $this->getCurrentSalaryParams(date("Y-m-d"));
         $db_table_name = $salaryParams['db_table_name'];
         $mapping = $salaryParams['mapping'];
         if(Schema::hasTable($db_table_name)){
@@ -261,15 +240,43 @@ class LoansController extends Controller
     public function destroy($id)
     {
         $loan = Loan::find($id);
-        if($loan->delete())
-        {
-            return redirect('/loans')->with('success', 'Loan Deleted');
+        // if($loan->delete())
+        $schedule = json_decode($loan->schedule, true);
+        $sycount = 0;
+        $scarr = [];
+        $endofarr = '';
+        //Determining stopvar so that future years are excluded
+        $t = $this->getCurrentSalaryParams(date('Y-m-d'));
+        $stopvar = date('Y-m',strtotime('+1 month', strtotime($this->endofarr($t['mapping']).'-01')));
+        
+        foreach($schedule as $month=>$value){
+            if($month == $stopvar) break;
+            if(isset($scarr[$sycount])){
+                $scarr[$sycount]['schedule'][$month] = $value;
+                if($month == $endofarr) $sycount++;
+            }
+            else {
+                $scarr[$sycount] = array();
+                $scarr[$sycount]['db'] = $this->getCurrentSalaryParams($month.'-01');
+                $scarr[$sycount]['schedule'][$month] = $value;
+                $endofarr = $this->endofarr($scarr[$sycount]['db']['mapping']);
+            }
+            
         }
-        return back()->withInput()->with('error', 'Loan could not be deleted');
+
+        return response()->json($scarr);
     }
 
+    private function endofarr( $array ) {
+        $key = NULL;
+        if ( is_array( $array ) ) {
+            end( $array );
+            $key = key( $array );
+        }
+        return $key;
+    }
+    
     public function active(){
-        // $loans = Loan::where('end_date', ">", date("Y-m-d"))->orderBy('id', 'desc')->get();
         $loans = Loan::where('active', 1)->orderBy('id', 'desc')->get();
         $response = [];
         $activecount = 0;
@@ -286,30 +293,38 @@ class LoansController extends Controller
             $response[$activecount]['amount'] = $loans[$i]->amount;
             $response[$activecount]['start_date'] = $loans[$i]->start_date;
             $response[$activecount]['end_date'] = $loans[$i]->end_date;
-            // $response[$activecount]['params'] = array();
-            // $response[$activecount]['params'] = $this->loanStatus($loans[$i], $response[$i]['params']);
             $activecount++;
         }
         return response()->json($response);
     }
 
-    private function loanStatus($loan, $status){
+    private function loanStatus($loan){
         $to = Carbon::createFromFormat('Y-m-d', date('Y-m-01',strtotime($loan->start_date)));
         $from = Carbon::createFromFormat('Y-m-d', date('Y-m-01'));
+        $schedules = json_decode($loan->schedule, true);
+        $paid_amount = 0;
+        $stop = $from->format("Y-m");
+        foreach($schedules as $month=>$value){
+            if($month != $stop)
+                $paid_amount += $value;
+            else break;
+        }
 
-        $months_passed = $to->diffInMonths($from);
+        $months_passed = $from->diffInMonths($to);
         $status['Loan Title'] = $loan->loan_name;
         $status['Loan Type'] = $loan->loan_type;
         $status['Interest Rate'] = $loan->interest;
         $status['Amount'] = $loan->amount;
         $status['Tenure'] = $loan->tenure;
+        $status['Altered Tenure'] = count($schedules);
         $status['Monthly Installment Amount'] = round($loan->amount/$loan->tenure, 2);
         $status['Start Date'] = $loan->start_date;
         $status['End Date'] = $loan->end_date;
         $status['Installments Paid'] = $months_passed;
         $status['Installments Remaining'] = $loan->tenure - $months_passed;
-        $status['Paid Amount'] = $months_passed * $status['Monthly Installment Amount'];
-        $status['Remaining Amount'] = $loan->amount - $status['Paid Amount'];
+        $status['Should Pay'] = number_format(($months_passed * $status['Monthly Installment Amount']),0);
+        $status['Paid Amount'] = number_format($paid_amount,0);
+        $status['Remaining Amount'] = number_format(($loan->amount - $paid_amount), 0);
 
         return $status;
     }
