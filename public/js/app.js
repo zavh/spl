@@ -73208,7 +73208,10 @@ module.exports = Array.isArray || function (arr) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__commons_Card__ = __webpack_require__(27);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_react_redux__ = __webpack_require__(8);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__redux_actions_index__ = __webpack_require__(59);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__codes_index__ = __webpack_require__(282);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
@@ -73241,6 +73244,9 @@ function mapDispatchToProps(dispatch) {
         },
         setSchedule: function setSchedule(loans) {
             return dispatch(Object(__WEBPACK_IMPORTED_MODULE_8__redux_actions_index__["d" /* setSchedule */])(loans));
+        },
+        setActiveLoans: function setActiveLoans(loans) {
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_8__redux_actions_index__["c" /* setActiveLoans */])(loans));
         }
     };
 }
@@ -73328,16 +73334,29 @@ var ConnectedLoanEdit = function (_Component) {
     }, {
         key: 'handleDelete',
         value: function handleDelete() {
-            __WEBPACK_IMPORTED_MODULE_5_axios___default.a.delete('/loans/' + this.props.match.params.id).then(function (response) {
-                console.log(response);
-            }).catch(function (error) {
-                console.log(error);
-            });
+            var _this3 = this;
+
+            var c = confirm(__WEBPACK_IMPORTED_MODULE_9__codes_index__["a" /* C101 */]);
+            if (c) {
+                __WEBPACK_IMPORTED_MODULE_5_axios___default.a.delete('/loans/' + this.props.match.params.id).then(function (response) {
+                    if (response.data.status == 'success') {
+                        var loans = [].concat(_toConsumableArray(_this3.props.activeloans));
+                        var index = parseInt(_this3.props.match.params.index);
+                        var firstslice = loans.slice(0, index);
+                        var secondslice = loans.slice(index + 1);
+                        var result = firstslice.concat(secondslice);
+                        _this3.props.setActiveLoans(result);
+                        _this3.props.history.push('/loans');
+                    }
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            }
         }
     }, {
         key: 'handleSubmit',
         value: function handleSubmit(e) {
-            var _this3 = this;
+            var _this4 = this;
 
             e.preventDefault();
             if (this.state.editErrorState) this.clearErrorBag();
@@ -73353,16 +73372,16 @@ var ConnectedLoanEdit = function (_Component) {
                 console.log(response);
                 status = response.data.status;
                 if (status == 'failed') {
-                    _this3.setState({ editErrorState: true });
+                    _this4.setState({ editErrorState: true });
                     var _e = response.data.errors;
-                    var errors = Object.assign({}, _this3.state.errors);
+                    var errors = Object.assign({}, _this4.state.errors);
                     for (var key in errors) {
                         errors[key] = key in _e ? _e[key] : [];
                     }
-                    _this3.setState({ errors: errors });
+                    _this4.setState({ errors: errors });
                 } else if (status == 'success') {
-                    _this3.props.modActiveLoan({
-                        index: _this3.props.match.params.index,
+                    _this4.props.modActiveLoan({
+                        index: _this4.props.match.params.index,
                         loan: response.data
                     });
                 }
@@ -73389,7 +73408,7 @@ var ConnectedLoanEdit = function (_Component) {
     }, {
         key: 'render',
         value: function render() {
-            var _this4 = this;
+            var _this5 = this;
 
             return __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                 'div',
@@ -73422,7 +73441,7 @@ var ConnectedLoanEdit = function (_Component) {
                                         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                                             'td',
                                             { className: 'p-0' },
-                                            _this4.state.loan_status[key]
+                                            _this5.state.loan_status[key]
                                         )
                                     );
                                 })
@@ -73454,7 +73473,7 @@ var ConnectedLoanEdit = function (_Component) {
                                 { className: 'col-4 m-0 pr-1' },
                                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                                     'button',
-                                    { type: 'button', className: 'btn btn-outline-primary btn-sm btn-block' },
+                                    { type: 'button', className: 'btn btn-outline-primary btn-sm btn-block', onClick: this.handleCancel },
                                     'Go Back'
                                 )
                             )
@@ -85156,6 +85175,20 @@ var SingleInput = function (_Component) {
 }(__WEBPACK_IMPORTED_MODULE_0_react__["Component"]);
 
 /* harmony default export */ __webpack_exports__["a"] = (SingleInput);
+
+/***/ }),
+/* 282 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return C101; });
+/* unused harmony export ADD_ACTIVE_LOAN */
+/* unused harmony export MOD_ACTIVE_LOAN */
+/* unused harmony export SET_SCHEDULE */
+var C101 = "'Deleting Loan is DANGEROUS! It will affect the salaries of months contained in the Loan Schedule. Do you really want to Delete?'";
+var ADD_ACTIVE_LOAN = "ADD_ACTIVE_LOAN";
+var MOD_ACTIVE_LOAN = "MOD_ACTIVE_LOAN";
+var SET_SCHEDULE = "SET_SCHEDULE";
 
 /***/ })
 /******/ ]);

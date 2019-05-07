@@ -242,6 +242,29 @@ class LoansController extends Controller
         $loan = Loan::find($id);
         // if($loan->delete())
         $schedule = json_decode($loan->schedule, true);
+        $scarr = $this->getEffectedArr($schedule);
+        $user_id = $loan->salary->user->id;
+        
+        for($i=0;$i<count($scarr);$i++){
+            $mapping = $scarr[$i]['db']['mapping'];
+            $db_table_name = $scarr[$i]['db']['db_table_name'];
+            if(Schema::hasTable($db_table_name)){
+                $ys = DB::table($db_table_name)->select('salary')->where('user_id', $user_id)->first();
+                $salary = json_decode($ys->salary);
+                foreach($scarr[$i]['schedule'] as $month=>$index){
+                    $salary[$mapping[$month]]->loan -= $scarr[$i]['schedule'][$month];
+                }
+                DB::table($db_table_name)->where('user_id', $user_id)->update(['salary'=> json_encode($salary)]);
+                $response['activity'][$i] = "removing loan from $db_table_name" ;
+            }
+        }
+        $loan->delete();
+        $response['mother_delete'] = "Deleting loan with id $id";
+        $response['status'] = 'success';
+        return response()->json($response);
+    }
+
+    private function getEffectedArr($schedule){
         $sycount = 0;
         $scarr = [];
         $endofarr = '';
@@ -260,13 +283,10 @@ class LoansController extends Controller
                 $scarr[$sycount]['db'] = $this->getCurrentSalaryParams($month.'-01');
                 $scarr[$sycount]['schedule'][$month] = $value;
                 $endofarr = $this->endofarr($scarr[$sycount]['db']['mapping']);
-            }
-            
+            }   
         }
-
-        return response()->json($scarr);
+        return $scarr;
     }
-
     private function endofarr( $array ) {
         $key = NULL;
         if ( is_array( $array ) ) {
@@ -275,7 +295,7 @@ class LoansController extends Controller
         }
         return $key;
     }
-    
+
     public function active(){
         $loans = Loan::where('active', 1)->orderBy('id', 'desc')->get();
         $response = [];

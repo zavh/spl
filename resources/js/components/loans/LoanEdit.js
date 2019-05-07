@@ -6,8 +6,8 @@ import Readonly from '../commons/Readonly';
 import axios from 'axios';
 import Card from '../commons/Card';
 import { connect } from "react-redux";
-import { modActiveLoan, setSchedule } from "./redux/actions/index";
-
+import { modActiveLoan, setSchedule, setActiveLoans } from "./redux/actions/index";
+import {C101} from "./codes/index";
 function mapStateToProps (state)
 {
   return {
@@ -19,6 +19,7 @@ function mapDispatchToProps(dispatch) {
     return {
         modActiveLoan: loans=> dispatch(modActiveLoan(loans)),
         setSchedule: loans=> dispatch(setSchedule(loans)),
+        setActiveLoans: loans=> dispatch(setActiveLoans(loans)),
      };
 }
 class ConnectedLoanEdit extends Component {
@@ -89,15 +90,26 @@ class ConnectedLoanEdit extends Component {
     }
 
     handleDelete(){
-        axios.delete(`/loans/${this.props.match.params.id}`)
-        .then((response)=>{
-            console.log(response);
-        })
-        .catch(function (error) {
-            console.log(error);
-          });
+        var c = confirm(C101);
+        if(c){
+            axios.delete(`/loans/${this.props.match.params.id}`)
+            .then((response)=>{
+                if(response.data.status ==  'success'){
+                    let loans = [...this.props.activeloans];
+                    let index = parseInt(this.props.match.params.index);
+                    let firstslice = loans.slice(0,index);
+                    let secondslice = loans.slice(index + 1);
+                    let result = firstslice.concat(secondslice);
+                    this.props.setActiveLoans(result);
+                    this.props.history.push('/loans');
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+              });
+        }
     }
-    
+
     handleSubmit(e){
         e.preventDefault();
         if(this.state.editErrorState)
@@ -174,7 +186,7 @@ class ConnectedLoanEdit extends Component {
                                 <button type="button" className="btn btn-outline-primary btn-sm btn-block" onClick={this.handleDelete}>Delete</button>
                             </div>
                             <div className="col-4 m-0 pr-1">
-                                <button type="button" className="btn btn-outline-primary btn-sm btn-block">Go Back</button>
+                                <button type="button" className="btn btn-outline-primary btn-sm btn-block" onClick={this.handleCancel}>Go Back</button>
                             </div>
                         </div>
                     </Card>
