@@ -17717,6 +17717,7 @@ function warning(message) {
 /* harmony export (immutable) */ __webpack_exports__["a"] = addActiveLoan;
 /* harmony export (immutable) */ __webpack_exports__["b"] = modActiveLoan;
 /* harmony export (immutable) */ __webpack_exports__["d"] = setSchedule;
+/* harmony export (immutable) */ __webpack_exports__["e"] = setStickyness;
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__constants_action_types__ = __webpack_require__(60);
 
 
@@ -17736,6 +17737,10 @@ function setSchedule(payload) {
   return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["d" /* SET_SCHEDULE */], payload: payload };
 };
 
+function setStickyness(payload) {
+  return { type: __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["e" /* SET_STICKYNESS */], payload: payload };
+};
+
 /***/ }),
 /* 60 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
@@ -17745,10 +17750,12 @@ function setSchedule(payload) {
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ADD_ACTIVE_LOAN; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return MOD_ACTIVE_LOAN; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return SET_SCHEDULE; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return SET_STICKYNESS; });
 var SET_ACTIVE_LOANS = "SET_ACTIVE_LOANS";
 var ADD_ACTIVE_LOAN = "ADD_ACTIVE_LOAN";
 var MOD_ACTIVE_LOAN = "MOD_ACTIVE_LOAN";
 var SET_SCHEDULE = "SET_SCHEDULE";
+var SET_STICKYNESS = "SET_STICKYNESS";
 
 /***/ }),
 /* 61 */
@@ -73239,14 +73246,17 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
     return {
-        modActiveLoan: function modActiveLoan(loans) {
-            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_8__redux_actions_index__["b" /* modActiveLoan */])(loans));
+        modActiveLoan: function modActiveLoan(loan) {
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_8__redux_actions_index__["b" /* modActiveLoan */])(loan));
         },
-        setSchedule: function setSchedule(loans) {
-            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_8__redux_actions_index__["d" /* setSchedule */])(loans));
+        setSchedule: function setSchedule(schedule) {
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_8__redux_actions_index__["d" /* setSchedule */])(schedule));
         },
         setActiveLoans: function setActiveLoans(loans) {
             return dispatch(Object(__WEBPACK_IMPORTED_MODULE_8__redux_actions_index__["c" /* setActiveLoans */])(loans));
+        },
+        setStickyness: function setStickyness(stickyness) {
+            return dispatch(Object(__WEBPACK_IMPORTED_MODULE_8__redux_actions_index__["e" /* setStickyness */])(stickyness));
         }
     };
 }
@@ -73309,6 +73319,7 @@ var ConnectedLoanEdit = function (_Component) {
                     loan_status: response.data.loan_status
                 });
                 _this2.props.setSchedule(JSON.parse(response.data.data.schedule));
+                _this2.props.setStickyness(JSON.parse(response.data.data.stickyness));
             });
         }
     }, {
@@ -73320,6 +73331,7 @@ var ConnectedLoanEdit = function (_Component) {
         key: 'componentWillUnmount',
         value: function componentWillUnmount() {
             this.props.setSchedule({});
+            this.props.setStickyness({});
         }
     }, {
         key: 'handleElementChange',
@@ -73579,7 +73591,8 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
 var initialState = {
   activeloans: [],
-  schedule: {}
+  schedule: {},
+  stickyness: {}
 };
 function rootReducer() {
   var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : initialState;
@@ -73612,6 +73625,11 @@ function rootReducer() {
   if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["d" /* SET_SCHEDULE */]) {
     return Object.assign({}, state, {
       schedule: action.payload
+    });
+  }
+  if (action.type === __WEBPACK_IMPORTED_MODULE_0__constants_action_types__["e" /* SET_STICKYNESS */]) {
+    return Object.assign({}, state, {
+      stickyness: action.payload
     });
   }
   return state;
@@ -84730,6 +84748,7 @@ function rootReducer() {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__SingleInput__ = __webpack_require__(281);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__redux_actions_index__ = __webpack_require__(59);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__commons_submit__ = __webpack_require__(65);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__codes_index__ = __webpack_require__(282);
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
@@ -84747,10 +84766,12 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 
 
+
 function mapStateToProps(state) {
     return {
         schedule: state.schedule,
-        activeloans: state.activeloans
+        activeloans: state.activeloans,
+        stickyness: state.stickyness
     };
 }
 
@@ -84772,10 +84793,13 @@ var ConnectedScheduleEdit = function (_Component) {
 
         _this.state = {
             scheduleReceived: false,
+            sticknessReceived: false,
             errors: {},
+            elementErrorState: false,
             reschedulePoint: {},
             saveFlag: false,
             origschedule: {},
+            origstickyness: {},
             panelAlert: { message: '', type: '' }
         };
         _this.handleSubmit = _this.handleSubmit.bind(_this);
@@ -84784,6 +84808,7 @@ var ConnectedScheduleEdit = function (_Component) {
         _this.handleElementChange = _this.handleElementChange.bind(_this);
         _this.undoScheduleChanges = _this.undoScheduleChanges.bind(_this);
         _this.refreshMessage = _this.refreshMessage.bind(_this);
+        _this.stickyChange = _this.stickyChange.bind(_this);
         return _this;
     }
 
@@ -84792,58 +84817,101 @@ var ConnectedScheduleEdit = function (_Component) {
         value: function refreshMessage() {
             this.setState({ panelAlert: { message: '', type: '' } });
         }
+        // onInsert(el){
+        //     let loan = this.props.activeloans[this.props.match.params.index];
+        //     let index=el.dataset.index;
+        //     let amount = loan.amount;
+        //     let tenure = loan.tenure;
+        //     let schedule = Object.assign({}, this.props.schedule);
+
+        //     let manual_flag = false;
+        //     let count = 0;
+        //     let installment = 0;
+        //     for(var month in schedule){
+        //         if(month != index && !manual_flag) {
+        //             amount -= parseFloat(this.state[month].value);
+        //             console.log('Month', month, 'Installment', this.state[month].value, 'Remaining', amount);
+        //         }
+        //         else{
+        //             if(!manual_flag) {
+        //                 manual_flag = true;
+        //                 let x = 0;
+        //                 let rschcount = 0;
+        //                 for(var m in this.state.reschedulePoint){
+        //                     x +=  parseFloat(this.state[m].value);
+        //                     rschcount++;
+        //                 }
+        //                 installment = (amount - x) / (tenure - count - rschcount)
+        //                 if(installment < 0){
+        //                     this.undoScheduleChanges();
+        //                     break;
+        //                 }
+        //                 console.log('Amount', amount, 'Reschedule amount', x, 'Rescheduler', rschcount)
+        //             }
+        //             if(month in this.state.reschedulePoint){
+        //                 schedule[month] = this.state[month].value;
+        //                 amount -= parseFloat(this.state[month].value);
+        //                 console.log('Month', month, 'Installment', this.state[month].value, 'Remaining', amount);
+        //             }
+        //             else{
+        //                 schedule[month] = installment;
+        //                 amount -= installment;
+        //                 console.log('Month', month, 'Installment', installment, 'Remaining', amount);
+        //             }
+        //         }
+        //         count++;
+        //         this.setState({[month]:{value:schedule[month], preventUpdate:true, stickyness:this.state[month].stickyness}});
+        //     }
+        //     if(Math.round(amount) != 0){
+        //         this.undoScheduleChanges();
+        //         this.setState({panelAlert:{message:C402,type:'danger'}});
+        //     }   
+        //     else {
+        //         this.setState({reschedulePoint:{}, saveFlag:true});
+        //         this.props.setSchedule(schedule);
+        //     }
+        // }
+
     }, {
         key: 'onInsert',
         value: function onInsert(el) {
             var loan = this.props.activeloans[this.props.match.params.index];
-            var index = el.dataset.index;
             var amount = loan.amount;
-            var tenure = loan.tenure;
-            var schedule = Object.assign({}, this.props.schedule);
-
-            var manual_flag = false;
-            var count = 0;
-            var installment = 0;
-            for (var month in schedule) {
-                if (month != index && !manual_flag) {
-                    amount -= parseFloat(this.state[month].value);
-                    console.log('Month', month, 'Installment', this.state[month].value, 'Remaining', amount);
-                } else {
-                    if (!manual_flag) {
-                        manual_flag = true;
-                        var x = 0;
-                        var rschcount = 0;
-                        for (var m in this.state.reschedulePoint) {
-                            x += parseFloat(this.state[m].value);
-                            rschcount++;
-                        }
-                        installment = (amount - x) / (tenure - count - rschcount);
-                        if (installment < 0) {
-                            this.undoScheduleChanges();
-                            break;
-                        }
-                        console.log('Amount', amount, 'Reschedule amount', x, 'Rescheduler', rschcount);
-                    }
-                    if (month in this.state.reschedulePoint) {
-                        schedule[month] = this.state[month].value;
-                        amount -= parseFloat(this.state[month].value);
-                        console.log('Month', month, 'Installment', this.state[month].value, 'Remaining', amount);
-                    } else {
-                        schedule[month] = installment;
-                        amount -= installment;
-                        console.log('Month', month, 'Installment', installment, 'Remaining', amount);
-                    }
+            var stickyamount = 0;
+            var unstickycount = 0;
+            var unstickyels = [];
+            var schedule = {};
+            for (var month in this.props.schedule) {
+                if (this.state[month].stickyness) stickyamount += parseFloat(this.state[month].value);else {
+                    unstickyels[unstickycount] = month;
+                    unstickycount++;
                 }
-                count++;
-                this.setState(_defineProperty({}, month, { value: schedule[month], preventUpdate: true }));
+                schedule[month] = parseFloat(this.state[month].value);
             }
-            if (Math.round(amount) != 0) {
+            var installment = (amount - stickyamount) / unstickycount;
+            if (installment * unstickycount + stickyamount != amount || installment < 0) {
                 this.undoScheduleChanges();
-                this.setState({ panelAlert: { message: 'Error! Generating negative installment or incomplete schedule', type: 'danger' } });
+                this.setState({ panelAlert: { message: __WEBPACK_IMPORTED_MODULE_6__codes_index__["c" /* C402 */], type: 'danger' } });
             } else {
-                this.setState({ reschedulePoint: {}, saveFlag: true });
+                var _setState2;
+
+                for (var i = 0; i < unstickycount; i++) {
+                    this.setState(_defineProperty({}, unstickyels[i], { value: installment, preventUpdate: true, stickyness: false }));
+                    schedule[unstickyels[i]] = installment;
+                }
+                var buttonremover = { value: this.state[el.dataset.index].value, preventUpdate: true, stickyness: true };
+                this.setState((_setState2 = {}, _defineProperty(_setState2, el.dataset.index, buttonremover), _defineProperty(_setState2, 'saveFlag', true), _defineProperty(_setState2, 'reschedulePoint', {}), _setState2));
                 this.props.setSchedule(schedule);
             }
+        }
+    }, {
+        key: 'stickyChange',
+        value: function stickyChange(index, value) {
+            this.setState(_defineProperty({}, index, {
+                value: this.state[index].value,
+                stickyness: value,
+                preventUpdate: this.state[index].preventUpdate
+            }));
         }
     }, {
         key: 'undoScheduleChanges',
@@ -84851,7 +84919,7 @@ var ConnectedScheduleEdit = function (_Component) {
             this.setState({ reschedulePoint: {}, saveFlag: false });
             this.props.setSchedule(this.state.origschedule);
             for (var month in this.state.origschedule) {
-                this.setState(_defineProperty({}, month, { value: this.state.origschedule[month], preventUpdate: true }));
+                this.setState(_defineProperty({}, month, { value: this.state.origschedule[month], preventUpdate: true, stickyness: this.state.origstickyness[month] }));
             }
         }
     }, {
@@ -84862,12 +84930,24 @@ var ConnectedScheduleEdit = function (_Component) {
             if (!this.state.scheduleReceived && this.props.schedule != prev.schedule) {
                 Object.keys(this.props.schedule).map(function (key) {
                     _this2.setState(_defineProperty({}, key, {
+                        stickyness: true,
                         value: _this2.props.schedule[key],
                         preventUpdate: true
                     }));
                 });
                 var os = Object.assign({}, this.props.schedule);
                 this.setState({ scheduleReceived: true, origschedule: os });
+            }
+            if (!this.state.sticknessReceived && this.props.stickyness != prev.stickyness) {
+                Object.keys(this.props.stickyness).map(function (key) {
+                    _this2.setState(_defineProperty({}, key, {
+                        stickyness: _this2.props.stickyness[key],
+                        value: _this2.props.schedule[key],
+                        preventUpdate: true
+                    }));
+                });
+                var _os = Object.assign({}, this.props.stickyness);
+                this.setState({ sticknessReceived: true, origstickyness: _os });
             }
         }
     }, {
@@ -84878,37 +84958,37 @@ var ConnectedScheduleEdit = function (_Component) {
     }, {
         key: 'handleElementChange',
         value: function handleElementChange(name, value) {
-            var _setState3;
+            var _setState5;
 
-            if (isNaN(value)) {
-                this.setState({ errors: _defineProperty({}, name, ['Schedule value must be a number']) });
+            if (isNaN(value) || value < 0) {
+                this.setState({ errors: _defineProperty({}, name, [__WEBPACK_IMPORTED_MODULE_6__codes_index__["b" /* C401 */]]), elementErrorState: true });
                 return;
-            } else {
-                this.setState({ errors: _defineProperty({}, name, []) });
+            } else if (this.state.elementErrorState) {
+                this.setState({ errors: {}, elementErrorState: false });
             }
             var update = {};
             var reschedulePoint = {};
             if (this.props.schedule[name] != value) {
                 //value different, append the element in reschedulePoint
-                update = { value: value, preventUpdate: true };
+                update = { value: value, preventUpdate: true, stickyness: this.state[name].stickyness };
                 if (!(name in this.state.reschedulePoint)) {
                     reschedulePoint = Object.assign({}, this.state.reschedulePoint, _defineProperty({}, name, name));
                 } else reschedulePoint = Object.assign({}, this.state.reschedulePoint);
             } else {
                 //Value change reverted, remove the element from reschedulePoint
-                update = { value: value, preventUpdate: true };
+                update = { value: value, preventUpdate: true, stickyness: this.state[name].stickyness };
                 for (var key in this.state.reschedulePoint) {
                     if (name != key) reschedulePoint[key] = key;
                 }
             }
-            this.setState((_setState3 = {}, _defineProperty(_setState3, name, update), _defineProperty(_setState3, 'reschedulePoint', reschedulePoint), _setState3));
+            this.setState((_setState5 = {}, _defineProperty(_setState5, name, update), _defineProperty(_setState5, 'reschedulePoint', reschedulePoint), _setState5));
 
             var lowest = '';
             for (var sched in reschedulePoint) {
                 if (sched != name) {
-                    this.setState(_defineProperty({}, sched, { value: this.state[sched].value, preventUpdate: true }));
+                    this.setState(_defineProperty({}, sched, { value: this.state[sched].value, preventUpdate: true, stickyness: true }));
                 } else {
-                    this.setState(_defineProperty({}, sched, { value: value, preventUpdate: true }));
+                    this.setState(_defineProperty({}, sched, { value: value, preventUpdate: true, stickyness: true }));
                 }
                 if (lowest == '' || lowest > sched) {
                     lowest = sched;
@@ -84916,9 +84996,9 @@ var ConnectedScheduleEdit = function (_Component) {
             }
             if (lowest == '') console.log('No reschedule point exists');else {
                 if (lowest != name) {
-                    this.setState(_defineProperty({}, lowest, { value: this.state[lowest].value, preventUpdate: false }));
+                    this.setState(_defineProperty({}, lowest, { value: this.state[lowest].value, preventUpdate: false, stickyness: this.state[name].stickyness }));
                 } else {
-                    this.setState(_defineProperty({}, lowest, { value: value, preventUpdate: false }));
+                    this.setState(_defineProperty({}, lowest, { value: value, preventUpdate: false, stickyness: this.state[name].stickyness }));
                 }
             }
         }
@@ -85000,7 +85080,9 @@ var ConnectedScheduleEdit = function (_Component) {
                                     errors: _this4.state.errors[key],
                                     onInsert: _this4.onInsert,
                                     actionButton: 'Re-Schedule This',
-                                    preventUpdate: _this4.state[key]['preventUpdate']
+                                    preventUpdate: _this4.state[key]['preventUpdate'],
+                                    stickyness: _this4.state[key]['stickyness'],
+                                    stickyChange: _this4.stickyChange
                                 });
                             })
                         ),
@@ -85092,6 +85174,7 @@ var SingleInput = function (_Component) {
         _this.inputChange = _this.inputChange.bind(_this);
         _this.errorProcess = _this.errorProcess.bind(_this);
         _this.onInsert = _this.onInsert.bind(_this);
+        _this.stickyChange = _this.stickyChange.bind(_this);
         return _this;
     }
 
@@ -85099,6 +85182,11 @@ var SingleInput = function (_Component) {
         key: 'inputChange',
         value: function inputChange(e) {
             this.props.onChange(e.target.name, e.target.value);
+        }
+    }, {
+        key: 'stickyChange',
+        value: function stickyChange(e) {
+            this.props.stickyChange(e.target.dataset.index, e.target.checked);
         }
     }, {
         key: 'errorProcess',
@@ -85153,7 +85241,7 @@ var SingleInput = function (_Component) {
                         { className: 'input-group-append' },
                         __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                             'button',
-                            { className: 'btn btn-outline-secondary', type: 'button', id: 'button-addon2', 'data-index': this.props.name, onClick: this.onInsert },
+                            { className: 'btn btn-primary', type: 'button', id: 'button-addon2', 'data-index': this.props.name, onClick: this.onInsert },
                             this.props.actionButton === undefined ? __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
                                 __WEBPACK_IMPORTED_MODULE_0_react___default.a.Fragment,
                                 null,
@@ -85163,6 +85251,15 @@ var SingleInput = function (_Component) {
                                 null,
                                 this.props.actionButton
                             )
+                        )
+                    ),
+                    __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                        'div',
+                        { className: 'input-group-append' },
+                        __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement(
+                            'div',
+                            { className: 'input-group-text' },
+                            __WEBPACK_IMPORTED_MODULE_0_react___default.a.createElement('input', { type: 'checkbox', checked: this.props.stickyness, 'data-index': this.props.name, onChange: this.stickyChange })
                         )
                     ),
                     this.errorProcess()
@@ -85182,13 +85279,12 @@ var SingleInput = function (_Component) {
 
 "use strict";
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return C101; });
-/* unused harmony export ADD_ACTIVE_LOAN */
-/* unused harmony export MOD_ACTIVE_LOAN */
-/* unused harmony export SET_SCHEDULE */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return C401; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return C402; });
 var C101 = "'Deleting Loan is DANGEROUS! It will affect the salaries of months contained in the Loan Schedule. Do you really want to Delete?'";
-var ADD_ACTIVE_LOAN = "ADD_ACTIVE_LOAN";
-var MOD_ACTIVE_LOAN = "MOD_ACTIVE_LOAN";
-var SET_SCHEDULE = "SET_SCHEDULE";
+
+var C401 = "Schedule value must be a positive number";
+var C402 = "Error! Generating negative installment or incomplete schedule";
 
 /***/ })
 /******/ ]);

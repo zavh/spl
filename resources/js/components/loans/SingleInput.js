@@ -9,10 +9,15 @@ export default class SingleInput extends Component {
         this.inputChange = this.inputChange.bind(this);
         this.errorProcess = this.errorProcess.bind(this);
         this.onInsert = this.onInsert.bind(this);
+        this.stickyChange = this.stickyChange.bind(this);
     }
 
     inputChange(e){
         this.props.onChange(e.target.name, e.target.value);
+    }
+
+    stickyChange(e){
+        this.props.stickyChange(e.target.dataset.index, e.target.checked);
     }
 
     errorProcess(){
@@ -43,7 +48,7 @@ export default class SingleInput extends Component {
                     <input type={this.props.type} className="form-control" name={this.props.name} onChange={this.inputChange} value={this.props.value} required/>
                     {!this.props.preventUpdate &&
                         (<div className="input-group-append">
-                            <button className="btn btn-outline-secondary" type="button" id="button-addon2" data-index={this.props.name} onClick={this.onInsert}>
+                            <button className="btn btn-primary" type="button" id="button-addon2" data-index={this.props.name} onClick={this.onInsert}>
                             {this.props.actionButton === undefined ? 
                                 ( <React.Fragment>Add</React.Fragment>
                                         ):(
@@ -53,6 +58,11 @@ export default class SingleInput extends Component {
                             </button>
                         </div>)
                     }
+                    <div className="input-group-append">
+                        <div className="input-group-text">
+                            <input type="checkbox" checked={this.props.stickyness} data-index={this.props.name} onChange={this.stickyChange}/>
+                        </div>
+                    </div>
                     {this.errorProcess()}
                 </div>
             </div>

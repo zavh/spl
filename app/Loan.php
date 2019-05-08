@@ -24,6 +24,7 @@ class Loan extends Model
         'interest',
         'active',
         'schedule',
+        'stickyness',
     ];
 
     public function salary(){

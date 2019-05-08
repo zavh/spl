@@ -1,10 +1,11 @@
 import { 
-  SET_ACTIVE_LOANS, ADD_ACTIVE_LOAN, MOD_ACTIVE_LOAN, SET_SCHEDULE
+  SET_ACTIVE_LOANS, ADD_ACTIVE_LOAN, MOD_ACTIVE_LOAN, SET_SCHEDULE, SET_STICKYNESS
 } from "../constants/action-types";
   
 const initialState = {
   activeloans:[],
   schedule:{},
+  stickyness:{},
 };
 function rootReducer(state = initialState, action) {
   if (action.type === SET_ACTIVE_LOANS){
@@ -34,6 +35,11 @@ function rootReducer(state = initialState, action) {
   if (action.type === SET_SCHEDULE){
     return Object.assign({}, state, {
       schedule: action.payload
+    });
+  }
+  if (action.type === SET_STICKYNESS){
+    return Object.assign({}, state, {
+      stickyness: action.payload
     });
   }
   return state;

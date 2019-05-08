@@ -54,6 +54,8 @@ class LoansController extends Controller
         else{
             $tenure = $request->tenure;
             $schedule = array();
+            $stickyness = array();
+            $stickymonth = Carbon::parse(date('Y-m-01'))->subMonth();
 
             $currentmonth = date('n');
             if($currentmonth > 6){
@@ -79,6 +81,7 @@ class LoansController extends Controller
                 $schedule[$month->format('Y-m')] = $request->amount/$tenure;
                 if(isset($mapping[$month->format('Y-m')]))
                     $addloan[$mapping[$month->format('Y-m')]] = $schedule[$month->format('Y-m')];
+                $stickymonth->gt($month) ? $stickyness[$month->format('Y-m')] = true : $stickyness[$month->format('Y-m')] = false;
                 $month->addMonth();
             }
             $loanCreate = Loan::create([
@@ -91,6 +94,7 @@ class LoansController extends Controller
                 'interest' => $request->interest,
                 'tenure' => $tenure,
                 'schedule' => json_encode($schedule),
+                'stickyness' => json_encode($stickyness),
                 ]);
 
             $response['status'] = 'success';

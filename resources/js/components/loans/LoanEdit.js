@@ -6,7 +6,7 @@ import Readonly from '../commons/Readonly';
 import axios from 'axios';
 import Card from '../commons/Card';
 import { connect } from "react-redux";
-import { modActiveLoan, setSchedule, setActiveLoans } from "./redux/actions/index";
+import { modActiveLoan, setSchedule, setActiveLoans, setStickyness } from "./redux/actions/index";
 import {C101} from "./codes/index";
 function mapStateToProps (state)
 {
@@ -17,9 +17,10 @@ function mapStateToProps (state)
 
 function mapDispatchToProps(dispatch) {
     return {
-        modActiveLoan: loans=> dispatch(modActiveLoan(loans)),
-        setSchedule: loans=> dispatch(setSchedule(loans)),
+        modActiveLoan: loan=> dispatch(modActiveLoan(loan)),
+        setSchedule: schedule=> dispatch(setSchedule(schedule)),
         setActiveLoans: loans=> dispatch(setActiveLoans(loans)),
+        setStickyness: stickyness=> dispatch(setStickyness(stickyness)),
      };
 }
 class ConnectedLoanEdit extends Component {
@@ -71,6 +72,7 @@ class ConnectedLoanEdit extends Component {
                     loan_status:response.data.loan_status,
                 })
                 this.props.setSchedule( JSON.parse(response.data.data.schedule));
+                this.props.setStickyness( JSON.parse(response.data.data.stickyness));
             }
         );
     }
@@ -80,6 +82,7 @@ class ConnectedLoanEdit extends Component {
     }
     componentWillUnmount(){
         this.props.setSchedule({});
+        this.props.setStickyness({});
     }
     handleElementChange(name, value){
         this.setState({[name]:value});
