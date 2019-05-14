@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Card from '../commons/Card';
 import { connect } from "react-redux";
 import SingleInput from './SingleInput';
-import { setSchedule } from "./redux/actions/index";
+import { setSchedule, setStickyness } from "./redux/actions/index";
 import Submit from '../commons/submit';
 import { C401, C402 } from "./codes/index";
 
@@ -18,6 +18,7 @@ function mapStateToProps (state)
 function mapDispatchToProps(dispatch) {
     return {
         setSchedule: loans=> dispatch(setSchedule(loans)),
+        setStickyness: stickyness=> dispatch(setStickyness(stickyness)),
      };
 }
 
@@ -47,60 +48,7 @@ class ConnectedScheduleEdit extends Component {
     refreshMessage(){
         this.setState({panelAlert:{message:'',type:''}});
     }
-    // onInsert(el){
-    //     let loan = this.props.activeloans[this.props.match.params.index];
-    //     let index=el.dataset.index;
-    //     let amount = loan.amount;
-    //     let tenure = loan.tenure;
-    //     let schedule = Object.assign({}, this.props.schedule);
-        
-    //     let manual_flag = false;
-    //     let count = 0;
-    //     let installment = 0;
-    //     for(var month in schedule){
-    //         if(month != index && !manual_flag) {
-    //             amount -= parseFloat(this.state[month].value);
-    //             console.log('Month', month, 'Installment', this.state[month].value, 'Remaining', amount);
-    //         }
-    //         else{
-    //             if(!manual_flag) {
-    //                 manual_flag = true;
-    //                 let x = 0;
-    //                 let rschcount = 0;
-    //                 for(var m in this.state.reschedulePoint){
-    //                     x +=  parseFloat(this.state[m].value);
-    //                     rschcount++;
-    //                 }
-    //                 installment = (amount - x) / (tenure - count - rschcount)
-    //                 if(installment < 0){
-    //                     this.undoScheduleChanges();
-    //                     break;
-    //                 }
-    //                 console.log('Amount', amount, 'Reschedule amount', x, 'Rescheduler', rschcount)
-    //             }
-    //             if(month in this.state.reschedulePoint){
-    //                 schedule[month] = this.state[month].value;
-    //                 amount -= parseFloat(this.state[month].value);
-    //                 console.log('Month', month, 'Installment', this.state[month].value, 'Remaining', amount);
-    //             }
-    //             else{
-    //                 schedule[month] = installment;
-    //                 amount -= installment;
-    //                 console.log('Month', month, 'Installment', installment, 'Remaining', amount);
-    //             }
-    //         }
-    //         count++;
-    //         this.setState({[month]:{value:schedule[month], preventUpdate:true, stickyness:this.state[month].stickyness}});
-    //     }
-    //     if(Math.round(amount) != 0){
-    //         this.undoScheduleChanges();
-    //         this.setState({panelAlert:{message:C402,type:'danger'}});
-    //     }   
-    //     else {
-    //         this.setState({reschedulePoint:{}, saveFlag:true});
-    //         this.props.setSchedule(schedule);
-    //     }
-    // }
+
     onInsert(el){
         let loan = this.props.activeloans[this.props.match.params.index];
         let amount = loan.amount;
@@ -108,6 +56,7 @@ class ConnectedScheduleEdit extends Component {
         let unstickycount = 0;
         let unstickyels = [];
         let schedule = {};
+        let stickyness = {};
         for(var month in this.props.schedule){
             if(this.state[month].stickyness)
                 stickyamount += parseFloat(this.state[month].value);
@@ -116,6 +65,7 @@ class ConnectedScheduleEdit extends Component {
                 unstickycount++;
             }
             schedule[month] = parseFloat(this.state[month].value);
+            stickyness[month] = this.state[month].stickyness;
         }
         let installment = (amount - stickyamount)/unstickycount;
         if((installment * unstickycount + stickyamount) != amount || installment < 0){
@@ -132,6 +82,8 @@ class ConnectedScheduleEdit extends Component {
             let buttonremover = {value:this.state[el.dataset.index].value, preventUpdate:true, stickyness:true};
             this.setState({[el.dataset.index]:buttonremover, saveFlag:true, reschedulePoint:{}});
             this.props.setSchedule(schedule);
+            this.props.setStickyness(stickyness);
+            console.log('Unsticky Count', unstickycount, 'Sticky Amount', stickyamount, 'Installment', installment);
         }
     }
 
@@ -178,7 +130,9 @@ class ConnectedScheduleEdit extends Component {
 
     componentWillUnmount(){
         this.props.setSchedule({});
+        this.props.setStickyness({});
     }
+
     handleElementChange(name, value){
         if(isNaN(value) || value < 0){
             this.setState({errors:{[name]:[C401]}, elementErrorState:true})
@@ -198,7 +152,7 @@ class ConnectedScheduleEdit extends Component {
                 reschedulePoint = Object.assign({},this.state.reschedulePoint)
         }
         else { //Value change reverted, remove the element from reschedulePoint
-            update = {value:value,preventUpdate:true,stickyness:this.state[name].stickyness};
+            update = {value:value,preventUpdate:true,stickyness:this.props.stickyness[name]};
             for(var key in this.state.reschedulePoint)
                 if(name != key)
                     reschedulePoint[key] = key;
@@ -223,19 +177,19 @@ class ConnectedScheduleEdit extends Component {
         if(lowest == '') console.log('No reschedule point exists');
         else {
             if(lowest != name){
-                this.setState({[lowest]:{value:this.state[lowest].value,preventUpdate:false, stickyness:this.state[name].stickyness}})
+                this.setState({[lowest]:{value:this.state[lowest].value,preventUpdate:false, stickyness:true}})
             }
             else {
-                this.setState({[lowest]:{value:value,preventUpdate:false, stickyness:this.state[name].stickyness}})
+                this.setState({[lowest]:{value:value,preventUpdate:false, stickyness:true}})
             }
         }
     }
 
     handleSubmit(e){
         e.preventDefault();
-        
         axios.post(`/loans/scheduleupdate/${this.props.match.params.id}`, {
             schedule: JSON.stringify(this.props.schedule),
+            stickyness: JSON.stringify(this.props.stickyness)
           })
           .then((response)=>{
             status = response.data.status;
@@ -271,7 +225,7 @@ class ConnectedScheduleEdit extends Component {
         return (
             <Card title='Loan Schedule'>
                 <form onSubmit={this.handleSubmit}>
-                    <div className='m-2' style={{maxHeight:'500px',overflow:'auto'}}>
+                    <div style={{maxHeight:'500px',overflow:'auto'}}>
                         { this.state.scheduleReceived &&
                             <React.Fragment>
                                 {Object.keys(this.props.schedule).map((key,index)=>{
@@ -281,7 +235,7 @@ class ConnectedScheduleEdit extends Component {
                                             onChange={this.handleElementChange}
                                             value={this.state[key]['value']}
                                             name={key} type='text'
-                                            labelSize='110px'
+                                            labelSize='100px'
                                             label= {<React.Fragment><span>{key}</span> <span className='badge badge-pill badge-light border shadow-sm mx-2'> {index + 1}</span></React.Fragment>}
                                             errors={this.state.errors[key]}
                                             onInsert={this.onInsert}
@@ -328,7 +282,7 @@ function Alert(props){
     return(
         <div className={`alert ${styleType} mx-4 p-0`} role="alert">
             <div className='d-flex justify-content-between'>
-                <span>{props.alert.message}</span>
+                <span className='p-2'>{props.alert.message}</span>
                 <button type="button" className="btn btn-sm " onClick={refreshMessage}>
                     <span>&times;</span>
                 </button>

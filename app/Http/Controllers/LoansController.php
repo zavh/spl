@@ -212,32 +212,40 @@ class LoansController extends Controller
         return response()->json($response);
     }
 
-    public function updatedSchedule(Request $request, $id){
+    public function scheduleupdate(Request $request, $id){
         $loan = Loan::find($id);
         $oldschedule = json_decode($loan->schedule);
         $newschdule = json_decode($request->schedule);
-        $salaryParams = $this->getCurrentSalaryParams(date("Y-m-d"));
+        //Always choose the DB and params of previous month
+        $salaryParams = $this->getCurrentSalaryParams(date("Y-m-d", strtotime( '-1 month', strtotime(date("Y-m-d")))));
         $db_table_name = $salaryParams['db_table_name'];
         $mapping = $salaryParams['mapping'];
+        $user_id = $loan->salary->user->id;
         if(Schema::hasTable($db_table_name)){
-            $user_id = $loan->salary->user->id;
             $ys = json_decode(DB::table($db_table_name)->select('salary')->where('user_id', $user_id)->first()->salary);
             
             foreach($mapping as $map=>$index){
                 if(isset($oldschedule->$map))
                     $ys[$index]->loan -= $oldschedule->$map;
-                if(isset($oldschedule->$map))
+                if(isset($newschedule->$map))
                     $ys[$index]->loan += $newschdule->$map;
             }
+            DB::table($db_table_name)->where('user_id', $user_id)->update(['salary'=>json_encode($ys)]);
+            $response['status'] = 'successful';
         }
-        DB::table($db_table_name)->where('user_id', $user_id)->update(['salary'=>json_encode($ys)]);
+        else {
+            $response['status'] = 'partial';
+            $response['message'] = "Salary table $db_table_name could not be found";
+        }
         // $response['ys'] = $ys;
-        $response['status'] = 'testing';
+
         $response['old'] = $oldschedule;
         $response['new'] = $newschdule;
         $response['salary_params'] = $salaryParams;
         $loan->schedule = $request->schedule;
+        $loan->stickyness = $request->stickyness;
         $loan->save();
+        
         return response()->json($response);
     }
 

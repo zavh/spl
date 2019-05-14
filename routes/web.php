@@ -97,7 +97,7 @@ Route::get('/departments/users/{id}', 'DepartmentsController@getUsers');
 Route::get('/loans/active', 'LoansController@active');
 
 Route::redirect('/loans/edit/{id?}/{index?}', '/loans');
-Route::post('/loans/scheduleupdate/{salary_id?}', 'LoansController@updatedSchedule');
+Route::post('/loans/scheduleupdate/{salary_id?}', 'LoansController@scheduleupdate');
 
 Route::resource('clients','ClientsController');
 Route::resource('projects','ProjectsController');

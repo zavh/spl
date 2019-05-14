@@ -36,25 +36,17 @@ export default class SingleInput extends Component {
         this.props.onInsert(e.target);
     }
     render() {
-        const labelSize = {
-            width: this.props.labelSize,
-          };
         return (
-            <div className="form-group row my-1 mx-2">
+            <div className="form-group row my-1 mx-1">
                 <div className="input-group input-group-sm col-md-12">
                     <div className="input-group-prepend">
-                        <span className="input-group-text" style={labelSize}>{this.props.label}</span>
+                        <span className="input-group-text" style={{width: this.props.labelSize}}>{this.props.label}</span>
                     </div>
                     <input type={this.props.type} className="form-control" name={this.props.name} onChange={this.inputChange} value={this.props.value} required/>
                     {!this.props.preventUpdate &&
                         (<div className="input-group-append">
-                            <button className="btn btn-primary" type="button" id="button-addon2" data-index={this.props.name} onClick={this.onInsert}>
-                            {this.props.actionButton === undefined ? 
-                                ( <React.Fragment>Add</React.Fragment>
-                                        ):(
-                                <React.Fragment>{this.props.actionButton}</React.Fragment>
-                                )
-                            }
+                            <button className="btn btn-primary" type="button" id="button-addon2" data-index={this.props.name} onClick={this.onInsert}>                            
+                                {this.props.actionButton}
                             </button>
                         </div>)
                     }
