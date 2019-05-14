@@ -1,9 +1,11 @@
 import { 
-  SET_ACTIVE_LOANS, ADD_ACTIVE_LOAN, MOD_ACTIVE_LOAN, SET_SCHEDULE, SET_STICKYNESS
+  SET_ACTIVE_LOANS, ADD_ACTIVE_LOAN, MOD_ACTIVE_LOAN, SET_SCHEDULE, SET_STICKYNESS, SET_ACTIVE_LOANS_LOADED,
 } from "../constants/action-types";
   
 const initialState = {
   activeloans:[],
+  activeloansloaded:false,
+  justeditedindex:0,
   schedule:{},
   stickyness:{},
 };
@@ -24,7 +26,6 @@ function rootReducer(state = initialState, action) {
     });
   }
   if (action.type === MOD_ACTIVE_LOAN){
-    // console.log(action.payload)
     let index = action.payload.index;
     let activeloans = [...state.activeloans];
     activeloans[index] = action.payload.loan;
@@ -40,6 +41,11 @@ function rootReducer(state = initialState, action) {
   if (action.type === SET_STICKYNESS){
     return Object.assign({}, state, {
       stickyness: action.payload
+    });
+  }
+  if (action.type === SET_ACTIVE_LOANS_LOADED){
+    return Object.assign({}, state, {
+      activeloansloaded: action.payload
     });
   }
   return state;

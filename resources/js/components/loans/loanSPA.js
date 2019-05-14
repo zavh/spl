@@ -6,17 +6,19 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import { connect } from "react-redux";
 import LoanEdit from './LoanEdit';
 import ScheduleEdit from './ScheduleEdit';
-import { setActiveLoans } from "./redux/actions/index";
+import { setActiveLoans, setActiveLoansLoaded } from "./redux/actions/index";
 function mapStateToProps (state)
 {
   return {
       activeloans: state.activeloans,
+      activeloansloaded: state.activeloansloaded,
      };
 }
 
 function mapDispatchToProps(dispatch) {
     return {
         setActiveLoans: loans=> dispatch(setActiveLoans(loans)),
+        setActiveLoansLoaded: flag=> dispatch(setActiveLoansLoaded(flag)),
      };
 }
 class ConnectedLoanSPA extends Component {
@@ -26,10 +28,12 @@ class ConnectedLoanSPA extends Component {
                 (response)=>{
                     this.props.setActiveLoans(response.data);
                 });
+    this.props.setActiveLoansLoaded(true);
     }
     
     componentDidMount(){
-        this.getLoans();
+        if(!this.props.activeloansloaded)
+            this.getLoans();
     }
 
     render() {

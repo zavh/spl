@@ -34,7 +34,16 @@ export default class LoanList extends Component {
                 <div className='m-2'>
                 <table className='table text-center table-hover table-striped table-bordered mb-0'>
                     <tbody className='small'>
-                        <tr><th>Employee Name</th><th>Employee ID</th><th>Loan ID</th><th>Tenure</th><th>Amount</th><th>Start</th><th>End</th><th>Action</th></tr>
+                        <tr>
+                            <th>Employee Name</th>
+                            <th>Employee ID</th>
+                            <th>Loan ID</th>
+                            <th>Tenure</th>
+                            <th>Amount</th>
+                            <th>Start</th>
+                            <th>End</th>
+                            <th>Action</th>
+                        </tr>
                         {this.props.loans.map((loan, index)=>{
                             return(
                                 <tr className='m-0 p-0' key={index}>

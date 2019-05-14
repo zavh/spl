@@ -171,11 +171,7 @@ class LoansController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'amount'=>'required|numeric',
             'loan_name'=>'required|max:32',
-            'start_date'=>'required|date',
-            'tenure'=>'required|integer',
-            'interest'=>'required|numeric',
             'loan_type' => [
                 'required',
                 function ($attribute, $value, $fail) {
@@ -190,18 +186,9 @@ class LoansController extends Controller
             $response['errors'] = $validator->errors()->messages();
         }
         else{
-            $tenure = $request->tenure;
-            $start_date = date("Y-m-01", strtotime($request->start_date));
-            $end_date = date("Y-m-t", strtotime("+$tenure months",strtotime($start_date)));
-
             $loan = Loan::find($id);
             $loan->loan_name =  $request->loan_name;
-            $loan->amount =  $request->amount;
-            $loan->start_date =  $start_date;
-            $loan->end_date =  $end_date;
-            $loan->tenure =  $request->tenure;
             $loan->loan_type =  $request->loan_type;
-            $loan->interest =  $request->interest;
             $loan->save();
             $response['status'] = 'success';
             $response['name'] = $loan->salary->user->name." - ".$loan->salary->user->fname." ".$loan->salary->user->sname;;

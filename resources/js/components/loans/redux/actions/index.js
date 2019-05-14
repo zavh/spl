@@ -1,5 +1,5 @@
 import {
-  SET_ACTIVE_LOANS, ADD_ACTIVE_LOAN, MOD_ACTIVE_LOAN, SET_SCHEDULE, SET_STICKYNESS
+  SET_ACTIVE_LOANS, ADD_ACTIVE_LOAN, MOD_ACTIVE_LOAN, SET_SCHEDULE, SET_STICKYNESS, SET_ACTIVE_LOANS_LOADED,
  } from "../constants/action-types";
 
 export function setActiveLoans(payload) {
@@ -20,4 +20,8 @@ export function setSchedule(payload) {
 
 export function setStickyness(payload) {
   return { type: SET_STICKYNESS, payload };
+};
+
+export function setActiveLoansLoaded(payload) {
+  return { type: SET_ACTIVE_LOANS_LOADED, payload };
 };
